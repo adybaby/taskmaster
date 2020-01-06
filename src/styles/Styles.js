@@ -17,7 +17,7 @@ const styles = theme => ({
   },
   search: {
     position: 'relative',
-    borderRadius: theme.shape.borderRadius,
+    borderRadius: 'theme.shape.borderRadius',
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25)
@@ -28,7 +28,7 @@ const styles = theme => ({
     flexGrow: 1,
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: 'auto'
+      width: '100%'
     }
   },
   searchIcon: {
@@ -41,7 +41,8 @@ const styles = theme => ({
     justifyContent: 'center'
   },
   inputRoot: {
-    color: 'inherit'
+    color: 'inherit',
+    width: '100%'
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7)
