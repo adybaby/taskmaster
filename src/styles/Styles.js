@@ -1,19 +1,8 @@
 import { fade } from '@material-ui/core/styles';
 
 const styles = theme => ({
-  root: {
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1)
-    }
-  },
   grow: {
     flexGrow: 1
-  },
-  title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block'
-    }
   },
   search: {
     position: 'relative',
@@ -23,13 +12,8 @@ const styles = theme => ({
       backgroundColor: fade(theme.palette.common.white, 0.25)
     },
     marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    flexGrow: 1,
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: '100%'
-    }
+    marginLeft: theme.spacing(3),
+    flexGrow: 1
   },
   searchIcon: {
     width: theme.spacing(7),
@@ -46,12 +30,6 @@ const styles = theme => ({
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7)
-  },
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex'
-    }
   },
   tab: {
     minWidth: 78,
@@ -77,11 +55,15 @@ const styles = theme => ({
     marginLeft: theme.spacing(0),
     marginBottom: theme.spacing(1),
     marginTop: theme.spacing(2),
-    margin: theme.spacing(4),
+    marginRight: theme.spacing(4),
     minWidth: 100
   },
   selectEmpty: {
     marginTop: theme.spacing(4)
+  },
+  tabIcon: {
+    verticalAlign: 'middle',
+    marginRight: theme.spacing(1)
   }
 });
 

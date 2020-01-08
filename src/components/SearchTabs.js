@@ -17,34 +17,26 @@ export default function SearchTabs() {
     setValue(newValue);
   };
 
+  const searchTab = (name, icon) => (
+    <Tab
+      className={classes.tab}
+      label={
+        <div>
+          <FontAwesomeIcon icon={icon} className={classes.tabIcon} />
+          {name}
+        </div>
+      }
+    />
+  );
+
   return (
     <Tabs value={value} onChange={handleChange} indicatorColor="primary">
-      <Tab
-        className={classes.tab}
-        icon={<FontAwesomeIcon icon={faSearch} size="lg" />}
-        label="All"
-      />
-      <Tab
-        className={classes.tab}
-        icon={<FontAwesomeIcon icon={faBullseye} size="lg" />}
-        label="Drivers"
-      />
-      <Tab
-        className={classes.tab}
-        icon={<FontAwesomeIcon icon={faCodeBranch} size="lg" />}
-        label="Enablers"
-      />
-      <Tab
-        className={classes.tab}
-        icon={<FontAwesomeIcon icon={faLightbulb} size="lg" />}
-        label="Initiatives"
-      />
-      <Tab className={classes.tab} icon={<FontAwesomeIcon icon={faMap} size="lg" />} label="Map" />
-      <Tab
-        className={classes.tab}
-        icon={<FontAwesomeIcon icon={faChartBar} size="lg" />}
-        label="Charts"
-      />
+      {searchTab('All', faSearch)}
+      {searchTab('Drivers', faBullseye)}
+      {searchTab('Enablers', faCodeBranch)}
+      {searchTab('Initiatives', faLightbulb)}
+      {searchTab('Map', faMap)}
+      {searchTab('Charts', faChartBar)}
     </Tabs>
   );
 }

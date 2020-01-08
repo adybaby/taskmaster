@@ -31,7 +31,7 @@ const App = () => {
           <Button
             className={classes.filterButton}
             size="small"
-            startIcon={<FontAwesomeIcon icon={faFilter} size="lg" />}
+            startIcon={<FontAwesomeIcon icon={faFilter} />}
             onClick={handleFilterToggle}
           >
             Filters
