@@ -8,17 +8,25 @@ import { faSearch, faBullseye, faCodeBranch, faChartBar } from '@fortawesome/fre
 import styles from '../styles/Styles';
 
 const useStyles = makeStyles(theme => styles(theme));
+export const TABS = {
+  ALL: 'All',
+  DRIVERS: 'Drivers',
+  ENABLERS: 'Enablers',
+  INITIATIVES: 'Initiatives',
+  MAP: 'Map',
+  CHARTS: 'Charts'
+};
 
-export default function SearchTabs() {
+const SearchTabs = ({ setCurrentTab, currentTab }) => {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    setCurrentTab(newValue);
   };
 
-  const searchTab = (name, icon) => (
+  const searchTab = (name, tab, icon) => (
     <Tab
+      value={tab}
       className={classes.tab}
       label={
         <div>
@@ -30,13 +38,15 @@ export default function SearchTabs() {
   );
 
   return (
-    <Tabs value={value} onChange={handleChange} indicatorColor="primary">
-      {searchTab('All', faSearch)}
-      {searchTab('Drivers', faBullseye)}
-      {searchTab('Enablers', faCodeBranch)}
-      {searchTab('Initiatives', faLightbulb)}
-      {searchTab('Map', faMap)}
-      {searchTab('Charts', faChartBar)}
+    <Tabs value={currentTab} onChange={handleChange} indicatorColor="primary">
+      {searchTab('All', TABS.ALL, faSearch)}
+      {searchTab('Drivers', TABS.DRIVERS, faBullseye)}
+      {searchTab('Enablers', TABS.ENABLERS, faCodeBranch)}
+      {searchTab('Initiatives', TABS.INITIATIVES, faLightbulb)}
+      {searchTab('Map', TABS.MAP, faMap)}
+      {searchTab('Charts', TABS.CHARTS, faChartBar)}
     </Tabs>
   );
-}
+};
+
+export default SearchTabs;

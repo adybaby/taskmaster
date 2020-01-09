@@ -15,7 +15,7 @@ import styles from '../styles/Styles';
 
 const useStyles = makeStyles(theme => styles(theme));
 
-export default function SearchBar() {
+const SearchBar = ({ setSearchTerm }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -45,6 +45,15 @@ export default function SearchBar() {
     </Menu>
   );
 
+  const handleNewClick = () => {
+    // eslint-disable-next-line no-alert
+    window.alert('TBD');
+  };
+
+  const handleSearchChange = event => {
+    setSearchTerm(event.target.value);
+  };
+
   return (
     <div className={classes.grow}>
       <AppBar position="static">
@@ -57,6 +66,7 @@ export default function SearchBar() {
               <SearchIcon />
             </div>
             <InputBase
+              onChange={handleSearchChange}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,
@@ -65,7 +75,7 @@ export default function SearchBar() {
             />
           </div>
           <div className={classes.sectionDesktop}>
-            <Button color="inherit" startIcon={<AddCircle />}>
+            <Button color="inherit" startIcon={<AddCircle />} onClick={handleNewClick}>
               NEW..
             </Button>
             <IconButton edge="end" onClick={handleProfileMenuOpen} color="inherit">
@@ -77,4 +87,6 @@ export default function SearchBar() {
       {renderMenu}
     </div>
   );
-}
+};
+
+export default SearchBar;
