@@ -6,43 +6,27 @@ import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import styles from './styles/Styles';
 import SearchBar from './components/SearchBar';
-import SearchTabs, { TABS } from './components/SearchTabs';
+import TaskTabs from './components/TaskTabs';
 import FilterBar from './components/FilterBar';
-import SearchResults from './components/SearchResults';
-import { TYPES } from './data/Items';
+import TaskList from './components/TaskList';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const App = () => {
   const classes = useStyles();
   const [showFilters, setShowFilters] = React.useState(false);
-  const [currentTab, setCurrentTab] = React.useState(TABS.ALL);
-  const [searchTerm, setSearchTerm] = React.useState(null);
 
   const handleFilterToggle = () => {
     setShowFilters(!showFilters);
-  };
-
-  const typeFilter = () => {
-    switch (currentTab) {
-      case TABS.DRIVERS:
-        return TYPES.DRIVER;
-      case TABS.ENABLERS:
-        return TYPES.ENABLER;
-      case TABS.INITIATIVES:
-        return TYPES.INITIATIVE;
-      default:
-        return null;
-    }
   };
 
   return (
     <div className={classes.background}>
       <CssBaseline />
       <div className={classes.root}>
-        <SearchBar setSearchTerm={setSearchTerm} />
+        <SearchBar />
         <div className={classes.secondaryBar}>
-          <SearchTabs setCurrentTab={setCurrentTab} currentTab={currentTab} />
+          <TaskTabs />
 
           <ToggleButton
             variant="text"
@@ -54,7 +38,7 @@ const App = () => {
           </ToggleButton>
         </div>
         {showFilters ? <FilterBar /> : null}
-        <SearchResults type={typeFilter()} searchTerm={searchTerm} />
+        <TaskList />
       </div>
     </div>
   );

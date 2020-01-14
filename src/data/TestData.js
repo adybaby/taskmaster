@@ -1,3 +1,33 @@
+/**
+ * TASK
+ * Type
+ * Title
+ * createdBy
+ * createdDate
+ * modifiedDate
+ * ShortDescription
+ * MoreInformation
+ * RelatedLinks
+ * Tags
+ * Body
+ *
+ * {
+ * IF ENABLER
+ * Enables {Driver, Impact}
+ * Initiatives
+ * }
+ *
+ * {
+ * IF INITIATIVE
+ * Hypotheses
+ * SuccessfulIf
+ * Approach
+ * ContributesTo {Enabler, Impact}
+ * PlannedDate{StartDate, EndDate}
+ * Vacancies {Title, StartDate, EndDate, User:ProposedStart, ProposedEnd, Acceptance}
+ * }
+ */
+
 export const TYPES = {
   DRIVER: 'Driver',
   ENABLER: 'Enabler',
@@ -27,22 +57,14 @@ const makeList = (type, length, makeObj) => {
   return list;
 };
 
-const items = [
+const data = [
   ...makeList(TYPES.DRIVER, 5, true),
   ...makeList(TYPES.ENABLER, 30, true),
   ...makeList(TYPES.INITIATIVE, 100, true)
 ];
 
-const getSearchResults = (type, searchTerm) => {
-  let results = items;
+export const loadData = () => data;
 
-  if (type != null) {
-    results = results.filter(item => item.type === type);
-  }
-  if (searchTerm != null) {
-    results = results.filter(item => item.title.includes(searchTerm));
-  }
-  return results;
-};
+export const getUser = () => ({ name: 'aalever' });
 
-export default getSearchResults;
+export default loadData;

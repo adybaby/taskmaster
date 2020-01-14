@@ -15,13 +15,13 @@ const listOfLinks = links =>
     </Link>
   ));
 
-const SearchResult = result => (
+const Task = task => (
   <div>
-    {titleLink(result.title)}
-    <Typography>{result.description}</Typography>
-    <Typography>Links to: {listOfLinks(result.links)}</Typography>
-    <Typography>{listOfLinks(result.tags)}</Typography>
+    {titleLink(task.title)}
+    <Typography>{task.description}</Typography>
+    <Typography>Links to: {listOfLinks(task.links)}</Typography>
+    <Typography>{listOfLinks(task.tags)}</Typography>
   </div>
 );
 
-export default SearchResult;
+export default Task;

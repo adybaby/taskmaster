@@ -11,14 +11,17 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
+import { useDispatch } from 'react-redux';
 import styles from '../styles/Styles';
+import { addTaskFilter, removeTaskFilter } from '../actions/Tasks';
+import * as TASK_FILTERS from '../constants/TaskFilters';
 
 const useStyles = makeStyles(theme => styles(theme));
 
-const SearchBar = ({ setSearchTerm }) => {
+const SearchBar = () => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  const dispatch = useDispatch();
   const isMenuOpen = Boolean(anchorEl);
 
   const handleProfileMenuOpen = event => {
@@ -51,7 +54,11 @@ const SearchBar = ({ setSearchTerm }) => {
   };
 
   const handleSearchChange = event => {
-    setSearchTerm(event.target.value);
+    if (event.target.value == null) {
+      dispatch(removeTaskFilter({ type: TASK_FILTERS.SEARCH_TERM }));
+    } else {
+      dispatch(addTaskFilter({ type: TASK_FILTERS.SEARCH_TERM, value: event.target.value }));
+    }
   };
 
   return (
