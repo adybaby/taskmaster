@@ -17,9 +17,9 @@ const listOfLinks = links =>
 
 const Task = task => (
   <div>
-    {titleLink(task.title)}
-    <Typography>{task.description}</Typography>
-    <Typography>Links to: {listOfLinks(task.links)}</Typography>
+    {titleLink(`${task.title} (${task.type})`)}
+    <Typography>{task.shortDescription}</Typography>
+    <Typography>Links to: {listOfLinks(task.relatedLinks)}</Typography>
     <Typography>{listOfLinks(task.tags)}</Typography>
   </div>
 );

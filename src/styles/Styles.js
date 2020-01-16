@@ -56,7 +56,7 @@ const styles = theme => ({
     marginBottom: theme.spacing(1),
     marginTop: theme.spacing(2),
     marginRight: theme.spacing(4),
-    minWidth: 100
+    minWidth: 150
   },
   selectEmpty: {
     marginTop: theme.spacing(4)

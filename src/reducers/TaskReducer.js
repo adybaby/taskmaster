@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux';
 import * as TYPES from '../constants/ActionTypes';
-import loadTasks from '../data/DataInterface';
 
 const taskReducer = (state = [], action) => {
   switch (action.type) {
-    case TYPES.FIND_TASKS:
-      return state.concat(loadTasks());
+    case TYPES.ADD_TASKS: {
+      // console.log(action.tasks);
+      return [...state, ...action.tasks];
+    }
     case TYPES.ADD_TASK:
       return state.concat(action.task);
     case TYPES.REMOVE_TASK:

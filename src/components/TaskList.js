@@ -1,19 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Task from './Task';
 import getVisibleTasks from '../selectors/TaskSelector';
-import { findTasks } from '../actions/Tasks';
 
 const TaskList = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(findTasks());
-  }, [dispatch]);
-
   const tasks = useSelector(getVisibleTasks);
 
   return (

@@ -1,20 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import { useDispatch } from 'react-redux';
 import styles from './styles/Styles';
 import SearchBar from './components/SearchBar';
 import TaskTabs from './components/TaskTabs';
 import FilterBar from './components/FilterBar';
 import TaskList from './components/TaskList';
+import { loadTasks } from './actions/Tasks';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const App = () => {
   const classes = useStyles();
   const [showFilters, setShowFilters] = React.useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadTasks());
+  }, [dispatch]);
 
   const handleFilterToggle = () => {
     setShowFilters(!showFilters);
@@ -29,6 +36,7 @@ const App = () => {
           <TaskTabs />
 
           <ToggleButton
+            value="toggleButton"
             variant="text"
             className={classes.filterButton}
             onClick={handleFilterToggle}

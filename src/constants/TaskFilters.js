@@ -4,14 +4,17 @@ export const AUTHOR = 'Author';
 export const TYPE = 'Type';
 export const SEARCH_TERM = 'Search Term';
 
-export const CREATED_OPTIONS = ['Any Time', 'Today', 'This Week', 'This Month', 'Specify Period..'];
-export const VACANCIES_OPTIONS = [
-  'Relevant Vacancies',
-  'UX Designer',
-  'Any Developer',
-  'Lean Facilitator',
-  'HAK Developer',
-  'TC Developer',
-  '19 more..'
-];
-export const AUTHOR_OPTIONS = ['Anyone', 'Me', 'Specify..'];
+export const CREATED_OPTIONS = {
+  ANY_TIME: 'Any Time',
+  TODAY: 'Today',
+  THIS_WEEK: 'Past Week',
+  THIS_MONTH: 'Past Month',
+  THIS_YEAR: 'Past Year',
+  OLDER: 'Older than a year'
+};
+
+export const VACANCY_OPTIONS = {
+  ANY_VACANCY: 'Any Vacancies'
+};
+
+export const AUTHOR_OPTIONS = { ANY_AUTHOR: 'Anyone' };

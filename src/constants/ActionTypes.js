@@ -1,5 +1,6 @@
-export const FIND_TASKS = 'FIND TASKS';
+export const LOAD_TASKS = 'FIND TASKS';
 export const ADD_TASK = 'ADD TASK';
+export const ADD_TASKS = 'ADD TASKS';
 export const REMOVE_TASK = 'REMOVE TASK';
 export const SET_TASKS_LOADED = 'SET_TASKS_LOADED';
 
