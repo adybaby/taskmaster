@@ -1,3 +1,4 @@
+/* eslint-disable function-paren-newline */
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
@@ -8,7 +9,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../styles/Styles';
 import * as TASK_FILTERS from '../constants/TaskFilters';
-import { addTaskFilter, removeTaskFilter } from '../actions/Tasks';
+import { addTaskFilter, removeTaskFilter, setSortOrder } from '../actions/Tasks';
+import * as SORT_ORDER from '../constants/SortOrders';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -16,6 +18,7 @@ const FilterBar = () => {
   const classes = useStyles();
 
   const tasks = useSelector(state => state.tasks);
+  const sortOrder = useSelector(state => state.sortOrder);
 
   const dispatch = useDispatch();
 
@@ -56,6 +59,10 @@ const FilterBar = () => {
     }
   };
 
+  const handleSortChange = event => {
+    dispatch(setSortOrder(event.target.value));
+  };
+
   const Filter = ({ title, options }) => (
     <FormControl key={title} size="small" className={classes.formControl}>
       <InputLabel id={`${title}label`}>{title}</InputLabel>
@@ -75,6 +82,26 @@ const FilterBar = () => {
     </FormControl>
   );
 
+  const SortButton = () => (
+    <FormControl key="Sort" size="small" className={classes.formControl}>
+      <InputLabel id="Sort label">Sort</InputLabel>
+      <Select
+        autoWidth={true}
+        defaultValue={SORT_ORDER.DEFAULT}
+        labelId="sort select-label"
+        id="sort select"
+        onChange={event => handleSortChange(event)}
+        value={sortOrder}
+      >
+        {Object.entries(SORT_ORDER.OPTIONS).map(option => (
+          <MenuItem key={option[0]} value={option[1]}>
+            {option[1]}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
   return (
     <div className={classes.filterBar}>
       <Toolbar>
@@ -84,6 +111,7 @@ const FilterBar = () => {
         />
         <Filter title={TASK_FILTERS.VACANCIES} options={getVacancyOptions()} />
         <Filter title={TASK_FILTERS.AUTHOR} options={getCreatedByOptions()} />
+        <SortButton />
       </Toolbar>
     </div>
   );

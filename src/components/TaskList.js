@@ -15,8 +15,8 @@ const TaskList = () => {
         {' '}
         <Typography variant="subtitle1">{tasks.length} tasks</Typography>
       </ListItem>
-      {tasks.map((task, index) => (
-        <ListItem key={index}>{Task(task)}</ListItem>
+      {tasks.map(task => (
+        <ListItem key={task.id}>{Task(task)}</ListItem>
       ))}
     </List>
   );

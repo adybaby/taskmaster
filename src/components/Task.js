@@ -17,10 +17,18 @@ const listOfLinks = links =>
 
 const Task = task => (
   <div>
+    <Typography variant="caption">{`Created on ${task.createdDate} by ${task.createdBy}`}</Typography>
+
     {titleLink(`${task.title} (${task.type})`)}
     <Typography>{task.shortDescription}</Typography>
-    <Typography>Links to: {listOfLinks(task.relatedLinks)}</Typography>
-    <Typography>{listOfLinks(task.tags)}</Typography>
+    {task.vacancies != null ? (
+      <div>
+        <Typography variant="caption">Vacancies: {listOfLinks(task.vacancies)}</Typography>
+      </div>
+    ) : null}
+    <div>
+      <Typography variant="caption">{listOfLinks(task.tags)}</Typography>
+    </div>
   </div>
 );
 

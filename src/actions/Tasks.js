@@ -21,6 +21,11 @@ export const removeTask = task => ({
   task
 });
 
+export const setSortOrder = sortOrder => ({
+  type: TYPES.SET_SORT_ORDER,
+  sortOrder
+});
+
 export const loadTasks = () => dispatch => {
   loadTaskData(tasks => {
     dispatch(addTasks(tasks));

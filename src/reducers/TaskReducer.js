@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import * as TYPES from '../constants/ActionTypes';
+import * as SORT_ORDER from '../constants/SortOrders';
 
 const taskReducer = (state = [], action) => {
   switch (action.type) {
@@ -39,10 +40,21 @@ const tasksLoadedReducer = (state = false, action) => {
   }
 };
 
+const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
+  switch (action.type) {
+    case TYPES.SET_SORT_ORDER: {
+      return action.sortOrder;
+    }
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   tasks: taskReducer,
   taskFilter: taskFilterReducer,
-  tasksLoaded: tasksLoadedReducer
+  tasksLoaded: tasksLoadedReducer,
+  sortOrder: sortOrderReducer
 });
 
 export default rootReducer;
