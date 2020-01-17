@@ -3,7 +3,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import { useDispatch } from 'react-redux';
 import styles from './styles/Styles';
 import SearchBar from './components/SearchBar';
@@ -11,6 +10,7 @@ import TaskTabs from './components/TaskTabs';
 import FilterBar from './components/FilterBar';
 import TaskList from './components/TaskList';
 import { loadTasks, clearTaskFilters } from './actions/Tasks';
+import ToggleButton from './components/ToggleB';
 
 const useStyles = makeStyles(theme => styles(theme));
 

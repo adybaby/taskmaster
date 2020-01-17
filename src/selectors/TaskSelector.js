@@ -80,14 +80,16 @@ const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, 
     }
     case SORT_ORDER.OPTIONS.START_DATE: {
       return tasks.concat().sort((a, b) => {
-        if (a === null) {
-          if (b === null) {
-            return 1;
+        if (typeof a.startDate === 'undefined') {
+          if (typeof b.startDate === 'undefined') {
+            return 0;
           }
-          return 0;
+          return 1;
         }
-        if (b === null) return -1;
-        return new Date(a) > new Date(b);
+        if (typeof b.startDate === 'undefined') {
+          return -1;
+        }
+        return new Date(a.startDate) - new Date(b.startDate);
       });
     }
     case SORT_ORDER.OPTIONS.AUTHOR: {

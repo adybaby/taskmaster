@@ -12,7 +12,6 @@ export const TYPES = {
 };
 
 const addField = (field, id, str, asList) => {
-  // console.log(`${id}:${str}`);
   const trimmed = str.trim();
   if (trimmed.length > 0) {
     if (asList) {
@@ -38,7 +37,11 @@ const processLine = line => {
     addField(field, 'relatedLinks', fields[8], true);
     addField(field, 'tags', fields[9], true);
     // eslint-disable-next-line no-restricted-globals
-    addField(field, 'priority', isNaN(fields[10]) ? parseInt(fields[10], 10) : '', false);
+    if (isNaN(fields[10])) {
+      field.priority = null;
+    } else {
+      field.priority = fields[10];
+    }
     addField(field, 'enables', fields[11], true);
     addField(field, 'initiatives', fields[12], true);
     addField(field, 'hypotheses', fields[13], false);

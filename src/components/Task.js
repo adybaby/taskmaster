@@ -24,8 +24,7 @@ const caption = task => {
 const Task = task => (
   <div>
     <Typography variant="caption">{caption(task)}</Typography>
-
-    {titleLink(`${task.title} (${task.type})`)}
+    {titleLink(`${task.title} (${task.type}${task.type === 'Driver' ? ` ${task.priority}` : ''})`)}
     <Typography>{task.shortDescription}</Typography>
     {task.vacancies != null ? (
       <div>
