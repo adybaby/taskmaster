@@ -10,7 +10,7 @@ import SearchBar from './components/SearchBar';
 import TaskTabs from './components/TaskTabs';
 import FilterBar from './components/FilterBar';
 import TaskList from './components/TaskList';
-import { loadTasks } from './actions/Tasks';
+import { loadTasks, clearTaskFilters } from './actions/Tasks';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -24,6 +24,9 @@ const App = () => {
   }, [dispatch]);
 
   const handleFilterToggle = () => {
+    if (showFilters) {
+      dispatch(clearTaskFilters());
+    }
     setShowFilters(!showFilters);
   };
 
@@ -42,7 +45,7 @@ const App = () => {
             onClick={handleFilterToggle}
             selected={showFilters}
           >
-            <FontAwesomeIcon style={{ marginRight: 6 }} icon={faFilter} size="sm" /> Filters
+            <FontAwesomeIcon style={{ marginRight: 6 }} icon={faFilter} size="sm" /> Filters & Sort
           </ToggleButton>
         </div>
         {showFilters ? <FilterBar /> : null}

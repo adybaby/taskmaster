@@ -33,14 +33,12 @@ export const loadTasks = () => dispatch => {
   });
 };
 
-export const addTaskFilter = filter => ({
-  type: TYPES.ADD_TASK_FILTER,
+export const setTaskFilter = filter => ({
+  type: TYPES.SET_TASK_FILTER,
   filter
 });
 
-export const removeTaskFilter = filter => ({
-  type: TYPES.REMOVE_TASK_FILTER,
+export const clearTaskFilters = filter => ({
+  type: TYPES.CLEAR_TASK_FILTERS,
   filter
 });
-
-export const clearFilters = () => ({ type: TYPES.CLEAR_FILTERS });

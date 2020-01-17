@@ -5,4 +5,4 @@ export const OPTIONS = {
   START_DATE: 'Start Date'
 };
 
-export const DEFAULT = OPTIONS.LATEST;
+export const DEFAULT = OPTIONS.PRIORITY;

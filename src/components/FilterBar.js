@@ -9,7 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../styles/Styles';
 import * as TASK_FILTERS from '../constants/TaskFilters';
-import { addTaskFilter, removeTaskFilter, setSortOrder } from '../actions/Tasks';
+import { setTaskFilter, setSortOrder } from '../actions/Tasks';
 import * as SORT_ORDER from '../constants/SortOrders';
 
 const useStyles = makeStyles(theme => styles(theme));
@@ -19,59 +19,52 @@ const FilterBar = () => {
 
   const tasks = useSelector(state => state.tasks);
   const sortOrder = useSelector(state => state.sortOrder);
+  const taskFilters = useSelector(state => state.taskFilters);
 
   const dispatch = useDispatch();
 
   const getVacancyOptions = () => {
-    const vacancies = new Set([TASK_FILTERS.VACANCY_OPTIONS.ANY_VACANCY]);
+    const vacancyOptions = new Set([TASK_FILTERS.DEFAULTS.VACANCIES]);
     tasks.forEach(task => {
       if (task.vacancies != null) {
         task.vacancies.forEach(vacancy => {
           if (vacancy.trim().length > 0) {
-            vacancies.add(vacancy);
+            vacancyOptions.add(vacancy);
           }
         });
       }
     });
-    return Array.from(vacancies);
+    return Array.from(vacancyOptions);
   };
 
   const getCreatedByOptions = () => {
-    const authors = new Set([TASK_FILTERS.AUTHOR_OPTIONS.ANY_AUTHOR]);
+    const createdByOptions = new Set([TASK_FILTERS.DEFAULTS.CREATED_BY]);
     tasks.forEach(task => {
       if (task.createdBy != null && task.createdBy.length > 0) {
-        authors.add(task.createdBy);
+        createdByOptions.add(task.createdBy);
       }
     });
-    return Array.from(authors);
+    return Array.from(createdByOptions);
   };
 
-  const handleFilterChange = (event, title) => {
-    const { value } = event.target;
-    if (
-      value === TASK_FILTERS.CREATED_OPTIONS.ANY_AUTHOR ||
-      value === TASK_FILTERS.VACANCY_OPTIONS.ANY_VACANCY ||
-      value === TASK_FILTERS.AUTHOR_OPTIONS.ANY_AUTHOR
-    ) {
-      dispatch(removeTaskFilter({ type: title }));
-    } else {
-      dispatch(addTaskFilter({ type: title, value: event.target.value }));
-    }
+  const handleFilterChange = (event, key) => {
+    dispatch(setTaskFilter({ type: key, value: event.target.value }));
   };
 
   const handleSortChange = event => {
     dispatch(setSortOrder(event.target.value));
   };
 
-  const Filter = ({ title, options }) => (
-    <FormControl key={title} size="small" className={classes.formControl}>
+  const Filter = ({ filter, title, options }) => (
+    <FormControl key={filter} size="small" className={classes.formControl}>
       <InputLabel id={`${title}label`}>{title}</InputLabel>
       <Select
         autoWidth={true}
         defaultValue={options[0]}
         labelId={`${title}select-label`}
         id={`${title}select`}
-        onChange={event => handleFilterChange(event, title)}
+        onChange={event => handleFilterChange(event, filter)}
+        value={taskFilters[filter]}
       >
         {options.map((option, index) => (
           <MenuItem key={index} value={option}>
@@ -106,11 +99,12 @@ const FilterBar = () => {
     <div className={classes.filterBar}>
       <Toolbar>
         <Filter
-          title={TASK_FILTERS.CREATED}
+          filter="createdOn"
+          title="Created On"
           options={Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => entry[1])}
         />
-        <Filter title={TASK_FILTERS.VACANCIES} options={getVacancyOptions()} />
-        <Filter title={TASK_FILTERS.AUTHOR} options={getCreatedByOptions()} />
+        <Filter filter="vacancies" title="Vacancies" options={getVacancyOptions()} />
+        <Filter filter="createdBy" title="Created By" options={getCreatedByOptions()} />
         <SortButton />
       </Toolbar>
     </div>

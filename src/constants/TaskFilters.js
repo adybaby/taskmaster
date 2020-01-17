@@ -1,9 +1,3 @@
-export const CREATED = 'Creatiion Date';
-export const VACANCIES = 'Vacancies';
-export const AUTHOR = 'Author';
-export const TYPE = 'Type';
-export const SEARCH_TERM = 'Search Term';
-
 export const CREATED_OPTIONS = {
   ANY_TIME: 'Any Time',
   TODAY: 'Today',
@@ -13,8 +7,24 @@ export const CREATED_OPTIONS = {
   OLDER: 'Older than a year'
 };
 
-export const VACANCY_OPTIONS = {
-  ANY_VACANCY: 'Any Vacancies'
+export const DEFAULTS = {
+  CREATED_ON: CREATED_OPTIONS.ANY_TIME,
+  VACANCIES: 'Any Vacancies',
+  CREATED_BY: 'Any Author',
+  TYPE: 'All',
+  SEARCH_TERM: null
 };
 
-export const AUTHOR_OPTIONS = { ANY_AUTHOR: 'Anyone' };
+export const STATE_INIT = {
+  createdOn: DEFAULTS.CREATED_ON,
+  vacancies: DEFAULTS.VACANCIES,
+  createdBy: DEFAULTS.CREATED_BY,
+  type: DEFAULTS.TYPE,
+  searchTerm: null
+};
+
+export const CLEARED = {
+  createdOn: DEFAULTS.CREATED_ON,
+  vacancies: DEFAULTS.VACANCIES,
+  createdBy: DEFAULTS.CREATED_BY
+};

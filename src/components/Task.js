@@ -15,9 +15,15 @@ const listOfLinks = links =>
     </Link>
   ));
 
+const caption = task => {
+  let line = `Created on ${task.createdDate} by ${task.createdBy}`;
+  if (task.startDate != null) line += `, starting on ${task.startDate}`;
+  return line;
+};
+
 const Task = task => (
   <div>
-    <Typography variant="caption">{`Created on ${task.createdDate} by ${task.createdBy}`}</Typography>
+    <Typography variant="caption">{caption(task)}</Typography>
 
     {titleLink(`${task.title} (${task.type})`)}
     <Typography>{task.shortDescription}</Typography>

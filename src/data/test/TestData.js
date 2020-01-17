@@ -12,6 +12,7 @@ export const TYPES = {
 };
 
 const addField = (field, id, str, asList) => {
+  // console.log(`${id}:${str}`);
   const trimmed = str.trim();
   if (trimmed.length > 0) {
     if (asList) {
@@ -36,18 +37,20 @@ const processLine = line => {
     addField(field, 'moreInformation', fields[7], false);
     addField(field, 'relatedLinks', fields[8], true);
     addField(field, 'tags', fields[9], true);
-    addField(field, 'priority', fields[10], false);
+    // eslint-disable-next-line no-restricted-globals
+    addField(field, 'priority', isNaN(fields[10]) ? parseInt(fields[10], 10) : '', false);
     addField(field, 'enables', fields[11], true);
     addField(field, 'initiatives', fields[12], true);
     addField(field, 'hypotheses', fields[13], false);
     addField(field, 'successfulIf', fields[14], false);
     addField(field, 'approach', fields[15], false);
     addField(field, 'contributesTo', fields[16], false);
-    addField(field, 'plannedDate', fields[17], false);
-    addField(field, 'vacancies', fields[18], true);
+    addField(field, 'startDate', fields[17], false);
+    addField(field, 'endDate', fields[18], false);
+    addField(field, 'vacancies', fields[19], true);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.log(`${line}\n${err}`);
+    console.error(`${line}\n${err}`);
   }
   return field;
 };

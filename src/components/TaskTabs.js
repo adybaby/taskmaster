@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import styles from '../styles/Styles';
 import * as TASK_TYPES from '../constants/TaskTypes';
 import * as TASK_FILTERS from '../constants/TaskFilters';
-import { addTaskFilter, removeTaskFilter } from '../actions/Tasks';
+import { setTaskFilter } from '../actions/Tasks';
 
 const useStyles = makeStyles(theme => styles(theme));
 const TABS = {
@@ -30,11 +30,8 @@ const TaskTabs = () => {
         break;
       case TABS.MAP:
         break;
-      case TABS.ALL:
-        dispatch(removeTaskFilter({ type: TASK_FILTERS.TYPE }));
-        break;
       default:
-        dispatch(addTaskFilter({ type: TASK_FILTERS.TYPE, value: tab }));
+        dispatch(setTaskFilter({ type: 'type', value: tab }));
     }
   };
 
@@ -53,7 +50,7 @@ const TaskTabs = () => {
 
   return (
     <Tabs value={currentTab} onChange={handleChange} indicatorColor="primary">
-      {searchTab('All', TABS.ALL, faSearch)}
+      {searchTab('All', TASK_FILTERS.DEFAULTS.TYPE, faSearch)}
       {searchTab('Drivers', TASK_TYPES.DRIVER, faBullseye)}
       {searchTab('Enablers', TASK_TYPES.ENABLER, faCodeBranch)}
       {searchTab('Initiatives', TASK_TYPES.INITIATIVE, faLightbulb)}

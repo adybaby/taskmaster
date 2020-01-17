@@ -4,7 +4,7 @@ import * as TASK_FILTERS from '../constants/TaskFilters';
 import { filterBy } from '../util/StringUtils';
 import * as SORT_ORDER from '../constants/SortOrders';
 
-const getTaskFilter = state => state.taskFilter;
+const getTaskFilters = state => state.taskFilters;
 const getTasks = state => state.tasks;
 const getSortOrder = state => state.sortOrder;
 
@@ -37,60 +37,65 @@ const filterByDate = (filteredTasks, option) => {
   }
 };
 
-const getSortedTasks = createSelector([getSortOrder, getTasks], (sortOrder, tasks) => {
+const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) => {
+  let filteredTasks = tasks;
+  if (taskFilters.type !== TASK_FILTERS.DEFAULTS.TYPE) {
+    filteredTasks = filteredTasks.filter(task => task.type === taskFilters.type);
+  }
+
+  if (taskFilters.searchTerm !== TASK_FILTERS.DEFAULTS.SEARCH_TERM) {
+    filteredTasks = filteredTasks.filter(filterBy(taskFilters.searchTerm));
+  }
+
+  if (taskFilters.vacancies !== TASK_FILTERS.DEFAULTS.VACANCIES) {
+    filteredTasks = filteredTasks.filter(
+      task =>
+        task.vacancies != null &&
+        task.vacancies.length > 0 &&
+        task.vacancies.includes(taskFilters.vacancies)
+    );
+  }
+
+  if (taskFilters.createdBy !== TASK_FILTERS.DEFAULTS.CREATED_BY) {
+    filteredTasks = filteredTasks.filter(task => task.createdBy === taskFilters.createdBy);
+  }
+
+  if (taskFilters.createdOn !== TASK_FILTERS.DEFAULTS.CREATED_ON) {
+    filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn);
+  }
+  return filteredTasks;
+});
+
+const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, tasks) => {
   switch (sortOrder) {
     case SORT_ORDER.OPTIONS.LATEST: {
-      return tasks.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+      return tasks.concat().sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
     }
     case SORT_ORDER.OPTIONS.PRIORITY: {
-      return tasks; // TBD
+      return tasks
+        .concat()
+        .sort(
+          (a, b) => (a.priority === null ? 0 : a.priority) > (b.priority === null ? 0 : b.priority)
+        );
     }
     case SORT_ORDER.OPTIONS.START_DATE: {
-      return tasks; // TBD
+      return tasks.concat().sort((a, b) => {
+        if (a === null) {
+          if (b === null) {
+            return 1;
+          }
+          return 0;
+        }
+        if (b === null) return -1;
+        return new Date(a) > new Date(b);
+      });
     }
     case SORT_ORDER.OPTIONS.AUTHOR: {
-      return tasks.sort((a, b) => a.createdBy.localeCompare(b.createdBy));
+      return tasks.concat().sort((a, b) => a.createdBy.localeCompare(b.createdBy));
     }
     default:
       return tasks;
   }
-});
-
-const getVisibleTasks = createSelector([getTaskFilter, getSortedTasks], (taskFilters, tasks) => {
-  if (taskFilters === null) {
-    return tasks;
-  }
-
-  let filteredTasks = tasks;
-
-  taskFilters.forEach(filter => {
-    switch (filter.type) {
-      case TASK_FILTERS.TYPE:
-        filteredTasks = filteredTasks.filter(task => task.type === filter.value);
-        break;
-      case TASK_FILTERS.SEARCH_TERM:
-        filteredTasks = filteredTasks.filter(filterBy(filter.value));
-        break;
-      case TASK_FILTERS.VACANCIES:
-        filteredTasks = filteredTasks.filter(
-          task =>
-            task.vacancies != null &&
-            task.vacancies.length > 0 &&
-            task.vacancies.includes(filter.value)
-        );
-        break;
-      case TASK_FILTERS.CREATED:
-        filteredTasks = filterByDate(filteredTasks, filter.value);
-        break;
-      case TASK_FILTERS.AUTHOR:
-        filteredTasks = filteredTasks.filter(task => task.createdBy === filter.value);
-        break;
-      default:
-        filteredTasks = tasks;
-    }
-  });
-
-  return filteredTasks;
 });
 
 export default getVisibleTasks;

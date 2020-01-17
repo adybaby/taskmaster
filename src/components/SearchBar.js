@@ -13,8 +13,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch } from 'react-redux';
 import styles from '../styles/Styles';
-import { addTaskFilter, removeTaskFilter } from '../actions/Tasks';
-import * as TASK_FILTERS from '../constants/TaskFilters';
+import { setTaskFilter } from '../actions/Tasks';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -54,11 +53,7 @@ const SearchBar = () => {
   };
 
   const handleSearchChange = event => {
-    if (event.target.value == null) {
-      dispatch(removeTaskFilter({ type: TASK_FILTERS.SEARCH_TERM }));
-    } else {
-      dispatch(addTaskFilter({ type: TASK_FILTERS.SEARCH_TERM, value: event.target.value }));
-    }
+    dispatch(setTaskFilter({ type: 'searchTerm', value: event.target.value }));
   };
 
   return (

@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import * as TYPES from '../constants/ActionTypes';
 import * as SORT_ORDER from '../constants/SortOrders';
+import { STATE_INIT, DEFAULTS } from '../constants/TaskFilters';
 
 const taskReducer = (state = [], action) => {
   switch (action.type) {
@@ -17,14 +18,17 @@ const taskReducer = (state = [], action) => {
   }
 };
 
-const taskFilterReducer = (state = [], action) => {
+const taskFilterReducer = (state = STATE_INIT, action) => {
   switch (action.type) {
-    case TYPES.ADD_TASK_FILTER:
-      return [...state.filter(filter => filter.type !== action.filter.type), action.filter];
-    case TYPES.REMOVE_TASK_FILTER:
-      return state.filter(filter => filter.type !== action.filter.type);
-    case TYPES.CLEAR_FILTERS:
-      return [];
+    case TYPES.SET_TASK_FILTER:
+      return { ...state, [action.filter.type]: action.filter.value };
+    case TYPES.CLEAR_TASK_FILTERS:
+      return {
+        ...state,
+        vacancies: DEFAULTS.VACANCIES,
+        createdBy: DEFAULTS.CREATED_BY,
+        createdOn: DEFAULTS.CREATED_ON
+      };
     default:
       return state;
   }
@@ -52,7 +56,7 @@ const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
 
 const rootReducer = combineReducers({
   tasks: taskReducer,
-  taskFilter: taskFilterReducer,
+  taskFilters: taskFilterReducer,
   tasksLoaded: tasksLoadedReducer,
   sortOrder: sortOrderReducer
 });
