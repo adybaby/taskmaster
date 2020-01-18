@@ -1,19 +1,15 @@
 import * as TYPES from '../constants/ActionTypes';
-import { loadTasks as loadTaskData } from '../data/DataInterface';
-
-export const setTasksLoaded = tasksLoaded => ({
-  type: TYPES.SET_TASKS_LOADED,
-  tasksLoaded
-});
-
-export const addTasks = tasks => ({
-  type: TYPES.ADD_TASKS,
-  tasks
-});
+import { findTasks as findTaskData } from '../data/DataInterface';
+import * as STATUS from '../constants/TaskStatus';
 
 export const addTask = task => ({
   type: TYPES.ADD_TASK,
   task
+});
+
+export const setTasks = tasks => ({
+  type: TYPES.SET_TASKS,
+  tasks
 });
 
 export const removeTask = task => ({
@@ -21,15 +17,25 @@ export const removeTask = task => ({
   task
 });
 
-export const setSortOrder = sortOrder => ({
-  type: TYPES.SET_SORT_ORDER,
-  sortOrder
+export const clearTasks = () => ({
+  type: TYPES.CLEAR_TASKS
 });
 
-export const loadTasks = () => dispatch => {
-  loadTaskData(tasks => {
-    dispatch(addTasks(tasks));
-    dispatch(setTasksLoaded(true));
+export const setTaskStatus = taskStatus => ({
+  type: TYPES.SET_TASK_STATUS,
+  taskStatus
+});
+
+export const findTasks = searchTerm => dispatch => {
+  dispatch(setTaskStatus(STATUS.SEARCHING));
+  findTaskData(searchTerm, taskResults => {
+    if (taskResults.length > 0) {
+      dispatch(setTasks(taskResults));
+      dispatch(setTaskStatus(STATUS.HAVE_RESULTS));
+    } else {
+      dispatch(clearTasks());
+      dispatch(setTaskStatus(STATUS.NO_RESULTS));
+    }
   });
 };
 
@@ -41,4 +47,14 @@ export const setTaskFilter = filter => ({
 export const clearTaskFilters = filter => ({
   type: TYPES.CLEAR_TASK_FILTERS,
   filter
+});
+
+export const setSortOrder = sortOrder => ({
+  type: TYPES.SET_SORT_ORDER,
+  sortOrder
+});
+
+export const setSearchTerm = searchTerm => ({
+  type: TYPES.SET_SEARCH_TERM,
+  searchTerm
 });

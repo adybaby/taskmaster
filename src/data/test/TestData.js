@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable prefer-destructuring */
 import readTextFile from '../../util/TextFileUtils';
-import { stripQuotes } from '../../util/StringUtils';
+import { stripQuotes, filterBy } from '../../util/StringUtils';
 
 const endLine = require('os').EOL;
 
@@ -10,6 +10,8 @@ export const TYPES = {
   ENABLER: 'Enabler',
   INITIATIVE: 'Initiative'
 };
+
+let data = null;
 
 const addField = (field, id, str, asList) => {
   const trimmed = str.trim();
@@ -60,16 +62,16 @@ const processLine = line => {
 
 const processFileText = text => {
   // build text
-  const data = [];
+  const records = [];
   const lines = text.split(endLine);
 
   for (let i = 1; i < lines.length; i++) {
     if (lines[i].length > 0) {
-      data.push(processLine(lines[i]));
+      records.push(processLine(lines[i]));
     }
   }
 
-  return data;
+  return records;
 };
 
 export const loadData = () =>
@@ -81,6 +83,28 @@ export const loadData = () =>
       .catch(e => {
         reject(e);
       });
+  });
+
+export const getTasks = searchTerm =>
+  new Promise((resolve, reject) => {
+    if (data === null) {
+      loadData()
+        .then(loadedData => {
+          data = loadedData;
+          if (searchTerm === null || searchTerm.length < 1) {
+            resolve(data);
+          } else {
+            resolve(data.filter(filterBy(searchTerm)));
+          }
+        })
+        .catch(e => {
+          reject(e);
+        });
+    } else if (searchTerm === null || searchTerm.length < 1) {
+      resolve(data);
+    } else {
+      resolve(data.filter(filterBy(searchTerm)));
+    }
   });
 
 export const getUser = () => ({ name: 'aalever' });

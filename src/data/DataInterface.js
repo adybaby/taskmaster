@@ -1,7 +1,7 @@
-import { loadData, getUser } from './test/TestData';
+import { getTasks, getUser } from './test/TestData';
 
-export const loadTasks = callback =>
-  loadData()
+export const findTasks = (searchTerm, callback) =>
+  getTasks(searchTerm)
     .then(data => callback(data))
     .catch(e => new Error(e));
 

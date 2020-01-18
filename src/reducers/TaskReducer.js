@@ -2,17 +2,19 @@ import { combineReducers } from 'redux';
 import * as TYPES from '../constants/ActionTypes';
 import * as SORT_ORDER from '../constants/SortOrders';
 import { STATE_INIT, DEFAULTS } from '../constants/TaskFilters';
+import { NOT_INITIALISED } from '../constants/TaskStatus';
 
 const taskReducer = (state = [], action) => {
   switch (action.type) {
-    case TYPES.ADD_TASKS: {
-      // console.log(action.tasks);
-      return [...state, ...action.tasks];
+    case TYPES.SET_TASKS: {
+      return action.tasks;
     }
     case TYPES.ADD_TASK:
       return state.concat(action.task);
     case TYPES.REMOVE_TASK:
       return state.filter(task => task.id !== action.task.id);
+    case TYPES.CLEAR_TASKS:
+      return [];
     default:
       return state;
   }
@@ -34,10 +36,10 @@ const taskFilterReducer = (state = STATE_INIT, action) => {
   }
 };
 
-const tasksLoadedReducer = (state = false, action) => {
+const taskStatusReducer = (state = NOT_INITIALISED, action) => {
   switch (action.type) {
-    case TYPES.SET_TASKS_LOADED: {
-      return action.tasksLoaded;
+    case TYPES.SET_TASK_STATUS: {
+      return action.taskStatus;
     }
     default:
       return state;
@@ -54,11 +56,22 @@ const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
   }
 };
 
+const searchTermReducer = (state = '', action) => {
+  switch (action.type) {
+    case TYPES.SET_SEARCH_TERM: {
+      return action.searchTerm;
+    }
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   tasks: taskReducer,
   taskFilters: taskFilterReducer,
-  tasksLoaded: tasksLoadedReducer,
-  sortOrder: sortOrderReducer
+  tasksLoaded: taskStatusReducer,
+  sortOrder: sortOrderReducer,
+  searchTerm: searchTermReducer
 });
 
 export default rootReducer;

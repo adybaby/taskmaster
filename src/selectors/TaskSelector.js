@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import { createSelector } from 'reselect';
 import * as TASK_FILTERS from '../constants/TaskFilters';
-import { filterBy } from '../util/StringUtils';
 import * as SORT_ORDER from '../constants/SortOrders';
 
 const getTaskFilters = state => state.taskFilters;
@@ -12,26 +11,31 @@ const filterByDate = (filteredTasks, option) => {
   switch (option) {
     case TASK_FILTERS.CREATED_OPTIONS.TODAY:
       return filteredTasks.filter(task => new Date(task.createdDate) === new Date());
+
     case TASK_FILTERS.CREATED_OPTIONS.THIS_WEEK:
       return filteredTasks.filter(task => {
         const d = new Date();
         return new Date(task.createdDate) >= d.setDate(d.getDate() - 7);
       });
+
     case TASK_FILTERS.CREATED_OPTIONS.THIS_MONTH:
       return filteredTasks.filter(task => {
         const d = new Date();
         return new Date(task.createdDate) >= d.setDate(d.getDate() - 31);
       });
+
     case TASK_FILTERS.CREATED_OPTIONS.THIS_YEAR:
       return filteredTasks.filter(task => {
         const d = new Date();
         return new Date(task.createdDate) >= d.setDate(d.getDate() - 365);
       });
+
     case TASK_FILTERS.CREATED_OPTIONS.OLDER:
       return filteredTasks.filter(task => {
         const d = new Date();
         return new Date(task.createdDate) < d.setDate(d.getDate() - 365);
       });
+
     default:
       return filteredTasks;
   }
@@ -41,10 +45,6 @@ const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tas
   let filteredTasks = tasks;
   if (taskFilters.type !== TASK_FILTERS.DEFAULTS.TYPE) {
     filteredTasks = filteredTasks.filter(task => task.type === taskFilters.type);
-  }
-
-  if (taskFilters.searchTerm !== TASK_FILTERS.DEFAULTS.SEARCH_TERM) {
-    filteredTasks = filteredTasks.filter(filterBy(taskFilters.searchTerm));
   }
 
   if (taskFilters.vacancies !== TASK_FILTERS.DEFAULTS.VACANCIES) {
@@ -71,6 +71,7 @@ const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, 
     case SORT_ORDER.OPTIONS.LATEST: {
       return tasks.concat().sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
     }
+
     case SORT_ORDER.OPTIONS.PRIORITY: {
       return tasks
         .concat()
@@ -78,6 +79,7 @@ const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, 
           (a, b) => (a.priority === null ? 0 : a.priority) > (b.priority === null ? 0 : b.priority)
         );
     }
+
     case SORT_ORDER.OPTIONS.START_DATE: {
       return tasks.concat().sort((a, b) => {
         if (typeof a.startDate === 'undefined') {
@@ -92,9 +94,11 @@ const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, 
         return new Date(a.startDate) - new Date(b.startDate);
       });
     }
+
     case SORT_ORDER.OPTIONS.AUTHOR: {
       return tasks.concat().sort((a, b) => a.createdBy.localeCompare(b.createdBy));
     }
+
     default:
       return tasks;
   }

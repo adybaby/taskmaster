@@ -9,7 +9,7 @@ import SearchBar from './components/SearchBar';
 import TaskTabs from './components/TaskTabs';
 import FilterBar from './components/FilterBar';
 import TaskList from './components/TaskList';
-import { loadTasks, clearTaskFilters } from './actions/Tasks';
+import { findTasks, clearTaskFilters } from './actions/Tasks';
 import ToggleButton from './components/ToggleB';
 
 const useStyles = makeStyles(theme => styles(theme));
@@ -20,7 +20,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadTasks());
+    dispatch(findTasks(null));
   }, [dispatch]);
 
   const handleFilterToggle = () => {

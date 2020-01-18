@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -11,17 +11,18 @@ import Menu from '@material-ui/core/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from '../styles/Styles';
-import { setTaskFilter } from '../actions/Tasks';
+import { setSearchTerm } from '../actions/Tasks';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const SearchBar = () => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
   const isMenuOpen = Boolean(anchorEl);
+  const searchTerm = useSelector(state => state.searchTerm);
 
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
@@ -53,7 +54,7 @@ const SearchBar = () => {
   };
 
   const handleSearchChange = event => {
-    dispatch(setTaskFilter({ type: 'searchTerm', value: event.target.value }));
+    dispatch(setSearchTerm(event.target.value));
   };
 
   return (
@@ -68,6 +69,7 @@ const SearchBar = () => {
               <SearchIcon />
             </div>
             <InputBase
+              value={searchTerm}
               onChange={handleSearchChange}
               placeholder="Search…"
               classes={{
