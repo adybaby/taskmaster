@@ -25,19 +25,28 @@ const FilterBar = () => {
   const [prevInitiativesFilter, setPrevInitiativesFilter] = useState(null);
 
   const dispatch = useDispatch();
+  const needToSetPrevInitiativesFilter =
+    currentTab === TABS.INITIATIVES && prevInitiativesFilter != null;
+  const haveNoVacancies = taskFilters.vacancies !== TASK_FILTERS.DEFAULTS.VACANCIES;
 
   /* If we leave the initiatives tab with a filter on vacancies set, then clear the filter and
    * remember the value (since the vacancies filter is only available on the initiatives tab).
    * When we return to the initiatives tab, reapply the last vacancies value
    */
   useEffect(() => {
-    if (currentTab === TABS.INITIATIVES && prevInitiativesFilter != null) {
+    if (needToSetPrevInitiativesFilter) {
       dispatch(setTaskFilter({ type: 'vacancies', value: prevInitiativesFilter }));
-    } else if (taskFilters.vacancies !== TASK_FILTERS.DEFAULTS.VACANCIES) {
+    } else if (haveNoVacancies) {
       setPrevInitiativesFilter(taskFilters.vacancies);
       dispatch(setTaskFilter({ type: 'vacancies', value: TASK_FILTERS.DEFAULTS.VACANCIES }));
     }
-  }, [dispatch, currentTab]);
+  }, [
+    dispatch,
+    currentTab,
+    needToSetPrevInitiativesFilter,
+    haveNoVacancies,
+    prevInitiativesFilter
+  ]);
 
   const getVacancyOptions = () => {
     const vacancyOptions = new Set([TASK_FILTERS.DEFAULTS.VACANCIES]);
