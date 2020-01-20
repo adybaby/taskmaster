@@ -44,46 +44,53 @@ const filterByDate = (filteredTasks, option) => {
 const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) => {
   let filteredTasks = tasks;
 
-  if (taskFilters.type !== TASK_FILTERS.DEFAULTS.TYPE) {
-    filteredTasks = filteredTasks.filter(task => task.type === taskFilters.type);
+  if (taskFilters.type.enabled && taskFilters.type.value !== TASK_FILTERS.DEFAULTS.TYPE.value) {
+    filteredTasks = filteredTasks.filter(task => task.type === taskFilters.type.value);
   }
 
-  if (taskFilters.vacancies !== TASK_FILTERS.DEFAULTS.VACANCIES) {
+  if (
+    taskFilters.vacancies.enabled &&
+    taskFilters.vacancies.value !== TASK_FILTERS.DEFAULTS.VACANCIES.value
+  ) {
     filteredTasks = filteredTasks.filter(
       task =>
         task.vacancies != null &&
         task.vacancies.length > 0 &&
-        task.vacancies.includes(taskFilters.vacancies)
+        task.vacancies.includes(taskFilters.vacancies.value)
     );
   }
 
-  if (taskFilters.createdBy !== TASK_FILTERS.DEFAULTS.CREATED_BY) {
-    filteredTasks = filteredTasks.filter(task => task.createdBy === taskFilters.createdBy);
+  if (
+    taskFilters.createdBy.enabled &&
+    taskFilters.createdBy.value !== TASK_FILTERS.DEFAULTS.CREATED_BY.value
+  ) {
+    filteredTasks = filteredTasks.filter(task => task.createdBy === taskFilters.createdBy.value);
   }
 
-  if (taskFilters.createdOn !== TASK_FILTERS.DEFAULTS.CREATED_ON) {
-    filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn);
+  if (
+    taskFilters.createdOn.enabled &&
+    taskFilters.createdOn.value !== TASK_FILTERS.DEFAULTS.CREATED_ON.value
+  ) {
+    filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn.value);
   }
 
   return filteredTasks;
 });
 
-const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, tasks) => {
+const sortTasks = (tasks, sortOrder) => {
   switch (sortOrder) {
     case SORT_ORDER.OPTIONS.LATEST: {
-      return tasks.concat().sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+      return tasks.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
     }
 
     case SORT_ORDER.OPTIONS.PRIORITY: {
-      return tasks
-        .concat()
-        .sort(
-          (a, b) => (a.priority === null ? 0 : a.priority) > (b.priority === null ? 0 : b.priority)
-        );
+      return tasks.sort(
+        (a, b) => (a.priority === null ? 0 : a.priority) > (b.priority === null ? 0 : b.priority)
+      );
     }
 
     case SORT_ORDER.OPTIONS.START_DATE: {
-      return tasks.concat().sort((a, b) => {
+      return tasks.sort((a, b) => {
         if (typeof a.startDate === 'undefined') {
           if (typeof b.startDate === 'undefined') {
             return 0;
@@ -98,12 +105,16 @@ const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, 
     }
 
     case SORT_ORDER.OPTIONS.AUTHOR: {
-      return tasks.concat().sort((a, b) => a.createdBy.localeCompare(b.createdBy));
+      return tasks.sort((a, b) => a.createdBy.localeCompare(b.createdBy));
     }
 
     default:
       return tasks;
   }
-});
+};
+
+const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, tasks) =>
+  sortTasks(tasks.concat(), sortOrder)
+);
 
 export default getVisibleTasks;

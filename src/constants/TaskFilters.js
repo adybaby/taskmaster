@@ -8,11 +8,11 @@ export const CREATED_OPTIONS = {
 };
 
 export const DEFAULTS = {
-  CREATED_ON: CREATED_OPTIONS.ANY_TIME,
-  VACANCIES: 'Any Vacancies',
-  CREATED_BY: 'Any Author',
-  TYPE: 'All',
-  SEARCH_TERM: null
+  CREATED_ON: { value: CREATED_OPTIONS.ANY_TIME, enabled: true },
+  VACANCIES: { value: 'Any Vacancies', enabled: true },
+  CREATED_BY: { value: 'Any Author', enabled: true },
+  TYPE: { value: 'All', enabled: true },
+  SEARCH_TERM: { value: null, enabled: true }
 };
 
 export const STATE_INIT = {

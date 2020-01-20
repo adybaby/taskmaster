@@ -29,6 +29,12 @@ const TabsBar = () => {
 
   const handleChange = (event, tab) => {
     dispatch(setTab(tab));
+    if (tab === TABS.INITIATIVES) {
+      dispatch(setTaskFilter({ type: 'vacancies', enabled: true }));
+    } else {
+      dispatch(setTaskFilter({ type: 'vacancies', enabled: false }));
+    }
+
     switch (tab) {
       case TABS.CHARTS:
         break;

@@ -23,14 +23,26 @@ const taskReducer = (state = [], action) => {
 
 const taskFilterReducer = (state = STATE_INIT, action) => {
   switch (action.type) {
-    case TYPES.SET_TASK_FILTER:
-      return { ...state, [action.filter.type]: action.filter.value };
+    case TYPES.SET_TASK_FILTER: {
+      const value =
+        typeof action.filter.value === 'undefined'
+          ? state[action.filter.type].value
+          : action.filter.value;
+      const enabled =
+        typeof action.filter.enabled === 'undefined'
+          ? state[action.filter.type].enabled
+          : action.filter.enabled;
+      return {
+        ...state,
+        [action.filter.type]: { value, enabled }
+      };
+    }
     case TYPES.CLEAR_TASK_FILTERS:
       return {
         ...state,
-        vacancies: DEFAULTS.VACANCIES,
-        createdBy: DEFAULTS.CREATED_BY,
-        createdOn: DEFAULTS.CREATED_ON
+        vacancies: { value: DEFAULTS.VACANCIES.value, enabled: true },
+        createdBy: { value: DEFAULTS.CREATED_BY.value, enabled: true },
+        createdOn: { value: DEFAULTS.CREATED_ON.value, enabled: true }
       };
     default:
       return state;
