@@ -3,6 +3,7 @@ import * as TYPES from '../constants/ActionTypes';
 import * as SORT_ORDER from '../constants/SortOrders';
 import { STATE_INIT, DEFAULTS } from '../constants/TaskFilters';
 import { NOT_INITIALISED } from '../constants/TaskStatus';
+import * as TABS from '../constants/Tabs';
 
 const taskReducer = (state = [], action) => {
   switch (action.type) {
@@ -66,12 +67,23 @@ const searchTermReducer = (state = '', action) => {
   }
 };
 
+const setTabReducer = (state = TABS.DEFAULT, action) => {
+  switch (action.type) {
+    case TYPES.SET_TAB: {
+      return action.tab;
+    }
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   tasks: taskReducer,
   taskFilters: taskFilterReducer,
-  tasksLoaded: taskStatusReducer,
+  taskStatus: taskStatusReducer,
   sortOrder: sortOrderReducer,
-  searchTerm: searchTermReducer
+  searchTerm: searchTermReducer,
+  tab: setTabReducer
 });
 
 export default rootReducer;

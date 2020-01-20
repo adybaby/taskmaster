@@ -2,20 +2,15 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { useDispatch } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 import { setSearchTerm } from '../actions/Tasks';
 
-const Task = task => {
+const TaskResult = task => {
   const dispatch = useDispatch();
 
   const handleLinkClick = element => {
     dispatch(setSearchTerm(element));
   };
-
-  const titleLink = title => (
-    <Typography variant="h5">
-      <Link href="#">{title}</Link>
-    </Typography>
-  );
 
   const listOfLinks = links => {
     if (typeof links === 'undefined' || links.length < 1) return links;
@@ -35,17 +30,20 @@ const Task = task => {
     });
   };
 
-  const caption = task => {
-    let line = `Created on ${task.createdDate} by ${task.createdBy}`;
-    if (task.startDate != null) line += `, starting on ${task.startDate}`;
+  const caption = _task => {
+    let line = `Created on ${_task.createdDate} by ${_task.createdBy}`;
+    if (_task.startDate != null) line += `, starting on ${_task.startDate}`;
     return line;
   };
+
   return (
     <div>
       <Typography variant="caption">{caption(task)}</Typography>
-      {titleLink(
-        `${task.title} (${task.type}${task.type === 'Driver' ? ` ${task.priority}` : ''})`
-      )}
+      <Typography variant="h5">
+        <RouterLink to={`/task/${task.id}`}>
+          {`${task.title} (${task.type}${task.type === 'Driver' ? ` ${task.priority}` : ''})`}
+        </RouterLink>
+      </Typography>
       <Typography>{task.shortDescription}</Typography>
       {task.vacancies != null ? (
         <div>
@@ -59,4 +57,4 @@ const Task = task => {
   );
 };
 
-export default Task;
+export default TaskResult;

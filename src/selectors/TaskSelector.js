@@ -43,6 +43,7 @@ const filterByDate = (filteredTasks, option) => {
 
 const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) => {
   let filteredTasks = tasks;
+
   if (taskFilters.type !== TASK_FILTERS.DEFAULTS.TYPE) {
     filteredTasks = filteredTasks.filter(task => task.type === taskFilters.type);
   }
@@ -63,6 +64,7 @@ const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tas
   if (taskFilters.createdOn !== TASK_FILTERS.DEFAULTS.CREATED_ON) {
     filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn);
   }
+
   return filteredTasks;
 });
 

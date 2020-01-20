@@ -1,7 +1,7 @@
 /* eslint-disable function-paren-newline */
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -11,6 +11,7 @@ import styles from '../styles/Styles';
 import * as TASK_FILTERS from '../constants/TaskFilters';
 import { setTaskFilter, setSortOrder } from '../actions/Tasks';
 import * as SORT_ORDER from '../constants/SortOrders';
+import * as TABS from '../constants/Tabs';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -20,8 +21,23 @@ const FilterBar = () => {
   const tasks = useSelector(state => state.tasks);
   const sortOrder = useSelector(state => state.sortOrder);
   const taskFilters = useSelector(state => state.taskFilters);
+  const currentTab = useSelector(state => state.tab);
+  const [prevInitiativesFilter, setPrevInitiativesFilter] = useState(null);
 
   const dispatch = useDispatch();
+
+  /* If we leave the initiatives tab with a filter on vacancies set, then clear the filter and
+   * remember the value (since the vacancies filter is only available on the initiatives tab).
+   * When we return to the initiatives tab, reapply the last vacancies value
+   */
+  useEffect(() => {
+    if (currentTab === TABS.INITIATIVES && prevInitiativesFilter != null) {
+      dispatch(setTaskFilter({ type: 'vacancies', value: prevInitiativesFilter }));
+    } else if (taskFilters.vacancies !== TASK_FILTERS.DEFAULTS.VACANCIES) {
+      setPrevInitiativesFilter(taskFilters.vacancies);
+      dispatch(setTaskFilter({ type: 'vacancies', value: TASK_FILTERS.DEFAULTS.VACANCIES }));
+    }
+  }, [dispatch, currentTab]);
 
   const getVacancyOptions = () => {
     const vacancyOptions = new Set([TASK_FILTERS.DEFAULTS.VACANCIES]);
@@ -103,7 +119,9 @@ const FilterBar = () => {
           title="Created On"
           options={Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => entry[1])}
         />
-        <Filter filter="vacancies" title="Vacancies" options={getVacancyOptions()} />
+        {currentTab === TABS.INITIATIVES ? (
+          <Filter filter="vacancies" title="Vacancies" options={getVacancyOptions()} />
+        ) : null}
         <Filter filter="createdBy" title="Created By" options={getCreatedByOptions()} />
         <SortButton />
       </Toolbar>

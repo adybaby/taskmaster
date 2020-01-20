@@ -3,13 +3,14 @@ import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { useSelector, useDispatch } from 'react-redux';
-import Task from './Task';
-import getVisibleTasks from '../selectors/TaskSelector';
+import TaskResult from './TaskResult';
 import { findTasks } from '../actions/Tasks';
 
+import getVisibleTasks from '../selectors/TaskSelector';
+
 const TaskList = () => {
-  const dispatch = useDispatch();
   const tasks = useSelector(getVisibleTasks);
+  const dispatch = useDispatch();
   const searchTerm = useSelector(state => state.searchTerm);
 
   useEffect(() => {
@@ -19,11 +20,10 @@ const TaskList = () => {
   return (
     <List>
       <ListItem key="numResults">
-        {' '}
         <Typography variant="subtitle1">{tasks.length} tasks</Typography>
       </ListItem>
       {tasks.map(task => (
-        <ListItem key={task.id}>{Task(task)}</ListItem>
+        <ListItem key={task.id}>{TaskResult(task)}</ListItem>
       ))}
     </List>
   );

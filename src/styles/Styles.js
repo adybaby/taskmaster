@@ -28,6 +28,9 @@ const styles = theme => ({
     color: 'inherit',
     width: '100%'
   },
+  link: {
+    color: 'inherit'
+  },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 7)
   },

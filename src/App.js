@@ -1,55 +1,41 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
 import styles from './styles/Styles';
-import SearchBar from './components/SearchBar';
-import TaskTabs from './components/TaskTabs';
-import FilterBar from './components/FilterBar';
+import AppBar from './components/AppBar';
+import TabsBar from './components/TabsBar';
 import TaskList from './components/TaskList';
-import { findTasks, clearTaskFilters } from './actions/Tasks';
-import ToggleButton from './components/ToggleB';
+import TaskPanel from './components/TaskPanel';
+import ChartPanel from './components/ChartPanel';
+import MapPanel from './components/MapPanel';
+import ProfilePanel from './components/ProfilePanel';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const App = () => {
   const classes = useStyles();
-  const [showFilters, setShowFilters] = React.useState(false);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(findTasks(null));
-  }, [dispatch]);
-
-  const handleFilterToggle = () => {
-    if (showFilters) {
-      dispatch(clearTaskFilters());
-    }
-    setShowFilters(!showFilters);
-  };
 
   return (
-    <div className={classes.background}>
+    <div>
       <CssBaseline />
-      <div className={classes.root}>
-        <SearchBar />
-        <div className={classes.secondaryBar}>
-          <TaskTabs />
-
-          <ToggleButton
-            value="toggleButton"
-            variant="text"
-            className={classes.filterButton}
-            onClick={handleFilterToggle}
-            selected={showFilters}
-          >
-            <FontAwesomeIcon style={{ marginRight: 6 }} icon={faFilter} size="sm" /> Filters & Sort
-          </ToggleButton>
+      <div className={classes.background}>
+        <CssBaseline />
+        <div className={classes.root}>
+          <AppBar />
+          <Switch>
+            <Route path="/task/:id" component={TaskPanel} />
+            <Route path="/profile/:id" component={ProfilePanel} />
+            <Route path="/">
+              <TabsBar />
+              <Switch>
+                <Route path="/map" component={MapPanel} />
+                <Route path="/charts" component={ChartPanel} />
+                <Route exact path="/" component={TaskList} />
+              </Switch>
+            </Route>
+          </Switch>
         </div>
-        {showFilters ? <FilterBar /> : null}
-        <TaskList />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+import TButton from '@material-ui/lab/ToggleButton';
 
-export default styled(ToggleButton)`
+export default styled(TButton)`
   && {
     border-style: none;
     color: rgb(98, 98, 98);

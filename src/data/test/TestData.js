@@ -76,7 +76,7 @@ const processFileText = text => {
 
 export const loadData = () =>
   new Promise((resolve, reject) => {
-    readTextFile('./test_data.txt')
+    readTextFile('/test_data.txt')
       .then(text => {
         resolve(processFileText(text));
       })
@@ -104,6 +104,22 @@ export const getTasks = searchTerm =>
       resolve(data);
     } else {
       resolve(data.filter(filterBy(searchTerm)));
+    }
+  });
+
+export const getTask = id =>
+  new Promise((resolve, reject) => {
+    if (data === null) {
+      loadData()
+        .then(loadedData => {
+          data = loadedData;
+          resolve(data.filter(element => element.id === id)[0]);
+        })
+        .catch(e => {
+          reject(e);
+        });
+    } else {
+      resolve(data.filter(element => element.id === id)[0]);
     }
   });
 

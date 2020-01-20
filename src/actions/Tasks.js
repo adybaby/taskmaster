@@ -26,17 +26,24 @@ export const setTaskStatus = taskStatus => ({
   taskStatus
 });
 
+export const setTab = tab => ({
+  type: TYPES.SET_TAB,
+  tab
+});
+
 export const findTasks = searchTerm => dispatch => {
   dispatch(setTaskStatus(STATUS.SEARCHING));
-  findTaskData(searchTerm, taskResults => {
-    if (taskResults.length > 0) {
-      dispatch(setTasks(taskResults));
-      dispatch(setTaskStatus(STATUS.HAVE_RESULTS));
-    } else {
-      dispatch(clearTasks());
-      dispatch(setTaskStatus(STATUS.NO_RESULTS));
-    }
-  });
+  findTaskData(searchTerm)
+    .then(taskResults => {
+      if (taskResults.length > 0) {
+        dispatch(setTasks(taskResults));
+        dispatch(setTaskStatus(STATUS.HAVE_RESULTS));
+      } else {
+        dispatch(clearTasks());
+        dispatch(setTaskStatus(STATUS.NO_RESULTS));
+      }
+    })
+    .catch(setTaskStatus(STATUS.ERROR));
 };
 
 export const setTaskFilter = filter => ({
