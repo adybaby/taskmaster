@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { setSearchTerm } from '../actions/Tasks';
 
-const TaskResult = task => {
+const TaskResult = ({ task }) => {
   const dispatch = useDispatch();
 
   const handleLinkClick = element => {
