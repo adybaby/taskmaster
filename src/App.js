@@ -11,6 +11,11 @@ import ChartPanel from './components/ChartPanel';
 import MapPanel from './components/MapPanel';
 import ProfilePanel from './components/ProfilePanel';
 
+/**
+ * TODO - Add in URL params for search tabs and values, to bookmark tabs in right place
+ * fix that filter and sort bar is not present when returning to search area
+ */
+
 const useStyles = makeStyles(theme => styles(theme));
 
 const App = () => {
