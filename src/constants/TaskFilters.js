@@ -1,3 +1,5 @@
+import { ALL } from './TaskTypes';
+
 export const CREATED_OPTIONS = {
   ANY_TIME: 'Any Time',
   TODAY: 'Today',
@@ -11,7 +13,7 @@ export const DEFAULTS = {
   CREATED_ON: { value: CREATED_OPTIONS.ANY_TIME, enabled: true },
   VACANCIES: { value: 'Any Vacancies', enabled: false },
   CREATED_BY: { value: 'Any Author', enabled: true },
-  TYPE: { value: 'All', enabled: true },
+  TYPE: { value: ALL, enabled: true },
   SEARCH_TERM: { value: null, enabled: true }
 };
 

@@ -12,7 +12,8 @@ import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from './Link';
 import styles from '../styles/Styles';
-import { setSearchTerm } from '../actions/Tasks';
+import { setSearchTerm, setTab, clearTaskFilters } from '../actions/Tasks';
+import { DEFAULT } from '../constants/Tabs';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -30,11 +31,17 @@ const AppBar = () => {
     dispatch(setSearchTerm(event.target.value));
   };
 
+  const handleHomeClick = () => {
+    dispatch(setSearchTerm(''));
+    dispatch(clearTaskFilters());
+    dispatch(setTab(DEFAULT));
+  };
+
   return (
     <div className={classes.grow}>
       <MUIAppBar position="static">
         <Toolbar>
-          <Link to="/">
+          <Link to="/" onClick={handleHomeClick}>
             <Typography className={classes.title} variant="h6" noWrap>
               TASKMASTER
             </Typography>

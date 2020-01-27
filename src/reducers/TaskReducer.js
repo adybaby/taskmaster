@@ -79,10 +79,20 @@ const searchTermReducer = (state = '', action) => {
   }
 };
 
-const setTabReducer = (state = TABS.DEFAULT, action) => {
+const tabReducer = (state = TABS.DEFAULT, action) => {
   switch (action.type) {
     case TYPES.SET_TAB: {
       return action.tab;
+    }
+    default:
+      return state;
+  }
+};
+
+const filterBarVisibleReducer = (state = false, action) => {
+  switch (action.type) {
+    case TYPES.SET_FILTER_BAR_VISIBLE: {
+      return action.visible;
     }
     default:
       return state;
@@ -95,7 +105,8 @@ const rootReducer = combineReducers({
   taskStatus: taskStatusReducer,
   sortOrder: sortOrderReducer,
   searchTerm: searchTermReducer,
-  tab: setTabReducer
+  tab: tabReducer,
+  filterBarVisible: filterBarVisibleReducer
 });
 
 export default rootReducer;

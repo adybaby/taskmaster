@@ -46,26 +46,26 @@ const FilterBar = () => {
     return Array.from(createdByOptions);
   };
 
-  const handleFilterChange = (event, key) => {
-    dispatch(setTaskFilter({ type: key, value: event.target.value }));
+  const handleFilterChange = (event, type) => {
+    dispatch(setTaskFilter({ type, value: event.target.value }));
   };
 
   const handleSortChange = event => {
     dispatch(setSortOrder(event.target.value));
   };
 
-  const Filter = ({ id, title, options }) => {
-    if (taskFilters[id].enabled) {
+  const Filter = ({ type, taskFilter, title, options }) => {
+    if (taskFilter.enabled) {
       return (
-        <FormControl key={id} size="small" className={classes.formControl}>
+        <FormControl key={taskFilter.type} size="small" className={classes.formControl}>
           <InputLabel id={`${title}label`}>{title}</InputLabel>
           <Select
             autoWidth={true}
             defaultValue={options[0]}
             labelId={`${title}select-label`}
             id={`${title}select`}
-            onChange={event => handleFilterChange(event, id)}
-            value={taskFilters[id].value}
+            onChange={event => handleFilterChange(event, type)}
+            value={taskFilter.value}
           >
             {options.map((option, index) => (
               <MenuItem key={index} value={option}>
@@ -103,12 +103,23 @@ const FilterBar = () => {
     <div className={classes.filterBar}>
       <Toolbar>
         <Filter
-          id="createdOn"
+          type="createdOn"
+          taskFilter={taskFilters.createdOn}
           title="Created On"
           options={Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => entry[1])}
         />
-        <Filter id="vacancies" title="Vacancies" options={getVacancyOptions()} />
-        <Filter id="createdBy" title="Created By" options={getCreatedByOptions()} />
+        <Filter
+          type="vacancies"
+          taskFilter={taskFilters.vacancies}
+          title="Vacancies"
+          options={getVacancyOptions()}
+        />
+        <Filter
+          type="createdBy"
+          taskFilter={taskFilters.createdBy}
+          title="Created By"
+          options={getCreatedByOptions()}
+        />
         <SortButton />
       </Toolbar>
     </div>

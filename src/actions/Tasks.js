@@ -46,6 +46,11 @@ export const findTasks = searchTerm => dispatch => {
     .catch(setTaskStatus(STATUS.ERROR));
 };
 
+export const setFilterBarVisible = visible => ({
+  type: TYPES.SET_FILTER_BAR_VISIBLE,
+  visible
+});
+
 export const setTaskFilter = filter => ({
   type: TYPES.SET_TASK_FILTER,
   filter

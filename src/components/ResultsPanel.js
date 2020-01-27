@@ -1,10 +1,10 @@
 import React from 'react';
-import TabsBar from './TabsBar';
+import TabBar from './BrowsePanel';
 import TaskList from './TaskList';
 
 const ResultsPanel = () => (
   <div>
-    <TabsBar />
+    <TabBar />
     <TaskList />
   </div>
 );

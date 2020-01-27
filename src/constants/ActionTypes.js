@@ -9,3 +9,4 @@ export const CLEAR_TASK_FILTERS = 'CLEAR TASK FILTERS';
 export const SET_SORT_ORDER = 'SET_SORT_ORDER';
 export const SET_SEARCH_TERM = 'SET_SEARCH_TERM';
 export const SET_TAB = 'SET_TAB';
+export const SET_FILTER_BAR_VISIBLE = 'SET_FILTER_BAR_VISIBLE';
