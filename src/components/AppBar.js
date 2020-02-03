@@ -10,7 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
-import Link from './Link';
+import Link from './RouterLink';
 import styles from '../styles/Styles';
 import { setSearchTerm, setTab, clearTaskFilters } from '../actions/Tasks';
 import { DEFAULT } from '../constants/Tabs';

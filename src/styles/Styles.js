@@ -67,6 +67,15 @@ const styles = theme => ({
   tabIcon: {
     verticalAlign: 'middle',
     marginRight: theme.spacing(1)
+  },
+  taskPanel: {
+    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
+    marginRight: theme.spacing(2)
+  },
+  taskBody: {
+    marginTop: theme.spacing(2)
   }
 });
 

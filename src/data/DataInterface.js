@@ -1,4 +1,10 @@
-import { getTasks, getUser, getTask } from './test/TestData';
+import {
+  getTasks,
+  getUser,
+  getTask,
+  getEnablersPrioritiesForDriver,
+  getInitiativesPrioritiesForEnabler
+} from './test/TestData';
 
 export const findTasks = searchTerm =>
   new Promise((resolve, reject) => {
@@ -11,6 +17,20 @@ export const findTask = id =>
   new Promise((resolve, reject) => {
     getTask(id)
       .then(task => resolve(task))
+      .catch(e => reject(e));
+  });
+
+export const findEnablersPriorities = driver =>
+  new Promise((resolve, reject) => {
+    getEnablersPrioritiesForDriver(driver)
+      .then(enablersPriorities => resolve(enablersPriorities))
+      .catch(e => reject(e));
+  });
+
+export const findInitiativesPriorities = enabler =>
+  new Promise((resolve, reject) => {
+    getInitiativesPrioritiesForEnabler(enabler)
+      .then(initiativesPriorities => resolve(initiativesPriorities))
       .catch(e => reject(e));
   });
 

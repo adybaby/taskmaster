@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-export default styled(Link)`
+const RouterLink = styled(Link)`
   text-decoration: none;
   color: inherit;
 
@@ -13,3 +13,5 @@ export default styled(Link)`
     text-decoration: none;
   }
 `;
+
+export default RouterLink;
