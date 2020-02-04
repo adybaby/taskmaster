@@ -22,6 +22,7 @@ import MapPanel from './MapPanel';
 import ChartPanel from './ChartPanel';
 import TaskList from './TaskList';
 import * as URLS from '../constants/Urls';
+import { HAVE_RESULTS } from '../constants/TaskStatus';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -31,13 +32,20 @@ const BrowsePanel = () => {
   const currentTabId = useSelector(state => state.tab);
   const filterBarVisible = useSelector(state => state.filterBarVisible);
   const taskFilters = useSelector(state => state.taskFilters);
+  const taskStatus = useSelector(state => state.taskStatus);
   const { id } = useParams();
-  const tabFromUrl = Object.entries(TABS).filter(_tab => _tab[1].URL === id)[0][1];
+  const tabFromUrl =
+    typeof id !== 'undefined'
+      ? Object.entries(TABS).filter(_tab => _tab[1].URL === id)[0][1]
+      : null;
   const changeIFilter =
-    (tabFromUrl.ID === TABS.INITIATIVES.ID) !== taskFilters.vacancies.enabled && filterBarVisible;
+    tabFromUrl === null
+      ? false
+      : (tabFromUrl.ID === TABS.INITIATIVES.ID) !== taskFilters.vacancies.enabled &&
+        filterBarVisible;
 
   useEffect(() => {
-    if (currentTabId !== tabFromUrl.ID) {
+    if (id !== null && currentTabId !== tabFromUrl.ID) {
       dispatch(setTab(tabFromUrl.ID));
       dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
     }
@@ -46,7 +54,7 @@ const BrowsePanel = () => {
         setTaskFilter({ type: 'vacancies', enabled: tabFromUrl.ID === TABS.INITIATIVES.ID })
       );
     }
-  }, [dispatch, tabFromUrl, changeIFilter, currentTabId]);
+  }, [dispatch, tabFromUrl, changeIFilter, currentTabId, id]);
 
   const getCurrentPanel = () => {
     switch (currentTabId) {
@@ -105,7 +113,10 @@ const BrowsePanel = () => {
           </ToggleButton>
         ) : null}
       </div>
-      {currentTabId !== TABS.CHARTS.ID && currentTabId !== TABS.MAP.ID && filterBarVisible ? (
+      {taskStatus === HAVE_RESULTS &&
+      currentTabId !== TABS.CHARTS.ID &&
+      currentTabId !== TABS.MAP.ID &&
+      filterBarVisible ? (
         <FilterBar />
       ) : null}
       {getCurrentPanel()}

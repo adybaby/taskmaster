@@ -10,6 +10,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import Link from './RouterLink';
 import styles from '../styles/Styles';
 import { setSearchTerm, setTab, clearTaskFilters } from '../actions/Tasks';
@@ -21,6 +22,7 @@ const AppBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const searchTerm = useSelector(state => state.searchTerm);
+  const history = useHistory();
 
   const handleNewClick = () => {
     // eslint-disable-next-line no-alert
@@ -29,6 +31,12 @@ const AppBar = () => {
 
   const handleSearchChange = event => {
     dispatch(setSearchTerm(event.target.value));
+  };
+
+  const handleSearchSubmit = event => {
+    event.preventDefault();
+    dispatch(clearTaskFilters());
+    history.push('/');
   };
 
   const handleHomeClick = () => {
@@ -54,6 +62,11 @@ const AppBar = () => {
             <InputBase
               value={searchTerm}
               onChange={handleSearchChange}
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  handleSearchSubmit(event);
+                }
+              }}
               placeholder="Search…"
               classes={{
                 root: classes.inputRoot,

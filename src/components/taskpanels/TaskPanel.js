@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { findTask } from '../../data/DataInterface';
 import * as STATUS from '../../constants/TaskStatus';
 import * as TASK_TYPES from '../../constants/TaskTypes';
 import DriverPanel from './DriverPanel';
 import EnablerPanel from './EnablerPanel';
 import InitiativePanel from './InitiativePanel';
+import { setSearchTerm, clearTaskFilters } from '../../actions/Tasks';
 
 const TaskPanel = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [task, setTask] = useState(null);
   const [taskStatus, setTaskStatus] = useState(STATUS.NOT_INITIALISED);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    dispatch(setSearchTerm(''));
+    dispatch(clearTaskFilters());
     setTaskStatus(STATUS.SEARCHING);
 
     findTask(id)
@@ -30,7 +35,7 @@ const TaskPanel = () => {
         setError(e);
         setTaskStatus(STATUS.ERROR);
       });
-  }, [id]);
+  }, [dispatch, id]);
 
   const RawFields = () => (
     <div>

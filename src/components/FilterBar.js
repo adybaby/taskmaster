@@ -1,4 +1,3 @@
-/* eslint-disable function-paren-newline */
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import React from 'react';
