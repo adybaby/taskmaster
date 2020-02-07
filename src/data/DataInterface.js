@@ -2,8 +2,9 @@ import {
   getTasks,
   getUser,
   getTask,
-  getEnablersPrioritiesForDriver,
-  getInitiativesPrioritiesForEnabler
+  getDriverContributeesAndTheirContribution,
+  getEnablerContributeesAndTheirContribution,
+  getMap
 } from './test/TestData';
 
 export const findTasks = searchTerm =>
@@ -20,17 +21,24 @@ export const findTask = id =>
       .catch(e => reject(e));
   });
 
-export const findEnablersPriorities = driver =>
+export const findDriverContributeesAndTheirContribution = driver =>
   new Promise((resolve, reject) => {
-    getEnablersPrioritiesForDriver(driver)
+    getDriverContributeesAndTheirContribution(driver)
       .then(enablersPriorities => resolve(enablersPriorities))
       .catch(e => reject(e));
   });
 
-export const findInitiativesPriorities = enabler =>
+export const findEnablerContributeesAndTheirContribution = enabler =>
   new Promise((resolve, reject) => {
-    getInitiativesPrioritiesForEnabler(enabler)
+    getEnablerContributeesAndTheirContribution(enabler)
       .then(initiativesPriorities => resolve(initiativesPriorities))
+      .catch(e => reject(e));
+  });
+
+export const makeMap = () =>
+  new Promise((resolve, reject) => {
+    getMap()
+      .then(map => resolve(map))
       .catch(e => reject(e));
   });
 

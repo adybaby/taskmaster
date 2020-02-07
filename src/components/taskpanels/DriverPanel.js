@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { findEnablersPriorities } from '../../data/DataInterface';
+import { findDriverContributeesAndTheirContribution } from '../../data/DataInterface';
 import styles from '../../styles/Styles';
 import HeaderBlock from './HeaderBlock';
 import TagsAndLinksBlock from './TagsAndLinksBlock';
@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => styles(theme));
 
 const DriverPanel = ({ driver }) => {
   const classes = useStyles();
-  const [enablersPriorities, setEnablersPriorities] = useState(null);
+  const [contributeesAndTheirContribution, setContributeesAndTheirContribution] = useState(null);
   const [didMount, setDidMount] = useState(false);
 
   useEffect(() => {
@@ -19,12 +19,12 @@ const DriverPanel = ({ driver }) => {
   }, []);
 
   useEffect(() => {
-    if (enablersPriorities === null) {
-      findEnablersPriorities(driver).then(results => {
-        if (didMount) setEnablersPriorities(results);
+    if (contributeesAndTheirContribution === null) {
+      findDriverContributeesAndTheirContribution(driver).then(results => {
+        if (didMount) setContributeesAndTheirContribution(results);
       });
     }
-  }, [driver, enablersPriorities, didMount]);
+  }, [driver, contributeesAndTheirContribution, didMount]);
 
   return (
     <div className={classes.taskPanel}>
@@ -32,7 +32,9 @@ const DriverPanel = ({ driver }) => {
 
       <div className={classes.taskBody}>
         <Typography variant="h6">Enabled By</Typography>
-        {enablersPriorities !== null ? <PrioritiesBlock priorities={enablersPriorities} /> : null}
+        {contributeesAndTheirContribution !== null ? (
+          <PrioritiesBlock contributeesAndTheirContribution={contributeesAndTheirContribution} />
+        ) : null}
       </div>
 
       <TagsAndLinksBlock task={driver} />

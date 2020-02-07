@@ -6,6 +6,11 @@ import readTextFile from '../../util/TextFileUtils';
 import cleanString from '../../util/StringUtils';
 import * as TYPES from '../../constants/TaskTypes';
 
+const CONTRIBUTEES = {
+  [TYPES.DRIVER]: { contributeeType: TYPES.ENABLER, contributeeField: 'enables' },
+  [TYPES.ENABLER]: { contributeeType: TYPES.INITIATIVE, contributeeField: 'contributesTo' }
+};
+
 const endLine = require('os').EOL;
 
 const LIST_DELIM = ',';
@@ -61,7 +66,7 @@ const makePrioritiesList = (field, titles) => {
       const id = priorityParts[0];
       const priority = priorityParts[1];
       const title = titles.filter(titleEntry => titleEntry.id === id)[0].title;
-      prioritiesList.push({ id, title, priority });
+      prioritiesList.push({ id, title, contribution: priority });
     });
     return prioritiesList;
   }
@@ -130,7 +135,48 @@ const makeRecordsFromText = text => {
   return records;
 };
 
-export const loadRecordsFromFile = () =>
+const findAllTasksContainingString = str => {
+  if (typeof str === 'undefined' || str === null || str.length < 1) {
+    return data;
+  }
+  return data.filter(doesTaskMatchStr(str));
+};
+
+const getContributeesAndTheirContribution = task => {
+  const contributeesAndTheirContribution = [];
+  const subsetByType = data.filter(
+    record => record.type === CONTRIBUTEES[task.type].contributeeType
+  );
+  subsetByType.forEach(possibleContributee => {
+    possibleContributee[CONTRIBUTEES[task.type].contributeeField].forEach(contributesTo => {
+      if (contributesTo.id === task.id) {
+        contributeesAndTheirContribution.push({
+          task: possibleContributee,
+          contribution: contributesTo.contribution
+        });
+      }
+    });
+  });
+  return contributeesAndTheirContribution;
+};
+
+const getMapData = () => {
+  const map = [];
+  data
+    .filter(record => record.type === TYPES.DRIVER)
+    .forEach(driver => {
+      map.push({
+        driver,
+        contributees: getContributeesAndTheirContribution(driver).map(driverContribution => ({
+          contribution: driverContribution,
+          contributees: getContributeesAndTheirContribution(driverContribution.task)
+        }))
+      });
+    });
+  return map;
+};
+
+const loadRecordsFromFile = () =>
   new Promise((resolve, reject) => {
     readTextFile('/test_data.txt')
       .then(text => {
@@ -141,13 +187,6 @@ export const loadRecordsFromFile = () =>
         reject(e);
       });
   });
-
-const findAllTasksContainingString = str => {
-  if (typeof str === 'undefined' || str === null || str.length < 1) {
-    return data;
-  }
-  return data.filter(doesTaskMatchStr(str));
-};
 
 export const getTasks = searchTerm =>
   new Promise((resolve, reject) => {
@@ -179,46 +218,48 @@ export const getTask = id =>
     }
   });
 
-const getRelatedPriorities = (task, type, field) => {
-  const priorities = [];
-  const subset = data.filter(element => element.type === type);
-  subset.forEach(element => {
-    element[field].forEach(priorityObj => {
-      if (priorityObj.id === task.id) {
-        priorities.push({ task: element, priority: priorityObj.priority });
-      }
-    });
-  });
-  return priorities;
-};
-
-export const getEnablersPrioritiesForDriver = driver =>
+export const getDriverContributeesAndTheirContribution = driver =>
   new Promise((resolve, reject) => {
     if (data === null) {
       loadRecordsFromFile()
         .then(() => {
-          resolve(getRelatedPriorities(driver, TYPES.ENABLER, 'enables'));
+          resolve(getContributeesAndTheirContribution(driver));
         })
         .catch(e => {
           reject(e);
         });
     } else {
-      resolve(getRelatedPriorities(driver, TYPES.ENABLER, 'enables'));
+      resolve(getContributeesAndTheirContribution(driver));
     }
   });
 
-export const getInitiativesPrioritiesForEnabler = enabler =>
+export const getEnablerContributeesAndTheirContribution = enabler =>
   new Promise((resolve, reject) => {
     if (data === null) {
       loadRecordsFromFile()
         .then(() => {
-          resolve(getRelatedPriorities(enabler, TYPES.INITIATIVE, 'contributesTo'));
+          resolve(getContributeesAndTheirContribution(enabler));
         })
         .catch(e => {
           reject(e);
         });
     } else {
-      resolve(getRelatedPriorities(enabler, TYPES.INITIATIVE, 'contributesTo'));
+      resolve(getContributeesAndTheirContribution(enabler));
+    }
+  });
+
+export const getMap = () =>
+  new Promise((resolve, reject) => {
+    if (data === null) {
+      loadRecordsFromFile()
+        .then(() => {
+          resolve(getMapData());
+        })
+        .catch(e => {
+          reject(e);
+        });
+    } else {
+      resolve(getMapData());
     }
   });
 

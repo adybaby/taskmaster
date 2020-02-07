@@ -9,12 +9,23 @@ export const PrioritiesLink = ({ id, title, priority }) => (
   </div>
 );
 
-export const PrioritiesBlock = ({ priorities }) =>
-  priorities.map(priorityObj => (
+export const PrioritiesBlock = ({ contributeesAndTheirContribution }) =>
+  contributeesAndTheirContribution.map(contributeeAndContribution => (
     <PrioritiesLink
-      key={priorityObj.task.id}
-      id={priorityObj.task.id}
-      title={priorityObj.task.title}
-      priority={priorityObj.priority}
+      key={contributeeAndContribution.task.id}
+      id={contributeeAndContribution.task.id}
+      title={contributeeAndContribution.task.title}
+      priority={contributeeAndContribution.contribution}
     />
+  ));
+
+export const PrioritiesList = ({ contributeesAndTheirContribution }) =>
+  contributeesAndTheirContribution.map(contributeeAndContribution => (
+    <div key={contributeeAndContribution.task.id}>
+      <PrioritiesLink
+        id={contributeeAndContribution.task.id}
+        title={contributeeAndContribution.task.title}
+        priority={contributeeAndContribution.contribution}
+      />
+    </div>
   ));

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { findInitiativesPriorities } from '../../data/DataInterface';
+import { findEnablerContributeesAndTheirContribution } from '../../data/DataInterface';
 import styles from '../../styles/Styles';
 import HeaderBlock from './HeaderBlock';
 import TagsAndLinksBlock from './TagsAndLinksBlock';
@@ -10,7 +10,7 @@ import { PrioritiesBlock, PrioritiesLink } from './PrioritiesBlock';
 const useStyles = makeStyles(theme => styles(theme));
 
 const EnablerPanel = ({ enabler }) => {
-  const [initiativesPriorities, setInitiativesPriorities] = useState(null);
+  const [contributeesAndTheirContribution, setContributeesAndTheirContribution] = useState(null);
   const [didMount, setDidMount] = useState(false);
 
   useEffect(() => {
@@ -18,12 +18,12 @@ const EnablerPanel = ({ enabler }) => {
   }, []);
 
   useEffect(() => {
-    if (initiativesPriorities === null) {
-      findInitiativesPriorities(enabler).then(results => {
-        if (didMount) setInitiativesPriorities(results);
+    if (contributeesAndTheirContribution === null) {
+      findEnablerContributeesAndTheirContribution(enabler).then(results => {
+        if (didMount) setContributeesAndTheirContribution(results);
       });
     }
-  }, [enabler, initiativesPriorities, didMount]);
+  }, [enabler, contributeesAndTheirContribution, didMount]);
 
   const classes = useStyles();
 
@@ -45,8 +45,8 @@ const EnablerPanel = ({ enabler }) => {
 
       <div className={classes.taskBody}>
         <Typography variant="h6">Related Initiatives</Typography>
-        {initiativesPriorities !== null ? (
-          <PrioritiesBlock priorities={initiativesPriorities} />
+        {contributeesAndTheirContribution !== null ? (
+          <PrioritiesBlock contributeesAndTheirContribution={contributeesAndTheirContribution} />
         ) : null}
       </div>
 
