@@ -4,9 +4,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import Link from '@material-ui/core/Link';
 import styles from '../../styles/Styles';
-import { setSearchTerm, setTab, clearTaskFilters, setFilterBarVisible } from '../../actions/Tasks';
+import {
+  setSearchTerm,
+  setTab,
+  clearTaskFilters,
+  setFilterBarVisible,
+  setTaskFilter
+} from '../../actions/Tasks';
 import { DEFAULT } from '../../constants/Tabs';
 import ListOfLinks from '../ListOfLinks';
+import * as TYPES from '../../constants/TaskTypes';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -17,6 +24,7 @@ const TagsAndLinksBlock = ({ task }) => {
   const handleTagClick = tag => {
     dispatch(setSearchTerm(tag));
     dispatch(clearTaskFilters());
+    dispatch(setTaskFilter({ type: 'type', value: TYPES.ALL }));
     dispatch(setFilterBarVisible(false));
     dispatch(setTab(DEFAULT));
   };
