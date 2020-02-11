@@ -11,7 +11,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Link from './RouterLink';
+import Link from './restyled/RouterLink';
 import styles from '../styles/Styles';
 import { setSearchTerm, setTab, clearTaskFilters } from '../actions/Tasks';
 import { DEFAULT } from '../constants/Tabs';

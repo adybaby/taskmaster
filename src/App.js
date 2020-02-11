@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import styles from './styles/Styles';
 import AppBar from './components/AppBar';
-import BrowsePanel from './components/BrowsePanel';
+import BrowsePanel from './components/browse/BrowsePanel';
 import TaskPanel from './components/taskpanels/TaskPanel';
 import ProfilePanel from './components/ProfilePanel';
 import * as URLS from './constants/Urls';

@@ -45,8 +45,7 @@ const HeaderBlock = ({ task }) => {
           >
             {task.createdBy}
           </Link>
-          {' on '}
-          {task.createdDate}
+          {` on ${task.createdDate} (last modified on ${task.modifiedDate})`}
         </Typography>
       </div>
       <div className={classes.taskBody}>

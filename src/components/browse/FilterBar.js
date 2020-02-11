@@ -6,10 +6,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import { useSelector, useDispatch } from 'react-redux';
-import styles from '../styles/Styles';
-import * as TASK_FILTERS from '../constants/TaskFilters';
-import { setTaskFilter, setSortOrder } from '../actions/Tasks';
-import * as SORT_ORDER from '../constants/SortOrders';
+import styles from '../../styles/Styles';
+import * as TASK_FILTERS from '../../constants/TaskFilters';
+import { setTaskFilter, setSortOrder } from '../../actions/Tasks';
+import * as SORT_ORDER from '../../constants/SortOrders';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -26,9 +26,7 @@ const FilterBar = () => {
     tasks.forEach(task => {
       if (task.vacancies != null) {
         task.vacancies.forEach(vacancy => {
-          if (vacancy.trim().length > 0) {
-            vacancyOptions.add(vacancy);
-          }
+          vacancyOptions.add(vacancy.title);
         });
       }
     });

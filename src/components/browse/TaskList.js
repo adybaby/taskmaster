@@ -4,9 +4,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import { useSelector, useDispatch } from 'react-redux';
 import TaskResult from './TaskResult';
-import { findTasks } from '../actions/Tasks';
+import { findTasks } from '../../actions/Tasks';
 
-import getVisibleTasks from '../selectors/TaskSelector';
+import getVisibleTasks from '../../selectors/TaskSelector';
 
 const TaskList = () => {
   const tasks = useSelector(getVisibleTasks);

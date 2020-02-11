@@ -1,0 +1,13 @@
+NAME	ROLES	AVAILABLE
+Ernie	"Designer, Developer, PM"	01-mar-21 01-aug-21
+Jill	Developer	01-mar-21 01-aug-21
+Marie	Developer	01-mar-21 01-aug-21
+Ben	Researcher	01-jun-21 01-dec-21
+Josh	"PM, Logistics"	01-jun-21 01-dec-21
+Kev	PM	01-jun-21 01-dec-21
+Lisa	"Logistics, Supply, Researcher"	01-dec-21 01 -jun-22
+Lauren	"Designer, Developer, Researcher"	01-dec-21 01 -jun-22
+Kat	"Logistics, PM"	01-dec-21 01 -jun-22
+Katie	"Developer, Designer"	01-may-21 01-nov-21
+Phil	PM	01-may-21 01-nov-21
+Chris	"PM, Researcher"	01-may-21 01-nov-21

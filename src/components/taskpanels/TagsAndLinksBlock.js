@@ -1,39 +1,20 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch } from 'react-redux';
 import Link from '@material-ui/core/Link';
 import styles from '../../styles/Styles';
-import {
-  setSearchTerm,
-  setTab,
-  clearTaskFilters,
-  setFilterBarVisible,
-  setTaskFilter
-} from '../../actions/Tasks';
-import { DEFAULT } from '../../constants/Tabs';
-import ListOfLinks from '../ListOfLinks';
-import * as TYPES from '../../constants/TaskTypes';
+import TagsList from '../lists/TagsList';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const TagsAndLinksBlock = ({ task }) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  const handleTagClick = tag => {
-    dispatch(setSearchTerm(tag));
-    dispatch(clearTaskFilters());
-    dispatch(setTaskFilter({ type: 'type', value: TYPES.ALL }));
-    dispatch(setFilterBarVisible(false));
-    dispatch(setTab(DEFAULT));
-  };
 
   return (
     <div>
       <div className={classes.taskBody}>
         <Typography variant="h6">Tags</Typography>
-        <ListOfLinks links={task.tags} handleLinkClick={handleTagClick} url="/" />
+        <TagsList tags={task.tags} />
       </div>
       <div className={classes.taskBody}>
         <Typography variant="h6">External Related Links</Typography>

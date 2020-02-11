@@ -13,16 +13,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import styles from '../styles/Styles';
-import { setTaskFilter, clearTaskFilters, setTab, setFilterBarVisible } from '../actions/Tasks';
-import ToggleButton from './ToggleButton';
+import styles from '../../styles/Styles';
+import { setTaskFilter, clearTaskFilters, setTab, setFilterBarVisible } from '../../actions/Tasks';
+import ToggleButton from '../restyled/ToggleButton';
 import FilterBar from './FilterBar';
-import { TABS } from '../constants/Tabs';
-import MapPanel from './MapPanel';
-import ChartPanel from './ChartPanel';
+import { TABS } from '../../constants/Tabs';
+import MapPanel from '../MapPanel';
+import ChartPanel from '../ChartPanel';
 import TaskList from './TaskList';
-import * as URLS from '../constants/Urls';
-import { HAVE_RESULTS } from '../constants/TaskStatus';
+import * as URLS from '../../constants/Urls';
+import { HAVE_RESULTS } from '../../constants/TaskStatus';
 
 const useStyles = makeStyles(theme => styles(theme));
 

@@ -2,6 +2,9 @@
 import { createSelector } from 'reselect';
 import * as TASK_FILTERS from '../constants/TaskFilters';
 import * as SORT_ORDER from '../constants/SortOrders';
+import { sortOrderForType } from '../constants/Contributions';
+import { sortOrderForCost } from '../constants/Costs';
+import * as TYPES from '../constants/TaskTypes';
 
 const getTaskFilters = state => state.taskFilters;
 const getTasks = state => state.tasks;
@@ -52,12 +55,17 @@ const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tas
     taskFilters.vacancies.enabled &&
     taskFilters.vacancies.value !== TASK_FILTERS.DEFAULTS.VACANCIES.value
   ) {
-    filteredTasks = filteredTasks.filter(
-      task =>
-        task.vacancies != null &&
-        task.vacancies.length > 0 &&
-        task.vacancies.includes(taskFilters.vacancies.value)
-    );
+    filteredTasks = filteredTasks.filter(task => {
+      if (task.vacancies === null) {
+        return false;
+      }
+      for (let i = 0; i < task.vacancies.length; i++) {
+        if (task.vacancies[i].title.includes(taskFilters.vacancies.value)) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
 
   if (
@@ -84,9 +92,19 @@ const sortTasks = (tasks, sortOrder) => {
     }
 
     case SORT_ORDER.OPTIONS.PRIORITY: {
-      return tasks.sort(
-        (a, b) => (a.priority === null ? 0 : a.priority) > (b.priority === null ? 0 : b.priority)
-      );
+      return tasks.sort((a, b) => {
+        if (a.type !== b.type) {
+          return sortOrderForType(a.type) - sortOrderForType(b.type);
+        }
+        if (
+          a.priority === b.priority &&
+          a.type === TYPES.INITIATIVE &&
+          b.type === TYPES.INITIATIVE
+        ) {
+          return sortOrderForCost(a.cost) - sortOrderForCost(b.cost);
+        }
+        return a.priority - b.priority;
+      });
     }
 
     case SORT_ORDER.OPTIONS.START_DATE: {
