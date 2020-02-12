@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import store from '../data/Store';
+import { useSelector } from 'react-redux';
 import styles from '../styles/Styles';
 import { ContributionsDeepList } from './taskpanels/Contributions';
 import * as TYPES from '../constants/TaskTypes';
@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => styles(theme));
 
 const MapPanel = () => {
   const classes = useStyles();
-  const { tasks } = store.getState();
+  const tasks = useSelector(state => state.tasks);
 
   return (
     <div className={classes.taskPanel}>

@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { findTask } from '../../data/DataInterface';
-import * as STATUS from '../../constants/TaskStatus';
+import * as STATUS from '../../constants/FindStatus';
 import * as TASK_TYPES from '../../constants/TaskTypes';
 import DriverPanel from './DriverPanel';
 import EnablerPanel from './EnablerPanel';

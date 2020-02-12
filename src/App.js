@@ -26,6 +26,7 @@ const App = () => {
             </Route>
             <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
             <Route path={`/${URLS.PROFILE}/:id`} component={ProfilePanel} />
+            <Route path={`/${URLS.PROFILE}/`} component={ProfilePanel} />
             <Route path={`/${URLS.BROWSE}/:id`} component={BrowsePanel} />
             <Route>
               <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />

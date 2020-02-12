@@ -66,6 +66,18 @@ export const VacancyList = ({ vacancies }) => {
   );
 };
 
+export const SkillList = ({ skills }) =>
+  skills.map((skill, index) => (
+    <div key={index}>
+      <RLink
+        link={skill}
+        handleLinkClick={handleVacancyClick}
+        url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
+      />
+      <br />
+    </div>
+  ));
+
 export const status = statusField => {
   if (Array.isArray(statusField)) {
     return `Partially filled ${vacancyDates(statusField)}`;

@@ -1,11 +1,10 @@
-import { combineReducers } from 'redux';
 import * as TYPES from '../constants/ActionTypes';
 import * as SORT_ORDER from '../constants/SortOrders';
 import { STATE_INIT, DEFAULTS } from '../constants/TaskFilters';
-import { NOT_INITIALISED } from '../constants/TaskStatus';
+import { NOT_INITIALISED } from '../constants/FindStatus';
 import * as TABS from '../constants/Tabs';
 
-const taskReducer = (state = [], action) => {
+export const taskReducer = (state = [], action) => {
   switch (action.type) {
     case TYPES.SET_TASKS: {
       return action.tasks;
@@ -21,7 +20,7 @@ const taskReducer = (state = [], action) => {
   }
 };
 
-const taskFilterReducer = (state = STATE_INIT, action) => {
+export const taskFilterReducer = (state = STATE_INIT, action) => {
   switch (action.type) {
     case TYPES.SET_TASK_FILTER: {
       const value =
@@ -49,7 +48,7 @@ const taskFilterReducer = (state = STATE_INIT, action) => {
   }
 };
 
-const taskStatusReducer = (state = NOT_INITIALISED, action) => {
+export const taskStatusReducer = (state = NOT_INITIALISED, action) => {
   switch (action.type) {
     case TYPES.SET_TASK_STATUS: {
       return action.taskStatus;
@@ -59,7 +58,7 @@ const taskStatusReducer = (state = NOT_INITIALISED, action) => {
   }
 };
 
-const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
+export const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
   switch (action.type) {
     case TYPES.SET_SORT_ORDER: {
       return action.sortOrder;
@@ -69,7 +68,7 @@ const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
   }
 };
 
-const searchTermReducer = (state = '', action) => {
+export const searchTermReducer = (state = '', action) => {
   switch (action.type) {
     case TYPES.SET_SEARCH_TERM: {
       return action.searchTerm;
@@ -79,7 +78,7 @@ const searchTermReducer = (state = '', action) => {
   }
 };
 
-const tabReducer = (state = TABS.DEFAULT, action) => {
+export const tabReducer = (state = TABS.DEFAULT, action) => {
   switch (action.type) {
     case TYPES.SET_TAB: {
       return action.tab;
@@ -89,7 +88,7 @@ const tabReducer = (state = TABS.DEFAULT, action) => {
   }
 };
 
-const filterBarVisibleReducer = (state = false, action) => {
+export const filterBarVisibleReducer = (state = false, action) => {
   switch (action.type) {
     case TYPES.SET_FILTER_BAR_VISIBLE: {
       return action.visible;
@@ -98,15 +97,3 @@ const filterBarVisibleReducer = (state = false, action) => {
       return state;
   }
 };
-
-const rootReducer = combineReducers({
-  tasks: taskReducer,
-  taskFilters: taskFilterReducer,
-  taskStatus: taskStatusReducer,
-  sortOrder: sortOrderReducer,
-  searchTerm: searchTermReducer,
-  tab: tabReducer,
-  filterBarVisible: filterBarVisibleReducer
-});
-
-export default rootReducer;

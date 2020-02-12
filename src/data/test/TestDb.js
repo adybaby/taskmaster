@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
-import retrieveTasks from './TestFileLoader';
+import retrieveTasks from './TestTaskFileLoader';
+import retrieveUsers from './TestUserFileLoader';
 
 const escapeRegExp = (
   str // or better use 'escape-string-regexp' package
@@ -50,7 +51,35 @@ export const findTask = id =>
       });
   });
 
-export const findUser = () =>
-  new Promise(resolve => {
-    resolve({ name: 'aalever' });
+export const findUser = id =>
+  new Promise((resolve, reject) => {
+    retrieveUsers()
+      .then(users => {
+        resolve(users.filter(element => element.id === id)[0]);
+      })
+      .catch(e => {
+        reject(e);
+      });
+  });
+
+export const getCurrentUser = () =>
+  new Promise((resolve, reject) => {
+    retrieveUsers()
+      .then(users => {
+        resolve(users[0]);
+      })
+      .catch(e => {
+        reject(e);
+      });
+  });
+
+export const getAllUsers = () =>
+  new Promise((resolve, reject) => {
+    retrieveUsers()
+      .then(users => {
+        resolve(users);
+      })
+      .catch(e => {
+        reject(e);
+      });
   });

@@ -78,7 +78,7 @@ const AppBar = () => {
             <Button color="inherit" startIcon={<AddCircle />} onClick={handleNewClick}>
               NEW..
             </Button>
-            <IconButton edge="end" component={Link} to="/profile/:tbd" color="inherit">
+            <IconButton edge="end" component={Link} to="/profile" color="inherit">
               <AccountCircle />
             </IconButton>
           </div>

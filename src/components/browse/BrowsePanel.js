@@ -22,7 +22,7 @@ import MapPanel from '../MapPanel';
 import ChartPanel from '../ChartPanel';
 import TaskList from './TaskList';
 import * as URLS from '../../constants/Urls';
-import { HAVE_RESULTS } from '../../constants/TaskStatus';
+import { HAVE_RESULTS } from '../../constants/FindStatus';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -45,7 +45,7 @@ const BrowsePanel = () => {
         filterBarVisible;
 
   useEffect(() => {
-    if (id !== null && currentTabId !== tabFromUrl.ID) {
+    if (typeof id !== 'undefined' && id !== null && currentTabId !== tabFromUrl.ID) {
       dispatch(setTab(tabFromUrl.ID));
       dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
     }

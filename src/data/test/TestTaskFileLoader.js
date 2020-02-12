@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-console */
 import readTextFile from '../../util/TextFileUtils';
-import { cleanString } from '../../util/StringUtils';
+import { cleanString, parseDateList, parseListFromString } from '../../util/StringUtils';
 import * as TYPES from '../../constants/TaskTypes';
 import { multiplierForLevel } from '../../constants/Contributions';
 import * as VACS from '../../constants/Vacancies';
@@ -10,7 +10,6 @@ import * as VACS from '../../constants/Vacancies';
 const { EOL } = require('os');
 
 const FILE = '/tasks.txt';
-const LIST_DELIM = ',';
 const FIELD_DELIM = '\t';
 const CONTRIBUTION_TYPE = {
   [TYPES.DRIVER]: TYPES.ENABLER,
@@ -19,60 +18,7 @@ const CONTRIBUTION_TYPE = {
 
 let tasks = null;
 
-const makeListFromString = str => {
-  const cleanedStr = cleanString(str);
-  if (cleanedStr !== null) {
-    return cleanedStr.split(LIST_DELIM);
-  }
-  return null;
-};
-
-const parseDate = dateStr => {
-  const cleanedDateStr = cleanString(dateStr);
-  if (isNaN(Date.parse(cleanedDateStr)) && cleanedDateStr !== 'TBD') {
-    return null;
-  }
-  return cleanedDateStr;
-};
-
-const parseDatesList = (vacancyFieldStrings, startIndex, vacancyObj, targetField) => {
-  let index = startIndex;
-  vacancyObj[targetField] = [];
-
-  for (index; index < vacancyFieldStrings.length; index++) {
-    const period = {};
-    let nextDateStr = parseDate(vacancyFieldStrings[index]);
-
-    if (nextDateStr === null) {
-      if (index === startIndex) {
-        throw new Error(
-          `Expected from date for ${vacancyFieldStrings[0]}(${targetField}),instead got ${vacancyFieldStrings[index]}`
-        );
-      }
-      return index - 1;
-    }
-    period.from = nextDateStr;
-    if (index === vacancyFieldStrings.length) {
-      return index - 1;
-    }
-    nextDateStr = parseDate(vacancyFieldStrings[index + 1]);
-    if (nextDateStr === null) {
-      let vacString = '';
-      vacancyFieldStrings.forEach(str => {
-        vacString += `${str} `;
-      });
-      throw new Error(
-        `Expected to date,instead got ${vacancyFieldStrings[index + 1]} (${vacString})`
-      );
-    }
-    period.to = nextDateStr;
-    vacancyObj[targetField].push(period);
-    index++;
-  }
-  return index - 1;
-};
-
-const makeVacanciesField = string => {
+const buildVacanciesField = string => {
   const cleanedString = cleanString(string);
   if (
     typeof cleanedString === 'undefined' ||
@@ -83,7 +29,7 @@ const makeVacanciesField = string => {
   }
 
   const vacancies = [];
-  const vacancyStrings = makeListFromString(string);
+  const vacancyStrings = parseListFromString(string);
 
   vacancyStrings.forEach(vacancyString => {
     const vacancy = {};
@@ -98,7 +44,7 @@ const makeVacanciesField = string => {
     if (dateString === VACS.ANY_DATE.short) {
       vacancy.date = dateString;
     } else {
-      index = parseDatesList(vacancyFieldStrings, index, vacancy, 'date');
+      index = parseDateList(vacancyFieldStrings, index, vacancy, 'date');
     }
 
     vacancy.necessity = vacancyFieldStrings[index + 1];
@@ -110,7 +56,7 @@ const makeVacanciesField = string => {
     ) {
       vacancy.status = status;
     } else {
-      parseDatesList(vacancyFieldStrings, index + 2, vacancy, 'status');
+      parseDateList(vacancyFieldStrings, index + 2, vacancy, 'status');
     }
 
     vacancies.push(vacancy);
@@ -119,7 +65,7 @@ const makeVacanciesField = string => {
   return vacancies;
 };
 
-const derivePriorityFields = () => {
+const buildPriorityFields = () => {
   let highestPriority = 0;
   let highestDriverPriority = 0;
 
@@ -162,8 +108,8 @@ const derivePriorityFields = () => {
 };
 
 // returns list of {id, title, type, level} referring to tasks that this task contributes to
-const deriveContributesToField = string => {
-  const contributionStrings = makeListFromString(string);
+const buildContributesToField = string => {
+  const contributionStrings = parseListFromString(string);
   if (contributionStrings !== null) {
     const contributions = [];
     contributionStrings.forEach(contributionString => {
@@ -180,7 +126,7 @@ const deriveContributesToField = string => {
 };
 
 // returns list of {id, title, type, level} referring to tasks that contribute to this task
-const deriveContributions = (id, type) => {
+const buildContributions = (id, type) => {
   const contributions = [];
   tasks
     .filter(record => record.type === CONTRIBUTION_TYPE[type])
@@ -199,11 +145,11 @@ const deriveContributions = (id, type) => {
   return contributions;
 };
 
-const deriveContributionsFields = () => {
+const buildContributionsFields = () => {
   tasks.forEach(task => {
-    task.contributions = deriveContributions(task.id, task.type);
+    task.contributions = buildContributions(task.id, task.type);
     for (let i = 0; i < task.contributions.length; i++) {
-      task.contributions[i].contributions = deriveContributions(
+      task.contributions[i].contributions = buildContributions(
         task.contributions[i].id,
         task.contributions[i].type
       );
@@ -227,8 +173,8 @@ const readRecordsFromText = text => {
       record.modifiedDate = cleanString(fields[5]);
       record.shortDescription = cleanString(fields[6]);
       record.moreInformation = cleanString(fields[7]);
-      record.relatedLinks = makeListFromString(fields[8]);
-      record.tags = makeListFromString(fields[9]);
+      record.relatedLinks = parseListFromString(fields[8]);
+      record.tags = parseListFromString(fields[9]);
       const priorityString = cleanString(fields[10]);
       record.priority = record.type === TYPES.DRIVER ? priorityString * 1 : priorityString;
       record.cost = cleanString(fields[11]);
@@ -239,7 +185,7 @@ const readRecordsFromText = text => {
       record.startDate = cleanString(fields[16]);
       record.endDate = cleanString(fields[17]);
       try {
-        record.vacancies = makeVacanciesField(fields[18]);
+        record.vacancies = buildVacanciesField(fields[18]);
       } catch (err) {
         console.error(`Errors when parsing vacancies in item ID ${record.id}`);
         console.error(err);
@@ -252,13 +198,13 @@ const readRecordsFromText = text => {
   return records;
 };
 
-const calculateDerivedFields = () => {
+const buildDerivedFields = () => {
   try {
     tasks.forEach(task => {
-      task.contributesTo = deriveContributesToField(task.contributesTo);
+      task.contributesTo = buildContributesToField(task.contributesTo);
     });
-    deriveContributionsFields();
-    derivePriorityFields();
+    buildContributionsFields();
+    buildPriorityFields();
   } catch (err) {
     console.error(err);
     throw err;
@@ -270,7 +216,7 @@ const loadTasksFromFile = () =>
     readTextFile(FILE)
       .then(text => {
         tasks = readRecordsFromText(text);
-        calculateDerivedFields();
+        buildDerivedFields();
         resolve(tasks);
       })
       .catch(e => {

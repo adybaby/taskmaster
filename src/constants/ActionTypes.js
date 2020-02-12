@@ -10,3 +10,6 @@ export const SET_SORT_ORDER = 'SET_SORT_ORDER';
 export const SET_SEARCH_TERM = 'SET_SEARCH_TERM';
 export const SET_TAB = 'SET_TAB';
 export const SET_FILTER_BAR_VISIBLE = 'SET_FILTER_BAR_VISIBLE';
+export const SET_USER_STATUS = 'SET_USER_STATUS';
+export const SET_USER = 'SET_USER';
+export const SET_ALL_USERS = 'SET_ALL_USERS';

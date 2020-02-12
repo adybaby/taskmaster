@@ -4,6 +4,7 @@ import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { parseDate } from '../../util/StringUtils';
 import styles from '../../styles/Styles';
 import {
   setSearchTerm,
@@ -45,7 +46,7 @@ const HeaderBlock = ({ task }) => {
           >
             {task.createdBy}
           </Link>
-          {` on ${task.createdDate} (last modified on ${task.modifiedDate})`}
+          {` on ${parseDate(task.createdDate)} (last modified on ${parseDate(task.modifiedDate)})`}
         </Typography>
       </div>
       <div className={classes.taskBody}>

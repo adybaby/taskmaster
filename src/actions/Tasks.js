@@ -1,6 +1,6 @@
 import * as TYPES from '../constants/ActionTypes';
-import { findTasks as findTaskData } from '../data/DataInterface';
-import * as STATUS from '../constants/TaskStatus';
+import { findTasks as findTasksFromDb } from '../data/DataInterface';
+import * as STATUS from '../constants/FindStatus';
 
 export const addTask = task => ({
   type: TYPES.ADD_TASK,
@@ -33,7 +33,7 @@ export const setTab = tab => ({
 
 export const findTasks = searchTerm => dispatch => {
   dispatch(setTaskStatus(STATUS.SEARCHING));
-  findTaskData(searchTerm)
+  findTasksFromDb(searchTerm)
     .then(taskResults => {
       if (taskResults.length > 0) {
         dispatch(setTasks(taskResults));

@@ -1,4 +1,4 @@
-import * as testDb from './test/TestFileDb';
+import * as testDb from './test/TestDb';
 
 const db = testDb;
 
@@ -16,10 +16,23 @@ export const findTask = id =>
       .catch(e => reject(e));
   });
 
-export const findUser = () =>
+export const findUser = id =>
   new Promise((resolve, reject) => {
-    db.findUser()
-      .name()
+    db.findUser(id)
       .then(user => resolve(user))
+      .catch(e => reject(e));
+  });
+
+export const getCurrentUser = () =>
+  new Promise((resolve, reject) => {
+    db.getCurrentUser()
+      .then(user => resolve(user))
+      .catch(e => reject(e));
+  });
+
+export const getAllUsers = () =>
+  new Promise((resolve, reject) => {
+    db.getAllUsers()
+      .then(users => resolve(users))
       .catch(e => reject(e));
   });
