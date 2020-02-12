@@ -15,7 +15,7 @@ export const cleanString = str => {
 export const parseListFromString = str => {
   const cleanedStr = cleanString(str);
   if (cleanedStr !== null) {
-    return cleanedStr.split(LIST_DELIM);
+    return cleanedStr.split(LIST_DELIM).map(string => cleanString(string));
   }
   return null;
 };
