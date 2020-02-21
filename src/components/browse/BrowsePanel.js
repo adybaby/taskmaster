@@ -13,6 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import Collapse from '@material-ui/core/Collapse';
 import styles from '../../styles/Styles';
 import { setTaskFilter, clearTaskFilters, setTab, setFilterBarVisible } from '../../actions/Tasks';
 import ToggleButton from '../restyled/ToggleButton';
@@ -83,16 +84,28 @@ const BrowsePanel = () => {
   );
 
   const handleFilterToggle = () => {
-    if (filterBarVisible) {
-      dispatch(clearTaskFilters());
-    }
     dispatch(setFilterBarVisible(!filterBarVisible));
   };
+
+  const handleFilterTransitionExited = () => {
+    dispatch(clearTaskFilters());
+  };
+
+  const showFilterBar =
+    taskStatus === HAVE_RESULTS &&
+    currentTabId !== TABS.CHARTS.ID &&
+    currentTabId !== TABS.MAP.ID &&
+    filterBarVisible;
 
   return (
     <div>
       <div className={classes.secondaryBar}>
-        <Tabs value={currentTabId} indicatorColor="primary">
+        <Tabs
+          value={currentTabId}
+          indicatorColor="primary"
+          variant="scrollable"
+          scrollButtons="auto"
+        >
           {getTab(TABS.ALL, faSearch)}
           {getTab(TABS.DRIVERS, faBullseye)}
           {getTab(TABS.ENABLERS, faCodeBranch)}
@@ -113,12 +126,14 @@ const BrowsePanel = () => {
           </ToggleButton>
         ) : null}
       </div>
-      {taskStatus === HAVE_RESULTS &&
-      currentTabId !== TABS.CHARTS.ID &&
-      currentTabId !== TABS.MAP.ID &&
-      filterBarVisible ? (
+      <Collapse
+        in={showFilterBar}
+        timeout="auto"
+        onExited={handleFilterTransitionExited}
+        unmountOnExit
+      >
         <FilterBar />
-      ) : null}
+      </Collapse>
       {getCurrentPanel()}
     </div>
   );
