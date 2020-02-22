@@ -1,30 +1,14 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { parseDate } from '../../util/StringUtils';
+import { parseDate } from '../../util/DateFormatting';
 import styles from '../../styles/Styles';
-import {
-  setSearchTerm,
-  clearTaskFilters,
-  setTaskFilter,
-  setFilterBarVisible
-} from '../../actions/Tasks';
+import CreatedByLink from '../CreatedByLink';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const HeaderBlock = ({ task }) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  const handleCreatedByClick = createdBy => {
-    dispatch(setSearchTerm(''));
-    dispatch(clearTaskFilters());
-    dispatch(setFilterBarVisible(true));
-    dispatch(setTaskFilter({ type: 'createdBy', value: createdBy }));
-  };
 
   return (
     <div>
@@ -35,17 +19,7 @@ const HeaderBlock = ({ task }) => {
           {task.priority !== null ? `Priority ${task.priority}, ` : null}
         </Typography>
         <Typography variant="caption">
-          {'Created by '}
-          <Link
-            value={task.createdBy}
-            component={RouterLink}
-            to="/"
-            onClick={() => {
-              handleCreatedByClick(task.createdBy);
-            }}
-          >
-            {task.createdBy}
-          </Link>
+          {'Created by '} <CreatedByLink createdBy={task.createdBy} />
           {` on ${parseDate(task.createdDate)} (last modified on ${parseDate(task.modifiedDate)})`}
         </Typography>
       </div>

@@ -2,7 +2,8 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-console */
 import readTextFile from '../../util/TextFileUtils';
-import { cleanString, parseDateList, parseListFromString } from '../../util/StringUtils';
+import { cleanString, parseListFromString } from '../../util/StringUtils';
+import { parseDateList } from './VacancyParser';
 
 const { EOL } = require('os');
 
@@ -21,7 +22,12 @@ const readRecordsFromText = text => {
       record.id = cleanString(fields[0]);
       record.name = cleanString(fields[1]);
       record.skills = parseListFromString(fields[2]);
-      parseDateList(cleanString(fields[3]).split(' '), 0, record, 'available');
+      const available = cleanString(fields[3]);
+      if (available === null) {
+        record.available = null;
+      } else {
+        parseDateList(available.split(' '), 0, record, 'available');
+      }
       records.push(record);
     }
   }
@@ -40,7 +46,7 @@ const loadUsersFromFile = () =>
       });
   });
 
-const retrieveTasks = () =>
+const retrieveUsers = () =>
   new Promise((resolve, reject) => {
     if (users === null) {
       loadUsersFromFile()
@@ -55,4 +61,4 @@ const retrieveTasks = () =>
     }
   });
 
-export default retrieveTasks;
+export default retrieveUsers;

@@ -10,15 +10,37 @@ import {
 import { LinksList, RLink } from './LinksList';
 import * as URLS from '../../constants/Urls';
 import * as VACS from '../../constants/Vacancies';
+import CreatedByLink from '../CreatedByLink';
 
-const vacancyDate = date => {
+const handleVacancyClick = (dispatch, vacancyTitle) => {
+  dispatch(setSearchTerm(''));
+  dispatch(clearTaskFilters());
+  dispatch(setFilterBarVisible(true));
+  dispatch(setTaskFilter({ type: 'vacancies', value: vacancyTitle }));
+};
+
+const User = ({ user }) =>
+  typeof user !== 'undefined' && user !== null ? (
+    <>
+      {` (`}
+      <CreatedByLink createdBy={user} />
+      {`)`}
+    </>
+  ) : null;
+
+const VacancyDate = ({ date }) => {
   if (
     typeof date.to === 'undefined' ||
     date.to === null ||
     date.to.length === 0 ||
     date.to === 'TBD'
   ) {
-    return `from ${date.from} (end date TBD)`;
+    return (
+      <>
+        {`from ${date.from} (end date TBD)`}
+        <User user={date.userName} />
+      </>
+    );
   }
   if (
     typeof date.from === 'undefined' ||
@@ -26,27 +48,30 @@ const vacancyDate = date => {
     date.from.length === 0 ||
     date.from === 'TBD'
   ) {
-    return `until ${date.to} (start date TBD)`;
+    return (
+      <>
+        {`until ${date.to} (start date TBD)`}
+        <User user={date.userName} />
+      </>
+    );
   }
-  return `from ${date.from} to ${date.to}`;
+  return (
+    <>
+      {`from ${date.from} to ${date.to}`}
+      <User user={date.userName} />
+    </>
+  );
 };
 
-const vacancyDates = dates => {
-  let output = '';
+const VacancyDates = ({ dates }) => {
+  const output = [];
   for (let i = 0; i < dates.length; i++) {
-    output += vacancyDate(dates[i]);
+    output.push(<VacancyDate key={i} date={dates[i]} />);
     if (i < dates.length - 1) {
-      output += ', then ';
+      output.push(<React.Fragment key={`_${i}`}>{', then '}</React.Fragment>);
     }
   }
   return output;
-};
-
-const handleVacancyClick = (dispatch, vacancyTitle) => {
-  dispatch(setSearchTerm(''));
-  dispatch(clearTaskFilters());
-  dispatch(setFilterBarVisible(true));
-  dispatch(setTaskFilter({ type: 'vacancies', value: vacancyTitle }));
 };
 
 export const VacancyList = ({ vacancies }) => {
@@ -78,11 +103,21 @@ export const SkillList = ({ skills }) =>
     </div>
   ));
 
-export const status = statusField => {
-  if (Array.isArray(statusField)) {
-    return `Partially filled ${vacancyDates(statusField)}`;
+export const Status = ({ vacancy }) => {
+  if (Array.isArray(vacancy.status)) {
+    return (
+      <>
+        {`Partially filled `}
+        <VacancyDates dates={vacancy.status} />
+      </>
+    );
   }
-  return VACS.SHORT_STATUS[statusField];
+  return (
+    <>
+      {VACS.SHORT_STATUS[vacancy.status]}
+      <User user={vacancy.userName} />
+    </>
+  );
 };
 
 export const Vacancy = ({ vacancy }) => (
@@ -97,13 +132,20 @@ export const Vacancy = ({ vacancy }) => (
     </Typography>
     <div>
       <Typography variant="body1">
-        {vacancy.date === VACS.ANY_DATE.short
-          ? VACS.ANY_DATE.displayName
-          : `Needed ${vacancyDates(vacancy.date)}`}
+        {vacancy.date === VACS.ANY_DATE.short ? (
+          VACS.ANY_DATE.displayName
+        ) : (
+          <>
+            {`Needed `}
+            <VacancyDates dates={vacancy.date} />
+          </>
+        )}
       </Typography>
     </div>
     <div>
-      <Typography variant="body1">{status(vacancy.status)}</Typography>
+      <Typography variant="body1">
+        <Status vacancy={vacancy} />
+      </Typography>
       {VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED ? (
         <div>
           <Link value={vacancy.title} href="#">

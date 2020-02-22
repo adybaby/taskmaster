@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import React from 'react';
+import React, { useEffect } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -10,16 +10,24 @@ import styles from '../../styles/Styles';
 import * as TASK_FILTERS from '../../constants/TaskFilters';
 import { setTaskFilter, setSortOrder } from '../../actions/Tasks';
 import * as SORT_ORDER from '../../constants/SortOrders';
+import { getAllUsers } from '../../actions/Users';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const FilterBar = () => {
   const classes = useStyles();
 
+  const dispatch = useDispatch();
   const tasks = useSelector(state => state.tasks);
   const sortOrder = useSelector(state => state.sortOrder);
   const taskFilters = useSelector(state => state.taskFilters);
-  const dispatch = useDispatch();
+  const users = useSelector(state => state.allUsers);
+
+  useEffect(() => {
+    if (users.length < 1) {
+      dispatch(getAllUsers());
+    }
+  }, [dispatch, users.length]);
 
   const getVacancyOptions = () => {
     const vacancyOptions = new Set([TASK_FILTERS.DEFAULTS.VACANCIES.value]);
@@ -34,14 +42,14 @@ const FilterBar = () => {
   };
 
   const getCreatedByOptions = () => {
-    const createdByOptions = new Set([TASK_FILTERS.DEFAULTS.CREATED_BY.value]);
-    tasks.forEach(task => {
-      if (task.createdBy != null && task.createdBy.length > 0) {
-        createdByOptions.add(task.createdBy);
-      }
-    });
-    return Array.from(createdByOptions);
+    const list = users.map(user => user.name);
+    list.sort();
+    list.unshift(TASK_FILTERS.DEFAULTS.CREATED_BY.value);
+    return list;
   };
+
+  const getCreatedOnOptions = () =>
+    Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => entry[1]);
 
   const handleFilterChange = (event, type) => {
     dispatch(setTaskFilter({ type, value: event.target.value }));
@@ -103,7 +111,7 @@ const FilterBar = () => {
           type="createdOn"
           taskFilter={taskFilters.createdOn}
           title="Created On"
-          options={Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => entry[1])}
+          options={getCreatedOnOptions()}
         />
         <Filter
           type="vacancies"
