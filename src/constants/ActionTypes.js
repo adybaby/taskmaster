@@ -1,15 +1,18 @@
-export const ADD_TASK = 'ADD TASK';
+// tasks
 export const SET_TASKS = 'SET TASKS';
-export const REMOVE_TASK = 'REMOVE TASK';
-export const CLEAR_TASKS = 'CLEAR TASKS';
-export const SET_TASK_STATUS = 'SET_TASK_STATUS';
-export const FIND_TASKS = 'FIND TASKS';
+
+// task filters
 export const SET_TASK_FILTER = 'SET TASK FILTER';
-export const CLEAR_TASK_FILTERS = 'CLEAR TASK FILTERS';
+
+// sort order
 export const SET_SORT_ORDER = 'SET_SORT_ORDER';
-export const SET_SEARCH_TERM = 'SET_SEARCH_TERM';
+
+// tabs
 export const SET_TAB = 'SET_TAB';
-export const SET_FILTER_BAR_VISIBLE = 'SET_FILTER_BAR_VISIBLE';
-export const SET_USER_STATUS = 'SET_USER_STATUS';
-export const SET_USER = 'SET_USER';
-export const SET_ALL_USERS = 'SET_ALL_USERS';
+
+// users
+export const SET_USERS = 'SET_ALL_USERS';
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
+
+// db
+export const SET_DB_STATUS = 'SET_DB_STATUS';

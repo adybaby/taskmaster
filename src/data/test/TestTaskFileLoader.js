@@ -5,7 +5,6 @@ import readTextFile from '../../util/TextFileUtils';
 import { cleanString, parseListFromString } from '../../util/StringUtils';
 import * as TYPES from '../../constants/TaskTypes';
 import { multiplierForLevel } from '../../constants/Contributions';
-import retrieveUsers from './TestUserFileLoader';
 import { buildVacanciesField } from './VacancyParser';
 
 const { EOL } = require('os');
@@ -17,7 +16,6 @@ const CONTRIBUTION_TYPE = {
   [TYPES.ENABLER]: TYPES.INITIATIVE
 };
 
-let users = null;
 let tasks = null;
 
 const buildPriorityFields = () => {
@@ -140,7 +138,7 @@ const readRecordsFromText = text => {
       record.startDate = cleanString(fields[16]);
       record.endDate = cleanString(fields[17]);
       try {
-        record.vacancies = buildVacanciesField(fields[18], users);
+        record.vacancies = buildVacanciesField(fields[18]);
       } catch (err) {
         console.error(`Errors when parsing vacancies in item ID ${record.id}`);
         console.error(err);
@@ -170,31 +168,22 @@ const loadTasksFromFile = () =>
   new Promise((resolve, reject) => {
     readTextFile(FILE)
       .then(text => {
-        retrieveUsers().then(retrievedUsers => {
-          users = retrievedUsers;
-          tasks = readRecordsFromText(text);
-          buildDerivedFields();
-          resolve(tasks);
-        });
+        tasks = readRecordsFromText(text);
+        buildDerivedFields();
+        resolve(tasks);
       })
       .catch(e => {
         reject(e);
       });
   });
 
-const retrieveTasks = () =>
+export const retrieveTasks = () =>
   new Promise((resolve, reject) => {
-    if (tasks === null) {
-      loadTasksFromFile()
-        .then(() => {
-          resolve(tasks);
-        })
-        .catch(e => {
-          reject(e);
-        });
-    } else {
-      resolve(tasks);
-    }
+    loadTasksFromFile()
+      .then(() => {
+        resolve(tasks);
+      })
+      .catch(e => {
+        reject(e);
+      });
   });
-
-export default retrieveTasks;

@@ -1,9 +1,8 @@
 import * as TYPES from '../constants/ActionTypes';
-import { NOT_INITIALISED } from '../constants/FindStatus';
 
-export const userReducer = (state = [], action) => {
+export const currentUserReducer = (state = null, action) => {
   switch (action.type) {
-    case TYPES.SET_USER: {
+    case TYPES.SET_CURRENT_USER: {
       return action.user;
     }
     default:
@@ -11,20 +10,10 @@ export const userReducer = (state = [], action) => {
   }
 };
 
-export const allUsersReducer = (state = [], action) => {
+export const usersReducer = (state = [], action) => {
   switch (action.type) {
-    case TYPES.SET_ALL_USERS: {
+    case TYPES.SET_USERS: {
       return action.users;
-    }
-    default:
-      return state;
-  }
-};
-
-export const userStatusReducer = (state = NOT_INITIALISED, action) => {
-  switch (action.type) {
-    case TYPES.SET_USER_STATUS: {
-      return action.userStatus;
     }
     default:
       return state;

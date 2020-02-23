@@ -34,11 +34,18 @@ const readRecordsFromText = text => {
   return records;
 };
 
-const loadUsersFromFile = () =>
+const deriveAuthorCount = tasks => {
+  users.forEach(user => {
+    user.authored = tasks.filter(task => task.createdBy === user.id).length;
+  });
+};
+
+const loadUsersFromFile = tasks =>
   new Promise((resolve, reject) => {
     readTextFile(FILE)
       .then(text => {
         users = readRecordsFromText(text);
+        deriveAuthorCount(tasks);
         resolve(users);
       })
       .catch(e => {
@@ -46,19 +53,13 @@ const loadUsersFromFile = () =>
       });
   });
 
-const retrieveUsers = () =>
+export const retrieveUsers = tasks =>
   new Promise((resolve, reject) => {
-    if (users === null) {
-      loadUsersFromFile()
-        .then(() => {
-          resolve(users);
-        })
-        .catch(e => {
-          reject(e);
-        });
-    } else {
-      resolve(users);
-    }
+    loadUsersFromFile(tasks)
+      .then(() => {
+        resolve(users);
+      })
+      .catch(e => {
+        reject(e);
+      });
   });
-
-export default retrieveUsers;

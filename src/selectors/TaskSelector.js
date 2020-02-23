@@ -5,6 +5,7 @@ import * as SORT_ORDER from '../constants/SortOrders';
 import { sortOrderForType } from '../constants/Contributions';
 import { sortOrderForCost } from '../constants/Costs';
 import * as TYPES from '../constants/TaskTypes';
+import { doesObjectIncludeStr } from '../util/StringUtils';
 
 const getTaskFilters = state => state.taskFilters;
 const getTasks = state => state.tasks;
@@ -51,37 +52,42 @@ const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tas
     filteredTasks = filteredTasks.filter(task => task.type === taskFilters.type.value);
   }
 
-  if (
-    taskFilters.vacancies.enabled &&
-    taskFilters.vacancies.value !== TASK_FILTERS.DEFAULTS.VACANCIES.value
-  ) {
-    filteredTasks = filteredTasks.filter(task => {
-      if (task.vacancies === null) {
-        return false;
-      }
-      for (let i = 0; i < task.vacancies.length; i++) {
-        if (task.vacancies[i].title.includes(taskFilters.vacancies.value)) {
-          return true;
+  if (taskFilters.searchTerm.enabled && taskFilters.searchTerm.value !== '') {
+    filteredTasks = filteredTasks.filter(doesObjectIncludeStr(taskFilters.searchTerm.value));
+  }
+
+  if (taskFilters.filterBar.enabled) {
+    if (
+      taskFilters.vacancies.enabled &&
+      taskFilters.vacancies.value !== TASK_FILTERS.DEFAULTS.VACANCIES.value
+    ) {
+      filteredTasks = filteredTasks.filter(task => {
+        if (task.vacancies === null) {
+          return false;
         }
-      }
-      return false;
-    });
-  }
+        for (let i = 0; i < task.vacancies.length; i++) {
+          if (task.vacancies[i].title.includes(taskFilters.vacancies.value)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
 
-  if (
-    taskFilters.createdBy.enabled &&
-    taskFilters.createdBy.value !== TASK_FILTERS.DEFAULTS.CREATED_BY.value
-  ) {
-    filteredTasks = filteredTasks.filter(task => task.createdBy === taskFilters.createdBy.value);
-  }
+    if (
+      taskFilters.createdBy.enabled &&
+      taskFilters.createdBy.value !== TASK_FILTERS.DEFAULTS.CREATED_BY.value
+    ) {
+      filteredTasks = filteredTasks.filter(task => task.createdBy === taskFilters.createdBy.value);
+    }
 
-  if (
-    taskFilters.createdOn.enabled &&
-    taskFilters.createdOn.value !== TASK_FILTERS.DEFAULTS.CREATED_ON.value
-  ) {
-    filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn.value);
+    if (
+      taskFilters.createdOn.enabled &&
+      taskFilters.createdOn.value !== TASK_FILTERS.DEFAULTS.CREATED_ON.value
+    ) {
+      filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn.value);
+    }
   }
-
   return filteredTasks;
 });
 

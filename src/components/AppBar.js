@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Link from './restyled/RouterLink';
 import styles from '../styles/Styles';
-import { setSearchTerm, setTab, clearTaskFilters } from '../actions/Tasks';
+import { setTaskFilter } from '../actions/TaskFilters';
+import { setTab } from '../actions/Tabs';
 import { DEFAULT } from '../constants/Tabs';
 
 const useStyles = makeStyles(theme => styles(theme));
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => styles(theme));
 const AppBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const searchTerm = useSelector(state => state.searchTerm);
+  const taskFilters = useSelector(state => state.taskFilters);
   const history = useHistory();
 
   const handleNewClick = () => {
@@ -30,18 +31,16 @@ const AppBar = () => {
   };
 
   const handleSearchChange = event => {
-    dispatch(setSearchTerm(event.target.value));
+    dispatch(setTaskFilter({ type: 'searchTerm', value: event.target.value }));
   };
 
   const handleSearchSubmit = event => {
     event.preventDefault();
-    dispatch(clearTaskFilters());
     history.push('/');
   };
 
   const handleHomeClick = () => {
-    dispatch(setSearchTerm(''));
-    dispatch(clearTaskFilters());
+    dispatch(setTaskFilter({ type: 'searchTerm', value: '' }));
     dispatch(setTab(DEFAULT));
   };
 
@@ -60,7 +59,7 @@ const AppBar = () => {
               <SearchIcon />
             </div>
             <InputBase
-              value={searchTerm}
+              value={taskFilters.searchTerm.value}
               onChange={handleSearchChange}
               onKeyPress={event => {
                 if (event.key === 'Enter') {

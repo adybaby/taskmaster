@@ -15,53 +15,46 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Collapse from '@material-ui/core/Collapse';
 import styles from '../../styles/Styles';
-import { setTaskFilter, clearTaskFilters, setTab, setFilterBarVisible } from '../../actions/Tasks';
+import { setTaskFilter } from '../../actions/TaskFilters';
+import { setTab } from '../../actions/Tabs';
 import ToggleButton from '../restyled/ToggleButton';
 import FilterBar from './FilterBar';
-import { TABS } from '../../constants/Tabs';
+import { TABS, getTabForUrl } from '../../constants/Tabs';
 import MapPanel from '../MapPanel';
 import ChartPanel from '../ChartPanel';
 import TaskList from './TaskList';
 import * as URLS from '../../constants/Urls';
-import { HAVE_RESULTS } from '../../constants/FindStatus';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const BrowsePanel = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const currentTabId = useSelector(state => state.tab);
-  const filterBarVisible = useSelector(state => state.filterBarVisible);
+  const currentTab = useSelector(state => state.tab);
   const taskFilters = useSelector(state => state.taskFilters);
-  const taskStatus = useSelector(state => state.taskStatus);
   const { id } = useParams();
-  const tabFromUrl =
-    typeof id !== 'undefined'
-      ? Object.entries(TABS).filter(_tab => _tab[1].URL === id)[0][1]
-      : null;
+  const tabFromUrl = getTabForUrl(id);
   const changeIFilter =
     tabFromUrl === null
       ? false
       : (tabFromUrl.ID === TABS.INITIATIVES.ID) !== taskFilters.vacancies.enabled &&
-        filterBarVisible;
+        taskFilters.filterBar.enabled;
 
   useEffect(() => {
-    if (typeof id !== 'undefined' && id !== null && currentTabId !== tabFromUrl.ID) {
-      dispatch(setTab(tabFromUrl.ID));
-      dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
-    }
+    dispatch(setTab(tabFromUrl));
+    dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
     if (changeIFilter) {
       dispatch(
         setTaskFilter({ type: 'vacancies', enabled: tabFromUrl.ID === TABS.INITIATIVES.ID })
       );
     }
-  }, [dispatch, tabFromUrl, changeIFilter, currentTabId, id]);
+  }, [dispatch, tabFromUrl, changeIFilter, currentTab, id]);
 
   const getCurrentPanel = () => {
-    switch (currentTabId) {
-      case TABS.MAP.ID:
+    switch (currentTab) {
+      case TABS.MAP:
         return <MapPanel />;
-      case TABS.CHARTS.ID:
+      case TABS.CHARTS:
         return <ChartPanel />;
       default:
         return <TaskList />;
@@ -84,24 +77,17 @@ const BrowsePanel = () => {
   );
 
   const handleFilterToggle = () => {
-    dispatch(setFilterBarVisible(!filterBarVisible));
-  };
-
-  const handleFilterTransitionExited = () => {
-    dispatch(clearTaskFilters());
+    dispatch(setTaskFilter({ type: 'filterBar', enabled: !taskFilters.filterBar.enabled }));
   };
 
   const showFilterBar =
-    taskStatus === HAVE_RESULTS &&
-    currentTabId !== TABS.CHARTS.ID &&
-    currentTabId !== TABS.MAP.ID &&
-    filterBarVisible;
+    currentTab !== TABS.CHARTS && currentTab !== TABS.MAP && taskFilters.filterBar.enabled;
 
   return (
     <div>
       <div className={classes.secondaryBar}>
         <Tabs
-          value={currentTabId}
+          value={currentTab.ID}
           indicatorColor="primary"
           variant="scrollable"
           scrollButtons="auto"
@@ -114,24 +100,19 @@ const BrowsePanel = () => {
           {getTab(TABS.CHARTS, faChartBar)}
         </Tabs>
 
-        {currentTabId !== TABS.MAP.ID && currentTabId !== TABS.CHARTS.ID ? (
+        {currentTab !== TABS.MAP && currentTab !== TABS.CHARTS ? (
           <ToggleButton
             value="toggleButton"
             variant="text"
             className={classes.filterButton}
             onClick={handleFilterToggle}
-            selected={filterBarVisible}
+            selected={taskFilters.filterBar.enabled}
           >
             <FontAwesomeIcon style={{ marginRight: 6 }} icon={faFilter} size="sm" /> Filters & Sort
           </ToggleButton>
         ) : null}
       </div>
-      <Collapse
-        in={showFilterBar}
-        timeout="auto"
-        onExited={handleFilterTransitionExited}
-        unmountOnExit
-      >
+      <Collapse in={showFilterBar} timeout="auto" unmountOnExit>
         <FilterBar />
       </Collapse>
       {getCurrentPanel()}

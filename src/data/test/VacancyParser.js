@@ -3,18 +3,7 @@ import { cleanString, parseListFromString } from '../../util/StringUtils';
 import { parseDate } from '../../util/DateFormatting';
 import * as VACS from '../../constants/Vacancies';
 
-const getUserName = (users, id) => {
-  return users.filter(user => user.id === id)[0].name;
-};
-
-export const parseDateList = (
-  fieldStrings,
-  startIndex,
-  targetObj,
-  targetField,
-  hasUserId,
-  users
-) => {
+export const parseDateList = (fieldStrings, startIndex, targetObj, targetField, hasUserId) => {
   let index = startIndex;
   targetObj[targetField] = [];
 
@@ -22,7 +11,7 @@ export const parseDateList = (
     const period = {};
 
     if (hasUserId) {
-      period.userName = getUserName(users, cleanString(fieldStrings[index]));
+      period.userId = cleanString(fieldStrings[index]);
       index += 1;
     }
     let nextDateStr = parseDate(fieldStrings[index]);
@@ -54,8 +43,8 @@ export const parseDateList = (
   return index - 1;
 };
 
-export const buildVacanciesField = (string, users) => {
-  const cleanedString = cleanString(string);
+export const buildVacanciesField = fieldSrc => {
+  const cleanedString = cleanString(fieldSrc);
   if (
     typeof cleanedString === 'undefined' ||
     cleanedString === null ||
@@ -65,7 +54,7 @@ export const buildVacanciesField = (string, users) => {
   }
 
   const vacancies = [];
-  const vacancyStrings = parseListFromString(string);
+  const vacancyStrings = parseListFromString(fieldSrc);
 
   vacancyStrings.forEach(vacancyString => {
     const vacancy = {};
@@ -93,11 +82,11 @@ export const buildVacanciesField = (string, users) => {
     if (VACS.SHORT_STATUS[status] === VACS.STATUS.FILLED) {
       vacancy.status = status;
       index++;
-      vacancy.userName = getUserName(users, cleanString(vacancyFieldStrings[index]));
+      vacancy.userId = cleanString(vacancyFieldStrings[index]);
     } else if (VACS.SHORT_STATUS[status] === VACS.STATUS.VACANT) {
       vacancy.status = status;
     } else {
-      parseDateList(vacancyFieldStrings, index, vacancy, 'status', true, users);
+      parseDateList(vacancyFieldStrings, index, vacancy, 'status', true);
     }
 
     vacancies.push(vacancy);

@@ -1,29 +1,23 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import {
-  setSearchTerm,
-  clearTaskFilters,
-  setFilterBarVisible,
-  setTaskFilter
-} from '../../actions/Tasks';
+import { setTaskFilter } from '../../actions/TaskFilters';
 import { LinksList, RLink } from './LinksList';
 import * as URLS from '../../constants/Urls';
 import * as VACS from '../../constants/Vacancies';
 import CreatedByLink from '../CreatedByLink';
 
 const handleVacancyClick = (dispatch, vacancyTitle) => {
-  dispatch(setSearchTerm(''));
-  dispatch(clearTaskFilters());
-  dispatch(setFilterBarVisible(true));
+  dispatch(setTaskFilter({ type: 'searchTerm', value: '' }));
+  dispatch(setTaskFilter({ type: 'filterBar', enabled: true }));
   dispatch(setTaskFilter({ type: 'vacancies', value: vacancyTitle }));
 };
 
-const User = ({ user }) =>
-  typeof user !== 'undefined' && user !== null ? (
+const User = ({ userId }) =>
+  typeof userId !== 'undefined' && userId !== null ? (
     <>
       {` (`}
-      <CreatedByLink createdBy={user} />
+      <CreatedByLink createdBy={userId} />
       {`)`}
     </>
   ) : null;
@@ -38,7 +32,7 @@ const VacancyDate = ({ date }) => {
     return (
       <>
         {`from ${date.from} (end date TBD)`}
-        <User user={date.userName} />
+        <User userId={date.userId} />
       </>
     );
   }
@@ -51,14 +45,14 @@ const VacancyDate = ({ date }) => {
     return (
       <>
         {`until ${date.to} (start date TBD)`}
-        <User user={date.userName} />
+        <User userId={date.userId} />
       </>
     );
   }
   return (
     <>
       {`from ${date.from} to ${date.to}`}
-      <User user={date.userName} />
+      <User userId={date.userId} />
     </>
   );
 };
@@ -115,7 +109,7 @@ export const Status = ({ vacancy }) => {
   return (
     <>
       {VACS.SHORT_STATUS[vacancy.status]}
-      <User user={vacancy.userName} />
+      <User userId={vacancy.userId} />
     </>
   );
 };

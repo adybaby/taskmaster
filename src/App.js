@@ -1,19 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './styles/Styles';
 import AppBar from './components/AppBar';
 import BrowsePanel from './components/browse/BrowsePanel';
 import TaskPanel from './components/taskpanels/TaskPanel';
 import ProfilePanel from './components/ProfilePanel';
 import * as URLS from './constants/Urls';
+import { initialise } from './actions/Db';
+import * as DB_STATUS from './constants/Db';
 
 const useStyles = makeStyles(theme => styles(theme));
 
 const App = () => {
   const classes = useStyles();
-  return (
+  const dispatch = useDispatch();
+  const dbStatus = useSelector(state => state.dbStatus);
+
+  useEffect(() => {
+    if (dbStatus === DB_STATUS.NOT_INITIALISED) {
+      dispatch(initialise());
+    }
+  }, [dispatch, dbStatus]);
+
+  return dbStatus !== DB_STATUS.INITIALISED ? (
+    'DB not init'
+  ) : (
     <div>
       <CssBaseline />
       <div className={classes.background}>

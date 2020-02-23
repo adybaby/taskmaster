@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
-import React, { useEffect } from 'react';
+import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -8,9 +8,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../../styles/Styles';
 import * as TASK_FILTERS from '../../constants/TaskFilters';
-import { setTaskFilter, setSortOrder } from '../../actions/Tasks';
+import { setTaskFilter } from '../../actions/TaskFilters';
+import { setSortOrder } from '../../actions/SortOrder';
 import * as SORT_ORDER from '../../constants/SortOrders';
-import { getAllUsers } from '../../actions/Users';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -21,35 +21,42 @@ const FilterBar = () => {
   const tasks = useSelector(state => state.tasks);
   const sortOrder = useSelector(state => state.sortOrder);
   const taskFilters = useSelector(state => state.taskFilters);
-  const users = useSelector(state => state.allUsers);
-
-  useEffect(() => {
-    if (users.length < 1) {
-      dispatch(getAllUsers());
-    }
-  }, [dispatch, users.length]);
+  const users = useSelector(state => state.users);
 
   const getVacancyOptions = () => {
-    const vacancyOptions = new Set([TASK_FILTERS.DEFAULTS.VACANCIES.value]);
+    const vacancyOptions = [
+      { label: TASK_FILTERS.DEFAULTS.VACANCIES.value, value: TASK_FILTERS.DEFAULTS.VACANCIES.value }
+    ];
     tasks.forEach(task => {
       if (task.vacancies != null) {
         task.vacancies.forEach(vacancy => {
-          vacancyOptions.add(vacancy.title);
+          if (vacancyOptions.filter(vo => vo.value === vacancy.title).length === 0) {
+            vacancyOptions.push({ label: vacancy.title, value: vacancy.title });
+          }
         });
       }
     });
-    return Array.from(vacancyOptions);
+    return vacancyOptions;
   };
 
   const getCreatedByOptions = () => {
-    const list = users.map(user => user.name);
+    const list = users.map(user => ({
+      label: `${user.name} ${user.authored > 0 ? `(${user.authored})` : ''}`,
+      value: user.id
+    }));
     list.sort();
-    list.unshift(TASK_FILTERS.DEFAULTS.CREATED_BY.value);
+    list.unshift({
+      label: TASK_FILTERS.DEFAULTS.CREATED_BY.value,
+      value: TASK_FILTERS.DEFAULTS.CREATED_BY.value
+    });
     return list;
   };
 
   const getCreatedOnOptions = () =>
-    Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => entry[1]);
+    Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => ({
+      label: entry[1],
+      value: entry[1]
+    }));
 
   const handleFilterChange = (event, type) => {
     dispatch(setTaskFilter({ type, value: event.target.value }));
@@ -66,15 +73,15 @@ const FilterBar = () => {
           <InputLabel id={`${title}label`}>{title}</InputLabel>
           <Select
             autoWidth={true}
-            defaultValue={options[0]}
+            defaultValue={options[0].value}
             labelId={`${title}select-label`}
             id={`${title}select`}
             onChange={event => handleFilterChange(event, type)}
             value={taskFilter.value}
           >
             {options.map((option, index) => (
-              <MenuItem key={index} value={option}>
-                {option}
+              <MenuItem key={index} value={option.value}>
+                {option.label}
               </MenuItem>
             ))}
           </Select>

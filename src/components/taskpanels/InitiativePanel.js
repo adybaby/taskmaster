@@ -10,7 +10,7 @@ import { VacancyBlock } from '../lists/Vacancies';
 
 const useStyles = makeStyles(theme => styles(theme));
 
-const EnablerPanel = ({ initiative }) => {
+const InitiativePanel = ({ initiative }) => {
   const classes = useStyles();
 
   return (
@@ -56,4 +56,4 @@ const EnablerPanel = ({ initiative }) => {
   );
 };
 
-export default EnablerPanel;
+export default InitiativePanel;

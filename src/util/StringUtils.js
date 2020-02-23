@@ -17,3 +17,24 @@ export const parseListFromString = str => {
   }
   return null;
 };
+
+export const doesObjectIncludeStr = str => {
+  const escapeRegExp = () => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+
+  // eslint-disable-next-line no-undef
+  const re = new RegExp(escapeRegExp(str), 'i');
+  return srch => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const prop in srch) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!srch.hasOwnProperty(prop)) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+      if (re.test(srch[prop])) {
+        return true;
+      }
+    }
+    return false;
+  };
+};

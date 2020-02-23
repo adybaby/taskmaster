@@ -40,6 +40,11 @@ export const TABS = {
   }
 };
 
-export const DEFAULT = TABS.ALL.ID;
+export const getTabForUrl = url =>
+  typeof url !== 'undefined'
+    ? Object.entries(TABS).filter(_tab => _tab[1].URL === url)[0][1]
+    : TABS.ALL;
+
+export const DEFAULT = TABS.ALL;
 
 export default TABS;
