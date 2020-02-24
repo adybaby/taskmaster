@@ -41,8 +41,10 @@ const BrowsePanel = () => {
         taskFilters.filterBar.enabled;
 
   useEffect(() => {
-    dispatch(setTab(tabFromUrl));
-    dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
+    if (currentTab !== tabFromUrl) {
+      dispatch(setTab(tabFromUrl));
+      dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
+    }
     if (changeIFilter) {
       dispatch(
         setTaskFilter({ type: 'vacancies', enabled: tabFromUrl.ID === TABS.INITIATIVES.ID })

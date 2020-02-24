@@ -11,12 +11,12 @@ const FieldSummary = ({ task }) => {
     task.type === TYPES.INITIATIVE ? `, ${plannedDates(task.startDate, task.endDate)}` : '';
 
   return (
-    <div>
+    <>
       {`${task.type} ${task.id}, Priority: ${task.priority}${cost()}${dates()}, Created on ${
         task.createdDate
       } by `}
       <CreatedByLink createdBy={task.createdBy} />
-    </div>
+    </>
   );
 };
 

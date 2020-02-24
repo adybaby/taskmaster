@@ -16,40 +16,33 @@ const InitiativePanel = ({ initiative }) => {
   return (
     <div className={classes.taskPanel}>
       <HeaderBlock task={initiative} />
+      <br />
+      <Typography variant="h6">Planned Dates</Typography>
+      <Typography variant="body1">
+        {plannedDates(initiative.startDate, initiative.endDate)}
+      </Typography>
+      <br />
 
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Planned Dates</Typography>
-        <Typography variant="body1">
-          {plannedDates(initiative.startDate, initiative.endDate)}
-        </Typography>
-      </div>
+      <Typography variant="h6">Hypotheses</Typography>
+      <Typography variant="body1">{initiative.hypotheses}</Typography>
+      <br />
 
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Hypotheses</Typography>
-        <Typography variant="body1">{initiative.hypotheses}</Typography>
-      </div>
+      <Typography variant="h6">Successful If</Typography>
+      <Typography variant="body1">{initiative.successfulIf}</Typography>
+      <br />
 
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Successful If</Typography>
-        <Typography variant="body1">{initiative.successfulIf}</Typography>
-      </div>
+      <Typography variant="h6">Approach</Typography>
+      <Typography variant="body1">{initiative.approach}</Typography>
+      <br />
 
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Approach</Typography>
-        <Typography variant="body1">{initiative.approach}</Typography>
-      </div>
+      <Typography variant="h6">Contributes to</Typography>
+      {initiative.contributesTo.map(contributesTo => (
+        <ContributionLink key={contributesTo.id} contribution={contributesTo} />
+      ))}
+      <br />
 
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Contributes to</Typography>
-        {initiative.contributesTo.map(contributesTo => (
-          <ContributionLink key={contributesTo.id} contribution={contributesTo} />
-        ))}
-      </div>
-
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Vacancies</Typography>
-        <VacancyBlock vacancies={initiative.vacancies} />
-      </div>
+      <Typography variant="h6">Vacancies</Typography>
+      <VacancyBlock vacancies={initiative.vacancies} />
 
       <TagsAndLinksBlock task={initiative} />
     </div>

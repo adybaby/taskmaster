@@ -14,17 +14,13 @@ const EnablerPanel = ({ enabler }) => {
   return (
     <div className={classes.taskPanel}>
       <HeaderBlock task={enabler} />
-
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Enables</Typography>
-        <ContributionsList contributions={enabler.contributesTo} />
-      </div>
-
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Related Initiatives</Typography>
-        <ContributionsBlock contributions={enabler.contributions} />
-      </div>
-
+      <br />
+      <Typography variant="h6">Enables</Typography>
+      <ContributionsList contributions={enabler.contributesTo} />
+      <br />
+      <Typography variant="h6">Related Initiatives</Typography>
+      <ContributionsBlock contributions={enabler.contributions} />
+      <br />
       <TagsAndLinksBlock task={enabler} />
     </div>
   );

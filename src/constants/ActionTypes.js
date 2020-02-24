@@ -11,7 +11,7 @@ export const SET_SORT_ORDER = 'SET_SORT_ORDER';
 export const SET_TAB = 'SET_TAB';
 
 // users
-export const SET_USERS = 'SET_ALL_USERS';
+export const SET_USERS = 'SET_USERS';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 
 // db

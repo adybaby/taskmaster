@@ -2,7 +2,8 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import { setTaskFilter } from '../../actions/TaskFilters';
-import { LinksList, RLink } from './LinksList';
+import { DispatchingRouterLink as RLink } from './DispatchingRouterLink';
+import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
 import * as URLS from '../../constants/Urls';
 import * as VACS from '../../constants/Vacancies';
 import CreatedByLink from '../CreatedByLink';
@@ -68,35 +69,6 @@ const VacancyDates = ({ dates }) => {
   return output;
 };
 
-export const VacancyList = ({ vacancies }) => {
-  if (vacancies === null) return null;
-  if (
-    vacancies.filter(vacancy => VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED).length ===
-    0
-  )
-    return 'All vacancies filled.';
-  return (
-    <LinksList
-      title="Vacancies"
-      links={vacancies.map(vacancy => vacancy.title)}
-      handleLinkClick={handleVacancyClick}
-      url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
-    />
-  );
-};
-
-export const SkillList = ({ skills }) =>
-  skills.map((skill, index) => (
-    <div key={index}>
-      <RLink
-        link={skill}
-        handleLinkClick={handleVacancyClick}
-        url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
-      />
-      <br />
-    </div>
-  ));
-
 export const Status = ({ vacancy }) => {
   if (Array.isArray(vacancy.status)) {
     return (
@@ -115,48 +87,65 @@ export const Status = ({ vacancy }) => {
 };
 
 export const Vacancy = ({ vacancy }) => (
-  <div>
-    <Typography variant="body1">
-      <RLink
-        link={vacancy.title}
-        handleLinkClick={handleVacancyClick}
-        url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
-      />
-      {`${VACS.SHORT_ROLE[vacancy.role]} (${VACS.SHORT_NECESSITY[vacancy.necessity]})`}
-    </Typography>
-    <div>
-      <Typography variant="body1">
-        {vacancy.date === VACS.ANY_DATE.short ? (
-          VACS.ANY_DATE.displayName
-        ) : (
-          <>
-            {`Needed `}
-            <VacancyDates dates={vacancy.date} />
-          </>
-        )}
-      </Typography>
-    </div>
-    <div>
-      <Typography variant="body1">
-        <Status vacancy={vacancy} />
-      </Typography>
-      {VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED ? (
-        <div>
-          <Link value={vacancy.title} href="#">
-            <b>REGISTER INTEREST</b>
-          </Link>
-        </div>
-      ) : null}
-    </div>
-  </div>
+  <Typography variant="body1">
+    <RLink
+      link={vacancy.title}
+      handleLinkClick={handleVacancyClick}
+      url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
+    />
+    {`${VACS.SHORT_ROLE[vacancy.role]} (${VACS.SHORT_NECESSITY[vacancy.necessity]})`}
+    <br />
+    {vacancy.date === VACS.ANY_DATE.short ? (
+      VACS.ANY_DATE.displayName
+    ) : (
+      <>
+        {`Needed `}
+        <VacancyDates dates={vacancy.date} />
+      </>
+    )}
+    <br />
+    <Status vacancy={vacancy} />
+    <br />
+    {VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED ? (
+      <Link value={vacancy.title} href="#">
+        <b>REGISTER INTEREST</b>
+      </Link>
+    ) : null}
+  </Typography>
 );
 
 export const VacancyBlock = ({ vacancies }) =>
   vacancies == null
     ? null
     : vacancies.map((vacancy, index) => (
-        <div key={index}>
-          <br />
+        <React.Fragment key={index}>
           <Vacancy vacancy={vacancy} />
-        </div>
+          <br />
+        </React.Fragment>
       ));
+
+export const VacancyList = ({ vacancies }) => {
+  if (
+    vacancies.filter(vacancy => VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED).length ===
+    0
+  )
+    return 'All vacancies filled.';
+  return (
+    <LinksList
+      title="Vacancies"
+      links={vacancies.map(vacancy => vacancy.title)}
+      handleLinkClick={handleVacancyClick}
+      url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
+    />
+  );
+};
+
+export const SkillList = ({ skills }) =>
+  skills.map((skill, index) => (
+    <RLink
+      key={index}
+      link={skill}
+      handleLinkClick={handleVacancyClick}
+      url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
+    />
+  ));

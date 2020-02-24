@@ -11,14 +11,18 @@ const TaskResult = ({ task }) => {
       <Typography variant="h5">
         <RouterLink to={`/task/${task.id}`}>{task.title}</RouterLink>
       </Typography>
-      <Typography>{task.shortDescription}</Typography>
-      <div>
-        <Typography variant="caption">
-          <FieldSummary task={task} />
-        </Typography>
-      </div>
-      <VacancyList vacancies={task.vacancies} />
-      <TagsList tags={task.tags} />
+      <Typography variant="body1">{task.shortDescription}</Typography>
+      <Typography variant="caption">
+        <FieldSummary task={task} />
+        <br />
+        {task.vacancies === null ? null : (
+          <>
+            <VacancyList vacancies={task.vacancies} />
+            <br />
+          </>
+        )}
+        <TagsList tags={task.tags} />{' '}
+      </Typography>
     </div>
   );
 };

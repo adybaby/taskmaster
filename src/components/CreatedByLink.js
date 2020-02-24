@@ -24,7 +24,7 @@ const CreatedByLink = ({ createdBy }) => {
       <Link value={user.id} component={RouterLink} to={`/${URLS.PROFILE}/${user.id}`}>
         {user.name}
       </Link>
-      {user.authored > 0 ? (
+      {user.authored.length > 0 ? (
         <Link
           value={user.id}
           component={RouterLink}
@@ -33,7 +33,7 @@ const CreatedByLink = ({ createdBy }) => {
             handleCreatedByClick();
           }}
         >
-          {` (${user.authored})`}
+          {` (${user.authored.length})`}
         </Link>
       ) : null}
     </>

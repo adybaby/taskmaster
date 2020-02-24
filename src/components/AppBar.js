@@ -14,8 +14,6 @@ import { useHistory } from 'react-router-dom';
 import Link from './restyled/RouterLink';
 import styles from '../styles/Styles';
 import { setTaskFilter } from '../actions/TaskFilters';
-import { setTab } from '../actions/Tabs';
-import { DEFAULT } from '../constants/Tabs';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -41,7 +39,6 @@ const AppBar = () => {
 
   const handleHomeClick = () => {
     dispatch(setTaskFilter({ type: 'searchTerm', value: '' }));
-    dispatch(setTab(DEFAULT));
   };
 
   return (

@@ -34,9 +34,32 @@ const readRecordsFromText = text => {
   return records;
 };
 
-const deriveAuthorCount = tasks => {
+const deriveAuthored = tasks => {
   users.forEach(user => {
-    user.authored = tasks.filter(task => task.createdBy === user.id).length;
+    user.authored = tasks
+      .filter(task => task.createdBy === user.id)
+      .map(task => ({ id: task.id, title: task.title }));
+  });
+};
+
+const deriveSignedUp = tasks => {
+  users.forEach(user => {
+    user.signedUp = [];
+    tasks
+      .filter(task => task.vacancies !== null && task.vacancies.length > 0)
+      .forEach(task => {
+        for (let vacIndex = 0; vacIndex < task.vacancies.length; vacIndex++) {
+          if (
+            task.vacancies[vacIndex].userId === user.id ||
+            (Array.isArray(task.vacancies[vacIndex].status) &&
+              task.vacancies[vacIndex].status.filter(period => period.userId === user.id).length >
+                0)
+          ) {
+            user.signedUp.push({ id: task.id, title: task.title });
+            break;
+          }
+        }
+      });
   });
 };
 
@@ -45,7 +68,8 @@ const loadUsersFromFile = tasks =>
     readTextFile(FILE)
       .then(text => {
         users = readRecordsFromText(text);
-        deriveAuthorCount(tasks);
+        deriveAuthored(tasks);
+        deriveSignedUp(tasks);
         resolve(users);
       })
       .catch(e => {

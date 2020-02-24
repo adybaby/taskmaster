@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import styles from '../styles/Styles';
 import { SkillList } from './lists/Vacancies';
 
@@ -22,6 +22,21 @@ const ProfilePanel = () => {
     }
   }, [dispatch, id, users]);
 
+  const TaskList = ({ field, title }) =>
+    user[field].length === 0 ? null : (
+      <>
+        <br />
+        <div>
+          <Typography variant="h6">{title}</Typography>
+          {user[field].map((element, index) => (
+            <Typography key={index} variant="body1">
+              <RouterLink to={`/task/${element.id}`}>{element.title}</RouterLink>
+            </Typography>
+          ))}
+        </div>
+      </>
+    );
+
   return (
     <div className={classes.taskPanel}>
       <div>
@@ -35,7 +50,7 @@ const ProfilePanel = () => {
           <br />
           <div>
             <Typography variant="h6">Skills</Typography>
-            <SkillList skills={user.skills} />
+            <SkillList variant="body1" skills={user.skills} />
           </div>
         </>
       )}
@@ -45,16 +60,15 @@ const ProfilePanel = () => {
           <div>
             <Typography variant="h6">Available Dates</Typography>
             {user.available.map((available, index) => (
-              <div key={index}>
-                <Typography variant="body1">
-                  {available.from} to {available.to}
-                </Typography>
-                <br />
-              </div>
+              <Typography key={index} variant="body1">
+                {available.from} to {available.to}
+              </Typography>
             ))}
           </div>
         </>
       )}
+      <TaskList field="authored" title="Created" />
+      <TaskList field="signedUp" title="Signed Up For" />
     </div>
   );
 };

@@ -41,7 +41,7 @@ const FilterBar = () => {
 
   const getCreatedByOptions = () => {
     const list = users.map(user => ({
-      label: `${user.name} ${user.authored > 0 ? `(${user.authored})` : ''}`,
+      label: `${user.name} ${user.authored > 0 ? `(${user.authored.length})` : ''}`,
       value: user.id
     }));
     list.sort();

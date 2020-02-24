@@ -14,12 +14,10 @@ const DriverPanel = ({ driver }) => {
   return (
     <div className={classes.taskPanel}>
       <HeaderBlock task={driver} />
-
-      <div className={classes.taskBody}>
-        <Typography variant="h6">Enabled By</Typography>
-        <ContributionsBlock contributions={driver.contributions} />
-      </div>
-
+      <br />
+      <Typography variant="h6">Enabled By</Typography>
+      <ContributionsBlock contributions={driver.contributions} />
+      <br />
       <TagsAndLinksBlock task={driver} />
     </div>
   );

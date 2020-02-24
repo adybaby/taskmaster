@@ -25,31 +25,38 @@ const App = () => {
     }
   }, [dispatch, dbStatus]);
 
-  return dbStatus !== DB_STATUS.INITIALISED ? (
-    'DB not init'
-  ) : (
-    <div>
-      <CssBaseline />
-      <div className={classes.background}>
-        <CssBaseline />
-        <div className={classes.root}>
-          <AppBar />
-          <Switch>
-            <Route exact path="/">
-              <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
-            </Route>
-            <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
-            <Route path={`/${URLS.PROFILE}/:id`} component={ProfilePanel} />
-            <Route path={`/${URLS.PROFILE}/`} component={ProfilePanel} />
-            <Route path={`/${URLS.BROWSE}/:id`} component={BrowsePanel} />
-            <Route>
-              <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
-            </Route>
-          </Switch>
+  switch (dbStatus) {
+    case DB_STATUS.NOT_INITIALISED:
+      return <div>A local cache has not yet been created from the database..</div>;
+    case DB_STATUS.INITIALISING:
+      return <div>Please wait whilst a local cache of the database is created..</div>;
+    case DB_STATUS.ERROR:
+      return <div>There was an error creating the local cache from the database..</div>;
+    default:
+      return (
+        <div>
+          <CssBaseline />
+          <div className={classes.background}>
+            <CssBaseline />
+            <div className={classes.root}>
+              <AppBar />
+              <Switch>
+                <Route exact path="/">
+                  <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
+                </Route>
+                <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
+                <Route path={`/${URLS.PROFILE}/:id`} component={ProfilePanel} />
+                <Route path={`/${URLS.PROFILE}/`} component={ProfilePanel} />
+                <Route path={`/${URLS.BROWSE}/:id`} component={BrowsePanel} />
+                <Route>
+                  <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
+                </Route>
+              </Switch>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      );
+  }
 };
 
 export default App;
