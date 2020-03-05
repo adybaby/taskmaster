@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { cleanString } from './StringUtils';
 
-const formatDate = date => {
+export const formatDate = date => {
   const monthNames = [
     'Jan',
     'Feb',
@@ -29,10 +29,6 @@ export const parseDate = dateStr => {
 
   if (!isNaN(Date.parse(cleanedDateStr))) {
     return formatDate(new Date(date));
-  }
-
-  if (cleanedDateStr === 'TBD') {
-    return cleanedDateStr;
   }
 
   return null;

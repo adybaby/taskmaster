@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { useParams, Link as RouterLink } from 'react-router-dom';
 import styles from '../styles/Styles';
-import { SkillList } from './lists/Vacancies';
+import { SkillList, VacancyDates } from './lists/Vacancies';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -31,6 +31,12 @@ const ProfilePanel = () => {
           {user[field].map((element, index) => (
             <Typography key={index} variant="body1">
               <RouterLink to={`/task/${element.id}`}>{element.title}</RouterLink>
+              {Array.isArray(element.periods) ? (
+                <>
+                  {` `}
+                  <VacancyDates dates={element.periods} noUser={true} />
+                </>
+              ) : null}
             </Typography>
           ))}
         </div>

@@ -15,7 +15,7 @@ export const parseListFromString = str => {
   if (cleanedStr !== null) {
     return cleanedStr.split(LIST_DELIM).map(string => cleanString(string));
   }
-  return null;
+  return [];
 };
 
 export const doesObjectIncludeStr = str => {

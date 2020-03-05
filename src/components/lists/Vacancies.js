@@ -23,7 +23,7 @@ const User = ({ userId }) =>
     </>
   ) : null;
 
-const VacancyDate = ({ date }) => {
+const VacancyDate = ({ date, noUser }) => {
   if (
     typeof date.to === 'undefined' ||
     date.to === null ||
@@ -33,7 +33,7 @@ const VacancyDate = ({ date }) => {
     return (
       <>
         {`from ${date.from} (end date TBD)`}
-        <User userId={date.userId} />
+        {noUser ? null : <User userId={date.userId} />}
       </>
     );
   }
@@ -46,22 +46,22 @@ const VacancyDate = ({ date }) => {
     return (
       <>
         {`until ${date.to} (start date TBD)`}
-        <User userId={date.userId} />
+        {noUser ? null : <User userId={date.userId} />}
       </>
     );
   }
   return (
     <>
       {`from ${date.from} to ${date.to}`}
-      <User userId={date.userId} />
+      {noUser ? null : <User userId={date.userId} />}
     </>
   );
 };
 
-const VacancyDates = ({ dates }) => {
+export const VacancyDates = ({ dates, noUser }) => {
   const output = [];
   for (let i = 0; i < dates.length; i++) {
-    output.push(<VacancyDate key={i} date={dates[i]} />);
+    output.push(<VacancyDate key={i} date={dates[i]} noUser={noUser} />);
     if (i < dates.length - 1) {
       output.push(<React.Fragment key={`_${i}`}>{', then '}</React.Fragment>);
     }

@@ -24,7 +24,7 @@ const readRecordsFromText = text => {
       record.skills = parseListFromString(fields[2]);
       const available = cleanString(fields[3]);
       if (available === null) {
-        record.available = null;
+        record.available = [];
       } else {
         parseDateList(available.split(' '), 0, record, 'available');
       }
@@ -49,14 +49,20 @@ const deriveSignedUp = tasks => {
       .filter(task => task.vacancies !== null && task.vacancies.length > 0)
       .forEach(task => {
         for (let vacIndex = 0; vacIndex < task.vacancies.length; vacIndex++) {
-          if (
-            task.vacancies[vacIndex].userId === user.id ||
-            (Array.isArray(task.vacancies[vacIndex].status) &&
-              task.vacancies[vacIndex].status.filter(period => period.userId === user.id).length >
-                0)
-          ) {
-            user.signedUp.push({ id: task.id, title: task.title });
+          if (task.vacancies[vacIndex].userId === user.id) {
+            user.signedUp.push({
+              id: task.id,
+              title: task.title,
+              periods: [{ from: task.startDate, to: task.endDate }]
+            });
             break;
+          } else if (Array.isArray(task.vacancies[vacIndex].status)) {
+            const periods = task.vacancies[vacIndex].status.filter(
+              period => period.userId === user.id
+            );
+            if (periods.length > 0) {
+              user.signedUp.push({ id: task.id, title: task.title, periods });
+            }
           }
         }
       });

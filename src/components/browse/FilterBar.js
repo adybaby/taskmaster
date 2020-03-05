@@ -11,6 +11,7 @@ import * as TASK_FILTERS from '../../constants/TaskFilters';
 import { setTaskFilter } from '../../actions/TaskFilters';
 import { setSortOrder } from '../../actions/SortOrder';
 import * as SORT_ORDER from '../../constants/SortOrders';
+import { getNeededSkills } from '../../util/Vacancies';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -24,19 +25,11 @@ const FilterBar = () => {
   const users = useSelector(state => state.users);
 
   const getVacancyOptions = () => {
-    const vacancyOptions = [
+    const vo = [
       { label: TASK_FILTERS.DEFAULTS.VACANCIES.value, value: TASK_FILTERS.DEFAULTS.VACANCIES.value }
     ];
-    tasks.forEach(task => {
-      if (task.vacancies != null) {
-        task.vacancies.forEach(vacancy => {
-          if (vacancyOptions.filter(vo => vo.value === vacancy.title).length === 0) {
-            vacancyOptions.push({ label: vacancy.title, value: vacancy.title });
-          }
-        });
-      }
-    });
-    return vacancyOptions;
+    vo.push(...getNeededSkills(tasks).map(ns => ({ label: ns, value: ns })));
+    return vo;
   };
 
   const getCreatedByOptions = () => {
