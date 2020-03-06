@@ -68,7 +68,7 @@ const styles = theme => ({
     verticalAlign: 'middle',
     marginRight: theme.spacing(1)
   },
-  taskPanel: {
+  outerPanel: {
     marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(2),
     marginTop: theme.spacing(2),

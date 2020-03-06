@@ -14,7 +14,7 @@ const MapPanel = () => {
   const tasks = useSelector(state => state.tasks);
 
   return (
-    <div className={classes.taskPanel}>
+    <div className={classes.outerPanel}>
       {tasks
         .filter(task => task.type === TYPES.DRIVER)
         .map(driver => (
@@ -22,7 +22,7 @@ const MapPanel = () => {
             <Typography variant="h5">
               <RouterLink to={`/task/${driver.id}`}>{driver.title} </RouterLink>
             </Typography>
-            <div className={classes.taskPanel}>
+            <div className={classes.outerPanel}>
               <ContributionsDeepList contributions={driver.contributions} />
             </div>
           </div>

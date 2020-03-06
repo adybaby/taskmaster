@@ -44,7 +44,7 @@ const ProfilePanel = () => {
     );
 
   return (
-    <div className={classes.taskPanel}>
+    <div className={classes.outerPanel}>
       <div>
         <Typography variant="h4">
           {user.name}
