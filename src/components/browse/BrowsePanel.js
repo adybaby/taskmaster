@@ -15,13 +15,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Collapse from '@material-ui/core/Collapse';
 import styles from '../../styles/Styles';
-import { setTaskFilter } from '../../actions/TaskFilters';
-import { setTab } from '../../actions/Tabs';
-import ToggleButton from '../restyled/ToggleButton';
+import { setTaskFilter } from '../../redux/actions/TaskFilters';
+import { setTab } from '../../redux/actions/Tabs';
+import ToggleButton from '../fragments/ToggleButton';
 import FilterBar from './FilterBar';
 import { TABS, getTabForUrl } from '../../constants/Tabs';
-import MapPanel from '../MapPanel';
-import ChartPanel from '../ChartPanel';
+import MapPanel from '../maps/MapPanel';
+import { ChartPanel } from '../charts/ChartPanel';
 import TaskList from './TaskList';
 import * as URLS from '../../constants/Urls';
 
@@ -86,7 +86,7 @@ const BrowsePanel = () => {
     currentTab !== TABS.CHARTS && currentTab !== TABS.MAP && taskFilters.filterBar.enabled;
 
   return (
-    <div>
+    <>
       <div className={classes.secondaryBar}>
         <Tabs
           value={currentTab.ID}
@@ -118,7 +118,7 @@ const BrowsePanel = () => {
         <FilterBar />
       </Collapse>
       {getCurrentPanel()}
-    </div>
+    </>
   );
 };
 

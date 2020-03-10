@@ -11,9 +11,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Link from './restyled/RouterLink';
+import Link from './fragments/RouterLink';
 import styles from '../styles/Styles';
-import { setTaskFilter } from '../actions/TaskFilters';
+import { setTaskFilter } from '../redux/actions/TaskFilters';
 
 const useStyles = makeStyles(theme => styles(theme));
 

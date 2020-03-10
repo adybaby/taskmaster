@@ -3,17 +3,31 @@
 /* eslint-disable no-console */
 import readTextFile from '../../util/TextFileUtils';
 import { cleanString, parseListFromString } from '../../util/StringUtils';
-import { parseDateList } from './VacancyParser';
+import { parseDateList, isDate } from './Common';
 
 const { EOL } = require('os');
 
 const FILE = '/users.txt';
 const FIELD_DELIM = '\t';
 let users = null;
+let dateRange = null;
 
 const readRecordsFromText = text => {
   const records = [];
   const lines = text.split(EOL);
+
+  const updateDateRange = available => {
+    available.forEach(period => {
+      const firstDate = new Date(period.from);
+      const lastDate = new Date(period.to);
+      if (isDate(firstDate) && firstDate.getTime() < dateRange.first) {
+        dateRange.first = firstDate.getTime();
+      }
+      if (isDate(lastDate) && lastDate.getTime() > dateRange.last) {
+        dateRange.last = lastDate.getTime();
+      }
+    });
+  };
 
   for (let i = 1; i < lines.length; i++) {
     if (lines[i].length > 0) {
@@ -28,6 +42,7 @@ const readRecordsFromText = text => {
       } else {
         parseDateList(available.split(' '), 0, record, 'available');
       }
+      updateDateRange(record.available);
       records.push(record);
     }
   }
@@ -69,25 +84,26 @@ const deriveSignedUp = tasks => {
   });
 };
 
-const loadUsersFromFile = tasks =>
+const loadUsersFromFile = tasksAndRange =>
   new Promise((resolve, reject) => {
     readTextFile(FILE)
       .then(text => {
+        ({ dateRange } = tasksAndRange);
         users = readRecordsFromText(text);
-        deriveAuthored(tasks);
-        deriveSignedUp(tasks);
-        resolve(users);
+        deriveAuthored(tasksAndRange.tasks);
+        deriveSignedUp(tasksAndRange.tasks);
+        resolve({ users, dateRange });
       })
       .catch(e => {
         reject(e);
       });
   });
 
-export const retrieveUsers = tasks =>
+export const retrieveUsers = tasksAndRange =>
   new Promise((resolve, reject) => {
-    loadUsersFromFile(tasks)
-      .then(() => {
-        resolve(users);
+    loadUsersFromFile(tasksAndRange)
+      .then(usersAndRange => {
+        resolve(usersAndRange);
       })
       .catch(e => {
         reject(e);

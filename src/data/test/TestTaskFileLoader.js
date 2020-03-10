@@ -5,7 +5,7 @@ import readTextFile from '../../util/TextFileUtils';
 import { cleanString, parseListFromString } from '../../util/StringUtils';
 import * as TYPES from '../../constants/TaskTypes';
 import { multiplierForLevel } from '../../constants/Contributions';
-import { buildVacanciesField } from './VacancyParser';
+import { buildVacanciesField, isDate } from './Common';
 
 const { EOL } = require('os');
 
@@ -17,6 +17,20 @@ const CONTRIBUTION_TYPE = {
 };
 
 let tasks = null;
+
+const dateRange = { first: null, last: null };
+
+const updateDateRange = (firstStr, lastStr) => {
+  const firstDate = new Date(firstStr);
+  const lastDate = new Date(lastStr);
+
+  if (isDate(firstDate) && (dateRange.first === null || firstDate.getTime() < dateRange.first)) {
+    dateRange.first = firstDate.getTime();
+  }
+  if (isDate(lastDate) && (dateRange.last === null || lastDate.getTime() > dateRange.last)) {
+    dateRange.last = lastDate.getTime();
+  }
+};
 
 const buildPriorityFields = () => {
   let highestPriority = 0;
@@ -137,6 +151,7 @@ const readRecordsFromText = text => {
       record.contributesTo = cleanString(fields[15]);
       record.startDate = cleanString(fields[16]);
       record.endDate = cleanString(fields[17]);
+      updateDateRange(record.startDate, record.endDate);
       try {
         record.vacancies = buildVacanciesField(fields[18]);
       } catch (err) {
@@ -181,7 +196,7 @@ export const retrieveTasks = () =>
   new Promise((resolve, reject) => {
     loadTasksFromFile()
       .then(() => {
-        resolve(tasks);
+        resolve({ tasks, dateRange });
       })
       .catch(e => {
         reject(e);

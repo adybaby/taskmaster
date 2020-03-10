@@ -1,9 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Link as RouterLink } from 'react-router-dom';
-import FieldSummary from '../lists/FieldSummary';
-import { VacancyList } from '../lists/Vacancies';
-import TagsList from '../lists/TagsList';
+import FieldSummary from '../fragments/FieldSummary';
+import { VacancyList } from '../fragments/Vacancies';
+import TagsList from '../fragments/TagsList';
 
 const TaskResult = ({ task }) => {
   return (

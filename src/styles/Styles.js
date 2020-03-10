@@ -1,6 +1,9 @@
 import { fade } from '@material-ui/core/styles';
 
 const styles = theme => ({
+  root: {
+    display: 'inline'
+  },
   grow: {
     flexGrow: 1
   },
@@ -76,6 +79,24 @@ const styles = theme => ({
   },
   taskBody: {
     marginTop: theme.spacing(2)
+  },
+  chartPanelContainer: {
+    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
+    height: '100%',
+    flexDirection: 'row'
+  },
+  chartList: {
+    borderRight: `1px solid ${theme.palette.divider}`,
+    flexGrow: '2',
+    width: '180px'
+  },
+  chart: {
+    flexGrow: '8',
+    marginLeft: theme.spacing(2)
+  },
+  chartListItem: {
+    paddingLeft: theme.spacing(4)
   }
 });
 

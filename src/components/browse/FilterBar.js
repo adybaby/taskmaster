@@ -8,8 +8,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from '../../styles/Styles';
 import * as TASK_FILTERS from '../../constants/TaskFilters';
-import { setTaskFilter } from '../../actions/TaskFilters';
-import { setSortOrder } from '../../actions/SortOrder';
+import { setTaskFilter } from '../../redux/actions/TaskFilters';
+import { setSortOrder } from '../../redux/actions/SortOrder';
 import * as SORT_ORDER from '../../constants/SortOrders';
 import { getNeededSkills } from '../../util/Vacancies';
 
