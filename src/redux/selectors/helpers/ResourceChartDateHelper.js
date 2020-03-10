@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 let tasks = null;
 let users = null;
 let dateRange = null;
@@ -115,6 +116,7 @@ const calcAvailability = () => {
       });
     });
   });
+  minMax(signedUp);
   minMax(availability);
 };
 

@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import '../../../node_modules/react-vis/dist/style.css';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
 
-const BarChart = ({ title, seriesSet, positive }) => {
+const BarChart = ({ title, seriesSet }) => {
   const skills = useSelector(calculateResourceChartData).skillsAndColors.map(s => s.title);
   const tickValues = [];
   for (let i = 0; i < skills.length; i++) {
@@ -44,7 +44,7 @@ const BarChart = ({ title, seriesSet, positive }) => {
                   x0: d.x + 86400000,
                   y: index + 0.9,
                   y0: index + 0.1,
-                  color: positive ? (d.y < 0 ? 0 : d.y) : d.y > 0 ? 0 : Math.abs(d.y)
+                  color: d.y
                 }))}
               />
             );
@@ -55,8 +55,8 @@ const BarChart = ({ title, seriesSet, positive }) => {
             startColor={'#FFFFFF'}
             endColor={'#33ACFF'}
             width={400}
-            startTitle={0}
-            midTitle={Math.round(seriesSet.max / 2)}
+            startTitle={seriesSet.min}
+            midTitle={Math.floor(seriesSet.max / 2)}
             endTitle={seriesSet.max}
           />
         </div>
@@ -66,17 +66,12 @@ const BarChart = ({ title, seriesSet, positive }) => {
 };
 
 export const VacancyChart = () => (
-  <BarChart
-    title="Vacancies"
-    positive={true}
-    seriesSet={useSelector(calculateResourceChartData).vacancies}
-  />
+  <BarChart title="Vacancies" seriesSet={useSelector(calculateResourceChartData).vacancies} />
 );
 
 export const AvailabilityChart = () => (
   <BarChart
     title="Availability (before sign ups)"
-    positive={true}
     seriesSet={useSelector(calculateResourceChartData).availability}
   />
 );
@@ -84,33 +79,17 @@ export const AvailabilityChart = () => (
 export const ActualAvailabilityChart = () => (
   <BarChart
     title="Availability (after sign ups)"
-    positive={true}
     seriesSet={useSelector(calculateResourceChartData).actualAvailability}
   />
 );
 
 export const SignedUpChart = () => {
-  return (
-    <BarChart
-      title="Sign Ups"
-      positive={true}
-      seriesSet={useSelector(calculateResourceChartData).signedUp}
-    />
-  );
+  return <BarChart title="Sign Ups" seriesSet={useSelector(calculateResourceChartData).signedUp} />;
 };
 
 export const ShortfallChart = () => (
   <BarChart
     title="Required Resources (remaining vacancies after sign ups)"
-    positive={true}
-    seriesSet={useSelector(calculateResourceChartData).shortfall}
-  />
-);
-
-export const ExcessChart = () => (
-  <BarChart
-    title="Excess (remaining resources after sign ups)"
-    positive={false}
     seriesSet={useSelector(calculateResourceChartData).shortfall}
   />
 );

@@ -61,18 +61,17 @@ export const ChartPanel = () => {
               <LiBtn label="Actual Availability" val={3} />
               <LiBtn label="Signed Up" val={4} />
               <LiBtn label="Shortfall" val={5} />
-              <LiBtn label="Excess" val={6} />
             </List>
           </Collapse>
           <LiFldr label="Resources (Stacked)" handleClick={handleRsClicked} open={rsOpen} />
           <Collapse in={rsOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <LiBtn label="Vacancies" val={7} />
-              <LiBtn label="Stated Availability" val={8} />
-              <LiBtn label="Actual Availability" val={9} />
-              <LiBtn label="Signed Up" val={10} />
-              <LiBtn label="Shortfall" val={11} />
-              <LiBtn label="Excess" val={12} />
+              <LiBtn label="Vacancies" val={6} />
+              <LiBtn label="Stated Availability" val={7} />
+              <LiBtn label="Actual Availability" val={8} />
+              <LiBtn label="Signed Up" val={9} />
+              <LiBtn label="Shortfall" val={10} />
+              <LiBtn label="Excess" val={11} />
             </List>
           </Collapse>
         </List>
@@ -83,13 +82,12 @@ export const ChartPanel = () => {
         {listIndex === 3 ? <Gantt.ActualAvailabilityChart /> : null}
         {listIndex === 4 ? <Gantt.SignedUpChart /> : null}
         {listIndex === 5 ? <Gantt.ShortfallChart /> : null}
-        {listIndex === 6 ? <Gantt.ExcessChart /> : null}
-        {listIndex === 7 ? <Stacked.VacancyChart /> : null}
-        {listIndex === 8 ? <Stacked.AvailabilityChart /> : null}
-        {listIndex === 9 ? <Stacked.ActualAvailabilityChart /> : null}
-        {listIndex === 10 ? <Stacked.SignedUpChart /> : null}
-        {listIndex === 11 ? <Stacked.ShortfallChart /> : null}
-        {listIndex === 12 ? <Stacked.ExcessChart /> : null}
+        {listIndex === 6 ? <Stacked.VacancyChart /> : null}
+        {listIndex === 7 ? <Stacked.AvailabilityChart /> : null}
+        {listIndex === 8 ? <Stacked.ActualAvailabilityChart /> : null}
+        {listIndex === 9 ? <Stacked.SignedUpChart /> : null}
+        {listIndex === 10 ? <Stacked.ShortfallChart /> : null}
+        {listIndex === 11 ? <Stacked.ExcessChart /> : null}
       </div>
     </div>
   );
