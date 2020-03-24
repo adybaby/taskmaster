@@ -46,7 +46,7 @@ const xyTemplate = () => {
     i.getTime() <= new Date(dateRange.last).getTime();
     i.setDate(i.getDate() + 1)
   ) {
-    xy.push({ x: i.getTime(), y: 0 });
+    xy.push({ x: i.getTime(), y: 0, signUps: [], vacancies: [] });
   }
   return xy;
 };
@@ -90,12 +90,22 @@ const createSeriesTemplates = () => {
   shortfall = seriesTemplate();
 };
 
-const updateXY = (from, to, data) => {
+const updateXY = (from, to, data, signUp, vacancy) => {
   let i = data.findIndex(d => d.x === new Date(from).getTime());
   const end = data.findIndex(d => d.x === new Date(to).getTime());
   for (i; i <= end; i++) {
     // eslint-disable-next-line no-param-reassign
     data[i].y++;
+    if (signUp !== null) data[i].signUps.push(signUp);
+    if (vacancy !== null) {
+      const entry = data[i].vacancies.filter(v => v.task.id === vacancy.task.id)[0];
+      if (typeof entry === 'undefined') {
+        vacancy.count = 1;
+        data[i].vacancies.push({ ...vacancy });
+      } else {
+        entry.count += 1;
+      }
+    }
   }
 };
 
@@ -106,12 +116,18 @@ const calcAvailability = () => {
       const signedUpEntry = signedUp.filter(su => su.label === skill)[0];
 
       user.available.forEach(available => {
-        updateXY(available.from, available.to, availabilityEntry.data);
+        updateXY(
+          available.from,
+          available.to,
+          availabilityEntry.data,
+          { user, signUp: null },
+          null
+        );
       });
 
       user.signedUp.forEach(su => {
         su.periods.forEach(period => {
-          updateXY(period.from, period.to, signedUpEntry.data);
+          updateXY(period.from, period.to, signedUpEntry.data, { user, signUp: su }, null);
         });
       });
     });
@@ -128,8 +144,8 @@ const calcVacancies = () => {
         task.vacancies
           .filter(v => v.title === vacancy.label)
           .filter(v => v.status === 'V')
-          .forEach(() => {
-            updateXY(task.startDate, task.endDate, vacancy.data);
+          .forEach(v => {
+            updateXY(task.startDate, task.endDate, vacancy.data, null, { task, vacancy: v });
           });
       });
   });
@@ -141,8 +157,20 @@ const calcActualAvailabilityAndShortFall = () => {
     for (let dayIndex = 0; dayIndex < availability[0].data.length; dayIndex++) {
       actualAvailability[skillIndex].data[dayIndex].y =
         availability[skillIndex].data[dayIndex].y - signedUp[skillIndex].data[dayIndex].y;
+
+      actualAvailability[skillIndex].data[dayIndex].vacancies =
+        vacancies[skillIndex].data[dayIndex].vacancies;
+
+      actualAvailability[skillIndex].data[dayIndex].signUps =
+        signedUp[skillIndex].data[dayIndex].signUps;
+
       shortfall[skillIndex].data[dayIndex].y =
         vacancies[skillIndex].data[dayIndex].y - actualAvailability[skillIndex].data[dayIndex].y;
+
+      shortfall[skillIndex].data[dayIndex].vacancies =
+        vacancies[skillIndex].data[dayIndex].vacancies;
+
+      shortfall[skillIndex].data[dayIndex].signUps = signedUp[skillIndex].data[dayIndex].signUps;
     }
   }
   minMax(actualAvailability);

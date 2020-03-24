@@ -97,6 +97,11 @@ const styles = theme => ({
   },
   chartListItem: {
     paddingLeft: theme.spacing(4)
+  },
+  chartTooltip: {
+    whiteSpace: 'nowrap',
+    padding: theme.spacing(1),
+    pointerEvents: 'auto'
   }
 });
 

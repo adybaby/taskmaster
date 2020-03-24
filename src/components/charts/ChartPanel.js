@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => styles(theme));
 export const ChartPanel = () => {
   const classes = useStyles();
 
-  const [listIndex, setListIndex] = React.useState(5);
+  const [listIndex, setListIndex] = React.useState(1);
   const [rgOpen, setRgOpen] = React.useState(true);
   const [rsOpen, setRsOpen] = React.useState(false);
 
