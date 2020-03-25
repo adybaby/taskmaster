@@ -1,3 +1,4 @@
 filter initiatives starting on/ active on dates/after
 vacancies: mine
 how many count in filters
+-5 excess 2 jun - show no vacancies etc.?

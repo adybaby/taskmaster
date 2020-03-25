@@ -12,6 +12,12 @@ import { setTaskFilter } from '../../redux/actions/TaskFilters';
 import { setSortOrder } from '../../redux/actions/SortOrder';
 import * as SORT_ORDER from '../../constants/SortOrders';
 import { getNeededSkills } from '../../util/Vacancies';
+import {
+  getVisibleTasksOmitVacancies,
+  getVisibleTasksOmitCreatedBy,
+  getVisibleTasksOmitCreatedOn,
+  filterByDate
+} from '../../redux/selectors/TaskSelector';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -20,36 +26,83 @@ const FilterBar = () => {
 
   const dispatch = useDispatch();
   const tasks = useSelector(state => state.tasks);
+  const visibleTasksOmitCreatedOn = useSelector(getVisibleTasksOmitCreatedOn);
+  const visibleTasksOmitVacancies = useSelector(getVisibleTasksOmitVacancies);
+  const visibleTasksOmitCreatedBy = useSelector(getVisibleTasksOmitCreatedBy);
   const sortOrder = useSelector(state => state.sortOrder);
   const taskFilters = useSelector(state => state.taskFilters);
   const users = useSelector(state => state.users);
 
   const getVacancyOptions = () => {
-    const vo = [
-      { label: TASK_FILTERS.DEFAULTS.VACANCIES.value, value: TASK_FILTERS.DEFAULTS.VACANCIES.value }
-    ];
-    vo.push(...getNeededSkills(tasks).map(ns => ({ label: ns, value: ns })));
+    const countSkillVacancies = skill => {
+      let count = 0;
+      const tasksWithVacs = visibleTasksOmitVacancies.filter(
+        vt =>
+          typeof vt.vacancies !== 'undefined' && vt.vacancies !== null && vt.vacancies.length > 0
+      );
+      tasksWithVacs.forEach(twv => {
+        count += twv.vacancies.filter(v => v.title === skill).length;
+      });
+      return count;
+    };
+
+    const vo = [];
+
+    getNeededSkills(tasks).forEach(ns => {
+      const count = countSkillVacancies(ns);
+      if (count !== 0) {
+        vo.push({
+          label: `${ns} (${count})`,
+          value: ns
+        });
+      }
+    });
+    vo.sort();
+
+    vo.unshift({
+      label: TASK_FILTERS.DEFAULTS.VACANCIES.value,
+      value: TASK_FILTERS.DEFAULTS.VACANCIES.value
+    });
+
     return vo;
   };
 
   const getCreatedByOptions = () => {
-    const list = users.map(user => ({
-      label: `${user.name} ${user.authored > 0 ? `(${user.authored.length})` : ''}`,
-      value: user.id
-    }));
-    list.sort();
-    list.unshift({
+    const countCreatedBy = id =>
+      visibleTasksOmitCreatedBy.filter(task => task.createdBy === id).length;
+
+    const co = [];
+
+    users.forEach(user => {
+      const count = countCreatedBy(user.id);
+      if (count !== 0) {
+        co.push({
+          label: `${user.name} (${count})`,
+          value: user.id
+        });
+      }
+    });
+
+    co.sort();
+
+    co.unshift({
       label: TASK_FILTERS.DEFAULTS.CREATED_BY.value,
       value: TASK_FILTERS.DEFAULTS.CREATED_BY.value
     });
-    return list;
+
+    return co;
   };
 
-  const getCreatedOnOptions = () =>
-    Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => ({
-      label: entry[1],
+  const getCreatedOnOptions = () => {
+    const countCreatedOn = value => {
+      return filterByDate(visibleTasksOmitCreatedOn, value).length;
+    };
+
+    return Object.entries(TASK_FILTERS.CREATED_OPTIONS).map(entry => ({
+      label: `${entry[1]} (${countCreatedOn(entry[1])})`,
       value: entry[1]
     }));
+  };
 
   const handleFilterChange = (event, type) => {
     dispatch(setTaskFilter({ type, value: event.target.value }));

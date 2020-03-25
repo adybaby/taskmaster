@@ -53,7 +53,7 @@ export const ProfilesPanel = () => {
     <>
       <div className={classes.mainTabBar}>
         <Tabs value={currentTabId} indicatorColor="primary" onChange={handleChange}>
-          {getTab(0, 'ME')}
+          {getTab(0, user.name)}
           {getTab(1, 'All Users')}
         </Tabs>
       </div>

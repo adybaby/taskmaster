@@ -11,7 +11,7 @@ const getTaskFilters = state => state.taskFilters;
 const getTasks = state => state.tasks;
 const getSortOrder = state => state.sortOrder;
 
-const filterByDate = (filteredTasks, option) => {
+export const filterByDate = (filteredTasks, option) => {
   switch (option) {
     case TASK_FILTERS.CREATED_OPTIONS.TODAY:
       return filteredTasks.filter(task => new Date(task.createdDate) === new Date());
@@ -45,7 +45,7 @@ const filterByDate = (filteredTasks, option) => {
   }
 };
 
-const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) => {
+const applyFilters = (taskFilters, tasks, omitFilter) => {
   let filteredTasks = tasks;
 
   if (taskFilters.type.enabled && taskFilters.type.value !== TASK_FILTERS.DEFAULTS.TYPE.value) {
@@ -59,7 +59,8 @@ const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tas
   if (taskFilters.filterBar.enabled) {
     if (
       taskFilters.vacancies.enabled &&
-      taskFilters.vacancies.value !== TASK_FILTERS.DEFAULTS.VACANCIES.value
+      taskFilters.vacancies.value !== TASK_FILTERS.DEFAULTS.VACANCIES.value &&
+      omitFilter !== 'vacancies'
     ) {
       filteredTasks = filteredTasks.filter(task => {
         if (task.vacancies === null) {
@@ -76,20 +77,38 @@ const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tas
 
     if (
       taskFilters.createdBy.enabled &&
-      taskFilters.createdBy.value !== TASK_FILTERS.DEFAULTS.CREATED_BY.value
+      taskFilters.createdBy.value !== TASK_FILTERS.DEFAULTS.CREATED_BY.value &&
+      omitFilter !== 'createdBy'
     ) {
       filteredTasks = filteredTasks.filter(task => task.createdBy === taskFilters.createdBy.value);
     }
 
     if (
       taskFilters.createdOn.enabled &&
-      taskFilters.createdOn.value !== TASK_FILTERS.DEFAULTS.CREATED_ON.value
+      taskFilters.createdOn.value !== TASK_FILTERS.DEFAULTS.CREATED_ON.value &&
+      omitFilter !== 'createdOn'
     ) {
       filteredTasks = filterByDate(filteredTasks, taskFilters.createdOn.value);
     }
   }
   return filteredTasks;
-});
+};
+
+const filterTasks = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) =>
+  applyFilters(taskFilters, tasks, null)
+);
+
+const filterTasksOmitVacancies = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) =>
+  applyFilters(taskFilters, tasks, 'vacancies')
+);
+
+const filterTasksOmitCreatedBy = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) =>
+  applyFilters(taskFilters, tasks, 'createdBy')
+);
+
+const filterTasksOmitCreatedOn = createSelector([getTaskFilters, getTasks], (taskFilters, tasks) =>
+  applyFilters(taskFilters, tasks, 'createdOn')
+);
 
 const sortTasks = (tasks, sortOrder) => {
   switch (sortOrder) {
@@ -137,8 +156,21 @@ const sortTasks = (tasks, sortOrder) => {
   }
 };
 
-const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, tasks) =>
+export const getVisibleTasks = createSelector([getSortOrder, filterTasks], (sortOrder, tasks) =>
   sortTasks(tasks.concat(), sortOrder)
 );
 
-export default getVisibleTasks;
+export const getVisibleTasksOmitVacancies = createSelector(
+  [getSortOrder, filterTasksOmitVacancies],
+  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
+);
+
+export const getVisibleTasksOmitCreatedBy = createSelector(
+  [getSortOrder, filterTasksOmitCreatedBy],
+  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
+);
+
+export const getVisibleTasksOmitCreatedOn = createSelector(
+  [getSortOrder, filterTasksOmitCreatedOn],
+  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
+);

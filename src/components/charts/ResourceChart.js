@@ -18,7 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Divider } from '@material-ui/core';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
 import styles from '../../styles/Styles';
-import { MarkPanel } from './MarkPanel';
+import { MarkPanel } from './ResourceMarkPanel';
 
 const useStyles = makeStyles(theme => styles(theme));
 
@@ -61,8 +61,10 @@ const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
     };
 
     return series.data.map((d, dataIndex) => {
+      const y = gantt ? skillsIndex + 0.9 : getStackedY(d.y);
       const data = {
         x: d.x,
+        y,
         markPanel: (
           <MarkPanel
             dayRefData={refs[skillsIndex].data[dataIndex]}
@@ -72,7 +74,6 @@ const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
           />
         )
       };
-
       if (gantt)
         Object.assign(data, {
           color:
@@ -80,10 +81,8 @@ const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
               ? -99
               : d.y,
           x0: d.x + 86400000,
-          y: skillsIndex + 0.9,
           y0: skillsIndex + 0.1
         });
-      else Object.assign(data, { y: getStackedY(d.y) });
 
       return data;
     });

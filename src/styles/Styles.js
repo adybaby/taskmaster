@@ -1,6 +1,16 @@
-import { fade } from '@material-ui/core/styles';
+import { fade, createMuiTheme } from '@material-ui/core/styles';
 
-const styles = theme => ({
+const theme = createMuiTheme({
+  overrides: {
+    MuiDivider: {
+      root: {
+        marginTop: 1
+      }
+    }
+  }
+});
+
+const styles = () => ({
   root: {
     display: 'inline'
   },
