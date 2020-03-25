@@ -7,12 +7,15 @@ let skills = null;
 let startedInit = false;
 let init = false;
 
-let availability = null;
-let signedUp = null;
-let actualAvailability = null;
-let vacancies = null;
-let shortfall = null;
-let skillsAndColors = null;
+const seriesSets = {
+  availability: null,
+  signedUp: null,
+  actualAvailability: null,
+  vacancies: null,
+  shortfall: null,
+  refs: null,
+  skillsAndColors: null
+};
 
 const KELLY = [
   '#F2F3F4',
@@ -39,16 +42,47 @@ const KELLY = [
   '#2B3D26'
 ];
 
-const xyTemplate = () => {
+const xyTemplate = makeRefs => {
   const xy = [];
   for (
     let i = new Date(dateRange.first);
     i.getTime() <= new Date(dateRange.last).getTime();
     i.setDate(i.getDate() + 1)
   ) {
-    xy.push({ x: i.getTime(), y: 0, signUps: [], vacancies: [] });
+    if (makeRefs) {
+      xy.push({ x: i.getTime(), y: 0, signUps: [], vacancies: [], stated: [] });
+    } else {
+      xy.push({ x: i.getTime(), y: 0 });
+    }
   }
   return xy;
+};
+
+const getSkillsAndColors = () =>
+  skills.map((skill, index) => ({ title: skill, color: KELLY[index], strokeWidth: 15 }));
+
+/**
+ * {label:string, color:#string, data:[{x,y}]}
+ * */
+const seriesTemplate = makeRefs => {
+  const template = skills.map((skill, index) => ({
+    label: skill,
+    color: KELLY[index],
+    data: xyTemplate(makeRefs)
+  }));
+  template.min = 0;
+  template.max = 0;
+  return template;
+};
+
+const createSeriesTemplates = () => {
+  seriesSets.skillsAndColors = getSkillsAndColors();
+  seriesSets.availability = seriesTemplate(false);
+  seriesSets.signedUp = seriesTemplate(false);
+  seriesSets.actualAvailability = seriesTemplate(false);
+  seriesSets.vacancies = seriesTemplate(false);
+  seriesSets.shortfall = seriesTemplate(false);
+  seriesSets.refs = seriesTemplate(true);
 };
 
 const minMax = seriesSet => {
@@ -64,44 +98,27 @@ const minMax = seriesSet => {
     .reduce((previous, current) => (current > previous ? current : previous), 0);
 };
 
-const getSkillsAndColors = () =>
-  skills.map((skill, index) => ({ title: skill, color: KELLY[index], strokeWidth: 15 }));
+const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
+  const { data } = seriesSets[seriesSetKey][skillsIndex];
+  const refData = seriesSets.refs[skillsIndex].data;
 
-/**
- * {label:string, color:#string, data:[{x,y}]}
- * */
-const seriesTemplate = () => {
-  const template = skills.map((skill, index) => ({
-    label: skill,
-    color: KELLY[index],
-    data: xyTemplate()
-  }));
-  template.min = 0;
-  template.max = 0;
-  return template;
-};
-
-const createSeriesTemplates = () => {
-  skillsAndColors = getSkillsAndColors();
-  availability = seriesTemplate();
-  signedUp = seriesTemplate();
-  actualAvailability = seriesTemplate();
-  vacancies = seriesTemplate();
-  shortfall = seriesTemplate();
-};
-
-const updateXY = (from, to, data, signUp, vacancy) => {
   let i = data.findIndex(d => d.x === new Date(from).getTime());
   const end = data.findIndex(d => d.x === new Date(to).getTime());
   for (i; i <= end; i++) {
-    // eslint-disable-next-line no-param-reassign
     data[i].y++;
-    if (signUp !== null) data[i].signUps.push(signUp);
+    if (signUp !== null) {
+      if (signUp.signUp !== null) {
+        refData[i].signUps.push(signUp);
+      } else {
+        refData[i].stated.push(signUp);
+      }
+    }
     if (vacancy !== null) {
-      const entry = data[i].vacancies.filter(v => v.task.id === vacancy.task.id)[0];
+      const refVacancies = refData[i].vacancies;
+      const entry = refVacancies.filter(v => v.task.id === vacancy.task.id)[0];
       if (typeof entry === 'undefined') {
         vacancy.count = 1;
-        data[i].vacancies.push({ ...vacancy });
+        refVacancies.push({ ...vacancy });
       } else {
         entry.count += 1;
       }
@@ -112,14 +129,14 @@ const updateXY = (from, to, data, signUp, vacancy) => {
 const calcAvailability = () => {
   users.forEach(user => {
     user.skills.forEach(skill => {
-      const availabilityEntry = availability.filter(a => a.label === skill)[0];
-      const signedUpEntry = signedUp.filter(su => su.label === skill)[0];
+      const skillsIndex = skills.indexOf(skill);
 
       user.available.forEach(available => {
         updateXY(
           available.from,
           available.to,
-          availabilityEntry.data,
+          'availability',
+          skillsIndex,
           { user, signUp: null },
           null
         );
@@ -127,54 +144,49 @@ const calcAvailability = () => {
 
       user.signedUp.forEach(su => {
         su.periods.forEach(period => {
-          updateXY(period.from, period.to, signedUpEntry.data, { user, signUp: su }, null);
+          updateXY(period.from, period.to, 'signedUp', skillsIndex, { user, signUp: su }, null);
         });
       });
     });
   });
-  minMax(signedUp);
-  minMax(availability);
+  minMax(seriesSets.signedUp);
+  minMax(seriesSets.availability);
 };
 
 const calcVacancies = () => {
-  vacancies.forEach(vacancy => {
+  seriesSets.vacancies.forEach((vacancy, skillsIndex) => {
     tasks
       .filter(task => task.type === 'Initiative')
       .forEach(task => {
         task.vacancies
           .filter(v => v.title === vacancy.label)
-          .filter(v => v.status === 'V')
+          .filter(v => v.status === 'V' || Array.isArray(v.status))
           .forEach(v => {
-            updateXY(task.startDate, task.endDate, vacancy.data, null, { task, vacancy: v });
+            updateXY(task.startDate, task.endDate, 'vacancies', skillsIndex, null, {
+              task,
+              vacancy: v
+            });
           });
       });
   });
-  minMax(vacancies);
+  minMax(seriesSets.vacancies);
 };
 
 const calcActualAvailabilityAndShortFall = () => {
   for (let skillIndex = 0; skillIndex < skills.length; skillIndex++) {
-    for (let dayIndex = 0; dayIndex < availability[0].data.length; dayIndex++) {
-      actualAvailability[skillIndex].data[dayIndex].y =
-        availability[skillIndex].data[dayIndex].y - signedUp[skillIndex].data[dayIndex].y;
+    for (let dayIndex = 0; dayIndex < seriesSets.availability[0].data.length; dayIndex++) {
+      const availabilityDayData = seriesSets.availability[skillIndex].data[dayIndex];
+      const signedUpDayData = seriesSets.signedUp[skillIndex].data[dayIndex];
+      const actualAvailabilityDayData = seriesSets.actualAvailability[skillIndex].data[dayIndex];
+      const vacanciesDayData = seriesSets.vacancies[skillIndex].data[dayIndex];
+      const shortfallDayData = seriesSets.shortfall[skillIndex].data[dayIndex];
 
-      actualAvailability[skillIndex].data[dayIndex].vacancies =
-        vacancies[skillIndex].data[dayIndex].vacancies;
-
-      actualAvailability[skillIndex].data[dayIndex].signUps =
-        signedUp[skillIndex].data[dayIndex].signUps;
-
-      shortfall[skillIndex].data[dayIndex].y =
-        vacancies[skillIndex].data[dayIndex].y - actualAvailability[skillIndex].data[dayIndex].y;
-
-      shortfall[skillIndex].data[dayIndex].vacancies =
-        vacancies[skillIndex].data[dayIndex].vacancies;
-
-      shortfall[skillIndex].data[dayIndex].signUps = signedUp[skillIndex].data[dayIndex].signUps;
+      actualAvailabilityDayData.y = availabilityDayData.y - signedUpDayData.y;
+      shortfallDayData.y = vacanciesDayData.y - availabilityDayData.y;
     }
   }
-  minMax(actualAvailability);
-  minMax(shortfall);
+  minMax(seriesSets.actualAvailability);
+  minMax(seriesSets.shortfall);
 };
 
 export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn) => {
@@ -190,5 +202,5 @@ export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn) => {
     calcActualAvailabilityAndShortFall();
     init = true;
   }
-  return { availability, signedUp, vacancies, actualAvailability, shortfall, skillsAndColors };
+  return seriesSets;
 };

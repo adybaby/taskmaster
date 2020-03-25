@@ -4,10 +4,12 @@ const styles = theme => ({
   root: {
     display: 'inline'
   },
-  grow: {
+
+  // AppBar
+  appBar: {
     flexGrow: 1
   },
-  search: {
+  searchBox: {
     position: 'relative',
     borderRadius: 'theme.shape.borderRadius',
     backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -27,15 +29,19 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  inputRoot: {
+  searchInputRoot: {
     color: 'inherit',
     width: '100%'
   },
-  link: {
-    color: 'inherit'
-  },
-  inputInput: {
+  searchTextRoot: {
     padding: theme.spacing(1, 1, 1, 7)
+  },
+
+  // Main Tab Bar
+  mainTabBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    borderBottom: '1px solid #e8e8e8'
   },
   tab: {
     minWidth: 78,
@@ -45,63 +51,66 @@ const styles = theme => ({
       opacity: 1
     }
   },
-  secondaryBar: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderBottom: '1px solid #e8e8e8'
-  },
-  filterBar: {
-    display: 'flex',
-    flexDirection: 'row'
+  tabIcon: {
+    verticalAlign: 'middle',
+    marginRight: theme.spacing(1)
   },
   filterButton: {
     marginRight: theme.spacing(3)
   },
-  formControl: {
+
+  // FilterBar
+  filterBar: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  filterControl: {
     marginLeft: theme.spacing(0),
     marginBottom: theme.spacing(1),
     marginTop: theme.spacing(2),
     marginRight: theme.spacing(4),
     minWidth: 150
   },
-  selectEmpty: {
-    marginTop: theme.spacing(4)
-  },
-  tabIcon: {
-    verticalAlign: 'middle',
-    marginRight: theme.spacing(1)
-  },
-  outerPanel: {
-    marginLeft: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    marginTop: theme.spacing(2),
-    marginRight: theme.spacing(2)
+
+  // Content Layout - full width
+  fullWidthContent: {
+    margin: theme.spacing(2)
   },
   taskBody: {
     marginTop: theme.spacing(2)
   },
-  chartPanelContainer: {
+
+  // Content Layout - with sidebar
+  contentWithSideBar_Container: {
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     height: '100%',
     flexDirection: 'row'
   },
-  chartList: {
+  contentWithSideBar_sideBarLeft: {
     borderRight: `1px solid ${theme.palette.divider}`,
     flexGrow: '2',
-    width: '180px'
+    minWidth: '180px'
   },
-  chart: {
-    flexGrow: '8',
-    marginLeft: theme.spacing(2)
+  contentWithSideBar_sideBarRight: {
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    flexGrow: '2',
+    minWidth: '180px'
   },
-  chartListItem: {
-    paddingLeft: theme.spacing(4)
+  contentWithSideBar_content: {
+    paddingLeft: theme.spacing(2),
+    flexGrow: '8'
   },
-  chartTooltip: {
-    whiteSpace: 'nowrap',
-    padding: theme.spacing(1),
-    pointerEvents: 'auto'
+
+  // General Padding
+  topPadding: {
+    paddingTop: theme.spacing(1)
+  },
+  leftPadding: {
+    paddingLeft: theme.spacing(1)
+  },
+  padding: {
+    padding: theme.spacing(1)
   }
 });
 

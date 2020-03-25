@@ -12,7 +12,7 @@ const DriverPanel = ({ driver }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.outerPanel}>
+    <div className={classes.fullWidthContent}>
       <HeaderBlock task={driver} />
       <br />
       <Typography variant="h6">Enabled By</Typography>

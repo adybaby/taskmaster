@@ -62,7 +62,7 @@ const FilterBar = () => {
   const Filter = ({ type, taskFilter, title, options }) => {
     if (taskFilter.enabled) {
       return (
-        <FormControl key={taskFilter.type} size="small" className={classes.formControl}>
+        <FormControl key={taskFilter.type} size="small" className={classes.filterControl}>
           <InputLabel id={`${title}label`}>{title}</InputLabel>
           <Select
             autoWidth={true}
@@ -85,7 +85,7 @@ const FilterBar = () => {
   };
 
   const SortButton = () => (
-    <FormControl key="Sort" size="small" className={classes.formControl}>
+    <FormControl key="Sort" size="small" className={classes.filterControl}>
       <InputLabel id="Sort label">Sort</InputLabel>
       <Select
         autoWidth={true}
@@ -105,7 +105,7 @@ const FilterBar = () => {
   );
 
   return (
-    <div className={classes.filterBar}>
+    <div className={classes.mainTabBar}>
       <Toolbar>
         <Filter
           type="createdOn"

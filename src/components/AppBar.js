@@ -42,16 +42,15 @@ const AppBar = () => {
   };
 
   return (
-    <div className={classes.grow}>
+    <div className={classes.appBar}>
       <MUIAppBar position="static">
         <Toolbar>
           <Link to="/" onClick={handleHomeClick}>
-            <Typography className={classes.title} variant="h6" noWrap>
+            <Typography variant="h6" noWrap>
               TASKMASTER
             </Typography>
           </Link>
-
-          <div className={classes.search}>
+          <div className={classes.searchBox}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -65,12 +64,12 @@ const AppBar = () => {
               }}
               placeholder="Search…"
               classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
+                root: classes.searchInputRoot,
+                input: classes.searchTextRoot
               }}
             />
           </div>
-          <div className={classes.sectionDesktop}>
+          <div>
             <Button color="inherit" startIcon={<AddCircle />} onClick={handleNewClick}>
               NEW..
             </Button>

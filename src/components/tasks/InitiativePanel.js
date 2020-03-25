@@ -14,7 +14,7 @@ const InitiativePanel = ({ initiative }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.outerPanel}>
+    <div className={classes.fullWidthContent}>
       <HeaderBlock task={initiative} />
       <br />
       <Typography variant="h6">Planned Dates</Typography>

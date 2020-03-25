@@ -6,8 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import * as Stacked from './StackedResourceChart';
-import * as Gantt from './GanttResourceChart';
+import * as Resources from './ResourceChart';
 import styles from '../../styles/Styles';
 
 const useStyles = makeStyles(theme => styles(theme));
@@ -50,8 +49,8 @@ export const ChartPanel = () => {
   );
 
   return (
-    <div className={classes.chartPanelContainer}>
-      <div className={classes.chartList}>
+    <div className={classes.contentWithSideBar_Container}>
+      <div className={classes.contentWithSideBar_sideBarLeft}>
         <List component="nav" aria-label="charts list navigation">
           <LiFldr label="Resources (Gantt)" handleClick={handleRgClicked} open={rgOpen} />
           <Collapse in={rgOpen} timeout="auto" unmountOnExit>
@@ -76,18 +75,18 @@ export const ChartPanel = () => {
           </Collapse>
         </List>
       </div>
-      <div className={classes.chart}>
-        {listIndex === 1 ? <Gantt.VacancyChart /> : null}
-        {listIndex === 2 ? <Gantt.AvailabilityChart /> : null}
-        {listIndex === 3 ? <Gantt.ActualAvailabilityChart /> : null}
-        {listIndex === 4 ? <Gantt.SignedUpChart /> : null}
-        {listIndex === 5 ? <Gantt.ShortfallChart /> : null}
-        {listIndex === 6 ? <Stacked.VacancyChart /> : null}
-        {listIndex === 7 ? <Stacked.AvailabilityChart /> : null}
-        {listIndex === 8 ? <Stacked.ActualAvailabilityChart /> : null}
-        {listIndex === 9 ? <Stacked.SignedUpChart /> : null}
-        {listIndex === 10 ? <Stacked.ShortfallChart /> : null}
-        {listIndex === 11 ? <Stacked.ExcessChart /> : null}
+      <div className={classes.contentWithSideBar_content}>
+        {listIndex === 1 ? <Resources.VacancyChart gantt={true} /> : null}
+        {listIndex === 2 ? <Resources.AvailabilityChart gantt={true} /> : null}
+        {listIndex === 3 ? <Resources.ActualAvailabilityChart gantt={true} /> : null}
+        {listIndex === 4 ? <Resources.SignedUpChart gantt={true} /> : null}
+        {listIndex === 5 ? <Resources.ShortfallChart gantt={true} /> : null}
+        {listIndex === 6 ? <Resources.VacancyChart /> : null}
+        {listIndex === 7 ? <Resources.AvailabilityChart /> : null}
+        {listIndex === 8 ? <Resources.ActualAvailabilityChart /> : null}
+        {listIndex === 9 ? <Resources.SignedUpChart /> : null}
+        {listIndex === 10 ? <Resources.ShortfallChart /> : null}
+        {listIndex === 11 ? <Resources.ExcessChart /> : null}
       </div>
     </div>
   );

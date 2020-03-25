@@ -87,7 +87,7 @@ const BrowsePanel = () => {
 
   return (
     <>
-      <div className={classes.secondaryBar}>
+      <div className={classes.mainTabBar}>
         <Tabs
           value={currentTab.ID}
           indicatorColor="primary"

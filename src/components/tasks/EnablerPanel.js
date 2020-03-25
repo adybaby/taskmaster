@@ -12,7 +12,7 @@ const EnablerPanel = ({ enabler }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.outerPanel}>
+    <div className={classes.fullWidthContent}>
       <HeaderBlock task={enabler} />
       <br />
       <Typography variant="h6">Enables</Typography>

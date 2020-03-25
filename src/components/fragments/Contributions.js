@@ -33,7 +33,7 @@ export const ContributionsDeepList = ({ contributions }) => {
       <Typography variant="h6">
         <ContributionLink contribution={contribution} />
       </Typography>
-      <div className={classes.outerPanel}>
+      <div className={classes.fullWidthContent}>
         <ContributionsList contributions={contribution.contributions} />
       </div>
     </div>

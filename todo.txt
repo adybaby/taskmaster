@@ -1,2 +1,3 @@
-start date not sorting properly
-add priority for drivers in search
+filter initiatives starting on/ active on dates/after
+vacancies: mine
+how many count in filters
