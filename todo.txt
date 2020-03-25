@@ -1,4 +1,4 @@
+add specific date in filter
+work out what to do with more than 22 skills in stacked chart
 filter initiatives starting on/ active on dates/after
 vacancies: mine
-how many count in filters
--5 excess 2 jun - show no vacancies etc.?
