@@ -16,7 +16,7 @@ export const ChartPanel = () => {
 
   const [listIndex, setListIndex] = React.useState(1);
   const [rgOpen, setRgOpen] = React.useState(true);
-  const [rsOpen, setRsOpen] = React.useState(false);
+  const [rsOpen, setRsOpen] = React.useState(true);
 
   const handleListItemClick = (event, index) => {
     setListIndex(index);
@@ -43,7 +43,7 @@ export const ChartPanel = () => {
 
   const LiFldr = ({ label, handleClick, open }) => (
     <ListItem button onClick={handleClick}>
-      <ListItemText primary={label} />
+      <ListItemText primary={<b>{label}</b>} />
       {open ? <ExpandLess /> : <ExpandMore />}
     </ListItem>
   );

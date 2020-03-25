@@ -39,6 +39,11 @@ export const UserPanel = ({ user }) => {
           <Typography variant="caption"> (User ID: {user.id})</Typography>
         </Typography>
       </div>
+      <br />
+      <div>
+        <Typography variant="h6">Bio</Typography>
+        <Typography variant="body1">{user.bio}</Typography>
+      </div>
       {user.skills === null ? null : (
         <>
           <br />

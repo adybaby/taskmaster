@@ -95,6 +95,7 @@ const styles = () => ({
     backgroundColor: theme.palette.background.paper,
     display: 'flex',
     height: '100%',
+    width: '100%',
     flexDirection: 'row'
   },
   contentWithSideBar_sideBarLeft: {
@@ -109,6 +110,7 @@ const styles = () => ({
   },
   contentWithSideBar_content: {
     paddingLeft: theme.spacing(2),
+    width: '100%',
     flexGrow: '8'
   },
 

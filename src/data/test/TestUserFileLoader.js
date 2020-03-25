@@ -35,8 +35,9 @@ const readRecordsFromText = text => {
       const fields = lines[i].split(FIELD_DELIM);
       record.id = cleanString(fields[0]);
       record.name = cleanString(fields[1]);
-      record.skills = parseListFromString(fields[2]);
-      const available = cleanString(fields[3]);
+      record.bio = cleanString(fields[2]);
+      record.skills = parseListFromString(fields[3]);
+      const available = cleanString(fields[4]);
       if (available === null) {
         record.available = [];
       } else {
