@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { parseDate } from '../../util/DateFormatting';
+import { parseDate } from '../../util/Dates';
 import CreatedByLink from './CreatedByLink';
 
 const HeaderBlock = ({ task }) => {

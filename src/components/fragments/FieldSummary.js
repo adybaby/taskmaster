@@ -1,6 +1,6 @@
 import React from 'react';
 import * as TYPES from '../../constants/TaskTypes';
-import { plannedDates } from '../../util/DateFormatting';
+import { plannedDates } from '../../util/Dates';
 import { displayNameForCost } from '../../constants/Costs';
 import CreatedByLink from './CreatedByLink';
 

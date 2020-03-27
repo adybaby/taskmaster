@@ -9,7 +9,7 @@ import {
   faBullseye,
   faCodeBranch,
   faChartBar,
-  faFilter
+  faFilter,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
@@ -25,19 +25,29 @@ import { ChartPanel } from '../charts/ChartPanel';
 import TaskList from './TaskList';
 import * as URLS from '../../constants/Urls';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
 const BrowsePanel = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const currentTab = useSelector(state => state.tab);
-  const taskFilters = useSelector(state => state.taskFilters);
+  const currentTab = useSelector((state) => state.tab);
+  const taskFilters = useSelector((state) => state.taskFilters);
   const { id } = useParams();
   const tabFromUrl = getTabForUrl(id);
-  const changeIFilter =
+  const changeVacFilter =
     tabFromUrl === null
       ? false
       : (tabFromUrl.ID === TABS.INITIATIVES.ID) !== taskFilters.vacancies.enabled &&
+        taskFilters.filterBar.enabled;
+  const changeStartDateFilter =
+    tabFromUrl === null
+      ? false
+      : (tabFromUrl.ID === TABS.INITIATIVES.ID) !== taskFilters.startDate.enabled &&
+        taskFilters.filterBar.enabled;
+  const changeEndDateFilter =
+    tabFromUrl === null
+      ? false
+      : (tabFromUrl.ID === TABS.INITIATIVES.ID) !== taskFilters.endDate.enabled &&
         taskFilters.filterBar.enabled;
 
   useEffect(() => {
@@ -45,12 +55,29 @@ const BrowsePanel = () => {
       dispatch(setTab(tabFromUrl));
       dispatch(setTaskFilter({ type: 'type', value: tabFromUrl.TASKTYPE }));
     }
-    if (changeIFilter) {
+  }, [dispatch, tabFromUrl, currentTab, id]);
+
+  useEffect(() => {
+    if (changeVacFilter) {
       dispatch(
         setTaskFilter({ type: 'vacancies', enabled: tabFromUrl.ID === TABS.INITIATIVES.ID })
       );
     }
-  }, [dispatch, tabFromUrl, changeIFilter, currentTab, id]);
+  }, [dispatch, tabFromUrl, changeVacFilter]);
+
+  useEffect(() => {
+    if (changeStartDateFilter) {
+      dispatch(
+        setTaskFilter({ type: 'startDate', enabled: tabFromUrl.ID === TABS.INITIATIVES.ID })
+      );
+    }
+  }, [dispatch, tabFromUrl, changeStartDateFilter]);
+
+  useEffect(() => {
+    if (changeEndDateFilter) {
+      dispatch(setTaskFilter({ type: 'endDate', enabled: tabFromUrl.ID === TABS.INITIATIVES.ID }));
+    }
+  }, [dispatch, tabFromUrl, changeEndDateFilter]);
 
   const getCurrentPanel = () => {
     switch (currentTab) {

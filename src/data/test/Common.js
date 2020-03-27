@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-param-reassign */
 import { cleanString, parseListFromString } from '../../util/StringUtils';
-import { parseDate } from '../../util/DateFormatting';
+import { parseDate } from '../../util/Dates';
 import * as VACS from '../../constants/Vacancies';
 
 export const isDate = date =>

@@ -4,7 +4,7 @@ import '../../../node_modules/react-vis/dist/style.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Divider } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import { formatDate } from '../../util/DateFormatting';
+import { formatDate } from '../../util/Dates';
 import styles from '../../styles/Styles';
 import { VacancyDates } from '../fragments/Vacancies';
 

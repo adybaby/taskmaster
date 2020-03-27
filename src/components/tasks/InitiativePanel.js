@@ -5,7 +5,7 @@ import styles from '../../styles/Styles';
 import HeaderBlock from '../fragments/HeaderBlock';
 import TagsAndLinksBlock from '../fragments/TagsAndLinksBlock';
 import { ContributionLink } from '../fragments/Contributions';
-import { plannedDates } from '../../util/DateFormatting';
+import { plannedDates } from '../../util/Dates';
 import { VacancyBlock } from '../fragments/Vacancies';
 
 const useStyles = makeStyles(theme => styles(theme));

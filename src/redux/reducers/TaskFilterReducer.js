@@ -4,17 +4,10 @@ import { STATE_INIT } from '../../constants/TaskFilters';
 export const taskFilterReducer = (state = STATE_INIT, action) => {
   switch (action.type) {
     case TYPES.SET_TASK_FILTER: {
-      const value =
-        typeof action.filter.value === 'undefined'
-          ? state[action.filter.type].value
-          : action.filter.value;
-      const enabled =
-        typeof action.filter.enabled === 'undefined'
-          ? state[action.filter.type].enabled
-          : action.filter.enabled;
+      const currentFilter = { ...state[action.filter.type], ...action.filter };
       return {
         ...state,
-        [action.filter.type]: { value, enabled }
+        [action.filter.type]: currentFilter,
       };
     }
     default:

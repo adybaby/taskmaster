@@ -1,4 +1,3 @@
-add specific date in filter
 work out what to do with more than 22 skills in stacked chart
-filter initiatives starting on/ active on dates/after
-vacancies: mine
+edits
+can filters be less hacky?

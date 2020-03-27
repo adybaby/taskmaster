@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { cleanString } from './StringUtils';
 
-export const formatDate = date => {
+export const formatDate = (date) => {
   const monthNames = [
     'Jan',
     'Feb',
@@ -14,7 +14,7 @@ export const formatDate = date => {
     'Sep',
     'Oct',
     'Nov',
-    'Dec'
+    'Dec',
   ];
   const day = date.getDate();
   const monthIndex = date.getMonth();
@@ -23,7 +23,7 @@ export const formatDate = date => {
   return `${day} ${monthNames[monthIndex]} ${year}`;
 };
 
-export const parseDate = dateStr => {
+export const parseDate = (dateStr) => {
   const cleanedDateStr = cleanString(dateStr);
   const date = Date.parse(cleanedDateStr);
 
@@ -42,4 +42,24 @@ export const plannedDates = (start, end) => {
     return `Planned to start on ${parseDate(start)} (end date TBD)`;
   }
   return `Planned to run from ${parseDate(start)} to ${parseDate(end)}`;
+};
+
+export const filterTasksByDate = (tasks, fromTo, dateField) => {
+  const dateOnly = (date) => {
+    if (typeof date === 'undefined' || date === null) return null;
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  };
+  if (fromTo.from === -1) return [];
+
+  return tasks.filter((task) => {
+    if (task[dateField] === null) return false;
+
+    const date = dateOnly(task[dateField]);
+    const from = dateOnly(fromTo.from);
+    const to = dateOnly(fromTo.to);
+
+    return (from === null || date >= from) && (to === null || date <= to);
+  });
 };

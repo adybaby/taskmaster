@@ -2,37 +2,37 @@ import * as TYPES from '../ActionTypes';
 import * as DB from '../../constants/Db';
 import { init } from '../../data/DataInterface';
 
-const setDbStatus = status => ({
+const setDbStatus = (status) => ({
   type: TYPES.SET_DB_STATUS,
-  status
+  status,
 });
 
-const setTasks = tasks => ({
+const setTasks = (tasks) => ({
   type: TYPES.SET_TASKS,
-  tasks
+  tasks,
 });
 
-const setCurrentUser = user => ({
+const setCurrentUser = (user) => ({
   type: TYPES.SET_CURRENT_USER,
-  user
+  user,
 });
 
-const setUsers = users => ({
+const setUsers = (users) => ({
   type: TYPES.SET_USERS,
-  users
+  users,
 });
 
-const setSkills = skills => ({
+const setSkills = (skills) => ({
   type: TYPES.SET_SKILLS,
-  skills
+  skills,
 });
 
-const setDateRange = dateRange => ({
+const setDateRange = (dateRange) => ({
   type: TYPES.SET_DATE_RANGE,
-  dateRange
+  dateRange,
 });
 
-export const initialise = () => dispatch => {
+export const initialise = () => (dispatch) => {
   dispatch(setDbStatus(DB.INITIALISING));
   init()
     .then(({ users, tasks, skills, dateRange }) => {
