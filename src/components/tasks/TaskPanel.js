@@ -2,27 +2,27 @@ import React, { useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import * as TASK_TYPES from '../../constants/TaskTypes';
+import * as TASK_TYPES from '../../data/fields/Type';
 import DriverPanel from './DriverPanel';
 import EnablerPanel from './EnablerPanel';
 import InitiativePanel from './InitiativePanel';
 
 const TaskPanel = () => {
   const dispatch = useDispatch();
-  const tasks = useSelector(state => state.tasks);
+  const tasks = useSelector((state) => state.tasks);
   const { id } = useParams();
   const [task, setTask] = useState(null);
 
   useEffect(() => {
     if (task === null || task.id !== id) {
-      setTask(tasks.filter(tsk => tsk.id === id)[0]);
+      setTask(tasks.filter((tsk) => tsk.id === id)[0]);
     }
   }, [dispatch, id, task, tasks]);
 
   const RawFields = () => (
     <div>
       Could not process fields in item:
-      {Object.entries(task).map(field => (
+      {Object.entries(task).map((field) => (
         <div key={task.id + field[0]}>
           <Typography>{`${field[0]}: ${field[1]}`}</Typography>
         </div>

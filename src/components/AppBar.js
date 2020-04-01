@@ -13,32 +13,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Link from './fragments/RouterLink';
 import styles from '../styles/Styles';
-import { setTaskFilter } from '../redux/actions/TaskFilters';
+import {
+  setFilterControl,
+  resetAllFilterControls,
+  setFilterBarVisible,
+} from '../redux/actions/TaskFilterActions';
+import { FILTER_IDS } from '../data/filters/Filters';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
 const AppBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const taskFilters = useSelector(state => state.taskFilters);
   const history = useHistory();
+  const searchText = useSelector((state) => state.filterControls).find(
+    (filterControl) => filterControl.id === FILTER_IDS.SEARCH_FIELD
+  ).text;
 
   const handleNewClick = () => {
     // eslint-disable-next-line no-alert
     window.alert('TBD');
   };
 
-  const handleSearchChange = event => {
-    dispatch(setTaskFilter({ type: 'searchTerm', value: event.target.value }));
+  const handleSearchChange = (event) => {
+    dispatch(setFilterControl({ id: FILTER_IDS.SEARCH_FIELD, text: event.target.value }));
   };
 
-  const handleSearchSubmit = event => {
+  const handleSearchSubmit = (event) => {
     event.preventDefault();
     history.push('/');
   };
 
   const handleHomeClick = () => {
-    dispatch(setTaskFilter({ type: 'searchTerm', value: '' }));
+    dispatch(resetAllFilterControls());
+    dispatch(setFilterBarVisible(false));
   };
 
   return (
@@ -55,9 +63,9 @@ const AppBar = () => {
               <SearchIcon />
             </div>
             <InputBase
-              value={taskFilters.searchTerm.value}
+              value={searchText}
               onChange={handleSearchChange}
-              onKeyPress={event => {
+              onKeyPress={(event) => {
                 if (event.key === 'Enter') {
                   handleSearchSubmit(event);
                 }
@@ -65,7 +73,7 @@ const AppBar = () => {
               placeholder="Search…"
               classes={{
                 root: classes.searchInputRoot,
-                input: classes.searchTextRoot
+                input: classes.searchTextRoot,
               }}
             />
           </div>

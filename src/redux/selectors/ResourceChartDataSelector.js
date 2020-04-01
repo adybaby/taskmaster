@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import { createSelector } from 'reselect';
-import { buildChartData } from './helpers/ResourceChartDateHelper';
+import { buildChartData } from '../../data/charts/ResourceChartDateBuilder';
 
-const getTasks = state => state.tasks;
-const getUsers = state => state.users;
-const getDateRange = state => state.dateRange;
-const getSkills = state => state.skills;
+const getTasks = (state) => state.tasks;
+const getUsers = (state) => state.users;
+const getDateRange = (state) => state.dateRange;
+const getSkills = (state) => state.skills;
 
 export const calculateResourceChartData = createSelector(
   [getTasks, getUsers, getDateRange, getSkills],

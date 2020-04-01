@@ -1,3 +1,2 @@
 work out what to do with more than 22 skills in stacked chart
 edits
-can filters be less hacky?

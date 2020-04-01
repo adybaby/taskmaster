@@ -7,8 +7,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { formatDate } from '../../util/Dates';
 import styles from '../../styles/Styles';
 import { VacancyDates } from '../fragments/Vacancies';
+import * as URLS from '../../Urls';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
 export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
   const classes = useStyles();
@@ -31,13 +32,15 @@ export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
 
               {showUser ? (
                 <>
-                  <RouterLink to={`/profile/${elem.user.id}`}>{elem.user.name}</RouterLink>
+                  <RouterLink to={`/${URLS.PROFILE}/${elem.user.id}`}>{elem.user.name}</RouterLink>
                   {` (as ${skillTitle}) - `}
                 </>
               ) : null}
 
               {taskField !== null ? (
-                <RouterLink to={`/task/${elem[taskField].id}`}>{elem[taskField].title}</RouterLink>
+                <RouterLink to={`/${URLS.TASK}/${elem[taskField].id}`}>
+                  {elem[taskField].title}
+                </RouterLink>
               ) : null}
 
               {Array.isArray(elem[datesType][datesField]) ? (

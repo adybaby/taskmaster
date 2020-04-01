@@ -1,3 +1,6 @@
+import * as TASK_TYPES from '../fields/Type';
+import { KEYS as VACANCY_KEYS } from '../fields/Vacancies';
+
 /* eslint-disable no-param-reassign */
 let tasks = null;
 let users = null;
@@ -14,7 +17,7 @@ const seriesSets = {
   vacancies: null,
   shortfall: null,
   refs: null,
-  skillsAndColors: null
+  skillsAndColors: null,
 };
 
 const KELLY = [
@@ -39,10 +42,10 @@ const KELLY = [
   '#8DB600',
   '#654522',
   '#E25822',
-  '#2B3D26'
+  '#2B3D26',
 ];
 
-const xyTemplate = makeRefs => {
+const xyTemplate = (makeRefs) => {
   const xy = [];
   for (
     let i = new Date(dateRange.first);
@@ -64,11 +67,11 @@ const getSkillsAndColors = () =>
 /**
  * {label:string, color:#string, data:[{x,y}]}
  * */
-const seriesTemplate = makeRefs => {
+const seriesTemplate = (makeRefs) => {
   const template = skills.map((skill, index) => ({
     label: skill,
     color: KELLY[index],
-    data: xyTemplate(makeRefs)
+    data: xyTemplate(makeRefs),
   }));
   template.min = 0;
   template.max = 0;
@@ -85,14 +88,14 @@ const createSeriesTemplates = () => {
   seriesSets.refs = seriesTemplate(true);
 };
 
-const minMax = seriesSet => {
+const minMax = (seriesSet) => {
   seriesSet.min = seriesSet
-    .map(series =>
+    .map((series) =>
       series.data.reduce((previous, current) => (current.y < previous ? current.y : previous), 0)
     )
     .reduce((previous, current) => (current < previous ? current : previous), 0);
   seriesSet.max = seriesSet
-    .map(series =>
+    .map((series) =>
       series.data.reduce((previous, current) => (current.y > previous ? current.y : previous), 0)
     )
     .reduce((previous, current) => (current > previous ? current : previous), 0);
@@ -102,8 +105,8 @@ const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
   const { data } = seriesSets[seriesSetKey][skillsIndex];
   const refData = seriesSets.refs[skillsIndex].data;
 
-  let i = data.findIndex(d => d.x === new Date(from).getTime());
-  const end = data.findIndex(d => d.x === new Date(to).getTime());
+  let i = data.findIndex((d) => d.x === new Date(from).getTime());
+  const end = data.findIndex((d) => d.x === new Date(to).getTime());
   for (i; i <= end; i++) {
     data[i].y++;
     if (signUp !== null) {
@@ -115,7 +118,7 @@ const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
     }
     if (vacancy !== null) {
       const refVacancies = refData[i].vacancies;
-      const entry = refVacancies.filter(v => v.task.id === vacancy.task.id)[0];
+      const entry = refVacancies.filter((v) => v.task.id === vacancy.task.id)[0];
       if (typeof entry === 'undefined') {
         vacancy.count = 1;
         refVacancies.push({ ...vacancy });
@@ -127,11 +130,11 @@ const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
 };
 
 const calcAvailability = () => {
-  users.forEach(user => {
-    user.skills.forEach(skill => {
+  users.forEach((user) => {
+    user.skills.forEach((skill) => {
       const skillsIndex = skills.indexOf(skill);
 
-      user.available.forEach(available => {
+      user.available.forEach((available) => {
         updateXY(
           available.from,
           available.to,
@@ -142,8 +145,8 @@ const calcAvailability = () => {
         );
       });
 
-      user.signedUp.forEach(su => {
-        su.periods.forEach(period => {
+      user.signedUp.forEach((su) => {
+        su.periods.forEach((period) => {
           updateXY(period.from, period.to, 'signedUp', skillsIndex, { user, signUp: su }, null);
         });
       });
@@ -156,15 +159,15 @@ const calcAvailability = () => {
 const calcVacancies = () => {
   seriesSets.vacancies.forEach((vacancy, skillsIndex) => {
     tasks
-      .filter(task => task.type === 'Initiative')
-      .forEach(task => {
+      .filter((task) => task.type === TASK_TYPES.INITIATIVE)
+      .forEach((task) => {
         task.vacancies
-          .filter(v => v.title === vacancy.label)
-          .filter(v => v.status === 'V' || Array.isArray(v.status))
-          .forEach(v => {
+          .filter((v) => v.title === vacancy.label)
+          .filter((v) => v.status === VACANCY_KEYS.STATUS.VACANT.key || Array.isArray(v.status))
+          .forEach((v) => {
             updateXY(task.startDate, task.endDate, 'vacancies', skillsIndex, null, {
               task,
-              vacancy: v
+              vacancy: v,
             });
           });
       });

@@ -1,43 +1,57 @@
 /* eslint-disable no-restricted-globals */
 import { createSelector } from 'reselect';
-import { applyFilters, sortTasks } from './helpers/TaskSelectorHelper';
+import { sortTasks } from '../../data/sort/TaskSorter';
+import { FILTER_IDS } from '../../data/filters/Filters';
 
-const getTaskFilters = (state) => state.taskFilters;
+const getFilterControls = (state) => state.filterControls;
 const getTasks = (state) => state.tasks;
 const getSortOrder = (state) => state.sortOrder;
-const getCurrentUser = (state) => state.currentUser;
+const getFilterBarVisible = (state) => state.filterBarVisible;
 
-const createTaskSelector = (omitField) =>
-  createSelector([getTaskFilters, getTasks, getCurrentUser], (taskFilters, tasks, currentUser) =>
-    applyFilters(taskFilters, tasks, omitField, currentUser)
-  );
+export const executeFilters = (tasks, filterControls, filterBarVisible) => {
+  let filteredTasks = tasks;
+  const currentTaskType = filterControls.find(
+    (filterControl) => filterControl.id === FILTER_IDS.TYPE
+  ).selectedFilterId;
+
+  filterControls
+    .filter(
+      (filterControl) =>
+        (filterBarVisible && filterControl.onFilterBar) || !filterControl.onFilterBar
+    )
+    .forEach((filterControl) => {
+      switch (filterControl.type) {
+        case 'SELECT': {
+          if (
+            filterControl.selectedFilterId !== filterControl.defaultFilterId &&
+            (typeof filterControl.forTaskTypes === 'undefined' ||
+              filterControl.forTaskTypes.includes(currentTaskType))
+          ) {
+            const selectedFilter = filterControl.filters.find(
+              (filter) => filter.id === filterControl.selectedFilterId
+            );
+            filteredTasks = selectedFilter.execute(filteredTasks, filterControl.params);
+          }
+          break;
+        }
+        case 'TEXT': {
+          if (filterControl.text !== '') {
+            filteredTasks = filterControl.execute(filteredTasks, filterControl.text);
+          }
+          break;
+        }
+        default: {
+          throw new Error(
+            `filterControl type: ${filterControl.type} does not match any know filter types`
+          );
+        }
+      }
+    });
+  return filteredTasks;
+};
 
 export const getVisibleTasks = createSelector(
-  [getSortOrder, createTaskSelector(null)],
-  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
-);
-
-export const getVisibleTasksOmitVacancies = createSelector(
-  [getSortOrder, createTaskSelector('vacancies')],
-  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
-);
-
-export const getVisibleTasksOmitCreatedBy = createSelector(
-  [getSortOrder, createTaskSelector('createdBy')],
-  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
-);
-
-export const getVisibleTasksOmitCreatedDate = createSelector(
-  [getSortOrder, createTaskSelector('createdDate')],
-  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
-);
-
-export const getVisibleTasksOmitStartDate = createSelector(
-  [getSortOrder, createTaskSelector('startDate')],
-  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
-);
-
-export const getVisibleTasksOmitEndDate = createSelector(
-  [getSortOrder, createTaskSelector('endDate')],
-  (sortOrder, tasks) => sortTasks(tasks.concat(), sortOrder)
+  [getSortOrder, getTasks, getFilterControls, getFilterBarVisible],
+  (sortOrder, tasks, filterControls, filterBarVisible) =>
+    sortTasks(executeFilters(tasks, filterControls, filterBarVisible).concat(), sortOrder)
 );

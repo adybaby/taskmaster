@@ -1,7 +1,7 @@
 import * as TYPES from '../ActionTypes';
-import { NOT_INITIALISED } from '../../constants/Db';
+import { DB_STATUS } from '../../data/db/Db';
 
-export const dbReducer = (state = NOT_INITIALISED, action) => {
+export const dbReducer = (state = DB_STATUS.NOT_INITIALISED, action) => {
   switch (action.type) {
     case TYPES.SET_DB_STATUS: {
       return action.status;

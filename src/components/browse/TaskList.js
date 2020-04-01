@@ -14,7 +14,7 @@ const TaskList = () => {
       <ListItem key="numResults">
         <Typography variant="subtitle1">{tasks.length} tasks</Typography>
       </ListItem>
-      {tasks.map(task => (
+      {tasks.map((task) => (
         <ListItem key={task.id}>
           <TaskResult task={task} />
         </ListItem>

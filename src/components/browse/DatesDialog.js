@@ -17,8 +17,33 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
     fullWidth: true,
     format: 'dd/MM/yyyy',
     placeholder: 'Enter a date or leave blank..',
-    autoOk: true
+    autoOk: true,
   };
+
+  const fromProps = {
+    onChange: (date) => setFrom(date),
+    autoFocus: true,
+    value: from,
+    label: `${currentPickerTitle} is on or after..`,
+    ...datePickerProps,
+  };
+
+  const toProps = {
+    onChange: (date) => setTo(date),
+    value: to,
+    label: `${currentPickerTitle} is on or before..`,
+    ...datePickerProps,
+  };
+
+  if (to !== null) {
+    fromProps.maxDate = to;
+    fromProps.initialFocusedDate = to;
+  }
+
+  if (from !== null) {
+    toProps.minDate = from;
+    toProps.initialFocusedDate = from;
+  }
 
   return (
     <div>
@@ -35,21 +60,10 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
             fields.
           </DialogContentText>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              onChange={date => setFrom(date)}
-              autoFocus
-              value={from}
-              label={`${currentPickerTitle} is on or after..`}
-              {...datePickerProps}
-            />
+            <KeyboardDatePicker {...fromProps} />
             <br />
             <br />
-            <KeyboardDatePicker
-              onChange={date => setTo(date)}
-              value={to}
-              label={`${currentPickerTitle} is on or before..`}
-              {...datePickerProps}
-            />
+            <KeyboardDatePicker {...toProps} />
           </MuiPickersUtilsProvider>
         </DialogContent>
         <DialogActions>

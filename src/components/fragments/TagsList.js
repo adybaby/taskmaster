@@ -1,11 +1,17 @@
 import React from 'react';
-import { setTaskFilter } from '../../redux/actions/TaskFilters';
+import {
+  setFilterControl,
+  setFilterBarVisible,
+  resetAllFilterControls,
+} from '../../redux/actions/TaskFilterActions';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
+import { FILTER_IDS } from '../../data/filters/Filters';
 
 const TagsList = ({ tags, variant }) => {
   const handleTagClick = (dispatch, tag) => {
-    dispatch(setTaskFilter({ type: 'searchTerm', value: tag }));
-    dispatch(setTaskFilter({ type: 'filterBar', enabled: true }));
+    dispatch(setFilterBarVisible(true));
+    dispatch(resetAllFilterControls());
+    dispatch(setFilterControl({ id: FILTER_IDS.SEARCH_FIELD, text: tag }));
   };
 
   return <LinksList links={tags} handleLinkClick={handleTagClick} url="/" variant={variant} />;

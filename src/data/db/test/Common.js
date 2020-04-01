@@ -1,10 +1,10 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-param-reassign */
-import { cleanString, parseListFromString } from '../../util/StringUtils';
-import { parseDate } from '../../util/Dates';
-import * as VACS from '../../constants/Vacancies';
+import { cleanString, parseListFromString } from '../../../util/StringUtils';
+import { parseDate } from '../../../util/Dates';
+import { KEYS } from '../../fields/Vacancies';
 
-export const isDate = date =>
+export const isDate = (date) =>
   date instanceof Date && typeof date.getDate !== 'undefined' && date.getTime() !== 0;
 
 export const parseDateList = (fieldStrings, startIndex, targetObj, targetField, hasUserId) => {
@@ -35,7 +35,7 @@ export const parseDateList = (fieldStrings, startIndex, targetObj, targetField, 
     nextDateStr = parseDate(fieldStrings[index + 1]);
     if (nextDateStr === null) {
       let outputStr = '';
-      fieldStrings.forEach(str => {
+      fieldStrings.forEach((str) => {
         outputStr += `${str} `;
       });
       throw new Error(`Expected to date,instead got ${fieldStrings[index + 1]} (${outputStr})`);
@@ -47,7 +47,7 @@ export const parseDateList = (fieldStrings, startIndex, targetObj, targetField, 
   return index - 1;
 };
 
-export const buildVacanciesField = fieldSrc => {
+export const buildVacanciesField = (fieldSrc) => {
   const cleanedString = cleanString(fieldSrc);
   if (
     typeof cleanedString === 'undefined' ||
@@ -60,7 +60,7 @@ export const buildVacanciesField = fieldSrc => {
   const vacancies = [];
   const vacancyStrings = parseListFromString(fieldSrc);
 
-  vacancyStrings.forEach(vacancyString => {
+  vacancyStrings.forEach((vacancyString) => {
     const vacancy = {};
     const vacancyFieldStrings = cleanString(vacancyString).split(' ');
 
@@ -70,7 +70,7 @@ export const buildVacanciesField = fieldSrc => {
     let index = 2;
 
     const dateString = cleanString(vacancyFieldStrings[index]);
-    if (dateString === VACS.ANY_DATE.short) {
+    if (dateString === KEYS.AVAILABILITY.ANY_DATE.key) {
       vacancy.date = dateString;
     } else {
       index = parseDateList(vacancyFieldStrings, index, vacancy, 'date', false);
@@ -83,11 +83,11 @@ export const buildVacanciesField = fieldSrc => {
     index++;
 
     const status = vacancyFieldStrings[index];
-    if (VACS.SHORT_STATUS[status] === VACS.STATUS.FILLED) {
+    if (status === KEYS.STATUS.FILLED.key) {
       vacancy.status = status;
       index++;
       vacancy.userId = cleanString(vacancyFieldStrings[index]);
-    } else if (VACS.SHORT_STATUS[status] === VACS.STATUS.VACANT) {
+    } else if (status === KEYS.STATUS.VACANT.key) {
       vacancy.status = status;
     } else {
       parseDateList(vacancyFieldStrings, index, vacancy, 'status', true);

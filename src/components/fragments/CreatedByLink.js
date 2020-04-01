@@ -2,21 +2,26 @@ import React from 'react';
 import Link from '@material-ui/core/Link';
 import { Link as RouterLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setTaskFilter } from '../../redux/actions/TaskFilters';
-import * as URLS from '../../constants/Urls';
+import {
+  setFilterControl,
+  setFilterBarVisible,
+  resetAllFilterControls,
+} from '../../redux/actions/TaskFilterActions';
+import * as URLS from '../../Urls';
+import { FILTER_IDS } from '../../data/filters/Filters';
 
 const CreatedByLink = ({ createdBy }) => {
   const dispatch = useDispatch();
 
-  const users = useSelector(state => state.users);
-  const user = users.filter(currentUser =>
+  const users = useSelector((state) => state.users);
+  const user = users.filter((currentUser) =>
     typeof currentUser === 'undefined' ? false : currentUser.id === createdBy
   )[0];
 
   const handleCreatedByClick = () => {
-    dispatch(setTaskFilter({ type: 'searchTerm', value: '' }));
-    dispatch(setTaskFilter({ type: 'filterBar', enabled: true }));
-    dispatch(setTaskFilter({ type: 'createdBy', value: user.id }));
+    dispatch(setFilterBarVisible(true));
+    dispatch(resetAllFilterControls());
+    dispatch(setFilterControl({ id: FILTER_IDS.CREATED_BY, selectedFilterId: user.id }));
   };
 
   return typeof user === 'undefined' ? null : (

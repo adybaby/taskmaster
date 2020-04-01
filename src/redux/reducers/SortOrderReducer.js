@@ -1,5 +1,5 @@
 import * as TYPES from '../ActionTypes';
-import * as SORT_ORDER from '../../constants/SortOrders';
+import * as SORT_ORDER from '../../data/sort/TaskSorter';
 
 export const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
   switch (action.type) {

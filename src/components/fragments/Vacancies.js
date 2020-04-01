@@ -1,17 +1,22 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import { setTaskFilter } from '../../redux/actions/TaskFilters';
+import {
+  setFilterBarVisible,
+  resetAllFilterControls,
+  setFilterControl,
+} from '../../redux/actions/TaskFilterActions';
 import { DispatchingRouterLink as RLink } from './DispatchingRouterLink';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
-import * as URLS from '../../constants/Urls';
-import * as VACS from '../../constants/Vacancies';
+import * as URLS from '../../Urls';
+import { KEYS, decodeKey } from '../../data/fields/Vacancies';
 import CreatedByLink from './CreatedByLink';
+import { FILTER_IDS } from '../../data/filters/Filters';
 
 const handleVacancyClick = (dispatch, vacancyTitle) => {
-  dispatch(setTaskFilter({ type: 'searchTerm', value: '' }));
-  dispatch(setTaskFilter({ type: 'filterBar', enabled: true }));
-  dispatch(setTaskFilter({ type: 'vacancies', value: vacancyTitle }));
+  dispatch(setFilterBarVisible(true));
+  dispatch(resetAllFilterControls());
+  dispatch(setFilterControl({ id: FILTER_IDS.VACANCIES, selectedFilterId: vacancyTitle }));
 };
 
 const User = ({ userId }) =>
@@ -80,7 +85,7 @@ export const Status = ({ vacancy }) => {
   }
   return (
     <>
-      {VACS.SHORT_STATUS[vacancy.status]}
+      {decodeKey(vacancy.status, 'STATUS').label}
       <User userId={vacancy.userId} />
     </>
   );
@@ -93,10 +98,12 @@ export const Vacancy = ({ vacancy }) => (
       handleLinkClick={handleVacancyClick}
       url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
     />
-    {`${VACS.SHORT_ROLE[vacancy.role]} (${VACS.SHORT_NECESSITY[vacancy.necessity]})`}
+    {`${decodeKey(vacancy.role, 'ROLE').label} (${
+      decodeKey(vacancy.necessity, 'NECESSITY').label
+    })`}
     <br />
-    {vacancy.date === VACS.ANY_DATE.short ? (
-      VACS.ANY_DATE.displayName
+    {vacancy.date === KEYS.AVAILABILITY.ANY_DATE.key ? (
+      KEYS.AVAILABILITY.ANY_DATE.label
     ) : (
       <>
         {`Needed `}
@@ -106,7 +113,7 @@ export const Vacancy = ({ vacancy }) => (
     <br />
     <Status vacancy={vacancy} />
     <br />
-    {VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED ? (
+    {vacancy.status !== KEYS.STATUS.FILLED.key ? (
       <Link value={vacancy.title} href="#">
         <b>REGISTER INTEREST</b>
       </Link>
@@ -125,15 +132,12 @@ export const VacancyBlock = ({ vacancies }) =>
       ));
 
 export const VacancyList = ({ vacancies }) => {
-  if (
-    vacancies.filter(vacancy => VACS.SHORT_STATUS[vacancy.status] !== VACS.STATUS.FILLED).length ===
-    0
-  )
+  if (vacancies.filter((vacancy) => vacancy.status !== KEYS.STATUS.FILLED.key).length === 0)
     return 'All vacancies filled.';
   return (
     <LinksList
       title="Vacancies"
-      links={vacancies.map(vacancy => vacancy.title)}
+      links={vacancies.map((vacancy) => vacancy.title)}
       handleLinkClick={handleVacancyClick}
       url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
     />

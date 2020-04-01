@@ -1,7 +1,7 @@
 import React from 'react';
-import * as TYPES from '../../constants/TaskTypes';
+import * as TYPES from '../../data/fields/Type';
 import { plannedDates } from '../../util/Dates';
-import { displayNameForCost } from '../../constants/Costs';
+import { displayNameForCost } from '../../data/fields/Cost';
 import CreatedByLink from './CreatedByLink';
 
 const FieldSummary = ({ task }) => {

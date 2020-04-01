@@ -1,4 +1,0 @@
-export const NOT_INITIALISED = 'NOT_INITIALISED';
-export const INITIALISING = 'INITIALISING';
-export const INITIALISED = 'INITIALISED';
-export const ERROR = 'ERROR';

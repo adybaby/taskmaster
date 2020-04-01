@@ -1,6 +1,8 @@
 import * as TYPES from '../ActionTypes';
-import * as DB from '../../constants/Db';
-import { init } from '../../data/DataInterface';
+import { init, DB_STATUS } from '../../data/db/Db';
+
+import { createFilterControls } from '../../data/filters/Filters';
+import { setFilterControls } from './TaskFilterActions';
 
 const setDbStatus = (status) => ({
   type: TYPES.SET_DB_STATUS,
@@ -33,7 +35,7 @@ const setDateRange = (dateRange) => ({
 });
 
 export const initialise = () => (dispatch) => {
-  dispatch(setDbStatus(DB.INITIALISING));
+  dispatch(setDbStatus(DB_STATUS.INITIALISING));
   init()
     .then(({ users, tasks, skills, dateRange }) => {
       dispatch(setUsers(users));
@@ -41,7 +43,8 @@ export const initialise = () => (dispatch) => {
       dispatch(setSkills(skills));
       dispatch(setDateRange(dateRange));
       dispatch(setCurrentUser(users[0]));
-      dispatch(setDbStatus(DB.INITIALISED));
+      dispatch(setFilterControls(createFilterControls(tasks, users, users[0])));
+      dispatch(setDbStatus(DB_STATUS.INITIALISED));
     })
-    .catch(setDbStatus(DB.ERROR));
+    .catch(setDbStatus(DB_STATUS.ERROR));
 };

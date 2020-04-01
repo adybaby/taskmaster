@@ -6,13 +6,13 @@ import AppBar from './components/AppBar';
 import BrowsePanel from './components/browse/BrowsePanel';
 import TaskPanel from './components/tasks/TaskPanel';
 import { ProfilesPanel } from './components/profile/ProfilesPanel';
-import * as URLS from './constants/Urls';
-import { initialise } from './redux/actions/Db';
-import * as DB_STATUS from './constants/Db';
+import * as URLS from './Urls';
+import { initialise } from './redux/actions/DbActions';
+import { DB_STATUS } from './data/db/Db';
 
 const App = () => {
   const dispatch = useDispatch();
-  const dbStatus = useSelector(state => state.dbStatus);
+  const dbStatus = useSelector((state) => state.dbStatus);
 
   useEffect(() => {
     if (dbStatus === DB_STATUS.NOT_INITIALISED) {

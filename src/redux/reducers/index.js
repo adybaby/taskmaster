@@ -3,9 +3,8 @@ import { taskReducer } from './TaskReducer';
 import { currentUserReducer, usersReducer } from './UserReducer';
 import { skillsReducer } from './SkillsReducer';
 import { dateRangeReducer } from './DateRangeReducer';
-import { taskFilterReducer } from './TaskFilterReducer';
+import { filterBarVisibleReducer, filterControlsReducer } from './TaskFilterReducer';
 import { sortOrderReducer } from './SortOrderReducer';
-import { tabReducer } from './TabReducer';
 import { dbReducer } from './DbReducer';
 
 const rootReducer = combineReducers({
@@ -14,10 +13,10 @@ const rootReducer = combineReducers({
   skills: skillsReducer,
   dateRange: dateRangeReducer,
   currentUser: currentUserReducer,
-  taskFilters: taskFilterReducer,
+  filterControls: filterControlsReducer,
+  filterBarVisible: filterBarVisibleReducer,
   sortOrder: sortOrderReducer,
-  tab: tabReducer,
-  dbStatus: dbReducer
+  dbStatus: dbReducer,
 });
 
 export default rootReducer;
