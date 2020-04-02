@@ -1,9 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
-import TagsList from './TagsList';
+import { TagsList } from './TagsList';
 
-const TagsAndLinksBlock = ({ task }) => {
+export const TagsAndLinksBlock = ({ task }) => {
   return (
     <>
       <Typography variant="h6">Tags</Typography>
@@ -11,7 +11,7 @@ const TagsAndLinksBlock = ({ task }) => {
       <br /> <br />
       <Typography variant="h6">External Related Links</Typography>
       <Typography variant="body1">
-        {task.relatedLinks.map(relatedLink => (
+        {task.relatedLinks.map((relatedLink) => (
           <Link
             key={relatedLink}
             style={{ marginRight: 5, textDecoration: 'underline' }}
@@ -25,5 +25,3 @@ const TagsAndLinksBlock = ({ task }) => {
     </>
   );
 };
-
-export default TagsAndLinksBlock;

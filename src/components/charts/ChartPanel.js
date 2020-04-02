@@ -7,9 +7,9 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import * as Resources from './ResourceChart';
-import styles from '../../styles/Styles';
+import { styles } from '../../styles/Styles';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
 export const ChartPanel = () => {
   const classes = useStyles();
@@ -34,7 +34,7 @@ export const ChartPanel = () => {
     <ListItem
       button
       selected={listIndex === val}
-      onClick={event => handleListItemClick(event, val)}
+      onClick={(event) => handleListItemClick(event, val)}
       className={classes.chartListItem}
     >
       <ListItemText primary={label} />

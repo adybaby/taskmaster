@@ -1,7 +1,7 @@
 import * as TYPES from '../ActionTypes';
-import * as SORT_ORDER from '../../data/sort/TaskSorter';
+import { DEFAULT_SORTER_ID } from '../../data/sort/TaskSorter';
 
-export const sortOrderReducer = (state = SORT_ORDER.DEFAULT, action) => {
+export const sortOrderReducer = (state = DEFAULT_SORTER_ID, action) => {
   switch (action.type) {
     case TYPES.SET_SORT_ORDER: {
       return action.sortOrder;

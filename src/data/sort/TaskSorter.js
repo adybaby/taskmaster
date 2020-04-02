@@ -1,58 +1,127 @@
 import { sortOrderForType } from '../fields/ContributesTo';
 import { sortOrderForCost } from '../fields/Cost';
-import * as TYPES from '../fields/Type';
+import { INITIATIVE } from '../fields/Type';
 
-export const OPTIONS = {
-  PRIORITY: 'Priority',
-  LATEST: 'Creation Date',
-  AUTHOR: 'Author',
-  START_DATE: 'Start Date',
-};
+const createReversibleSorter = (executor, reverseOrder) =>
+  reverseOrder ? (tasks) => executor(tasks).reverse() : executor;
 
-export const DEFAULT = OPTIONS.PRIORITY;
+const createStringSorter = (field) => (tasks) =>
+  tasks.sort((a, b) => a[field].localeCompare(b[field]));
 
-export const sortTasks = (tasks, sortOrder) => {
-  switch (sortOrder) {
-    case OPTIONS.LATEST: {
-      return tasks.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+const createIntegerSorter = (field) => (tasks) => tasks.sort((a, b) => a[field] - b[field]);
+
+const createDateSorter = (dateField) => (tasks) =>
+  tasks.sort((a, b) => {
+    if (typeof a[dateField] === 'undefined') {
+      if (typeof b[dateField] === 'undefined') {
+        return 0;
+      }
+      return 1;
     }
-
-    case OPTIONS.PRIORITY: {
-      return tasks.sort((a, b) => {
-        if (a.type !== b.type) {
-          return sortOrderForType(a.type) - sortOrderForType(b.type);
-        }
-        if (
-          a.priority === b.priority &&
-          a.type === TYPES.INITIATIVE &&
-          b.type === TYPES.INITIATIVE
-        ) {
-          return sortOrderForCost(a.cost) - sortOrderForCost(b.cost);
-        }
-        return a.priority - b.priority;
-      });
+    if (typeof b[dateField] === 'undefined') {
+      return -1;
     }
+    return new Date(a[dateField]) - new Date(b[dateField]);
+  });
 
-    case OPTIONS.START_DATE: {
-      return tasks.sort((a, b) => {
-        if (typeof a.startDate === 'undefined') {
-          if (typeof b.startDate === 'undefined') {
-            return 0;
-          }
-          return 1;
-        }
-        if (typeof b.startDate === 'undefined') {
-          return -1;
-        }
-        return new Date(a.startDate) - new Date(b.startDate);
-      });
+const prioritySorter = (tasks) =>
+  tasks.sort((a, b) => {
+    if (a.type !== b.type) {
+      return sortOrderForType(a.type) - sortOrderForType(b.type);
     }
-
-    case OPTIONS.AUTHOR: {
-      return tasks.sort((a, b) => a.createdBy.localeCompare(b.createdBy));
+    if (a.priority === b.priority && a.type === INITIATIVE && b.type === INITIATIVE) {
+      return sortOrderForCost(a.cost) - sortOrderForCost(b.cost);
     }
+    return a.priority - b.priority;
+  });
 
-    default:
-      return tasks;
-  }
-};
+export const DEFAULT_SORTER_ID = 'PRIORITY';
+
+const SORTERS = [
+  {
+    id: DEFAULT_SORTER_ID,
+    label: 'priority (highest first)',
+    execute: createReversibleSorter(prioritySorter),
+  },
+  {
+    id: 'PRIORITY_REVERSE',
+    label: 'priority (lowest first)',
+    execute: createReversibleSorter(prioritySorter, true),
+  },
+  {
+    id: 'CREATED_DATE',
+    label: 'created Date (earliest first)',
+    execute: createReversibleSorter(createDateSorter('createdDate')),
+  },
+  {
+    id: 'CREATED_DATE_REVERSE',
+    label: 'created Date (latest first)',
+    execute: createReversibleSorter(createDateSorter('createdDate'), true),
+  },
+  {
+    id: 'AUTHOR',
+    label: 'author (A-Z)',
+    execute: createReversibleSorter(createIntegerSorter('createdBy')),
+  },
+  {
+    id: 'AUTHOR_REVERSE',
+    label: 'author (Z-A)',
+    execute: createReversibleSorter(createIntegerSorter('createdBy'), true),
+  },
+  {
+    id: 'START_DATE',
+    label: 'start date (earliest first)',
+    forTaskTypes: [INITIATIVE],
+    execute: createReversibleSorter(createDateSorter('startDate')),
+  },
+  {
+    id: 'START_DATE_REVERSE',
+    label: 'start date (latest first)',
+    forTaskTypes: [INITIATIVE],
+    execute: createReversibleSorter(createDateSorter('startDate'), true),
+  },
+  {
+    id: 'END_DATE',
+    label: 'end date (earliest first)',
+    forTaskTypes: [INITIATIVE],
+    execute: createReversibleSorter(createDateSorter('endDate')),
+  },
+  {
+    id: 'END_DATE_REVERSE',
+    label: 'end date (latest first)',
+    forTaskTypes: [INITIATIVE],
+    execute: createReversibleSorter(createDateSorter('endDate'), true),
+  },
+  {
+    id: 'TITLE',
+    label: 'title (A-Z)',
+    execute: createReversibleSorter(createStringSorter('title')),
+  },
+  {
+    id: 'TITLE_REVERSE',
+    label: 'title (Z-A)',
+    execute: createReversibleSorter(createStringSorter('title'), true),
+  },
+  {
+    id: 'ID',
+    label: 'ID (ascending)',
+    execute: createReversibleSorter(createIntegerSorter('id')),
+  },
+  {
+    id: 'ID_REVERSE',
+    label: 'ID (descending)',
+    execute: createReversibleSorter(createIntegerSorter('id'), true),
+  },
+];
+
+export const createSortControl = () => ({
+  id: '',
+  label: 'Sorted by',
+  defaultId: DEFAULT_SORTER_ID,
+  dontHighlight: true,
+  type: 'SORT_SELECT',
+  options: SORTERS,
+});
+
+export const sortTasks = (tasks, sorterId) =>
+  SORTERS.find((sorter) => sorter.id === sorterId).execute(tasks);

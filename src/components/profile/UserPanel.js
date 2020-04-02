@@ -2,10 +2,10 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import styles from '../../styles/Styles';
+import { styles } from '../../styles/Styles';
 import { SkillList, VacancyDates } from '../fragments/Vacancies';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
 export const UserPanel = ({ user }) => {
   const classes = useStyles();

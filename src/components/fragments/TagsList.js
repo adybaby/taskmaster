@@ -7,7 +7,7 @@ import {
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
 import { FILTER_IDS } from '../../data/filters/Filters';
 
-const TagsList = ({ tags, variant }) => {
+export const TagsList = ({ tags, variant }) => {
   const handleTagClick = (dispatch, tag) => {
     dispatch(setFilterBarVisible(true));
     dispatch(resetAllFilterControls());
@@ -16,5 +16,3 @@ const TagsList = ({ tags, variant }) => {
 
   return <LinksList links={tags} handleLinkClick={handleTagClick} url="/" variant={variant} />;
 };
-
-export default TagsList;

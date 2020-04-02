@@ -1,15 +1,43 @@
+/**
+ FILTER CONTROLS:
+
+ { type: 'SELECT', 
+   id, 
+   label, 
+   options:[ { 
+     id, 
+     label, 
+     execute(tasks, (params)), 
+     (dontPreCount), 
+     (datePicker)
+   }], 
+   defaultId,
+   selectedId, 
+   (params),
+   (forTaskTypes), 
+   (onFilterBar) ,
+   execute (tasks, filterControl, currentTaskType)
+ }
+
+ { type: 'TEXT, 
+   id, 
+   label, 
+   text, 
+   execute (tasks, filterControl, currentTaskType)
+ }
+ * */
+
 import { createVacancyFilters } from './VacancyFilters';
 import { createCreatedByFilters } from './CreatedByFilters';
 import { createDateFilters } from './DateFilters';
-import { createTaskTypeFilters, TASK_TYPE_FILTERS } from './TaskTypeFilters';
+import { createTaskTypeFilters } from './TaskTypeFilters';
 import { doesObjectIncludeStr } from '../../util/StringUtils';
+import { INITIATIVE } from '../fields/Type';
 
-const ALL_TASK_TYPE_FILTER_IDS = [
-  TASK_TYPE_FILTERS.ALL.id,
-  TASK_TYPE_FILTERS.DRIVER.id,
-  TASK_TYPE_FILTERS.INITIATIVE.id,
-  TASK_TYPE_FILTERS.ENABLER.id,
-];
+const FILTER_TYPES = {
+  TEXT: 'TEXT',
+  SELECT: 'SELECT',
+};
 
 export const FILTER_IDS = {
   CREATED_DATE: 'CREATED_DATE',
@@ -21,87 +49,94 @@ export const FILTER_IDS = {
   SEARCH_FIELD: 'SEARCH_FIELD',
 };
 
-/**
- FILTER CONTROLS:
+export const execute = (tasks, filterControl, currentTaskType) => {
+  switch (filterControl.type) {
+    case FILTER_TYPES.SELECT: {
+      if (
+        typeof filterControl.selectedId !== 'undefined' &&
+        filterControl.selectedId !== filterControl.defaultId &&
+        (typeof filterControl.forTaskTypes === 'undefined' ||
+          typeof currentTaskType === 'undefined' ||
+          filterControl.forTaskTypes.includes(currentTaskType))
+      ) {
+        const selectedFilter = filterControl.options.find(
+          (filter) => filter.id === filterControl.selectedId
+        );
+        return selectedFilter.execute(tasks, filterControl.params);
+      }
+      break;
+    }
+    case FILTER_TYPES.TEXT: {
+      if (filterControl.text !== '') {
+        return tasks.filter(doesObjectIncludeStr(filterControl.text));
+      }
+      break;
+    }
+    default: {
+      throw new Error(
+        `filterControl type: ${filterControl.type} does not match any know filter types`
+      );
+    }
+  }
+  return tasks;
+};
 
- { type: 'SELECT', 
-   id, 
-   label, 
-   filters:[ { 
-     id, 
-     label, 
-     execute(tasks, (params)), 
-     (dontPreCount), 
-     (datePicker)
-   }], 
-   defaultFilterId,
-   selectFilterId, 
-   (params),
-   (forTaskTypes), 
-   (onFilterBar) 
- }
-
- { type: 'TEXT, 
-   id, 
-   label, 
-   text, 
-   execute(tasks, text) 
- }
- * */
 export const createFilterControls = (tasks, users, currentUser) => [
   {
     id: FILTER_IDS.CREATED_DATE,
-    label: 'Created Date',
-    type: 'SELECT',
+    label: 'Created',
+    type: FILTER_TYPES.SELECT,
     ...createDateFilters('createdDate', false),
-    forTaskTypes: ALL_TASK_TYPE_FILTER_IDS,
     onFilterBar: true,
+    execute,
   },
   {
     id: FILTER_IDS.CREATED_BY,
-    label: 'Created By',
-    type: 'SELECT',
+    label: 'Created by',
+    type: FILTER_TYPES.SELECT,
     ...createCreatedByFilters(users),
-    forTaskTypes: ALL_TASK_TYPE_FILTER_IDS,
     onFilterBar: true,
+    execute,
   },
   {
     id: FILTER_IDS.START_DATE,
-    label: 'Start Date',
-    type: 'SELECT',
+    label: 'Starting',
+    type: FILTER_TYPES.SELECT,
     ...createDateFilters('startDate', true),
-    forTaskTypes: [TASK_TYPE_FILTERS.INITIATIVE.id],
+    forTaskTypes: [INITIATIVE],
     onFilterBar: true,
+    execute,
   },
   {
     id: FILTER_IDS.END_DATE,
-    label: 'End Date',
-    type: 'SELECT',
+    label: 'Ending',
+    type: FILTER_TYPES.SELECT,
     ...createDateFilters('endDate', true),
-    forTaskTypes: [TASK_TYPE_FILTERS.INITIATIVE.id],
+    forTaskTypes: [INITIATIVE],
     onFilterBar: true,
+    execute,
   },
   {
     id: FILTER_IDS.VACANCIES,
-    label: 'Vacancies',
-    type: 'SELECT',
+    label: 'Requiring',
+    type: FILTER_TYPES.SELECT,
     ...createVacancyFilters(tasks, currentUser),
-    forTaskTypes: [TASK_TYPE_FILTERS.INITIATIVE.id],
+    forTaskTypes: [INITIATIVE],
     onFilterBar: true,
+    execute,
   },
   {
     id: FILTER_IDS.TYPE,
     label: 'Type',
-    type: 'SELECT',
-    forTaskTypes: ALL_TASK_TYPE_FILTER_IDS,
+    type: FILTER_TYPES.SELECT,
     ...createTaskTypeFilters(),
+    execute,
   },
   {
     id: FILTER_IDS.SEARCH_FIELD,
     label: 'Search..',
-    type: 'TEXT',
+    type: FILTER_TYPES.TEXT,
     text: '',
-    forTaskTypes: ALL_TASK_TYPE_FILTER_IDS,
-    execute: (tasks_, text) => tasks_.filter(doesObjectIncludeStr(text)),
+    execute,
   },
 ];

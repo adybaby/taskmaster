@@ -1,12 +1,10 @@
 import React from 'react';
-import TabBar from './BrowsePanel';
-import TaskList from './TaskList';
+import { BrowsePanel } from './BrowsePanel';
+import { TaskList } from './TaskList';
 
-const ResultsPanel = () => (
+export const ResultsPanel = () => (
   <div>
-    <TabBar />
+    <BrowsePanel />
     <TaskList />
   </div>
 );
-
-export default ResultsPanel;

@@ -3,11 +3,11 @@ import Typography from '@material-ui/core/Typography';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as TASK_TYPES from '../../data/fields/Type';
-import DriverPanel from './DriverPanel';
-import EnablerPanel from './EnablerPanel';
-import InitiativePanel from './InitiativePanel';
+import { DriverPanel } from './DriverPanel';
+import { EnablerPanel } from './EnablerPanel';
+import { InitiativePanel } from './InitiativePanel';
 
-const TaskPanel = () => {
+export const TaskPanel = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks);
   const { id } = useParams();
@@ -43,5 +43,3 @@ const TaskPanel = () => {
       return <RawFields />;
   }
 };
-
-export default TaskPanel;

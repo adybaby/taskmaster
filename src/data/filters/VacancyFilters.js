@@ -31,22 +31,22 @@ const getSkillVacancies = (tasks) => {
 };
 
 export const createVacancyFilters = (tasks, currentUser) => ({
-  filters: [
+  options: [
     {
       id: DEFAULT_FILTER_ID,
-      label: 'Any Vacancies',
+      label: 'any skills',
     },
     {
       id: 'MY_SKILLS',
-      label: 'My Skills',
+      label: 'my skills',
       execute: createExecuteFunction(currentUser.skills),
     },
     ...getSkillVacancies(tasks).map((skillVacancy) => ({
       id: skillVacancy,
-      label: skillVacancy,
+      label: `a ${skillVacancy}`,
       execute: createExecuteFunction([skillVacancy]),
     })),
   ],
-  defaultFilterId: DEFAULT_FILTER_ID,
-  selectedFilterId: DEFAULT_FILTER_ID,
+  defaultId: DEFAULT_FILTER_ID,
+  selectedId: DEFAULT_FILTER_ID,
 });

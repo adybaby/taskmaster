@@ -24,14 +24,14 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
     onChange: (date) => setFrom(date),
     autoFocus: true,
     value: from,
-    label: `${currentPickerTitle} is on or after..`,
+    label: `${currentPickerTitle} on or after..`,
     ...datePickerProps,
   };
 
   const toProps = {
     onChange: (date) => setTo(date),
     value: to,
-    label: `${currentPickerTitle} is on or before..`,
+    label: `${currentPickerTitle} on or before..`,
     ...datePickerProps,
   };
 

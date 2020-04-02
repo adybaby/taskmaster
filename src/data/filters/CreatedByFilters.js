@@ -4,10 +4,10 @@ const createFilterFunction = (userId) => (tasks) =>
   tasks.filter((task) => task.createdBy === userId);
 
 export const createCreatedByFilters = (users) => ({
-  filters: [
+  options: [
     {
       id: DEFAULT_FILTER_ID,
-      label: 'Any Author',
+      label: 'any author',
       default: true,
     },
     ...users
@@ -18,6 +18,6 @@ export const createCreatedByFilters = (users) => ({
       }))
       .sort(),
   ],
-  defaultFilterId: DEFAULT_FILTER_ID,
-  selectedFilterId: DEFAULT_FILTER_ID,
+  defaultId: DEFAULT_FILTER_ID,
+  selectedId: DEFAULT_FILTER_ID,
 });

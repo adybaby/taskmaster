@@ -5,23 +5,23 @@ import Tab from '@material-ui/core/Tab';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Divider } from '@material-ui/core';
-import styles from '../../styles/Styles';
+import { styles } from '../../styles/Styles';
 import { UserPanel } from './UserPanel';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
 export const ProfilesPanel = () => {
   const classes = useStyles();
   const { id } = useParams();
-  const currentUser = useSelector(state => state.currentUser);
+  const currentUser = useSelector((state) => state.currentUser);
   const [user, setUser] = useState(currentUser);
-  const users = useSelector(state => state.users);
+  const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const [currentTabId, setCurrentTabId] = useState(0);
 
   useEffect(() => {
     if (typeof id !== 'undefined' && id !== null) {
-      setUser(users.filter(usr => usr.id === id)[0]);
+      setUser(users.filter((usr) => usr.id === id)[0]);
     }
   }, [dispatch, id, users]);
 

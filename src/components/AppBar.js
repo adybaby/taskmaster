@@ -11,8 +11,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import AddCircle from '@material-ui/icons/AddCircle';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Link from './fragments/RouterLink';
-import styles from '../styles/Styles';
+import { RouterLink } from './fragments/RouterLink';
+import { styles } from '../styles/Styles';
 import {
   setFilterControl,
   resetAllFilterControls,
@@ -22,7 +22,7 @@ import { FILTER_IDS } from '../data/filters/Filters';
 
 const useStyles = makeStyles((theme) => styles(theme));
 
-const AppBar = () => {
+export const AppBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -53,11 +53,11 @@ const AppBar = () => {
     <div className={classes.appBar}>
       <MUIAppBar position="static">
         <Toolbar>
-          <Link to="/" onClick={handleHomeClick}>
+          <RouterLink to="/" onClick={handleHomeClick}>
             <Typography variant="h6" noWrap>
               TASKMASTER
             </Typography>
-          </Link>
+          </RouterLink>
           <div className={classes.searchBox}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -81,7 +81,7 @@ const AppBar = () => {
             <Button color="inherit" startIcon={<AddCircle />} onClick={handleNewClick}>
               NEW..
             </Button>
-            <IconButton edge="end" component={Link} to="/profile" color="inherit">
+            <IconButton edge="end" component={RouterLink} to="/profile" color="inherit">
               <AccountCircle />
             </IconButton>
           </div>
@@ -90,5 +90,3 @@ const AppBar = () => {
     </div>
   );
 };
-
-export default AppBar;

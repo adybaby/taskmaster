@@ -12,7 +12,7 @@ export const executeFilters = (tasks, filterControls, filterBarVisible) => {
   let filteredTasks = tasks;
   const currentTaskType = filterControls.find(
     (filterControl) => filterControl.id === FILTER_IDS.TYPE
-  ).selectedFilterId;
+  ).selectedId;
 
   filterControls
     .filter(
@@ -20,32 +20,7 @@ export const executeFilters = (tasks, filterControls, filterBarVisible) => {
         (filterBarVisible && filterControl.onFilterBar) || !filterControl.onFilterBar
     )
     .forEach((filterControl) => {
-      switch (filterControl.type) {
-        case 'SELECT': {
-          if (
-            filterControl.selectedFilterId !== filterControl.defaultFilterId &&
-            (typeof filterControl.forTaskTypes === 'undefined' ||
-              filterControl.forTaskTypes.includes(currentTaskType))
-          ) {
-            const selectedFilter = filterControl.filters.find(
-              (filter) => filter.id === filterControl.selectedFilterId
-            );
-            filteredTasks = selectedFilter.execute(filteredTasks, filterControl.params);
-          }
-          break;
-        }
-        case 'TEXT': {
-          if (filterControl.text !== '') {
-            filteredTasks = filterControl.execute(filteredTasks, filterControl.text);
-          }
-          break;
-        }
-        default: {
-          throw new Error(
-            `filterControl type: ${filterControl.type} does not match any know filter types`
-          );
-        }
-      }
+      filteredTasks = filterControl.execute(filteredTasks, filterControl, currentTaskType);
     });
   return filteredTasks;
 };

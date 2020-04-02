@@ -7,11 +7,11 @@ import { faLightbulb, faMap } from '@fortawesome/free-regular-svg-icons';
 import { faSearch, faBullseye, faCodeBranch, faChartBar } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
-import styles from '../../styles/Styles';
+import { styles } from '../../styles/Styles';
 import { setFilterControl } from '../../redux/actions/TaskFilterActions';
 import * as URLS from '../../Urls';
 import { FILTER_IDS } from '../../data/filters/Filters';
-import { TASK_TYPE_FILTERS } from '../../data/filters/TaskTypeFilters';
+import * as TASK_TYPES from '../../data/fields/Type';
 
 const useStyles = makeStyles((theme) => styles(theme));
 
@@ -20,25 +20,24 @@ export const TABS = {
     ID: 'ALL_TAB',
     LABEL: 'All',
     URL: URLS.ALL,
-    TASK_TYPE: TASK_TYPE_FILTERS.ALL.id,
   },
   DRIVERS: {
     ID: 'DRIVERS_TAB',
     LABEL: 'Drivers',
     URL: URLS.DRIVERS,
-    TASK_TYPE: TASK_TYPE_FILTERS.DRIVER.id,
+    TASK_TYPE: TASK_TYPES.DRIVER,
   },
   ENABLERS: {
     ID: 'ENABLERS_TAB',
     LABEL: 'Enablers',
     URL: URLS.ENABLERS,
-    TASK_TYPE: TASK_TYPE_FILTERS.ENABLER.id,
+    TASK_TYPE: TASK_TYPES.ENABLER,
   },
   INITIATIVES: {
     ID: 'INITIATIVES_TAB',
     LABEL: 'Initiatives',
     URL: URLS.INITIATIVES,
-    TASK_TYPE: TASK_TYPE_FILTERS.INITIATIVE.id,
+    TASK_TYPE: TASK_TYPES.INITIATIVE,
   },
   MAP: {
     ID: 'MAP_TAB',
@@ -69,7 +68,7 @@ export const MainTabs = ({ tabField, setTabField }) => {
     if (tabField !== tabFromUrl) {
       setTabField(tabFromUrl);
       if (tabFromUrl.TASK_TYPE !== null) {
-        dispatch(setFilterControl({ id: FILTER_IDS.TYPE, selectedFilterId: tabFromUrl.TASK_TYPE }));
+        dispatch(setFilterControl({ id: FILTER_IDS.TYPE, selectedId: tabFromUrl.TASK_TYPE }));
       }
     }
   }, [dispatch, tabFromUrl, tabField, setTabField]);
@@ -90,15 +89,13 @@ export const MainTabs = ({ tabField, setTabField }) => {
   );
 
   return (
-    <div className={classes.mainTabBar}>
-      <Tabs value={tabField.ID} indicatorColor="primary" variant="scrollable" scrollButtons="auto">
-        {createTab(TABS.ALL, faSearch)}
-        {createTab(TABS.DRIVERS, faBullseye)}
-        {createTab(TABS.ENABLERS, faCodeBranch)}
-        {createTab(TABS.INITIATIVES, faLightbulb)}
-        {createTab(TABS.MAP, faMap)}
-        {createTab(TABS.CHARTS, faChartBar)}
-      </Tabs>
-    </div>
+    <Tabs value={tabField.ID} indicatorColor="primary">
+      {createTab(TABS.ALL, faSearch)}
+      {createTab(TABS.DRIVERS, faBullseye)}
+      {createTab(TABS.ENABLERS, faCodeBranch)}
+      {createTab(TABS.INITIATIVES, faLightbulb)}
+      {createTab(TABS.MAP, faMap)}
+      {createTab(TABS.CHARTS, faChartBar)}
+    </Tabs>
   );
 };

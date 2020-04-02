@@ -1,23 +1,21 @@
-const readTextFile = fileName =>
+export const readTextFile = (fileName) =>
   new Promise((resolve, reject) => {
     fetch(fileName)
-      .then(res => {
+      .then((res) => {
         if (res.status !== 200) {
           reject(new Error('No file found'));
         }
         return res.blob();
       })
-      .then(file => {
+      .then((file) => {
         const reader = new FileReader();
-        reader.onload = event => {
+        reader.onload = (event) => {
           resolve(event.target.result);
         };
 
         reader.readAsText(file);
       })
-      .catch(e => {
+      .catch((e) => {
         reject(e);
       });
   });
-
-export default readTextFile;

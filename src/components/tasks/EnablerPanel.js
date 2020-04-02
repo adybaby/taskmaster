@@ -1,14 +1,14 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import styles from '../../styles/Styles';
-import HeaderBlock from '../fragments/HeaderBlock';
-import TagsAndLinksBlock from '../fragments/TagsAndLinksBlock';
+import { styles } from '../../styles/Styles';
+import { HeaderBlock } from '../fragments/HeaderBlock';
+import { TagsAndLinksBlock } from '../fragments/TagsAndLinksBlock';
 import { ContributionsBlock, ContributionsList } from '../fragments/Contributions';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
-const EnablerPanel = ({ enabler }) => {
+export const EnablerPanel = ({ enabler }) => {
   const classes = useStyles();
 
   return (
@@ -25,5 +25,3 @@ const EnablerPanel = ({ enabler }) => {
     </div>
   );
 };
-
-export default EnablerPanel;

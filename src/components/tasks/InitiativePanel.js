@@ -1,16 +1,16 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import styles from '../../styles/Styles';
-import HeaderBlock from '../fragments/HeaderBlock';
-import TagsAndLinksBlock from '../fragments/TagsAndLinksBlock';
+import { styles } from '../../styles/Styles';
+import { HeaderBlock } from '../fragments/HeaderBlock';
+import { TagsAndLinksBlock } from '../fragments/TagsAndLinksBlock';
 import { ContributionLink } from '../fragments/Contributions';
 import { plannedDates } from '../../util/Dates';
 import { VacancyBlock } from '../fragments/Vacancies';
 
-const useStyles = makeStyles(theme => styles(theme));
+const useStyles = makeStyles((theme) => styles(theme));
 
-const InitiativePanel = ({ initiative }) => {
+export const InitiativePanel = ({ initiative }) => {
   const classes = useStyles();
 
   return (
@@ -36,7 +36,7 @@ const InitiativePanel = ({ initiative }) => {
       <br />
 
       <Typography variant="h6">Contributes to</Typography>
-      {initiative.contributesTo.map(contributesTo => (
+      {initiative.contributesTo.map((contributesTo) => (
         <ContributionLink key={contributesTo.id} contribution={contributesTo} />
       ))}
       <br />
@@ -48,5 +48,3 @@ const InitiativePanel = ({ initiative }) => {
     </div>
   );
 };
-
-export default InitiativePanel;

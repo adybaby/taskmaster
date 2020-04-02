@@ -10,7 +10,7 @@ import {
 import * as URLS from '../../Urls';
 import { FILTER_IDS } from '../../data/filters/Filters';
 
-const CreatedByLink = ({ createdBy }) => {
+export const CreatedByLink = ({ createdBy }) => {
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users);
@@ -21,7 +21,7 @@ const CreatedByLink = ({ createdBy }) => {
   const handleCreatedByClick = () => {
     dispatch(setFilterBarVisible(true));
     dispatch(resetAllFilterControls());
-    dispatch(setFilterControl({ id: FILTER_IDS.CREATED_BY, selectedFilterId: user.id }));
+    dispatch(setFilterControl({ id: FILTER_IDS.CREATED_BY, selectedId: user.id }));
   };
 
   return typeof user === 'undefined' ? null : (
@@ -44,5 +44,3 @@ const CreatedByLink = ({ createdBy }) => {
     </>
   );
 };
-
-export default CreatedByLink;

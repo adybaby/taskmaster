@@ -1,9 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { parseDate } from '../../util/Dates';
-import CreatedByLink from './CreatedByLink';
+import { CreatedByLink } from './CreatedByLink';
 
-const HeaderBlock = ({ task }) => {
+export const HeaderBlock = ({ task }) => {
   return (
     <>
       <Typography variant="h4">{task.title}</Typography>
@@ -24,5 +24,3 @@ const HeaderBlock = ({ task }) => {
     </>
   );
 };
-
-export default HeaderBlock;

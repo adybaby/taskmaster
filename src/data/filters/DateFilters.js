@@ -37,21 +37,21 @@ const createExecuteFunction = (dateField, cannedDates) => {
 };
 
 export const createDateFilters = (dateField, includeFuture) => {
-  const filters = [
-    { id: DEFAULT_FILTER_ID, label: 'Any Time', default: true },
+  const options = [
+    { id: DEFAULT_FILTER_ID, label: 'at any time', default: true },
     {
       id: `TODAY`,
-      label: 'Today',
+      label: 'today',
       execute: createExecuteFunction(dateField, { from: now(), to: now() }),
     },
     {
       id: `PAST_WEEK`,
-      label: 'Past Week',
+      label: 'in the past week',
       execute: createExecuteFunction(dateField, { from: now(-7), to: now() }),
     },
     {
       id: `PAST_MONTH`,
-      label: 'Past Month',
+      label: 'in the past month',
       execute: createExecuteFunction(dateField, {
         from: now(-31),
         to: now(),
@@ -59,7 +59,7 @@ export const createDateFilters = (dateField, includeFuture) => {
     },
     {
       id: `PAST_YEAR`,
-      label: 'Past Year',
+      label: 'in the past year',
       execute: createExecuteFunction(dateField, {
         from: now(-365),
         to: now(),
@@ -67,17 +67,17 @@ export const createDateFilters = (dateField, includeFuture) => {
     },
     {
       id: `OLDER`,
-      label: 'Older than a year',
+      label: 'over a year ago',
       execute: createExecuteFunction(dateField, { from: null, to: now(-365) }),
     },
   ];
 
   if (includeFuture) {
-    filters.push(
+    options.push(
       ...[
         {
           id: `COMING_WEEK`,
-          label: 'Coming Week',
+          label: 'in the coming week',
           execute: createExecuteFunction(dateField, {
             from: now(),
             to: now(7),
@@ -85,7 +85,7 @@ export const createDateFilters = (dateField, includeFuture) => {
         },
         {
           id: `COMING_MONTH`,
-          label: 'Coming Month',
+          label: 'in the coming month',
           execute: createExecuteFunction(dateField, {
             from: now(),
             to: now(31),
@@ -93,7 +93,7 @@ export const createDateFilters = (dateField, includeFuture) => {
         },
         {
           id: `COMING_YEAR`,
-          label: 'Coming Year',
+          label: 'in the coming year',
           execute: createExecuteFunction(dateField, {
             from: now(),
             to: now(365),
@@ -103,13 +103,13 @@ export const createDateFilters = (dateField, includeFuture) => {
     );
   }
 
-  filters.push({
+  options.push({
     id: `CUSTOM_DATES`,
-    label: 'Custom Dates..',
+    label: 'Custom Range..',
     datePicker: true,
     dontPreCount: true,
     execute: createExecuteFunction(dateField),
   });
 
-  return { filters, defaultFilterId: DEFAULT_FILTER_ID, selectedFilterId: DEFAULT_FILTER_ID };
+  return { options, defaultId: DEFAULT_FILTER_ID, selectedId: DEFAULT_FILTER_ID };
 };

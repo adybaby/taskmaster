@@ -1,26 +1,25 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import { useSelector } from 'react-redux';
-import TaskResult from './TaskResult';
+import { makeStyles } from '@material-ui/core/styles';
+import { TaskResult } from './TaskResult';
 import { getVisibleTasks } from '../../redux/selectors/TaskSelector';
+import { styles } from '../../styles/Styles';
 
-const TaskList = () => {
+const useStyles = makeStyles((theme) => styles(theme));
+
+export const TaskList = () => {
+  const classes = useStyles();
   const tasks = useSelector(getVisibleTasks);
 
   return (
-    <List>
-      <ListItem key="numResults">
-        <Typography variant="subtitle1">{tasks.length} tasks</Typography>
-      </ListItem>
+    <div className={classes.fullWidthContent}>
+      <Typography variant="subtitle1">{tasks.length} tasks</Typography>
       {tasks.map((task) => (
-        <ListItem key={task.id}>
+        <div key={task.id} className={classes.taskResult}>
           <TaskResult task={task} />
-        </ListItem>
+        </div>
       ))}
-    </List>
+    </div>
   );
 };
-
-export default TaskList;

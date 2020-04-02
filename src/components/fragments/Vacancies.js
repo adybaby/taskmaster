@@ -10,13 +10,13 @@ import { DispatchingRouterLink as RLink } from './DispatchingRouterLink';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
 import * as URLS from '../../Urls';
 import { KEYS, decodeKey } from '../../data/fields/Vacancies';
-import CreatedByLink from './CreatedByLink';
+import { CreatedByLink } from './CreatedByLink';
 import { FILTER_IDS } from '../../data/filters/Filters';
 
 const handleVacancyClick = (dispatch, vacancyTitle) => {
   dispatch(setFilterBarVisible(true));
   dispatch(resetAllFilterControls());
-  dispatch(setFilterControl({ id: FILTER_IDS.VACANCIES, selectedFilterId: vacancyTitle }));
+  dispatch(setFilterControl({ id: FILTER_IDS.VACANCIES, selectedId: vacancyTitle }));
 };
 
 const User = ({ userId }) =>

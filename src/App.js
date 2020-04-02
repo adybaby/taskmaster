@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import AppBar from './components/AppBar';
-import BrowsePanel from './components/browse/BrowsePanel';
-import TaskPanel from './components/tasks/TaskPanel';
+import { AppBar } from './components/AppBar';
+import { BrowsePanel } from './components/browse/BrowsePanel';
+import { TaskPanel } from './components/tasks/TaskPanel';
 import { ProfilesPanel } from './components/profile/ProfilesPanel';
 import * as URLS from './Urls';
 import { initialise } from './redux/actions/DbActions';
 import { DB_STATUS } from './data/db/Db';
 
-const App = () => {
+export const App = () => {
   const dispatch = useDispatch();
   const dbStatus = useSelector((state) => state.dbStatus);
 
@@ -48,5 +48,3 @@ const App = () => {
       );
   }
 };
-
-export default App;

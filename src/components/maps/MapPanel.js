@@ -3,13 +3,13 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import styles from '../../styles/Styles';
+import { styles } from '../../styles/Styles';
 import { ContributionsDeepList } from '../fragments/Contributions';
 import * as TYPES from '../../data/fields/Type';
 
 const useStyles = makeStyles((theme) => styles(theme));
 
-const MapPanel = () => {
+export const MapPanel = () => {
   const classes = useStyles();
   const tasks = useSelector((state) => state.tasks);
 
@@ -30,5 +30,3 @@ const MapPanel = () => {
     </div>
   );
 };
-
-export default MapPanel;

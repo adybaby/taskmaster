@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-console */
-import readTextFile from '../../../util/TextFileUtils';
+import { readTextFile } from '../../../util/TextFileUtils';
 import { cleanString, parseListFromString } from '../../../util/StringUtils';
 import { parseDateList, isDate } from './Common';
 

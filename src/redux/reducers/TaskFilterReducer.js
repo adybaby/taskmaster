@@ -13,7 +13,7 @@ export const filterBarVisibleReducer = (state = false, action) => {
 const resetFilterControl = (filterControl) =>
   filterControl.type === 'TEXT'
     ? { ...filterControl, text: '' }
-    : { ...filterControl, selectedFilterId: filterControl.defaultFilterId };
+    : { ...filterControl, selectedId: filterControl.defaultId };
 
 export const filterControlsReducer = (state = [], action) => {
   switch (action.type) {
