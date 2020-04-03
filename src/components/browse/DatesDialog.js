@@ -34,7 +34,7 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
     disableToolbar: true,
     orientation: 'portrait',
     fullWidth: true,
-    value: null,
+    value: dates[dates.active] === '' ? null : dates[dates.active],
     defaultDate: null,
     onAccept: (date) => {
       if (dates.active === 'from') {
