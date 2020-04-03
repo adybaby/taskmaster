@@ -1,48 +1,109 @@
-import React, { useState } from 'react';
+/* eslint-disable no-restricted-globals */
+import React, { useState, createRef } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
+import TextField from '@material-ui/core/TextField';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import { makeStyles } from '@material-ui/core/styles';
+import { styles } from '../../styles/Styles';
+import { formatDate } from '../../util/Dates';
+
+const useStyles = makeStyles(styles);
 
 export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other }) => {
-  const [from, setFrom] = useState(null);
-  const [to, setTo] = useState(null);
+  const classes = useStyles();
+  const [dates, setDates] = useState({ from: '', to: '', active: 'from' });
+
+  const toControl = createRef();
+
+  const bothDatesNull = dates.from === '' && dates.to === '';
+  const fromNotValid = dates.from !== '' && isNaN(new Date(dates.from).getTime());
+  const toNotValid = dates.to !== '' && isNaN(new Date(dates.to).getTime());
+  const datesOutOfOrder =
+    dates.from !== '' &&
+    dates.to !== '' &&
+    new Date(dates.from).getTime() > new Date(dates.to).getTime();
 
   const datePickerProps = {
-    clearable: true,
+    variant: 'static',
+    disableToolbar: true,
+    orientation: 'portrait',
     fullWidth: true,
-    format: 'dd/MM/yyyy',
-    placeholder: 'Enter a date or leave blank..',
-    autoOk: true,
+    value: null,
+    defaultDate: null,
+    onAccept: (date) => {
+      if (dates.active === 'from') {
+        toControl.current.focus();
+        setDates({ ...dates, from: formatDate(date), active: 'to' });
+      } else {
+        toControl.current.focus();
+        setDates({ ...dates, to: formatDate(date), active: 'to' });
+      }
+    },
+    onChange: () => {
+      // do nothing
+    },
+  };
+
+  const inputProps = {
+    className: classes.datePickerField,
+    fullWidth: true,
+    InputProps: {
+      classes: {
+        root: classes.datePickerInput,
+        focused: classes.datePickerInputFocussed,
+      },
+    },
   };
 
   const fromProps = {
-    onChange: (date) => setFrom(date),
+    onChange: (event) => {
+      setDates({ ...dates, from: event.target.value });
+    },
+    onFocus: () => {
+      setDates({ ...dates, active: 'from' });
+    },
     autoFocus: true,
-    value: from,
+    value: dates.from,
     label: `${currentPickerTitle} on or after..`,
-    ...datePickerProps,
+    ...inputProps,
   };
 
   const toProps = {
-    onChange: (date) => setTo(date),
-    value: to,
+    onChange: (event) => {
+      setDates({ ...dates, to: event.target.value });
+    },
+    onFocus: () => {
+      setDates({ ...dates, active: 'to' });
+    },
+    value: dates.to,
     label: `${currentPickerTitle} on or before..`,
-    ...datePickerProps,
+    inputRef: toControl,
+    ...inputProps,
   };
 
-  if (to !== null) {
-    fromProps.maxDate = to;
-    fromProps.initialFocusedDate = to;
+  if (dates.to !== '' && dates.active === 'from') {
+    datePickerProps.maxDate = dates.to;
+    datePickerProps.initialFocusedDate = dates.to;
   }
 
-  if (from !== null) {
-    toProps.minDate = from;
-    toProps.initialFocusedDate = from;
+  if (dates.from !== null && dates.active === 'to') {
+    datePickerProps.minDate = dates.from;
+    datePickerProps.initialFocusedDate = dates.from;
+  }
+
+  let fromJoinProps = {};
+  if (dates.active === 'from') {
+    fromJoinProps = { backgroundColor: '#f2f2f2' };
+  }
+  let toJoinProps = {};
+  if (dates.active === 'to') {
+    toJoinProps = { backgroundColor: '#f2f2f2' };
   }
 
   return (
@@ -59,16 +120,47 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
             Enter the date range to filter by. You can leave either field blank to ignore those
             fields.
           </DialogContentText>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker {...fromProps} />
-            <br />
-            <br />
-            <KeyboardDatePicker {...toProps} />
-          </MuiPickersUtilsProvider>
+          <div style={{ display: 'flex', paddingTop: '20px', paddingBottom: '2px' }}>
+            <div style={{ flexGrow: 1 }}>
+              <div style={{ display: 'flex', ...fromJoinProps }}>
+                <TextField {...fromProps} />
+                <div style={{ padding: '4px' }}></div>
+              </div>
+              <div style={{ padding: '8px' }}></div>
+              <div style={{ display: 'flex', ...toJoinProps }}>
+                <TextField {...toProps} />
+                <div style={{ padding: '4px' }}></div>
+              </div>
+            </div>
+            <div>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker {...datePickerProps} />
+              </MuiPickersUtilsProvider>
+            </div>
+          </div>
+          {fromNotValid ? (
+            <div style={{ paddingTop: '16px', color: 'red' }}>
+              The first date is not a valid date.
+            </div>
+          ) : null}
+          {toNotValid ? (
+            <div style={{ paddingTop: '16px', color: 'red' }}>
+              The second date is not a valid date.
+            </div>
+          ) : null}
+          {datesOutOfOrder ? (
+            <div style={{ paddingTop: '16px', color: 'red' }}>
+              The first date should be before or the same as the last date.
+            </div>
+          ) : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => handleClose(null, null)}>Cancel</Button>
-          <Button onClick={() => handleClose(from, to)} color="primary">
+          <Button
+            disabled={fromNotValid || toNotValid || datesOutOfOrder || bothDatesNull}
+            onClick={() => handleClose(dates.from, dates.to)}
+            color="primary"
+          >
             OK
           </Button>
         </DialogActions>

@@ -1,11 +1,11 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { styles } from '../../styles/Styles';
 import { SkillList, VacancyDates } from '../fragments/Vacancies';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const UserPanel = ({ user }) => {
   const classes = useStyles();
@@ -18,7 +18,9 @@ export const UserPanel = ({ user }) => {
           <Typography variant="h6">{title}</Typography>
           {user[field].map((element, index) => (
             <Typography key={index} variant="body1">
-              <RouterLink to={`/task/${element.id}`}>{element.title}</RouterLink>
+              <Link className={classes.link} to={`/task/${element.id}`}>
+                {element.title}
+              </Link>
               {Array.isArray(element.periods) ? (
                 <>
                   {` `}

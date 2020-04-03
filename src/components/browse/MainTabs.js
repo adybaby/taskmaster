@@ -13,7 +13,7 @@ import * as URLS from '../../Urls';
 import { FILTER_IDS } from '../../data/filters/Filters';
 import * as TASK_TYPES from '../../data/fields/Type';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const TABS = {
   ALL: {

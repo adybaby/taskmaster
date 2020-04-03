@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import { AppBar } from './components/AppBar';
 import { BrowsePanel } from './components/browse/BrowsePanel';
 import { TaskPanel } from './components/tasks/TaskPanel';
@@ -9,6 +10,7 @@ import { ProfilesPanel } from './components/profile/ProfilesPanel';
 import * as URLS from './Urls';
 import { initialise } from './redux/actions/DbActions';
 import { DB_STATUS } from './data/db/Db';
+import { theme } from './styles/Styles';
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -29,7 +31,7 @@ export const App = () => {
       return <div>There was an error creating the local cache from the database..</div>;
     default:
       return (
-        <>
+        <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <AppBar />
           <Switch>
@@ -44,7 +46,7 @@ export const App = () => {
               <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
             </Route>
           </Switch>
-        </>
+        </MuiThemeProvider>
       );
   }
 };

@@ -9,7 +9,7 @@ import Collapse from '@material-ui/core/Collapse';
 import * as Resources from './ResourceChart';
 import { styles } from '../../styles/Styles';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const ChartPanel = () => {
   const classes = useStyles();

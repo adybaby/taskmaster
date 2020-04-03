@@ -1,7 +1,7 @@
 import React from 'react';
-import Link from '@material-ui/core/Link';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   setFilterControl,
   setFilterBarVisible,
@@ -9,8 +9,12 @@ import {
 } from '../../redux/actions/TaskFilterActions';
 import * as URLS from '../../Urls';
 import { FILTER_IDS } from '../../data/filters/Filters';
+import { styles } from '../../styles/Styles';
+
+const useStyles = makeStyles(styles);
 
 export const CreatedByLink = ({ createdBy }) => {
+  const classes = useStyles();
   const dispatch = useDispatch();
 
   const users = useSelector((state) => state.users);
@@ -26,13 +30,13 @@ export const CreatedByLink = ({ createdBy }) => {
 
   return typeof user === 'undefined' ? null : (
     <>
-      <Link value={user.id} component={RouterLink} to={`/${URLS.PROFILE}/${user.id}`}>
+      <Link className={classes.link} value={user.id} to={`/${URLS.PROFILE}/${user.id}`}>
         {user.name}
       </Link>
       {user.authored.length > 0 ? (
         <Link
+          className={classes.link}
           value={user.id}
-          component={RouterLink}
           to="/"
           onClick={() => {
             handleCreatedByClick();

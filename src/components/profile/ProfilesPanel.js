@@ -8,7 +8,7 @@ import { Divider } from '@material-ui/core';
 import { styles } from '../../styles/Styles';
 import { UserPanel } from './UserPanel';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const ProfilesPanel = () => {
   const classes = useStyles();

@@ -1,19 +1,24 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { displayNameForLevel } from '../../data/fields/ContributesTo';
 import { styles } from '../../styles/Styles';
 import * as URLS from '../../Urls';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
-export const ContributionLink = ({ contribution }) => (
-  <div>
-    <RouterLink to={`/${URLS.TASK}/${contribution.id}`}>{contribution.title}</RouterLink>
-    {` (${displayNameForLevel(contribution.level)})`}
-  </div>
-);
+export const ContributionLink = ({ contribution }) => {
+  const classes = useStyles();
+  return (
+    <div>
+      <Link className={classes.link} to={`/${URLS.TASK}/${contribution.id}`}>
+        {contribution.title}
+      </Link>
+      {` (${displayNameForLevel(contribution.level)})`}
+    </div>
+  );
+};
 
 export const ContributionsBlock = ({ contributions }) =>
   contributions.map((contribution) => (

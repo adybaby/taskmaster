@@ -20,7 +20,7 @@ import { calculateResourceChartData } from '../../redux/selectors/ResourceChartD
 import { styles } from '../../styles/Styles';
 import { MarkPanel } from './ResourceMarkPanel';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
   const classes = useStyles();

@@ -1,10 +1,41 @@
 import { fade, createMuiTheme } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
   overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        body: { backgroundColor: 'white', height: '100%' },
+        html: { backgroundColor: 'white', height: '100%' },
+        '#app,#root,#app>div': { height: '100%' },
+      },
+    },
     MuiDivider: {
       root: {
         marginTop: 1,
+      },
+    },
+    MuiPickersStaticWrapper: {
+      staticWrapperRoot: {
+        backgroundColor: '#f2f2f2',
+      },
+    },
+    MuiPickersCalendarHeader: {
+      iconButton: {
+        backgroundColor: '#f2f2f2',
       },
     },
   },
@@ -53,6 +84,7 @@ export const styles = () => ({
     flexDirection: 'row',
     borderBottom: '1px solid #e8e8e8',
     paddingLeft: theme.spacing(2),
+    backgroundColor: theme.palette.background.default,
   },
   tab: {
     minWidth: 78,
@@ -68,11 +100,19 @@ export const styles = () => ({
   },
   filterButton: {
     marginRight: theme.spacing(3),
-  },
-
-  // Task List
-  taskResult: {
-    paddingBottom: theme.spacing(2),
+    '&&': {
+      borderStyle: 'none',
+      color: 'dimGray',
+    },
+    '&:hover,&.Mui-selected&:hover': {
+      color: theme.palette.info.light,
+      backgroundColor: 'transparent',
+    },
+    '&.Mui-selected': {
+      fontWeight: 'bold',
+      color: theme.palette.primary.main,
+      backgroundColor: 'transparent',
+    },
   },
 
   // FilterBar
@@ -105,7 +145,6 @@ export const styles = () => ({
 
   // Content Layout - with sidebar
   contentWithSideBar_Container: {
-    backgroundColor: theme.palette.background.paper,
     display: 'flex',
     height: '100%',
     width: '100%',
@@ -127,7 +166,20 @@ export const styles = () => ({
     flexGrow: '8',
   },
 
-  // General Padding
+  // Task List
+  taskResult: {
+    paddingBottom: theme.spacing(2),
+  },
+
+  // datepicker
+  datePickerInput: {
+    '&$datePickerInputFocussed': {
+      backgroundColor: '#f2f2f2',
+    },
+  },
+  datePickerInputFocussed: {},
+
+  // General
   topPadding: {
     paddingTop: theme.spacing(1),
   },
@@ -136,5 +188,21 @@ export const styles = () => ({
   },
   padding: {
     padding: theme.spacing(1),
+  },
+
+  // links
+  title: {
+    textDecoration: 'none',
+    color: 'inherit',
+    '&:focus, &:hover, &:visited, &:link, &:active': {
+      textDecoration: 'none',
+    },
+  },
+  link: {
+    textDecoration: 'none',
+    color: theme.palette.primary.main,
+    '&:focus, &:hover, &:visited, &:link, &:active': {
+      textDecoration: 'none',
+    },
   },
 });

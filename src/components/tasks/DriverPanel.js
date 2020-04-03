@@ -6,7 +6,7 @@ import { HeaderBlock } from '../fragments/HeaderBlock';
 import { TagsAndLinksBlock } from '../fragments/TagsAndLinksBlock';
 import { ContributionsBlock } from '../fragments/Contributions';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const DriverPanel = ({ driver }) => {
   const classes = useStyles();

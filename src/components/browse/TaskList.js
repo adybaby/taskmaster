@@ -6,7 +6,7 @@ import { TaskResult } from './TaskResult';
 import { getVisibleTasks } from '../../redux/selectors/TaskSelector';
 import { styles } from '../../styles/Styles';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const TaskList = () => {
   const classes = useStyles();

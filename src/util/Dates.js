@@ -20,7 +20,7 @@ export const formatDate = (date) => {
   const monthIndex = date.getMonth();
   const year = date.getFullYear();
 
-  return `${day} ${monthNames[monthIndex]} ${year}`;
+  return isNaN(date.getTime()) ? date : `${day} ${monthNames[monthIndex]} ${year}`;
 };
 
 export const parseDate = (dateStr) => {

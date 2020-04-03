@@ -3,13 +3,13 @@ import React from 'react';
 import '../../../node_modules/react-vis/dist/style.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Divider } from '@material-ui/core';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { formatDate } from '../../util/Dates';
 import { styles } from '../../styles/Styles';
 import { VacancyDates } from '../fragments/Vacancies';
 import * as URLS from '../../Urls';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
   const classes = useStyles();
@@ -32,15 +32,17 @@ export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
 
               {showUser ? (
                 <>
-                  <RouterLink to={`/${URLS.PROFILE}/${elem.user.id}`}>{elem.user.name}</RouterLink>
+                  <Link className={classes.link} to={`/${URLS.PROFILE}/${elem.user.id}`}>
+                    {elem.user.name}
+                  </Link>
                   {` (as ${skillTitle}) - `}
                 </>
               ) : null}
 
               {taskField !== null ? (
-                <RouterLink to={`/${URLS.TASK}/${elem[taskField].id}`}>
+                <Link className={classes.link} to={`/${URLS.TASK}/${elem[taskField].id}`}>
                   {elem[taskField].title}
-                </RouterLink>
+                </Link>
               ) : null}
 
               {Array.isArray(elem[datesType][datesField]) ? (

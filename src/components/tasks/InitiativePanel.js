@@ -8,7 +8,7 @@ import { ContributionLink } from '../fragments/Contributions';
 import { plannedDates } from '../../util/Dates';
 import { VacancyBlock } from '../fragments/Vacancies';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const InitiativePanel = ({ initiative }) => {
   const classes = useStyles();

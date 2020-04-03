@@ -1,13 +1,13 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { styles } from '../../styles/Styles';
 import { ContributionsDeepList } from '../fragments/Contributions';
 import * as TYPES from '../../data/fields/Type';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const MapPanel = () => {
   const classes = useStyles();
@@ -20,7 +20,9 @@ export const MapPanel = () => {
         .map((driver) => (
           <div key={driver.id}>
             <Typography variant="h5">
-              <RouterLink to={`/task/${driver.id}`}>{driver.title} </RouterLink>
+              <Link className={classes.link} to={`/task/${driver.id}`}>
+                {driver.title}{' '}
+              </Link>
             </Typography>
             <div className={classes.fullWidthContent}>
               <ContributionsDeepList contributions={driver.contributions} />

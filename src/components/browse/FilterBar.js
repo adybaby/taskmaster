@@ -6,7 +6,7 @@ import { SelectFilter } from './SelectFilter';
 import { SortControl } from './SortControl';
 import { FILTER_IDS } from '../../data/filters/Filters';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const FilterBar = () => {
   const classes = useStyles();

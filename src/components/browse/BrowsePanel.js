@@ -4,16 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import Collapse from '@material-ui/core/Collapse';
+import ToggleButton from '@material-ui/lab/ToggleButton';
 import { styles } from '../../styles/Styles';
 import { setFilterBarVisible } from '../../redux/actions/TaskFilterActions';
-import ToggleButton from '../fragments/ToggleButton';
 import { FilterBar } from './FilterBar';
 import { MapPanel } from '../maps/MapPanel';
 import { ChartPanel } from '../charts/ChartPanel';
 import { TaskList } from './TaskList';
 import { DEFAULT_TAB, TABS, MainTabs } from './MainTabs';
 
-const useStyles = makeStyles((theme) => styles(theme));
+const useStyles = makeStyles(styles);
 
 export const BrowsePanel = (props) => {
   const dispatch = useDispatch();
