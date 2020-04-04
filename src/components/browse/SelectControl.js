@@ -66,10 +66,10 @@ export const SelectControl = ({
     }
 
     const toDate = formatDate(new Date(control.params.to));
-    if (control.params.from === '') return `${control.label} before ${toDate}`;
+    if (control.params.from === null) return `${control.label} before ${toDate}`;
 
     const fromDate = formatDate(new Date(control.params.from));
-    if (control.params.to === '') return `${control.label} after ${fromDate}`;
+    if (control.params.to === null) return `${control.label} after ${fromDate}`;
 
     return `${control.label} between ${fromDate} and ${toDate}`;
   };

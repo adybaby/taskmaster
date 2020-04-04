@@ -3,6 +3,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import enGB from 'date-fns/locale/en-GB';
 import { AppBar } from './components/AppBar';
 import { BrowsePanel } from './components/browse/BrowsePanel';
 import { TaskPanel } from './components/tasks/TaskPanel';
@@ -32,20 +35,22 @@ export const App = () => {
     default:
       return (
         <MuiThemeProvider theme={theme}>
-          <CssBaseline />
-          <AppBar />
-          <Switch>
-            <Route exact path="/">
-              <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
-            </Route>
-            <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
-            <Route path={`/${URLS.PROFILE}/:id`} component={ProfilesPanel} />
-            <Route path={`/${URLS.PROFILE}/`} component={ProfilesPanel} />
-            <Route path={`/${URLS.BROWSE}/:id`} component={BrowsePanel} />
-            <Route>
-              <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
-            </Route>
-          </Switch>
+          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={enGB}>
+            <CssBaseline />
+            <AppBar />
+            <Switch>
+              <Route exact path="/">
+                <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
+              </Route>
+              <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
+              <Route path={`/${URLS.PROFILE}/:id`} component={ProfilesPanel} />
+              <Route path={`/${URLS.PROFILE}/`} component={ProfilesPanel} />
+              <Route path={`/${URLS.BROWSE}/:id`} component={BrowsePanel} />
+              <Route>
+                <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
+              </Route>
+            </Switch>
+          </MuiPickersUtilsProvider>
         </MuiThemeProvider>
       );
   }

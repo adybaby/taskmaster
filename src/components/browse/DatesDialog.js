@@ -7,10 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
-import DatePicker from './DatePicker';
+import { isValid } from 'date-fns';
+import DatePicker from './GbDateClearablePicker';
 import { styles } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
 
@@ -18,7 +17,7 @@ const useStyles = makeStyles(styles);
 
 export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other }) => {
   const classes = useStyles();
-  const [dates, setDates] = useState({ from: '', to: '', active: 'from' });
+  const [dates, setDates] = useState({ from: '', to: '', active: '' });
 
   const toControl = createRef();
 
@@ -29,6 +28,12 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
     dates.from !== '' &&
     dates.to !== '' &&
     new Date(dates.from).getTime() > new Date(dates.to).getTime();
+
+  const handleOk = () => {
+    const fromDate = new Date(dates.from);
+    const toDate = new Date(dates.to);
+    handleClose(isValid(fromDate) ? fromDate : null, isValid(toDate) ? toDate : null);
+  };
 
   const datePickerProps = {
     variant: 'static',
@@ -134,9 +139,7 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
               </div>
             </div>
             <div>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DatePicker {...datePickerProps} />
-              </MuiPickersUtilsProvider>
+              <DatePicker {...datePickerProps} />
             </div>
           </div>
           {fromNotValid ? (
@@ -159,7 +162,7 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
           <Button onClick={() => handleClose(null, null)}>Cancel</Button>
           <Button
             disabled={fromNotValid || toNotValid || datesOutOfOrder || bothDatesNull}
-            onClick={() => handleClose(dates.from, dates.to)}
+            onClick={handleOk}
             color="primary"
           >
             OK
