@@ -8,8 +8,9 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { makeStyles } from '@material-ui/core/styles';
+import DatePicker from './DatePicker';
 import { styles } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
 

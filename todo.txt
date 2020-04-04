@@ -1,3 +1,5 @@
+change datepicker to use uk dates not americam
+
 Make toolbar, tabs, filter bar, charts page (inc x axis) completely responsive
 
 style sign up button to be RHS of vacancy block
@@ -25,10 +27,3 @@ organise vacancy structure:
 work out what to do with more than 22 skills in stacked chart
 
 DB back end
-
-`
-  && {
-    border-style: none;
-    color: rgb(98, 98, 98);
-  }
-`
