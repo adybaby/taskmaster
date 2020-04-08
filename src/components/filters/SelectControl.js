@@ -9,7 +9,8 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@material-ui/core';
 import { styles } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
-import { DatesDialog } from './DatesDialog';
+import { DatesDialog } from './DateDialog';
+import { YearDialog } from './YearDialog';
 
 const useStyles = makeStyles(styles);
 
@@ -19,6 +20,7 @@ export const SelectControl = ({
   handleDateRangeSelected,
   preCountResults,
   currentTaskType,
+  yearOnly,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -127,11 +129,15 @@ export const SelectControl = ({
           );
         })}
       </Popover>
-      <DatesDialog
-        open={openDates}
-        handleClose={handleCloseDates}
-        currentPickerTitle={control.label}
-      />
+      {yearOnly ? (
+        <YearDialog open={openDates} handleClose={handleCloseDates} />
+      ) : (
+        <DatesDialog
+          open={openDates}
+          handleClose={handleCloseDates}
+          currentPickerTitle={control.label}
+        />
+      )}
     </div>
   );
 };

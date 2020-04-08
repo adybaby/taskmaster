@@ -2,21 +2,23 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import {
-  setFilterBarVisible,
-  resetAllFilterControls,
-  setFilterControl,
-} from '../../redux/actions/TaskFilterActions';
+  setTaskListFilterControl,
+  resetAllTaskListFilterControls,
+} from '../../redux/actions/TaskListFilterActions';
+import { setFilterBarVisible } from '../../redux/actions/FilterBarActions';
 import { DispatchingRouterLink as RLink } from './DispatchingRouterLink';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
 import * as URLS from '../../Urls';
 import { KEYS, decodeKey } from '../../data/fields/Vacancies';
 import { CreatedByLink } from './CreatedByLink';
-import { FILTER_IDS } from '../../data/filters/Filters';
+import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 
 const handleVacancyClick = (dispatch, vacancyTitle) => {
   dispatch(setFilterBarVisible(true));
-  dispatch(resetAllFilterControls());
-  dispatch(setFilterControl({ id: FILTER_IDS.VACANCIES, selectedId: vacancyTitle }));
+  dispatch(resetAllTaskListFilterControls());
+  dispatch(
+    setTaskListFilterControl({ id: TASK_FILTER_CONTROL_IDS.VACANCIES, selectedId: vacancyTitle })
+  );
 };
 
 const User = ({ userId }) =>

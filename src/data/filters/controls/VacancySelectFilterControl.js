@@ -1,6 +1,6 @@
 const DEFAULT_FILTER_ID = 'ANY_VACANCIES';
 
-const createExecuteFunction = (skills) => (tasks) =>
+const createExecute = (skills) => (tasks) =>
   tasks.filter((task) => {
     if (task.vacancies === null) {
       return false;
@@ -30,7 +30,7 @@ const getSkillVacancies = (tasks) => {
   return skillVacancies.sort();
 };
 
-export const createVacancyFilters = (tasks, currentUser) => ({
+export const createVacancySelectFilterControl = (tasks, currentUser) => ({
   options: [
     {
       id: DEFAULT_FILTER_ID,
@@ -39,12 +39,12 @@ export const createVacancyFilters = (tasks, currentUser) => ({
     {
       id: 'MY_SKILLS',
       label: 'my skills',
-      execute: createExecuteFunction(currentUser.skills),
+      execute: createExecute(currentUser.skills),
     },
     ...getSkillVacancies(tasks).map((skillVacancy) => ({
       id: skillVacancy,
-      label: `a ${skillVacancy}`,
-      execute: createExecuteFunction([skillVacancy]),
+      label: `${skillVacancy}`,
+      execute: createExecute([skillVacancy]),
     })),
   ],
   defaultId: DEFAULT_FILTER_ID,

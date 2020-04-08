@@ -63,3 +63,10 @@ export const filterTasksByDate = (tasks, fromTo, dateField) => {
     return (from === null || date >= from) && (to === null || date <= to);
   });
 };
+
+export const now = (days, date) => {
+  if (days === undefined) return new Date().getTime();
+  const d = typeof date === 'undefined' ? new Date() : new Date(date);
+  d.setDate(d.getDate() + days);
+  return d.getTime();
+};

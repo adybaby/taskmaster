@@ -1,22 +1,22 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { executeFilters } from '../../redux/selectors/TaskSelector';
-import { setFilterControl } from '../../redux/actions/TaskFilterActions';
+import { executeFilterControls } from '../../data/filters/TaskListFilterControls';
+import { setTaskListFilterControl } from '../../redux/actions/TaskListFilterActions';
 import { SelectControl } from './SelectControl';
 
-export const SelectFilter = ({ filterControl }) => {
+export const TaskSelectFilter = ({ filterControl }) => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks);
-  const filterControls = useSelector((state) => state.filterControls);
+  const taskListfilterControls = useSelector((state) => state.taskListfilterControls);
   const filterBarVisible = useSelector((state) => state.filterBarVisible);
 
   const handleOptionSelected = (optionId) => {
-    dispatch(setFilterControl({ id: filterControl.id, selectedId: optionId }));
+    dispatch(setTaskListFilterControl({ id: filterControl.id, selectedId: optionId }));
   };
 
   const handleDateRangeSelected = (optionId, from, to) => {
     dispatch(
-      setFilterControl({
+      setTaskListFilterControl({
         id: filterControl.id,
         selectedId: optionId,
         params: { from, to },
@@ -28,12 +28,14 @@ export const SelectFilter = ({ filterControl }) => {
     if (option.dontPreCount) {
       return -1;
     }
-    return executeFilters(
+    return executeFilterControls(
       tasks,
-      filterControls.map((fc) =>
+      taskListfilterControls.map((fc) =>
         fc.id === filterControl.id ? { ...fc, selectedId: option.id } : fc
       ),
-      filterBarVisible
+      filterBarVisible,
+      null,
+      true
     ).length;
   };
 

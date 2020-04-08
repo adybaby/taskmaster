@@ -20,11 +20,25 @@ const readRecordsFromText = (text) => {
     available.forEach((period) => {
       const firstDate = new Date(period.from);
       const lastDate = new Date(period.to);
-      if (isDate(firstDate) && firstDate.getTime() < dateRange.first) {
-        dateRange.first = firstDate.getTime();
+
+      if (isDate(firstDate) && firstDate.getTime() < dateRange.all.first) {
+        dateRange.all.first = firstDate.getTime();
       }
-      if (isDate(lastDate) && lastDate.getTime() > dateRange.last) {
-        dateRange.last = lastDate.getTime();
+      if (isDate(lastDate) && lastDate.getTime() > dateRange.all.last) {
+        dateRange.all.last = lastDate.getTime();
+      }
+
+      if (
+        dateRange.users.first === null ||
+        (isDate(firstDate) && firstDate.getTime() < dateRange.users.first)
+      ) {
+        dateRange.users.first = firstDate.getTime();
+      }
+      if (
+        dateRange.users.last === null ||
+        (isDate(lastDate) && lastDate.getTime() > dateRange.users.last)
+      ) {
+        dateRange.users.last = lastDate.getTime();
       }
     });
   };

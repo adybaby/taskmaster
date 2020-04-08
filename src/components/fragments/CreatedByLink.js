@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  setFilterControl,
-  setFilterBarVisible,
-  resetAllFilterControls,
-} from '../../redux/actions/TaskFilterActions';
+  setTaskListFilterControl,
+  resetAllTaskListFilterControls,
+} from '../../redux/actions/TaskListFilterActions';
+import { setFilterBarVisible } from '../../redux/actions/FilterBarActions';
 import * as URLS from '../../Urls';
-import { FILTER_IDS } from '../../data/filters/Filters';
+import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 import { styles } from '../../styles/Styles';
 
 const useStyles = makeStyles(styles);
@@ -24,8 +24,10 @@ export const CreatedByLink = ({ createdBy }) => {
 
   const handleCreatedByClick = () => {
     dispatch(setFilterBarVisible(true));
-    dispatch(resetAllFilterControls());
-    dispatch(setFilterControl({ id: FILTER_IDS.CREATED_BY, selectedId: user.id }));
+    dispatch(resetAllTaskListFilterControls());
+    dispatch(
+      setTaskListFilterControl({ id: TASK_FILTER_CONTROL_IDS.CREATED_BY, selectedId: user.id })
+    );
   };
 
   return typeof user === 'undefined' ? null : (

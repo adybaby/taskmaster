@@ -11,20 +11,17 @@ import {
   Hint,
   DiscreteColorLegend,
 } from 'react-vis';
-import { useSelector } from 'react-redux';
 import '../../../node_modules/react-vis/dist/style.css';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import { Divider } from '@material-ui/core';
-import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
 import { styles } from '../../styles/Styles';
 import { MarkPanel } from './ResourceMarkPanel';
 
 const useStyles = makeStyles(styles);
 
-const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
+const BarChart = ({ title, seriesSets, seriesKey, totalsTitle, positive, gantt }) => {
   const classes = useStyles();
-  const seriesSets = useSelector(calculateResourceChartData);
   const seriesSet = seriesSets[seriesKey];
   const skills = seriesSets.skillsAndColors.map((s) => s.title);
   const { refs } = seriesSets;
@@ -104,24 +101,28 @@ const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
   };
 
   const makeChart = () => {
-    const props = {
+    let props = {
       xType: 'time',
       height: 800,
       onMouseLeave: () => setDataPoint(null),
+      margin: { bottom: 100 },
     };
 
-    if (gantt)
-      Object.assign(props, {
-        margin: { left: 100 },
+    if (gantt) {
+      props = {
+        ...props,
+        margin: { ...props.margin, left: 100 },
         colorRange: [COLORS.HIGHLIGHTED, COLORS.MIN, COLORS.MAX],
         colorDomain: [-99, seriesSet.min, seriesSet.max],
-      });
-    else Object.assign(props, { stackBy: 'y' });
+      };
+    } else {
+      props = { ...props, stackBy: 'y' };
+    }
 
     return (
       <FlexibleWidthXYPlot {...props}>
         <HorizontalGridLines />
-        <XAxis />
+        <XAxis tickLabelAngle={-45} />
         {gantt ? (
           <YAxis
             tickFormat={(t, i) => skills[i]}
@@ -145,9 +146,11 @@ const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
       <div className={classes.contentWithSideBar_content}>
         <div>
           <h3>{title}</h3>
-          {makeChart()}
+          {seriesSets.refs[0].data.length > 0
+            ? makeChart()
+            : 'No data to display.  Please refine your date range.'}
         </div>
-        {makeLegend()}
+        {seriesSets.refs[0].data.length > 0 ? makeLegend() : null}
       </div>
       <div className={classes.contentWithSideBar_sideBarRight}>
         <>
@@ -168,44 +171,62 @@ const BarChart = ({ title, seriesKey, totalsTitle, positive, gantt }) => {
   );
 };
 
-export const VacancyChart = ({ gantt }) => (
-  <BarChart title="Vacancies" seriesKey="vacancies" totalsTitle="Vacancies" gantt={gantt} />
+export const VacancyChart = ({ seriesSets, gantt }) => (
+  <BarChart
+    title="Vacancies"
+    seriesSets={seriesSets}
+    seriesKey="vacancies"
+    totalsTitle="Vacancies"
+    gantt={gantt}
+  />
 );
 
-export const AvailabilityChart = ({ gantt }) => (
+export const AvailabilityChart = ({ seriesSets, gantt }) => (
   <BarChart
     title="Availability (before sign ups)"
+    seriesSets={seriesSets}
     seriesKey="availability"
     totalsTitle="Available"
     gantt={gantt}
   />
 );
 
-export const ActualAvailabilityChart = ({ gantt }) => (
+export const ActualAvailabilityChart = ({ seriesSets, gantt }) => (
   <BarChart
     title="Availability (after sign ups)"
+    seriesSets={seriesSets}
     seriesKey="actualAvailability"
     totalsTitle="Available"
     gantt={gantt}
   />
 );
 
-export const SignedUpChart = ({ gantt }) => {
-  return <BarChart title="Sign Ups" seriesKey="signedUp" totalsTitle="Signed Up" gantt={gantt} />;
+export const SignedUpChart = ({ seriesSets, gantt }) => {
+  return (
+    <BarChart
+      title="Sign Ups"
+      seriesSets={seriesSets}
+      seriesKey="signedUp"
+      totalsTitle="Signed Up"
+      gantt={gantt}
+    />
+  );
 };
 
-export const ShortfallChart = ({ gantt }) => (
+export const ShortfallChart = ({ seriesSets, gantt }) => (
   <BarChart
     title="Required Resources (remaining vacancies after sign ups)"
+    seriesSets={seriesSets}
     seriesKey="shortfall"
     totalsTitle="Required"
     gantt={gantt}
     positive={true}
   />
 );
-export const ExcessChart = () => (
+export const ExcessChart = (seriesSets) => (
   <BarChart
     title="Excess (remaining resources after sign ups)"
+    seriesSets={seriesSets}
     seriesKey="shortfall"
     totalsTitle="Excess"
     gantt={false}

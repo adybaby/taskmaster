@@ -120,7 +120,8 @@ export const styles = () => ({
     display: 'flex',
     flexDirection: 'row',
     paddingLeft: theme.spacing(2),
-    paddingBottoms: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    borderBottom: '1px solid #e8e8e8',
     paddingTop: theme.spacing(1),
   },
   filterControl: {
@@ -138,32 +139,33 @@ export const styles = () => ({
   fullWidthContent: {
     padding: theme.spacing(2),
     paddingLeft: theme.spacing(3),
+    width: '100%',
   },
   taskBody: {
     marginTop: theme.spacing(2),
+    width: '100%',
   },
 
   // Content Layout - with sidebar
   contentWithSideBar_Container: {
     display: 'flex',
     height: '100%',
-    width: '100%',
     flexDirection: 'row',
   },
   contentWithSideBar_sideBarLeft: {
     borderRight: `1px solid ${theme.palette.divider}`,
-    flexGrow: '2',
-    minWidth: '180px',
+    flexGrow: '0',
+    maxWidth: '180px',
   },
   contentWithSideBar_sideBarRight: {
     borderLeft: `1px solid ${theme.palette.divider}`,
-    flexGrow: '2',
-    minWidth: '180px',
+    flexGrow: '0',
+    maxWidth: '180px',
   },
   contentWithSideBar_content: {
     paddingLeft: theme.spacing(2),
     width: '100%',
-    flexGrow: '8',
+    flexGrow: '10',
   },
 
   // Task List

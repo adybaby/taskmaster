@@ -7,9 +7,6 @@ let users = null;
 let dateRange = null;
 let skills = null;
 
-let startedInit = false;
-let init = false;
-
 const seriesSets = {
   availability: null,
   signedUp: null,
@@ -48,8 +45,8 @@ const KELLY = [
 const xyTemplate = (makeRefs) => {
   const xy = [];
   for (
-    let i = new Date(dateRange.first);
-    i.getTime() <= new Date(dateRange.last).getTime();
+    let i = new Date(dateRange.all.first);
+    i.getTime() <= new Date(dateRange.all.last).getTime();
     i.setDate(i.getDate() + 1)
   ) {
     if (makeRefs) {
@@ -192,18 +189,33 @@ const calcActualAvailabilityAndShortFall = () => {
   minMax(seriesSets.shortfall);
 };
 
-export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn) => {
-  if (!startedInit && !init) {
-    startedInit = true;
-    tasks = tasksIn;
-    users = usersIn;
-    dateRange = dateRangeIn;
-    skills = skillsIn;
-    createSeriesTemplates();
-    calcAvailability();
-    calcVacancies();
-    calcActualAvailabilityAndShortFall();
-    init = true;
+const removeDatesOutsideTaskRange = (filterDateRange) => {
+  const range = {
+    first: filterDateRange.from !== null ? filterDateRange.from.getTime() : dateRange.all.first,
+    last: filterDateRange.to !== null ? filterDateRange.to.getTime() : dateRange.all.last,
+  };
+  Object.entries(seriesSets).forEach(([key]) => {
+    seriesSets[key].forEach((series, index) => {
+      if (typeof series.data !== 'undefined') {
+        const first = series.data.findIndex((d) => d.x >= range.first);
+        const last = series.data.findIndex((d) => d.x > range.last);
+        seriesSets[key][index].data = series.data.slice(first, last);
+      }
+    });
+  });
+};
+
+export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn, filterDateRange) => {
+  tasks = tasksIn;
+  users = usersIn;
+  dateRange = dateRangeIn;
+  skills = skillsIn;
+  createSeriesTemplates();
+  calcAvailability();
+  calcVacancies();
+  calcActualAvailabilityAndShortFall();
+  if (filterDateRange !== null) {
+    removeDatesOutsideTaskRange(filterDateRange);
   }
   return seriesSets;
 };

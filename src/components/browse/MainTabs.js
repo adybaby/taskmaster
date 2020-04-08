@@ -8,9 +8,9 @@ import { faSearch, faBullseye, faCodeBranch, faChartBar } from '@fortawesome/fre
 import { useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import { styles } from '../../styles/Styles';
-import { setFilterControl } from '../../redux/actions/TaskFilterActions';
+import { setTaskListFilterControl } from '../../redux/actions/TaskListFilterActions';
 import * as URLS from '../../Urls';
-import { FILTER_IDS } from '../../data/filters/Filters';
+import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 import * as TASK_TYPES from '../../data/fields/Type';
 
 const useStyles = makeStyles(styles);
@@ -68,7 +68,12 @@ export const MainTabs = ({ tabField, setTabField }) => {
     if (tabField !== tabFromUrl) {
       setTabField(tabFromUrl);
       if (tabFromUrl.TASK_TYPE !== null) {
-        dispatch(setFilterControl({ id: FILTER_IDS.TYPE, selectedId: tabFromUrl.TASK_TYPE }));
+        dispatch(
+          setTaskListFilterControl({
+            id: TASK_FILTER_CONTROL_IDS.TYPE,
+            selectedId: tabFromUrl.TASK_TYPE,
+          })
+        );
       }
     }
   }, [dispatch, tabFromUrl, tabField, setTabField]);

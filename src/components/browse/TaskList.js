@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { TaskResult } from './TaskResult';
-import { getVisibleTasks } from '../../redux/selectors/TaskSelector';
+import { getVisibleTasks } from '../../redux/selectors/TaskListSelector';
 import { styles } from '../../styles/Styles';
 
 const useStyles = makeStyles(styles);

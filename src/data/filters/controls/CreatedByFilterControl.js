@@ -1,9 +1,8 @@
 const DEFAULT_FILTER_ID = 'ANY_AUTHOR';
 
-const createFilterFunction = (userId) => (tasks) =>
-  tasks.filter((task) => task.createdBy === userId);
+const createExecute = (userId) => (tasks) => tasks.filter((task) => task.createdBy === userId);
 
-export const createCreatedByFilters = (users) => ({
+export const createCreatedBySelectFilterControl = (users) => ({
   options: [
     {
       id: DEFAULT_FILTER_ID,
@@ -14,7 +13,7 @@ export const createCreatedByFilters = (users) => ({
       .map((user) => ({
         id: `${user.id}`,
         label: `${user.name}`,
-        execute: createFilterFunction(user.id),
+        execute: createExecute(user.id),
       }))
       .sort(),
   ],

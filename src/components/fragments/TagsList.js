@@ -1,17 +1,17 @@
 import React from 'react';
 import {
-  setFilterControl,
-  setFilterBarVisible,
-  resetAllFilterControls,
-} from '../../redux/actions/TaskFilterActions';
+  setTaskListFilterControl,
+  resetAllTaskListFilterControls,
+} from '../../redux/actions/TaskListFilterActions';
+import { setFilterBarVisible } from '../../redux/actions/FilterBarActions';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
-import { FILTER_IDS } from '../../data/filters/Filters';
+import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 
 export const TagsList = ({ tags, variant }) => {
   const handleTagClick = (dispatch, tag) => {
     dispatch(setFilterBarVisible(true));
-    dispatch(resetAllFilterControls());
-    dispatch(setFilterControl({ id: FILTER_IDS.SEARCH_FIELD, text: tag }));
+    dispatch(resetAllTaskListFilterControls());
+    dispatch(setTaskListFilterControl({ id: TASK_FILTER_CONTROL_IDS.SEARCH_FIELD, text: tag }));
   };
 
   return <LinksList links={tags} handleLinkClick={handleTagClick} url="/" variant={variant} />;

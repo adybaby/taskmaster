@@ -98,7 +98,7 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
     datePickerProps.initialFocusedDate = dates.to;
   }
 
-  if (dates.from !== null && dates.active === 'to') {
+  if (dates.from !== '' && dates.active === 'to') {
     datePickerProps.minDate = dates.from;
     datePickerProps.initialFocusedDate = dates.from;
   }

@@ -2,6 +2,9 @@ import { sortOrderForType } from '../fields/ContributesTo';
 import { sortOrderForCost } from '../fields/Cost';
 import { INITIATIVE } from '../fields/Type';
 
+export const SORT_CONTROL_ID = 'SORT_CONTROL_ID';
+export const DEFAULT_SORTER_ID = 'PRIORITY';
+
 const createReversibleSorter = (executor, reverseOrder) =>
   reverseOrder ? (tasks) => executor(tasks).reverse() : executor;
 
@@ -34,8 +37,6 @@ const prioritySorter = (tasks) =>
     }
     return a.priority - b.priority;
   });
-
-export const DEFAULT_SORTER_ID = 'PRIORITY';
 
 const SORTERS = [
   {
@@ -115,7 +116,7 @@ const SORTERS = [
 ];
 
 export const createSortControl = () => ({
-  id: '',
+  id: SORT_CONTROL_ID,
   label: 'Sorted by',
   defaultId: DEFAULT_SORTER_ID,
   dontHighlight: true,

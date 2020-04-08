@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -6,17 +6,19 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import * as Resources from './ResourceChart';
+import { useSelector } from 'react-redux';
+import * as ResourceChart from './ResourceChart';
 import { styles } from '../../styles/Styles';
+import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
 
 const useStyles = makeStyles(styles);
 
 export const ChartPanel = () => {
   const classes = useStyles();
-
-  const [listIndex, setListIndex] = React.useState(1);
-  const [rgOpen, setRgOpen] = React.useState(true);
-  const [rsOpen, setRsOpen] = React.useState(true);
+  const [listIndex, setListIndex] = useState(1);
+  const [rgOpen, setRgOpen] = useState(true);
+  const [rsOpen, setRsOpen] = useState(true);
+  const resourceSeriesSets = useSelector(calculateResourceChartData);
 
   const handleListItemClick = (event, index) => {
     setListIndex(index);
@@ -76,17 +78,31 @@ export const ChartPanel = () => {
         </List>
       </div>
       <div className={classes.contentWithSideBar_content}>
-        {listIndex === 1 ? <Resources.VacancyChart gantt={true} /> : null}
-        {listIndex === 2 ? <Resources.AvailabilityChart gantt={true} /> : null}
-        {listIndex === 3 ? <Resources.ActualAvailabilityChart gantt={true} /> : null}
-        {listIndex === 4 ? <Resources.SignedUpChart gantt={true} /> : null}
-        {listIndex === 5 ? <Resources.ShortfallChart gantt={true} /> : null}
-        {listIndex === 6 ? <Resources.VacancyChart /> : null}
-        {listIndex === 7 ? <Resources.AvailabilityChart /> : null}
-        {listIndex === 8 ? <Resources.ActualAvailabilityChart /> : null}
-        {listIndex === 9 ? <Resources.SignedUpChart /> : null}
-        {listIndex === 10 ? <Resources.ShortfallChart /> : null}
-        {listIndex === 11 ? <Resources.ExcessChart /> : null}
+        {listIndex === 1 ? (
+          <ResourceChart.VacancyChart seriesSets={resourceSeriesSets} gantt={true} />
+        ) : null}
+        {listIndex === 2 ? (
+          <ResourceChart.AvailabilityChart seriesSets={resourceSeriesSets} gantt={true} />
+        ) : null}
+        {listIndex === 3 ? (
+          <ResourceChart.ActualAvailabilityChart seriesSets={resourceSeriesSets} gantt={true} />
+        ) : null}
+        {listIndex === 4 ? (
+          <ResourceChart.SignedUpChart seriesSets={resourceSeriesSets} gantt={true} />
+        ) : null}
+        {listIndex === 5 ? (
+          <ResourceChart.ShortfallChart seriesSets={resourceSeriesSets} gantt={true} />
+        ) : null}
+        {listIndex === 6 ? <ResourceChart.VacancyChart seriesSets={resourceSeriesSets} /> : null}
+        {listIndex === 7 ? (
+          <ResourceChart.AvailabilityChart seriesSets={resourceSeriesSets} />
+        ) : null}
+        {listIndex === 8 ? (
+          <ResourceChart.ActualAvailabilityChart seriesSets={resourceSeriesSets} />
+        ) : null}
+        {listIndex === 9 ? <ResourceChart.SignedUpChart seriesSets={resourceSeriesSets} /> : null}
+        {listIndex === 10 ? <ResourceChart.ShortfallChart seriesSets={resourceSeriesSets} /> : null}
+        {listIndex === 11 ? <ResourceChart.ExcessChart seriesSets={resourceSeriesSets} /> : null}
       </div>
     </div>
   );

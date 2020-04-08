@@ -13,11 +13,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { styles } from '../styles/Styles';
 import {
-  setFilterControl,
-  resetAllFilterControls,
-  setFilterBarVisible,
-} from '../redux/actions/TaskFilterActions';
-import { FILTER_IDS } from '../data/filters/Filters';
+  setTaskListFilterControl,
+  resetAllTaskListFilterControls,
+} from '../redux/actions/TaskListFilterActions';
+import { setFilterBarVisible } from '../redux/actions/FilterBarActions';
+import { TASK_FILTER_CONTROL_IDS } from '../data/filters/TaskListFilterControls';
 
 const useStyles = makeStyles(styles);
 
@@ -25,8 +25,8 @@ export const AppBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const searchText = useSelector((state) => state.filterControls).find(
-    (filterControl) => filterControl.id === FILTER_IDS.SEARCH_FIELD
+  const searchText = useSelector((state) => state.taskListfilterControls).find(
+    (filterControl) => filterControl.id === TASK_FILTER_CONTROL_IDS.SEARCH_FIELD
   ).text;
 
   const handleNewClick = () => {
@@ -35,7 +35,12 @@ export const AppBar = () => {
   };
 
   const handleSearchChange = (event) => {
-    dispatch(setFilterControl({ id: FILTER_IDS.SEARCH_FIELD, text: event.target.value }));
+    dispatch(
+      setTaskListFilterControl({
+        id: TASK_FILTER_CONTROL_IDS.SEARCH_FIELD,
+        text: event.target.value,
+      })
+    );
   };
 
   const handleSearchSubmit = (event) => {
@@ -44,7 +49,7 @@ export const AppBar = () => {
   };
 
   const handleHomeClick = () => {
-    dispatch(resetAllFilterControls());
+    dispatch(resetAllTaskListFilterControls());
     dispatch(setFilterBarVisible(false));
   };
 

@@ -1,8 +1,10 @@
 import * as TYPES from '../ActionTypes';
 import { init, DB_STATUS } from '../../data/db/Db';
 
-import { createFilterControls } from '../../data/filters/Filters';
-import { setFilterControls } from './TaskFilterActions';
+import { createTaskFilterControls } from '../../data/filters/TaskListFilterControls';
+import { createChartFilterControls } from '../../data/filters/ChartFilterControls';
+import { setTaskListFilterControls } from './TaskListFilterActions';
+import { setChartFilterControls } from './ChartFilterActions';
 
 const setDbStatus = (status) => ({
   type: TYPES.SET_DB_STATUS,
@@ -43,7 +45,8 @@ export const initialise = () => (dispatch) => {
       dispatch(setSkills(skills));
       dispatch(setDateRange(dateRange));
       dispatch(setCurrentUser(users[0]));
-      dispatch(setFilterControls(createFilterControls(tasks, users, users[0])));
+      dispatch(setChartFilterControls(createChartFilterControls()));
+      dispatch(setTaskListFilterControls(createTaskFilterControls(tasks, users, users[0])));
       dispatch(setDbStatus(DB_STATUS.INITIALISED));
     })
     .catch(setDbStatus(DB_STATUS.ERROR));

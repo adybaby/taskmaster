@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Collapse from '@material-ui/core/Collapse';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { styles } from '../../styles/Styles';
-import { setFilterBarVisible } from '../../redux/actions/TaskFilterActions';
-import { FilterBar } from './FilterBar';
+import { setFilterBarVisible } from '../../redux/actions/FilterBarActions';
+import { FilterBar } from '../filters/FilterBar';
 import { MapPanel } from '../maps/MapPanel';
 import { ChartPanel } from '../charts/ChartPanel';
 import { TaskList } from './TaskList';
@@ -20,7 +20,8 @@ export const BrowsePanel = (props) => {
   const classes = useStyles();
   const filterBarVisible = useSelector((state) => state.filterBarVisible);
   const [tabField, setTabField] = useState(DEFAULT_TAB);
-  const isFilterableTab = tabField !== TABS.MAP && tabField !== TABS.CHARTS;
+  const showFilterButton = tabField !== TABS.MAP;
+  const showSortButton = tabField !== TABS.MAP && tabField !== TABS.CHARTS;
 
   const getCurrentPanel = () => {
     switch (tabField) {
@@ -45,7 +46,8 @@ export const BrowsePanel = (props) => {
       onClick={handleFilterToggle}
       selected={filterBarVisible}
     >
-      <FontAwesomeIcon style={{ marginRight: 6 }} icon={faFilter} size="sm" /> Filters & Sort
+      <FontAwesomeIcon style={{ marginRight: 6 }} icon={faFilter} size="sm" />{' '}
+      {`Filters ${showSortButton ? ` & Sort` : ``}`}
     </ToggleButton>
   );
 
@@ -53,12 +55,12 @@ export const BrowsePanel = (props) => {
     <>
       <div className={classes.mainTabBar}>
         <MainTabs tabField={tabField} setTabField={setTabField} {...props} />
-        {isFilterableTab ? filterButton() : null}
+        {showFilterButton ? filterButton() : null}
       </div>
 
-      {isFilterableTab ? (
+      {showFilterButton ? (
         <Collapse in={filterBarVisible} timeout="auto" unmountOnExit>
-          <FilterBar />
+          <FilterBar currentTab={tabField} />
         </Collapse>
       ) : null}
 

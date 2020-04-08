@@ -18,17 +18,29 @@ const CONTRIBUTION_TYPE = {
 
 let tasks = null;
 
-const dateRange = { first: null, last: null };
+const dateRange = {
+  tasks: { first: null, last: null },
+  users: { first: null, last: null },
+  all: { first: null, last: null },
+};
 
 const updateDateRange = (firstStr, lastStr) => {
   const firstDate = new Date(firstStr);
   const lastDate = new Date(lastStr);
 
-  if (isDate(firstDate) && (dateRange.first === null || firstDate.getTime() < dateRange.first)) {
-    dateRange.first = firstDate.getTime();
+  if (
+    isDate(firstDate) &&
+    (dateRange.tasks.first === null || firstDate.getTime() < dateRange.tasks.first)
+  ) {
+    dateRange.tasks.first = firstDate.getTime();
+    dateRange.all.first = firstDate.getTime();
   }
-  if (isDate(lastDate) && (dateRange.last === null || lastDate.getTime() > dateRange.last)) {
-    dateRange.last = lastDate.getTime();
+  if (
+    isDate(lastDate) &&
+    (dateRange.tasks.last === null || lastDate.getTime() > dateRange.tasks.last)
+  ) {
+    dateRange.tasks.last = lastDate.getTime();
+    dateRange.all.last = lastDate.getTime();
   }
 };
 
