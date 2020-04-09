@@ -1,6 +1,5 @@
 change all dates to use moment/date-fns?
 refactor year/dates dialog to reuse code
-get charts panel properly responding
 
 Make toolbar, tabs, filter bar, charts page (inc x axis) completely responsive
 

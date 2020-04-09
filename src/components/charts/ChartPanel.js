@@ -7,32 +7,64 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import { useSelector } from 'react-redux';
-import * as ResourceChart from './ResourceChart';
+import { Hint } from 'react-vis';
+import Paper from '@material-ui/core/Paper';
+import { Divider } from '@material-ui/core';
+import { AutoSizer } from 'react-virtualized';
+import { VacancyChart } from './VacancyChart';
+import { SignedUpChart } from './SignedUpChart';
+import { AvailabilityChart } from './AvailabilityChart';
+import { ActualAvailabilityChart } from './ActualAvailabilityChart';
+import { ExcessChart } from './ExcessChart';
+import { ShortfallChart } from './ShortfallChart';
+
 import { styles } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
+
+import '../../../node_modules/react-vis/dist/style.css';
 
 const useStyles = makeStyles(styles);
 
 export const ChartPanel = () => {
   const classes = useStyles();
   const [listIndex, setListIndex] = useState(1);
-  const [rgOpen, setRgOpen] = useState(true);
-  const [rsOpen, setRsOpen] = useState(true);
+  const [ganttFolderOpen, setGanttFolderOpen] = useState(true);
+  const [stackedFolderOpen, setStackedFolderOpen] = useState(true);
   const resourceSeriesSets = useSelector(calculateResourceChartData);
+  const [dataPoint, setDataPoint] = useState(null);
+  const [inspectorPanel, setInspectorPanel] = useState(null);
 
   const handleListItemClick = (event, index) => {
     setListIndex(index);
   };
 
-  const handleRsClicked = () => {
-    setRsOpen(!rsOpen);
+  const handleGanttFolderClicked = () => {
+    setGanttFolderOpen(!ganttFolderOpen);
   };
 
-  const handleRgClicked = () => {
-    setRgOpen(!rgOpen);
+  const handleStackedFolderClicked = () => {
+    setStackedFolderOpen(!stackedFolderOpen);
   };
 
-  const LiBtn = ({ label, val }) => (
+  const onValueMouseOver = (dp) => {
+    setDataPoint(dp);
+  };
+  const onValueClick = (dp) => {
+    setInspectorPanel(dp.markPanel);
+  };
+
+  const onMouseLeave = () => {
+    setDataPoint(null);
+  };
+
+  const navFolder = (label, handleClick, open) => (
+    <ListItem button onClick={handleClick}>
+      <ListItemText primary={<b>{label}</b>} />
+      {open ? <ExpandLess /> : <ExpandMore />}
+    </ListItem>
+  );
+
+  const navItem = (label, val) => (
     <ListItem
       button
       selected={listIndex === val}
@@ -43,67 +75,101 @@ export const ChartPanel = () => {
     </ListItem>
   );
 
-  const LiFldr = ({ label, handleClick, open }) => (
-    <ListItem button onClick={handleClick}>
-      <ListItemText primary={<b>{label}</b>} />
-      {open ? <ExpandLess /> : <ExpandMore />}
-    </ListItem>
+  const navMenu = (
+    <List component="nav" aria-label="charts list navigation">
+      {navFolder('Resources (Gantt)', handleGanttFolderClicked, ganttFolderOpen)}
+      <Collapse in={ganttFolderOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {navItem('Vacancies', 1)}
+          {navItem('Stated Availability', 2)}
+          {navItem('Actual Availability', 3)}
+          {navItem('Signed Up', 4)}
+          {navItem('Shortfall', 5)}
+        </List>
+      </Collapse>
+      {navFolder('Resources (Stacked)', handleStackedFolderClicked, stackedFolderOpen)}
+      <Collapse in={stackedFolderOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {navItem('Vacancies', 6)}
+          {navItem('Stated Availability', 7)}
+          {navItem('Actual Availability', 8)}
+          {navItem('Signed Up', 9)}
+          {navItem('Shortfall', 10)}
+          {navItem('Excess', 11)}
+        </List>
+      </Collapse>
+    </List>
+  );
+
+  const hint =
+    dataPoint !== null ? (
+      <Hint align={{ vertical: 'top', horizontal: 'left' }} value={dataPoint}>
+        <Paper>{dataPoint.markPanel}</Paper>
+      </Hint>
+    ) : null;
+
+  const chart = (width) => {
+    const props = {
+      seriesSets: resourceSeriesSets,
+      onValueMouseOver,
+      onValueClick,
+      onMouseLeave,
+      hint,
+      width,
+      dataPoint,
+    };
+    switch (listIndex) {
+      case 1:
+        return <VacancyChart gantt={true} {...props} />;
+      case 2:
+        return <AvailabilityChart gantt={true} {...props} />;
+      case 3:
+        return <ActualAvailabilityChart gantt={true} {...props} />;
+      case 4:
+        return <SignedUpChart gantt={true} {...props} />;
+      case 5:
+        return <ShortfallChart gantt={true} {...props} />;
+      case 6:
+        return <VacancyChart {...props} />;
+      case 7:
+        return <AvailabilityChart {...props} />;
+      case 8:
+        return <ActualAvailabilityChart {...props} />;
+      case 9:
+        return <SignedUpChart {...props} />;
+      case 10:
+        return <ShortfallChart {...props} />;
+      case 11:
+        return <ExcessChart {...props} />;
+      default:
+        return 'Error: Could not find selected chart.';
+    }
+  };
+
+  const inspector = (
+    <>
+      <div className={classes.leftPadding}>
+        <h3>Inspector</h3>
+      </div>
+      <Divider />
+      {inspectorPanel === null ? (
+        <div className={classes.leftPadding}>
+          <p>Click on a mark in the chart to inspect it.</p>
+        </div>
+      ) : (
+        inspectorPanel
+      )}
+    </>
   );
 
   return (
     <div className={classes.contentWithSideBar_Container}>
-      <div className={classes.contentWithSideBar_sideBarLeft}>
-        <List component="nav" aria-label="charts list navigation">
-          <LiFldr label="Resources (Gantt)" handleClick={handleRgClicked} open={rgOpen} />
-          <Collapse in={rgOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <LiBtn label="Vacancies" val={1} />
-              <LiBtn label="Stated Availability" val={2} />
-              <LiBtn label="Actual Availability" val={3} />
-              <LiBtn label="Signed Up" val={4} />
-              <LiBtn label="Shortfall" val={5} />
-            </List>
-          </Collapse>
-          <LiFldr label="Resources (Stacked)" handleClick={handleRsClicked} open={rsOpen} />
-          <Collapse in={rsOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <LiBtn label="Vacancies" val={6} />
-              <LiBtn label="Stated Availability" val={7} />
-              <LiBtn label="Actual Availability" val={8} />
-              <LiBtn label="Signed Up" val={9} />
-              <LiBtn label="Shortfall" val={10} />
-              <LiBtn label="Excess" val={11} />
-            </List>
-          </Collapse>
-        </List>
-      </div>
+      <div className={classes.contentWithSideBar_sideBarLeft}>{navMenu}</div>
       <div className={classes.contentWithSideBar_content}>
-        {listIndex === 1 ? (
-          <ResourceChart.VacancyChart seriesSets={resourceSeriesSets} gantt={true} />
-        ) : null}
-        {listIndex === 2 ? (
-          <ResourceChart.AvailabilityChart seriesSets={resourceSeriesSets} gantt={true} />
-        ) : null}
-        {listIndex === 3 ? (
-          <ResourceChart.ActualAvailabilityChart seriesSets={resourceSeriesSets} gantt={true} />
-        ) : null}
-        {listIndex === 4 ? (
-          <ResourceChart.SignedUpChart seriesSets={resourceSeriesSets} gantt={true} />
-        ) : null}
-        {listIndex === 5 ? (
-          <ResourceChart.ShortfallChart seriesSets={resourceSeriesSets} gantt={true} />
-        ) : null}
-        {listIndex === 6 ? <ResourceChart.VacancyChart seriesSets={resourceSeriesSets} /> : null}
-        {listIndex === 7 ? (
-          <ResourceChart.AvailabilityChart seriesSets={resourceSeriesSets} />
-        ) : null}
-        {listIndex === 8 ? (
-          <ResourceChart.ActualAvailabilityChart seriesSets={resourceSeriesSets} />
-        ) : null}
-        {listIndex === 9 ? <ResourceChart.SignedUpChart seriesSets={resourceSeriesSets} /> : null}
-        {listIndex === 10 ? <ResourceChart.ShortfallChart seriesSets={resourceSeriesSets} /> : null}
-        {listIndex === 11 ? <ResourceChart.ExcessChart seriesSets={resourceSeriesSets} /> : null}
+        {' '}
+        <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
       </div>
+      <div className={classes.contentWithSideBar_sideBarRight}>{inspector}</div>
     </div>
   );
 };

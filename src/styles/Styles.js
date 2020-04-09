@@ -154,18 +154,17 @@ export const styles = () => ({
   },
   contentWithSideBar_sideBarLeft: {
     borderRight: `1px solid ${theme.palette.divider}`,
-    flexGrow: '0',
     maxWidth: '180px',
+    flexGrow: '1',
   },
   contentWithSideBar_sideBarRight: {
     borderLeft: `1px solid ${theme.palette.divider}`,
-    flexGrow: '0',
     maxWidth: '180px',
+    flexGrow: '1',
   },
   contentWithSideBar_content: {
     paddingLeft: theme.spacing(2),
-    width: '100%',
-    flexGrow: '10',
+    flexGrow: '1',
   },
 
   // Task List
