@@ -1,5 +1,21 @@
 import { fade, createMuiTheme } from '@material-ui/core/styles';
 
+const maxMedium = 900;
+const maxSmall = 715;
+
+const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall - 1}px)`;
+const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${
+  maxMedium - 1
+}px)`;
+const mediumOrLargeVp = `@media only screen and (min-width: ${maxSmall + 1}px)`;
+const largeVp = `@media only screen and (min-width: ${maxMedium + 1}px)`;
+
+const shrinkButton = {
+  [largeVp]: { minWidth: 120 },
+  [mediumVp]: { minWidth: 80 },
+  [smallVp]: { minWidth: 0 },
+};
+
 export const theme = createMuiTheme({
   typography: {
     fontFamily: [
@@ -46,10 +62,27 @@ export const styles = () => ({
     display: 'inline',
   },
 
+  // grouping to keep controls at top
+  headerControls: { position: 'sticky', left: 0, top: 0, width: '100%' },
+
   // AppBar
   appBar: {
-    flexGrow: 1,
+    position: 'sticky',
+    left: 0,
+    top: 0,
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: theme.palette.primary.main,
+    padding: theme.spacing(2),
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    boxShadow: '0px 3px 10px grey',
+    color: 'white',
+    zIndex: 10,
   },
+
+  // search box
   searchBox: {
     position: 'relative',
     borderRadius: 'theme.shape.borderRadius',
@@ -80,15 +113,16 @@ export const styles = () => ({
 
   // Main Tab Bar
   mainTabBar: {
+    position: 'relative',
     display: 'flex',
     flexDirection: 'row',
     borderBottom: '1px solid #e8e8e8',
     paddingLeft: theme.spacing(2),
     backgroundColor: theme.palette.background.default,
+    zIndex: 1,
   },
   tab: {
-    minWidth: 78,
-    marginRight: theme.spacing(4),
+    ...shrinkButton,
     '&:hover': {
       color: '#40a9ff',
       opacity: 1,
@@ -96,26 +130,43 @@ export const styles = () => ({
   },
   tabIcon: {
     verticalAlign: 'middle',
-    marginRight: theme.spacing(1),
   },
   filterButton: {
-    marginRight: theme.spacing(3),
+    ...shrinkButton,
     '&&': {
       borderStyle: 'none',
       color: 'dimGray',
     },
     '&:hover,&.Mui-selected&:hover': {
       color: theme.palette.info.light,
-      backgroundColor: 'transparent',
     },
     '&.Mui-selected': {
       fontWeight: 'bold',
       color: theme.palette.primary.main,
-      backgroundColor: 'transparent',
     },
+  },
+  appBarButton: {
+    minWidth: '0px',
   },
 
   // FilterBar
+  filterBarContainer: {
+    [smallVp]: {
+      display: 'none',
+    },
+  },
+  filterDrawerContainer: {
+    [mediumOrLargeVp]: {
+      display: 'none',
+    },
+  },
+  drawerControls: {
+    borderTop: '1px solid #e8e8e8',
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(0.5),
+    paddingTop: theme.spacing(1),
+    borderBottom: '1px solid #e8e8e8',
+  },
   filterBar: {
     display: 'flex',
     flexDirection: 'row',
@@ -146,25 +197,62 @@ export const styles = () => ({
     width: '100%',
   },
 
-  // Content Layout - with sidebar
+  // Charts
   contentWithSideBar_Container: {
     display: 'flex',
     height: '100%',
     flexDirection: 'row',
   },
   contentWithSideBar_sideBarLeft: {
+    [smallVp]: {
+      display: 'none',
+    },
     borderRight: `1px solid ${theme.palette.divider}`,
     maxWidth: '180px',
     flexGrow: '1',
   },
   contentWithSideBar_sideBarRight: {
+    [smallVp]: {
+      display: 'none',
+    },
     borderLeft: `1px solid ${theme.palette.divider}`,
     maxWidth: '180px',
     flexGrow: '1',
   },
   contentWithSideBar_content: {
-    paddingLeft: theme.spacing(2),
     flexGrow: '1',
+  },
+  chartInspectorDrawer: {
+    [mediumOrLargeVp]: {
+      display: 'none',
+    },
+  },
+  chartSelectDrawer: {
+    [mediumOrLargeVp]: {
+      display: 'none',
+    },
+  },
+  chartSelectButton: {
+    [mediumOrLargeVp]: {
+      display: 'none',
+    },
+  },
+  chartHeader: {
+    [mediumOrLargeVp]: { paddingLeft: theme.spacing(2) },
+    display: 'flex',
+    flexDirection: 'row',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  continuousChartLegend: { padding: theme.spacing(3) },
+  discreteChartLegend: {
+    padding: theme.spacing(3),
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  chartHint: {
+    [smallVp]: {
+      display: 'none',
+    },
   },
 
   // Task List
@@ -189,6 +277,12 @@ export const styles = () => ({
   },
   padding: {
     padding: theme.spacing(1),
+  },
+  hidingLabel: {
+    marginLeft: theme.spacing(1),
+    [smallVp]: {
+      display: 'none',
+    },
   },
 
   // links

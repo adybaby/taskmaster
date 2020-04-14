@@ -3,11 +3,14 @@ import { useDispatch } from 'react-redux';
 import { setChartFilterControl } from '../../redux/actions/ChartFilterActions';
 import { SelectControl } from './SelectControl';
 
-export const ChartSelectFilter = ({ filterControl }) => {
+export const ChartSelectFilter = ({ filterControl, handleFilterSelected }) => {
   const dispatch = useDispatch();
 
   const handleOptionSelected = (optionId) => {
     dispatch(setChartFilterControl({ id: filterControl.id, selectedId: optionId }));
+    if (typeof handleFilterSelected !== 'undefined') {
+      handleFilterSelected(optionId);
+    }
   };
 
   const handleDateRangeSelected = (optionId, from, to) => {
@@ -18,6 +21,9 @@ export const ChartSelectFilter = ({ filterControl }) => {
         params: { from, to },
       })
     );
+    if (typeof handleFilterSelected !== 'undefined') {
+      handleFilterSelected(optionId);
+    }
   };
 
   return (

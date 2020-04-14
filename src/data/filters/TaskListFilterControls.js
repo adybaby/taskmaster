@@ -44,12 +44,38 @@ export const TASK_FILTER_CONTROL_IDS = {
   SEARCH_FIELD: 'SEARCH_FIELD',
 };
 
-export const getControlsForType = (taskListfilterControls, currentTaskType, filterBarVisible) => {
+export const getControlsForType = (taskListfilterControls, currentTaskType) => {
   return taskListfilterControls.filter(
     (filterControl) =>
-      (typeof filterControl.forTaskTypes === 'undefined' ||
-        filterControl.forTaskTypes.includes(currentTaskType)) &&
-      ((filterBarVisible && filterControl.onFilterBar) || !filterControl.onFilterBar)
+      typeof filterControl.forTaskTypes === 'undefined' ||
+      filterControl.forTaskTypes.includes(currentTaskType)
+  );
+};
+
+export const isAFilterActive = (taskListfilterControls, currentTaskTypeId) => {
+  const createdDateControl = taskListfilterControls.find(
+    (control) => control.id === TASK_FILTER_CONTROL_IDS.CREATED_DATE
+  );
+  const createdByControl = taskListfilterControls.find(
+    (control) => control.id === TASK_FILTER_CONTROL_IDS.CREATED_BY
+  );
+  const startDateControl = taskListfilterControls.find(
+    (control) => control.id === TASK_FILTER_CONTROL_IDS.START_DATE
+  );
+  const endDateControl = taskListfilterControls.find(
+    (control) => control.id === TASK_FILTER_CONTROL_IDS.END_DATE
+  );
+  const vacanciesControl = taskListfilterControls.find(
+    (control) => control.id === TASK_FILTER_CONTROL_IDS.VACANCIES
+  );
+
+  return (
+    createdDateControl.selectedId !== createdDateControl.defaultId ||
+    createdByControl.selectedId !== createdByControl.defaultId ||
+    (startDateControl.selectedId !== startDateControl.defaultId &&
+      currentTaskTypeId === INITIATIVE) ||
+    (endDateControl.selectedId !== endDateControl.defaultId && currentTaskTypeId === INITIATIVE) ||
+    (vacanciesControl.selectedId !== vacanciesControl.defaultId && currentTaskTypeId === INITIATIVE)
   );
 };
 

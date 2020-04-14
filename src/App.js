@@ -7,7 +7,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import enGB from 'date-fns/locale/en-GB';
 import { AppBar } from './components/AppBar';
-import { BrowsePanel } from './components/browse/BrowsePanel';
+import { MainTabs } from './components/MainTabs';
 import { TaskPanel } from './components/tasks/TaskPanel';
 import { ProfilesPanel } from './components/profile/ProfilesPanel';
 import * as URLS from './Urls';
@@ -45,7 +45,7 @@ export const App = () => {
               <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
               <Route path={`/${URLS.PROFILE}/:id`} component={ProfilesPanel} />
               <Route path={`/${URLS.PROFILE}/`} component={ProfilesPanel} />
-              <Route path={`/${URLS.BROWSE}/:id`} component={BrowsePanel} />
+              <Route path={`/${URLS.BROWSE}/:id`} component={MainTabs} />
               <Route>
                 <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
               </Route>

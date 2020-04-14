@@ -3,7 +3,6 @@ import { ResourceBarChart } from './ResourceBarChart';
 
 export const ExcessChart = (props) => (
   <ResourceBarChart
-    title="Excess (remaining resources after sign ups)"
     seriesKey="shortfall"
     totalsTitle="Excess"
     gantt={false}

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -9,7 +11,7 @@ import Collapse from '@material-ui/core/Collapse';
 import { useSelector } from 'react-redux';
 import { Hint } from 'react-vis';
 import Paper from '@material-ui/core/Paper';
-import { Divider } from '@material-ui/core';
+import { Divider, Drawer, Button } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
 import { VacancyChart } from './VacancyChart';
 import { SignedUpChart } from './SignedUpChart';
@@ -17,10 +19,8 @@ import { AvailabilityChart } from './AvailabilityChart';
 import { ActualAvailabilityChart } from './ActualAvailabilityChart';
 import { ExcessChart } from './ExcessChart';
 import { ShortfallChart } from './ShortfallChart';
-
 import { styles } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
-
 import '../../../node_modules/react-vis/dist/style.css';
 
 const useStyles = makeStyles(styles);
@@ -33,9 +33,27 @@ export const ChartPanel = () => {
   const resourceSeriesSets = useSelector(calculateResourceChartData);
   const [dataPoint, setDataPoint] = useState(null);
   const [inspectorPanel, setInspectorPanel] = useState(null);
+  const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
+  const [chartSelectDrawVisible, setChartSelectDrawVisible] = useState(false);
+
+  const titles = [
+    'None',
+    'Vacancies',
+    'Stated Availability',
+    'Actual Availability',
+    'Signed Up',
+    'Shortfall',
+    'Vacancies',
+    'Stated Availability',
+    'Actual Availability',
+    'Signed Up',
+    'Shortfall',
+    'Excess',
+  ];
 
   const handleListItemClick = (event, index) => {
     setListIndex(index);
+    setChartSelectDrawVisible(false);
   };
 
   const handleGanttFolderClicked = () => {
@@ -51,6 +69,7 @@ export const ChartPanel = () => {
   };
   const onValueClick = (dp) => {
     setInspectorPanel(dp.markPanel);
+    setInspectorDrawerVisible(true);
   };
 
   const onMouseLeave = () => {
@@ -64,38 +83,38 @@ export const ChartPanel = () => {
     </ListItem>
   );
 
-  const navItem = (label, val) => (
+  const navItem = (label, index) => (
     <ListItem
       button
-      selected={listIndex === val}
-      onClick={(event) => handleListItemClick(event, val)}
+      key={index}
+      selected={listIndex === index}
+      onClick={(event) => handleListItemClick(event, index)}
       className={classes.chartListItem}
     >
       <ListItemText primary={label} />
     </ListItem>
   );
 
+  const navItems = (first, last) => {
+    const list = [];
+    for (let index = first; index <= last; index++) {
+      list.push(navItem(titles[index], index));
+    }
+    return list;
+  };
+
   const navMenu = (
     <List component="nav" aria-label="charts list navigation">
       {navFolder('Resources (Gantt)', handleGanttFolderClicked, ganttFolderOpen)}
       <Collapse in={ganttFolderOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {navItem('Vacancies', 1)}
-          {navItem('Stated Availability', 2)}
-          {navItem('Actual Availability', 3)}
-          {navItem('Signed Up', 4)}
-          {navItem('Shortfall', 5)}
+          {navItems(1, 5)}
         </List>
       </Collapse>
       {navFolder('Resources (Stacked)', handleStackedFolderClicked, stackedFolderOpen)}
       <Collapse in={stackedFolderOpen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          {navItem('Vacancies', 6)}
-          {navItem('Stated Availability', 7)}
-          {navItem('Actual Availability', 8)}
-          {navItem('Signed Up', 9)}
-          {navItem('Shortfall', 10)}
-          {navItem('Excess', 11)}
+          {navItems(6, 11)}
         </List>
       </Collapse>
     </List>
@@ -103,7 +122,11 @@ export const ChartPanel = () => {
 
   const hint =
     dataPoint !== null ? (
-      <Hint align={{ vertical: 'top', horizontal: 'left' }} value={dataPoint}>
+      <Hint
+        className={classes.chartHint}
+        align={{ vertical: 'top', horizontal: 'left' }}
+        value={dataPoint}
+      >
         <Paper>{dataPoint.markPanel}</Paper>
       </Hint>
     ) : null;
@@ -162,14 +185,62 @@ export const ChartPanel = () => {
     </>
   );
 
+  const chartSelectDrawer = (
+    <Drawer
+      className={classes.chartSelectDrawer}
+      anchor="left"
+      open={chartSelectDrawVisible}
+      onClose={() => setChartSelectDrawVisible(false)}
+    >
+      <div className={classes.padding}>{navMenu}</div>
+      <div className={classes.drawerControls}>
+        <Button color="primary" onClick={() => setChartSelectDrawVisible(false)}>
+          Close
+        </Button>
+      </div>
+    </Drawer>
+  );
+
+  const inspectorDrawer = (
+    <Drawer
+      className={classes.chartInspectorDrawer}
+      anchor="right"
+      open={inspectorDrawerVisible}
+      onClose={() => setInspectorDrawerVisible(false)}
+      onClick={() => setInspectorDrawerVisible(false)}
+    >
+      <div className={classes.padding}>{inspector}</div>
+      <div className={classes.drawerControls}>
+        <Button color="primary" onClick={() => setInspectorDrawerVisible(false)}>
+          Close
+        </Button>
+      </div>
+    </Drawer>
+  );
+
+  const selectGraphButton = (
+    <Button
+      className={classes.chartSelectButton}
+      color="primary"
+      onClick={() => setChartSelectDrawVisible(true)}
+    >
+      <FontAwesomeIcon icon={faBars} />
+    </Button>
+  );
+
   return (
     <div className={classes.contentWithSideBar_Container}>
       <div className={classes.contentWithSideBar_sideBarLeft}>{navMenu}</div>
       <div className={classes.contentWithSideBar_content}>
-        {' '}
+        <div className={classes.chartHeader}>
+          {selectGraphButton}
+          <h3>{titles[listIndex]}</h3>
+        </div>
         <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
       </div>
       <div className={classes.contentWithSideBar_sideBarRight}>{inspector}</div>
+      {chartSelectDrawer}
+      {inspectorDrawer}
     </div>
   );
 };

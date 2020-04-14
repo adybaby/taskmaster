@@ -10,10 +10,13 @@ import {
   DiscreteColorLegend,
 } from 'react-vis';
 import '../../../node_modules/react-vis/dist/style.css';
+import { makeStyles } from '@material-ui/core/styles';
 import { MarkPanel } from './ResourceMarkPanel';
+import { styles } from '../../styles/Styles';
+
+const useStyles = makeStyles(styles);
 
 export const ResourceBarChart = ({
-  title,
   seriesSets,
   seriesKey,
   totalsTitle,
@@ -26,6 +29,7 @@ export const ResourceBarChart = ({
   width,
   dataPoint,
 }) => {
+  const classes = useStyles();
   const seriesSet = seriesSets[seriesKey];
   const skills = seriesSets.skillsAndColors.map((s) => s.title);
   const { refs } = seriesSets;
@@ -33,19 +37,21 @@ export const ResourceBarChart = ({
 
   const makeLegend = () =>
     gantt ? (
-      <div style={{ paddingLeft: '100px', paddingTop: '20px' }}>
-        {' '}
+      <div className={classes.continuousChartLegend}>
         <ContinuousColorLegend
           startColor={COLORS.MIN}
           endColor={COLORS.MAX}
-          width={400}
           startTitle={seriesSet.min}
           midTitle={Math.floor(seriesSet.max / 2)}
           endTitle={seriesSet.max}
         />
       </div>
     ) : (
-      <DiscreteColorLegend orientation="horizontal" items={seriesSets.skillsAndColors} />
+      <DiscreteColorLegend
+        className={classes.discreteChartLegend}
+        orientation="horizontal"
+        items={seriesSets.skillsAndColors}
+      />
     );
 
   const makeSeriesData = (series, skillsIndex) => {
@@ -103,13 +109,13 @@ export const ResourceBarChart = ({
       xType: 'time',
       height: 800,
       onMouseLeave: (dp) => onMouseLeave(dp),
-      margin: { bottom: 100 },
+      margin: { top: 20, right: 20, bottom: 70 },
     };
 
     if (gantt) {
       props = {
         ...props,
-        margin: { ...props.margin, left: 100 },
+        margin: { ...props.margin, left: 80 },
         colorRange: [COLORS.HIGHLIGHTED, COLORS.MIN, COLORS.MAX],
         colorDomain: [-99, seriesSet.min, seriesSet.max],
       };
@@ -137,10 +143,13 @@ export const ResourceBarChart = ({
 
   return (
     <>
-      <h3>{title}</h3>
-      {seriesSets.refs[0].data.length > 0
-        ? makeChart()
-        : 'No data to display.  Please refine your date range.'}
+      {seriesSets.refs[0].data.length > 0 ? (
+        makeChart()
+      ) : (
+        <div className={classes.fullWidthContent}>
+          No data to display. Please refine your date range.
+        </div>
+      )}
       <div>{seriesSets.refs[0].data.length > 0 ? makeLegend() : null}</div>
     </>
   );

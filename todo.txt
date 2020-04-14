@@ -1,24 +1,11 @@
 change all dates to use moment/date-fns?
 refactor year/dates dialog to reuse code
 
-Make toolbar, tabs, filter bar, charts page (inc x axis) completely responsive
-
 style sign up button to be RHS of vacancy block
 style vacancies in initiatives as 2x2 columns or vacancies as right hand column add dates and other subheadings to right hand collumn, and tags etc at the bottom, wiki-style.
 give task headers different stile
 
-change bg color to white
-
-at min width, tabs are icons, toolbar is:
-
-[RES] TASKMASTER (+)(P)
----------------------
- -- TAB ICONS --  [FIL]/[CHARTS]
----------------------
-
-Filters are popover
-
---------------------------------------
+-------------------------------------
 
 organise vacancy structure:
    vacancy .. periods [from to signups[userid from to [status:accepted, tentative, rejected] comments] ]

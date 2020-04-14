@@ -6,7 +6,6 @@ import {
   setTaskListFilterControl,
   resetAllTaskListFilterControls,
 } from '../../redux/actions/TaskListFilterActions';
-import { setFilterBarVisible } from '../../redux/actions/FilterBarActions';
 import * as URLS from '../../Urls';
 import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 import { styles } from '../../styles/Styles';
@@ -23,7 +22,6 @@ export const CreatedByLink = ({ createdBy }) => {
   )[0];
 
   const handleCreatedByClick = () => {
-    dispatch(setFilterBarVisible(true));
     dispatch(resetAllTaskListFilterControls());
     dispatch(
       setTaskListFilterControl({ id: TASK_FILTER_CONTROL_IDS.CREATED_BY, selectedId: user.id })

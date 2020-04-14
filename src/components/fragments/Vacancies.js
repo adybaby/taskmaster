@@ -5,7 +5,6 @@ import {
   setTaskListFilterControl,
   resetAllTaskListFilterControls,
 } from '../../redux/actions/TaskListFilterActions';
-import { setFilterBarVisible } from '../../redux/actions/FilterBarActions';
 import { DispatchingRouterLink as RLink } from './DispatchingRouterLink';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
 import * as URLS from '../../Urls';
@@ -14,7 +13,6 @@ import { CreatedByLink } from './CreatedByLink';
 import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 
 const handleVacancyClick = (dispatch, vacancyTitle) => {
-  dispatch(setFilterBarVisible(true));
   dispatch(resetAllTaskListFilterControls());
   dispatch(
     setTaskListFilterControl({ id: TASK_FILTER_CONTROL_IDS.VACANCIES, selectedId: vacancyTitle })
