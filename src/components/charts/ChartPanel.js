@@ -11,7 +11,7 @@ import Collapse from '@material-ui/core/Collapse';
 import { useSelector } from 'react-redux';
 import { Hint } from 'react-vis';
 import Paper from '@material-ui/core/Paper';
-import { Divider, Drawer, Button } from '@material-ui/core';
+import { Drawer, Button, Typography } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
 import { VacancyChart } from './VacancyChart';
 import { SignedUpChart } from './SignedUpChart';
@@ -34,7 +34,7 @@ export const ChartPanel = () => {
   const [dataPoint, setDataPoint] = useState(null);
   const [inspectorPanel, setInspectorPanel] = useState(null);
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
-  const [chartSelectDrawVisible, setChartSelectDrawVisible] = useState(false);
+  const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
 
   const titles = [
     'None',
@@ -53,7 +53,7 @@ export const ChartPanel = () => {
 
   const handleListItemClick = (event, index) => {
     setListIndex(index);
-    setChartSelectDrawVisible(false);
+    setChartSelectDrawerVisible(false);
   };
 
   const handleGanttFolderClicked = () => {
@@ -171,13 +171,14 @@ export const ChartPanel = () => {
 
   const inspector = (
     <>
-      <div className={classes.leftPadding}>
-        <h3>Inspector</h3>
+      <div className={classes.inspectorHeading}>
+        <Typography>
+          <b>Inspector</b>
+        </Typography>
       </div>
-      <Divider />
       {inspectorPanel === null ? (
-        <div className={classes.leftPadding}>
-          <p>Click on a mark in the chart to inspect it.</p>
+        <div className={classes.inspectorBody}>
+          <Typography variant="body1">Click on a mark in the chart to inspect it.</Typography>
         </div>
       ) : (
         inspectorPanel
@@ -185,33 +186,17 @@ export const ChartPanel = () => {
     </>
   );
 
-  const chartSelectDrawer = (
+  const drawer = (content, anchor, openProp, onClose, onClick) => (
     <Drawer
-      className={classes.chartSelectDrawer}
-      anchor="left"
-      open={chartSelectDrawVisible}
-      onClose={() => setChartSelectDrawVisible(false)}
+      className={classes.chartDrawer}
+      anchor={anchor}
+      open={openProp}
+      onClose={onClose}
+      onClick={onClick}
     >
-      <div className={classes.padding}>{navMenu}</div>
+      <div className={classes.chartMenu}>{content}</div>
       <div className={classes.drawerControls}>
-        <Button color="primary" onClick={() => setChartSelectDrawVisible(false)}>
-          Close
-        </Button>
-      </div>
-    </Drawer>
-  );
-
-  const inspectorDrawer = (
-    <Drawer
-      className={classes.chartInspectorDrawer}
-      anchor="right"
-      open={inspectorDrawerVisible}
-      onClose={() => setInspectorDrawerVisible(false)}
-      onClick={() => setInspectorDrawerVisible(false)}
-    >
-      <div className={classes.padding}>{inspector}</div>
-      <div className={classes.drawerControls}>
-        <Button color="primary" onClick={() => setInspectorDrawerVisible(false)}>
+        <Button color="primary" onClick={onClose}>
           Close
         </Button>
       </div>
@@ -222,7 +207,7 @@ export const ChartPanel = () => {
     <Button
       className={classes.chartSelectButton}
       color="primary"
-      onClick={() => setChartSelectDrawVisible(true)}
+      onClick={() => setChartSelectDrawerVisible(true)}
     >
       <FontAwesomeIcon icon={faBars} />
     </Button>
@@ -234,13 +219,21 @@ export const ChartPanel = () => {
       <div className={classes.contentWithSideBar_content}>
         <div className={classes.chartHeader}>
           {selectGraphButton}
-          <h3>{titles[listIndex]}</h3>
+          <Typography>
+            <b>{titles[listIndex]}</b>
+          </Typography>
         </div>
         <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
       </div>
       <div className={classes.contentWithSideBar_sideBarRight}>{inspector}</div>
-      {chartSelectDrawer}
-      {inspectorDrawer}
+      {drawer(navMenu, 'left', chartSelectDrawerVisible, () => setChartSelectDrawerVisible(false))}
+      {drawer(
+        inspector,
+        'right',
+        inspectorDrawerVisible,
+        () => setInspectorDrawerVisible(false),
+        () => setInspectorDrawerVisible(false)
+      )}
     </div>
   );
 };

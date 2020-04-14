@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { styles } from '../../styles/Styles';
-import { HeaderBlock } from '../fragments/HeaderBlock';
+import { HeaderBlock } from './HeaderBlock';
 import { TagsAndLinksBlock } from '../fragments/TagsAndLinksBlock';
 import { ContributionsBlock, ContributionsList } from '../fragments/Contributions';
 

@@ -9,8 +9,8 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@material-ui/core';
 import { styles } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
-import { DatesDialog } from './DateDialog';
-import { YearDialog } from './YearDialog';
+import { DatesDialog } from './datesdialog/DateDialog';
+import { YearDialog } from './datesdialog/YearDialog';
 
 const useStyles = makeStyles(styles);
 

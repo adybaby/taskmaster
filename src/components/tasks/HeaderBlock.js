@@ -1,7 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { parseDate } from '../../util/Dates';
-import { CreatedByLink } from './CreatedByLink';
+import { CreatedByLink } from '../fragments/CreatedByLink';
 
 export const HeaderBlock = ({ task }) => {
   return (

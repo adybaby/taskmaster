@@ -1,20 +1,22 @@
 import { fade, createMuiTheme } from '@material-ui/core/styles';
 
+// viewport scaling
 const maxMedium = 900;
 const maxSmall = 715;
-
 const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall - 1}px)`;
 const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${
   maxMedium - 1
 }px)`;
 const mediumOrLargeVp = `@media only screen and (min-width: ${maxSmall + 1}px)`;
 const largeVp = `@media only screen and (min-width: ${maxMedium + 1}px)`;
-
 const shrinkButton = {
   [largeVp]: { minWidth: 120 },
   [mediumVp]: { minWidth: 80 },
   [smallVp]: { minWidth: 0 },
 };
+
+const datePickerBgColor = '#f2f2f2';
+const tabHighlightColor = '#40a9ff';
 
 export const theme = createMuiTheme({
   typography: {
@@ -46,25 +48,18 @@ export const theme = createMuiTheme({
     },
     MuiPickersStaticWrapper: {
       staticWrapperRoot: {
-        backgroundColor: '#f2f2f2',
+        backgroundColor: datePickerBgColor,
       },
     },
     MuiPickersCalendarHeader: {
       iconButton: {
-        backgroundColor: '#f2f2f2',
+        backgroundColor: datePickerBgColor,
       },
     },
   },
 });
 
 export const styles = () => ({
-  root: {
-    display: 'inline',
-  },
-
-  // grouping to keep controls at top
-  headerControls: { position: 'sticky', left: 0, top: 0, width: '100%' },
-
   // AppBar
   appBar: {
     position: 'sticky',
@@ -78,7 +73,7 @@ export const styles = () => ({
     alignItems: 'center',
     flexWrap: 'nowrap',
     boxShadow: '0px 3px 10px grey',
-    color: 'white',
+    color: theme.palette.common.white,
     zIndex: 10,
   },
 
@@ -124,7 +119,7 @@ export const styles = () => ({
   tab: {
     ...shrinkButton,
     '&:hover': {
-      color: '#40a9ff',
+      color: tabHighlightColor,
       opacity: 1,
     },
   },
@@ -160,29 +155,23 @@ export const styles = () => ({
       display: 'none',
     },
   },
-  drawerControls: {
-    borderTop: '1px solid #e8e8e8',
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(0.5),
-    paddingTop: theme.spacing(1),
-    borderBottom: '1px solid #e8e8e8',
-  },
+  filterDrawerBody: { padding: theme.spacing(1) },
   filterBar: {
     display: 'flex',
     flexDirection: 'row',
     paddingLeft: theme.spacing(2),
     paddingBottom: theme.spacing(1),
-    borderBottom: '1px solid #e8e8e8',
+    borderBottom: `1px solid ${theme.palette.divider}`,
     paddingTop: theme.spacing(1),
   },
   filterControl: {
     textTransform: 'none',
-    color: 'DimGray',
+    color: 'dimGray',
     paddingRight: theme.spacing(3),
   },
   selectButton: {
     textTransform: 'none',
-    color: 'DimGray',
+    color: 'dimGray',
     paddingRight: theme.spacing(3),
   },
 
@@ -222,12 +211,7 @@ export const styles = () => ({
   contentWithSideBar_content: {
     flexGrow: '1',
   },
-  chartInspectorDrawer: {
-    [mediumOrLargeVp]: {
-      display: 'none',
-    },
-  },
-  chartSelectDrawer: {
+  chartDrawer: {
     [mediumOrLargeVp]: {
       display: 'none',
     },
@@ -238,7 +222,9 @@ export const styles = () => ({
     },
   },
   chartHeader: {
-    [mediumOrLargeVp]: { paddingLeft: theme.spacing(2) },
+    [mediumOrLargeVp]: { paddingLeft: theme.spacing(1) },
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
     display: 'flex',
     flexDirection: 'row',
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -254,6 +240,18 @@ export const styles = () => ({
       display: 'none',
     },
   },
+  inspectorHeading: {
+    paddingLeft: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  inspectorBody: { paddingLeft: theme.spacing(1), paddingTop: theme.spacing(1) },
+  chartMenu: {
+    paddingLeft: theme.spacing(1),
+  },
+  resourceMarkBlock: { paddingTop: theme.spacing(1) },
+  resourceMarkSection: { padding: theme.spacing(1) },
 
   // Task List
   taskResult: {
@@ -263,26 +261,40 @@ export const styles = () => ({
   // datepicker
   datePickerInput: {
     '&$datePickerInputFocussed': {
-      backgroundColor: '#f2f2f2',
+      backgroundColor: datePickerBgColor,
     },
   },
   datePickerInputFocussed: {},
+  datePickerField: {
+    [smallVp]: {
+      display: 'none',
+    },
+  },
+  datesDialogBody: {
+    display: 'flex',
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(1),
+  },
+  datesDialogInputBg: { display: 'flex', backgroundColor: datePickerBgColor },
+  datesDialogJoiner: { padding: theme.spacing(1) },
+  datesDialogInputsWrapper: { flexGrow: 1 },
+  datesDialogErrorMsg: { paddingTop: theme.spacing(2), color: 'red' },
 
-  // General
-  topPadding: {
-    paddingTop: theme.spacing(1),
-  },
-  leftPadding: {
-    paddingLeft: theme.spacing(1),
-  },
-  padding: {
-    padding: theme.spacing(1),
-  },
+  // label dissappears when small
   hidingLabel: {
     marginLeft: theme.spacing(1),
     [smallVp]: {
       display: 'none',
     },
+  },
+
+  // bottom controls of drawers in small display
+  drawerControls: {
+    borderTop: `1px solid ${theme.palette.divider}`,
+    paddingBottom: theme.spacing(1),
+    paddingLeft: theme.spacing(0.5),
+    paddingTop: theme.spacing(1),
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
 
   // links

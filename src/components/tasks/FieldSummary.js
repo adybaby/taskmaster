@@ -2,7 +2,7 @@ import React from 'react';
 import * as TYPES from '../../data/fields/Type';
 import { plannedDates } from '../../util/Dates';
 import { displayNameForCost } from '../../data/fields/Cost';
-import { CreatedByLink } from './CreatedByLink';
+import { CreatedByLink } from '../fragments/CreatedByLink';
 
 export const FieldSummary = ({ task }) => {
   const cost = () =>

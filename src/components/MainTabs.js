@@ -28,7 +28,7 @@ import * as TASK_TYPES from '../data/fields/Type';
 import { MapPanel } from './maps/MapPanel';
 import { ChartPanel } from './charts/ChartPanel';
 import { TaskList } from './browse/TaskList';
-import { getCurrentFilters } from './filters/Filters';
+import { getCurrentFilters } from './filters/FilterControls';
 
 const useStyles = makeStyles(styles);
 
@@ -164,24 +164,22 @@ export const MainTabs = () => {
       open={filtersVisible}
       onClose={handleFilterToggle}
     >
-      <>
-        <div className={classes.padding}>
-          <List>
-            {getCurrentFilters(
-              tabField,
-              tabs,
-              taskListFilterControls,
-              chartFilterControls,
-              handleChartFilterSelected
-            )}
-          </List>
-        </div>
-        <div className={classes.drawerControls}>
-          <Button color="primary" onClick={handleFilterToggle}>
-            Close
-          </Button>
-        </div>
-      </>
+      <div className={classes.filterDrawerBody}>
+        <List>
+          {getCurrentFilters(
+            tabField,
+            tabs,
+            taskListFilterControls,
+            chartFilterControls,
+            handleChartFilterSelected
+          )}
+        </List>
+      </div>
+      <div className={classes.drawerControls}>
+        <Button color="primary" onClick={handleFilterToggle}>
+          Close
+        </Button>
+      </div>
     </Drawer>
   );
 

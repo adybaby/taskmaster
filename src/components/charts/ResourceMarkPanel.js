@@ -22,7 +22,7 @@ export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
 
       {data.length > 0 ? (
         data.map((elem, index) => (
-          <div className={classes.topPadding} key={index}>
+          <div className={classes.resourceMarkBlock} key={index}>
             <Typography variant="body2">
               {showCount ? (
                 <>
@@ -69,15 +69,15 @@ export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
 
   return (
     <>
-      <Typography variant="subtitle1" className={classes.padding}>
+      <Typography variant="subtitle1" className={classes.resourceMarkSection}>
         {skillTitle} ({displayTotal} {displayTitle})
       </Typography>
       <Divider />
-      <Typography variant="subtitle2" className={classes.padding}>
+      <Typography variant="subtitle2" className={classes.resourceMarkSection}>
         {formatDate(new Date(dayRefData.x))}
       </Typography>
       <Divider />
-      <div className={classes.padding}>
+      <div className={classes.resourceMarkSection}>
         {makeBlock(
           'Stated Availability (before Sign-Ups)',
           dayRefData.stated,
@@ -89,11 +89,11 @@ export const MarkPanel = ({ dayRefData, skillTitle, total, totalsTitle }) => {
         )}
       </div>
       <Divider />
-      <div className={classes.padding}>
+      <div className={classes.resourceMarkSection}>
         {makeBlock('Initiatives', dayRefData.vacancies, true, false, 'task', 'vacancy', 'date')}
       </div>
       <Divider />
-      <div className={classes.padding}>
+      <div className={classes.resourceMarkSection}>
         {makeBlock('Signs Ups', dayRefData.signUps, false, true, 'signUp', 'signUp', 'periods')}
       </div>
     </>

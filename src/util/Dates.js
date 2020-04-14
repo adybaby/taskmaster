@@ -64,6 +64,7 @@ export const filterTasksByDate = (tasks, fromTo, dateField) => {
   });
 };
 
+// return the given date with the number of days added to it. if no days given, returns difference from today
 export const now = (days, date) => {
   if (days === undefined) return new Date().getTime();
   const d = typeof date === 'undefined' ? new Date() : new Date(date);

@@ -1,9 +1,7 @@
-change all dates to use moment/date-fns?
-refactor year/dates dialog to reuse code
 
 style sign up button to be RHS of vacancy block
 style vacancies in initiatives as 2x2 columns or vacancies as right hand column add dates and other subheadings to right hand collumn, and tags etc at the bottom, wiki-style.
-give task headers different stile
+give task headers different style
 
 -------------------------------------
 

@@ -15,11 +15,7 @@ const useStyles = makeStyles(styles);
 export const CreatedByLink = ({ createdBy }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
-  const users = useSelector((state) => state.users);
-  const user = users.filter((currentUser) =>
-    typeof currentUser === 'undefined' ? false : currentUser.id === createdBy
-  )[0];
+  const user = useSelector((state) => state.users).find((_user) => _user.id === createdBy);
 
   const handleCreatedByClick = () => {
     dispatch(resetAllTaskListFilterControls());

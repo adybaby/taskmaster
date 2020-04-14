@@ -7,7 +7,6 @@ import { createSortControl } from '../../data/sort/TaskSorter';
 export const SortControl = ({ currentTaskType }) => {
   const dispatch = useDispatch();
   const sortOrder = useSelector((states) => states.sortOrder);
-
   const sortControl = { ...createSortControl(), ...{ selectedId: sortOrder } };
 
   const handleOptionSelected = (optionId) => {
