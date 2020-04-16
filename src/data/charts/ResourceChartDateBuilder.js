@@ -1,5 +1,5 @@
 import * as TASK_TYPES from '../fields/Type';
-import { KEYS as VACANCY_KEYS } from '../fields/Vacancies';
+import { FIELDS as VACANCY_FIELDS } from '../fields/Vacancies';
 
 /* eslint-disable no-param-reassign */
 let tasks = null;
@@ -160,7 +160,7 @@ const calcVacancies = () => {
       .forEach((task) => {
         task.vacancies
           .filter((v) => v.title === vacancy.label)
-          .filter((v) => v.status === VACANCY_KEYS.STATUS.VACANT.key || Array.isArray(v.status))
+          .filter((v) => v.status === VACANCY_FIELDS.STATUS.VACANT.key || Array.isArray(v.status))
           .forEach((v) => {
             updateXY(task.startDate, task.endDate, 'vacancies', skillsIndex, null, {
               task,

@@ -1,15 +1,29 @@
+1) organise vacancy structure:
 
-style sign up button to be RHS of vacancy block
-style vacancies in initiatives as 2x2 columns or vacancies as right hand column add dates and other subheadings to right hand collumn, and tags etc at the bottom, wiki-style.
-give task headers different style
+vacancies = [{ 
+  role:____,
+  priority:____,
+  status:____,
+  periods:[{
+    from:__, 
+    to:___, 
+    interest:[{
+      userid:___, 
+      from:___, 
+      to:___, 
+      status: accepted|tentative|rejected,
+      comments:______
+    }]
+  }],
+  comments:____
+}]    
 
--------------------------------------
+2) Charts:
+  a) Add section under stacked title to show selected resources and abilty to change them.
+  b) Add download data button to right of title
 
-organise vacancy structure:
-   vacancy .. periods [from to signups[userid from to [status:accepted, tentative, rejected] comments] ]
-     comments
-     status: open, closed
+3) restyle task blocks as per wireframe
 
-work out what to do with more than 22 skills in stacked chart
+4) Add Capabilities
 
-DB back end
+5) DB back end server

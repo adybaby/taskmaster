@@ -220,9 +220,10 @@ export const styles = () => ({
     [mediumOrLargeVp]: {
       display: 'none',
     },
+    minWidth: 0,
   },
   chartHeader: {
-    [mediumOrLargeVp]: { paddingLeft: theme.spacing(1) },
+    paddingLeft: theme.spacing(2),
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     display: 'flex',

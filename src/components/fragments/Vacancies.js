@@ -8,7 +8,7 @@ import {
 import { DispatchingRouterLink as RLink } from './DispatchingRouterLink';
 import { DispatchingLinksList as LinksList } from './DispatchingLinksList';
 import * as URLS from '../../Urls';
-import { KEYS, decodeKey } from '../../data/fields/Vacancies';
+import { FIELDS, decodeField } from '../../data/fields/Vacancies';
 import { CreatedByLink } from './CreatedByLink';
 import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
 
@@ -85,7 +85,7 @@ export const Status = ({ vacancy }) => {
   }
   return (
     <>
-      {decodeKey(vacancy.status, 'STATUS').label}
+      {decodeField(FIELDS.STATUS, vacancy.status).label}
       <User userId={vacancy.userId} />
     </>
   );
@@ -98,12 +98,12 @@ export const Vacancy = ({ vacancy }) => (
       handleLinkClick={handleVacancyClick}
       url={`/${URLS.BROWSE}/${URLS.INITIATIVES}`}
     />
-    {`${decodeKey(vacancy.role, 'ROLE').label} (${
-      decodeKey(vacancy.necessity, 'NECESSITY').label
+    {`${decodeField(FIELDS.ROLE, vacancy.role).label} (${
+      decodeField(FIELDS.NECESSITY, vacancy.necessity).label
     })`}
     <br />
-    {vacancy.date === KEYS.AVAILABILITY.ANY_DATE.key ? (
-      KEYS.AVAILABILITY.ANY_DATE.label
+    {vacancy.date === FIELDS.AVAILABILITY.ANY_DATE.key ? (
+      FIELDS.AVAILABILITY.ANY_DATE.label
     ) : (
       <>
         {`Needed `}
@@ -113,7 +113,7 @@ export const Vacancy = ({ vacancy }) => (
     <br />
     <Status vacancy={vacancy} />
     <br />
-    {vacancy.status !== KEYS.STATUS.FILLED.key ? (
+    {vacancy.status !== FIELDS.STATUS.FILLED.key ? (
       <Link value={vacancy.title} href="#">
         <b>REGISTER INTEREST</b>
       </Link>
@@ -132,7 +132,7 @@ export const VacancyBlock = ({ vacancies }) =>
       ));
 
 export const VacancyList = ({ vacancies }) => {
-  if (vacancies.filter((vacancy) => vacancy.status !== KEYS.STATUS.FILLED.key).length === 0)
+  if (vacancies.filter((vacancy) => vacancy.status !== FIELDS.STATUS.FILLED.key).length === 0)
     return 'All vacancies filled.';
   return (
     <LinksList

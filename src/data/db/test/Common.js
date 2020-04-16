@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import { cleanString, parseListFromString } from '../../../util/StringUtils';
 import { parseDate } from '../../../util/Dates';
-import { KEYS } from '../../fields/Vacancies';
+import { FIELDS as VACANCY_FIELDS } from '../../fields/Vacancies';
 
 export const isDate = (date) =>
   date instanceof Date && typeof date.getDate !== 'undefined' && date.getTime() !== 0;
@@ -70,7 +70,7 @@ export const buildVacanciesField = (fieldSrc) => {
     let index = 2;
 
     const dateString = cleanString(vacancyFieldStrings[index]);
-    if (dateString === KEYS.AVAILABILITY.ANY_DATE.key) {
+    if (dateString === VACANCY_FIELDS.AVAILABILITY.ANY_DATE.key) {
       vacancy.date = dateString;
     } else {
       index = parseDateList(vacancyFieldStrings, index, vacancy, 'date', false);
@@ -83,11 +83,11 @@ export const buildVacanciesField = (fieldSrc) => {
     index++;
 
     const status = vacancyFieldStrings[index];
-    if (status === KEYS.STATUS.FILLED.key) {
+    if (status === VACANCY_FIELDS.STATUS.FILLED.key) {
       vacancy.status = status;
       index++;
       vacancy.userId = cleanString(vacancyFieldStrings[index]);
-    } else if (status === KEYS.STATUS.VACANT.key) {
+    } else if (status === VACANCY_FIELDS.STATUS.VACANT.key) {
       vacancy.status = status;
     } else {
       parseDateList(vacancyFieldStrings, index, vacancy, 'status', true);

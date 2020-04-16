@@ -1,4 +1,4 @@
-export const KEYS = {
+export const FIELDS = {
   NECESSITY: {
     ESSENTIAL: { id: 'ESSENTIAL', label: 'Essential', key: 'E' },
     DESIRABLE: { id: 'DESIRABLE', label: 'Desirable', key: 'D' },
@@ -17,5 +17,5 @@ export const KEYS = {
   AVAILABILITY: { ANY_DATE: { id: 'ANY_DATE', label: 'Flexible on dates', key: 'A' } },
 };
 
-export const decodeKey = (key, field) =>
-  Object.entries(KEYS[field]).filter((_key) => _key[1].key === key)[0][1];
+export const decodeField = (field, key) =>
+  Object.entries(field).find(([i, val]) => val.key === key)[1];

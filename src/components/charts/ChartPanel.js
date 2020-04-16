@@ -203,12 +203,8 @@ export const ChartPanel = () => {
     </Drawer>
   );
 
-  const selectGraphButton = (
-    <Button
-      className={classes.chartSelectButton}
-      color="primary"
-      onClick={() => setChartSelectDrawerVisible(true)}
-    >
+  const chartSelectButton = (
+    <Button className={classes.chartSelectButton} onClick={() => setChartSelectDrawerVisible(true)}>
       <FontAwesomeIcon icon={faBars} />
     </Button>
   );
@@ -218,7 +214,7 @@ export const ChartPanel = () => {
       <div className={classes.contentWithSideBar_sideBarLeft}>{navMenu}</div>
       <div className={classes.contentWithSideBar_content}>
         <div className={classes.chartHeader}>
-          {selectGraphButton}
+          {chartSelectButton}
           <Typography>
             <b>{titles[listIndex]}</b>
           </Typography>
