@@ -1,8 +1,8 @@
 import { FILTER_TYPES } from './FilterTypes';
-import { createYearSelectFilterControl } from './controls/YearSelectFilterControl';
+import { createDateSelectFilterControl } from './controls/DateSelectFilterControl';
 
 export const TASK_FILTER_CONTROL_IDS = {
-  YEAR_SELECT_FILTER_ID: 'YEAR_SELECT_FILTER_ID',
+  DATE_RANGE_FILTER_ID: 'DATE_RANGE_FILTER_ID',
 };
 
 export const isAFilterActive = (chartFilterControls) =>
@@ -10,9 +10,9 @@ export const isAFilterActive = (chartFilterControls) =>
 
 export const createChartFilterControls = () => [
   {
-    id: TASK_FILTER_CONTROL_IDS.YEAR_SELECT_FILTER_ID,
+    id: TASK_FILTER_CONTROL_IDS.DATE_RANGE_FILTER_ID,
     label: '',
     type: FILTER_TYPES.SELECT,
-    ...createYearSelectFilterControl(),
+    ...createDateSelectFilterControl('startDate', true),
   },
 ];

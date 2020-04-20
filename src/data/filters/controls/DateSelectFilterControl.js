@@ -1,35 +1,21 @@
-import { now } from '../../../util/Dates';
+import {
+  day,
+  beforeOrE,
+  afterOrE,
+  getDateRangeForWeek,
+  getDateRangeForMonth,
+  getDateRangeForYear,
+} from '../../../util/Dates';
 
 const DEFAULT_FILTER_ID = `ANY_TIME`;
 
-const createExecute = (dateField, cannedDates) => {
-  const filterByDate = (tasks, fromDate, toDate) => {
-    const dateOnly = (date) => {
-      if (typeof date === 'undefined' || date === null) return null;
-      const d = new Date(date);
-      d.setHours(0, 0, 0, 0);
-      return d.getTime();
-    };
-    const from = dateOnly(fromDate);
-    const to = dateOnly(toDate);
-
-    return tasks.filter((task) => {
-      if (task[dateField] === null) return false;
-      const date = dateOnly(task[dateField]);
-      return (from === null || date >= from) && (to === null || date <= to);
-    });
-  };
-
-  const filterBySpecifiedDate = (tasks, params) => {
-    return filterByDate(tasks, params.from, params.to);
-  };
-
-  const filterByCannedDate = (tasks) => {
-    return filterByDate(tasks, cannedDates.from, cannedDates.to);
-  };
-
-  return typeof cannedDates === 'undefined' ? filterBySpecifiedDate : filterByCannedDate;
-};
+const createExecute = (dateField) => (tasks, { from, to }) =>
+  tasks.filter((task) =>
+    task[dateField] === null || typeof task[dateField] === 'undefined'
+      ? null
+      : (from === null || afterOrE(task[dateField], from)) &&
+        (to === null || beforeOrE(task[dateField], to))
+  );
 
 export const createDateSelectFilterControl = (dateField, includeFuture) => {
   const options = [
@@ -37,33 +23,50 @@ export const createDateSelectFilterControl = (dateField, includeFuture) => {
     {
       id: `TODAY`,
       label: 'today',
-      execute: createExecute(dateField, { from: now(), to: now() }),
+      params: { from: day(), to: day() },
+      execute: createExecute(dateField),
+    },
+    {
+      id: `THIS_WEEK`,
+      label: 'this week',
+      params: getDateRangeForWeek(day()),
+      execute: createExecute(dateField),
+    },
+    {
+      id: `THIS_MONTH`,
+      label: 'this month',
+      params: getDateRangeForMonth(day()),
+      execute: createExecute(dateField),
+    },
+    {
+      id: `THIS_YEAR`,
+      label: 'this year',
+      params: getDateRangeForYear(day()),
+      execute: createExecute(dateField),
     },
     {
       id: `PAST_WEEK`,
       label: 'in the past week',
-      execute: createExecute(dateField, { from: now(-7), to: now() }),
+      params: { from: day(null, -7), to: day() },
+      execute: createExecute(dateField),
     },
     {
       id: `PAST_MONTH`,
       label: 'in the past month',
-      execute: createExecute(dateField, {
-        from: now(-31),
-        to: now(),
-      }),
+      params: { from: day(null, -31), to: day() },
+      execute: createExecute(dateField),
     },
     {
       id: `PAST_YEAR`,
       label: 'in the past year',
-      execute: createExecute(dateField, {
-        from: now(-365),
-        to: now(),
-      }),
+      params: { from: day(null, -365), to: day() },
+      execute: createExecute(dateField),
     },
     {
       id: `OLDER`,
       label: 'over a year ago',
-      execute: createExecute(dateField, { from: null, to: now(-365) }),
+      params: { from: null, to: day(null, -365) },
+      execute: createExecute(dateField),
     },
   ];
 
@@ -73,26 +76,26 @@ export const createDateSelectFilterControl = (dateField, includeFuture) => {
         {
           id: `COMING_WEEK`,
           label: 'in the coming week',
-          execute: createExecute(dateField, {
-            from: now(),
-            to: now(7),
-          }),
+          params: { from: day(), to: day(null, 7) },
+          execute: createExecute(dateField),
         },
         {
           id: `COMING_MONTH`,
           label: 'in the coming month',
-          execute: createExecute(dateField, {
-            from: now(),
-            to: now(31),
-          }),
+          params: { from: day(), to: day(null, 31) },
+          execute: createExecute(dateField),
         },
         {
           id: `COMING_YEAR`,
           label: 'in the coming year',
-          execute: createExecute(dateField, {
-            from: now(),
-            to: now(365),
-          }),
+          params: { from: day(), to: day(null, 365) },
+          execute: createExecute(dateField),
+        },
+        {
+          id: `NEXT_YEAR`,
+          label: 'next year',
+          params: getDateRangeForYear(day(null, 365)),
+          execute: createExecute(dateField),
         },
       ]
     );
@@ -101,6 +104,7 @@ export const createDateSelectFilterControl = (dateField, includeFuture) => {
   options.push({
     id: `CUSTOM_DATES`,
     label: 'Custom Range..',
+    params: { from: null, to: null },
     datePicker: true,
     dontPreCount: true,
     execute: createExecute(dateField),

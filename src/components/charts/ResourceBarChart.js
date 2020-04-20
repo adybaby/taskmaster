@@ -11,8 +11,9 @@ import {
 } from 'react-vis';
 import '../../../node_modules/react-vis/dist/style.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { MarkPanel } from './ResourceMarkPanel';
-import { styles } from '../../styles/Styles';
+import { Typography } from '@material-ui/core';
+import { Inspector } from './Inspector';
+import { styles, typographyVariant, CHART_COLORS } from '../../styles/Styles';
 
 const useStyles = makeStyles(styles);
 
@@ -23,24 +24,23 @@ export const ResourceBarChart = ({
   positive,
   gantt,
   onValueMouseOver,
+  onValueMouseOut,
   onValueClick,
-  onMouseLeave,
-  hint,
   width,
   dataPoint,
 }) => {
   const classes = useStyles();
+  const variant = typographyVariant.chart;
   const seriesSet = seriesSets[seriesKey];
   const skills = seriesSets.skillsAndColors.map((s) => s.title);
   const { refs } = seriesSets;
-  const COLORS = { MIN: '#FFFFFF', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
 
   const makeLegend = () =>
     gantt ? (
       <div className={classes.continuousChartLegend}>
         <ContinuousColorLegend
-          startColor={COLORS.MIN}
-          endColor={COLORS.MAX}
+          startColor={CHART_COLORS.MIN}
+          endColor={CHART_COLORS.MAX}
           startTitle={seriesSet.min}
           midTitle={Math.floor(seriesSet.max / 2)}
           endTitle={seriesSet.max}
@@ -60,21 +60,21 @@ export const ResourceBarChart = ({
         return y;
       }
       if (positive) {
-        return y < 0 ? 0 : y;
+        return y <= 0 ? 0 : y;
       }
       return y > 0 ? 0 : Math.abs(y);
     };
 
-    return series.data.map((d, dataIndex) => {
-      const y = gantt ? skillsIndex + 0.9 : getStackedY(d.y);
+    return series.data.map((dataIn) => {
+      const y = gantt ? skillsIndex + 0.9 : getStackedY(dataIn.y);
       const data = {
-        x: d.x,
+        x: dataIn.x,
         y,
         markPanel: (
-          <MarkPanel
-            dayRefData={refs[skillsIndex].data[dataIndex]}
+          <Inspector
+            dayRefData={refs[skillsIndex].data.find((ref) => ref.x === dataIn.x)}
             skillTitle={series.label}
-            total={d.y}
+            total={dataIn.y}
             totalsTitle={totalsTitle}
           />
         ),
@@ -82,10 +82,10 @@ export const ResourceBarChart = ({
       if (gantt)
         Object.assign(data, {
           color:
-            dataPoint !== null && dataPoint.x === d.x && dataPoint.y === skillsIndex + 0.9
+            dataPoint !== null && dataPoint.x === dataIn.x && dataPoint.y === skillsIndex + 0.9
               ? -99
-              : d.y,
-          x0: d.x + 86400000,
+              : dataIn.y,
+          x0: dataIn.x + 86400000,
           y0: skillsIndex + 0.1,
         });
 
@@ -97,8 +97,9 @@ export const ResourceBarChart = ({
     const props = {
       key: skillsIndex,
       data: makeSeriesData(series, skillsIndex),
-      onValueMouseOver: (dp) => onValueMouseOver(dp),
-      onValueClick: (dp) => onValueClick(dp),
+      onValueMouseOver,
+      onValueMouseOut,
+      onValueClick,
     };
     if (!gantt) Object.assign(props, { color: series.color });
     return gantt ? <VerticalRectSeries {...props} /> : <VerticalBarSeries {...props} />;
@@ -108,7 +109,6 @@ export const ResourceBarChart = ({
     let props = {
       xType: 'time',
       height: 800,
-      onMouseLeave: (dp) => onMouseLeave(dp),
       margin: { top: 20, right: 20, bottom: 70 },
     };
 
@@ -116,7 +116,7 @@ export const ResourceBarChart = ({
       props = {
         ...props,
         margin: { ...props.margin, left: 80 },
-        colorRange: [COLORS.HIGHLIGHTED, COLORS.MIN, COLORS.MAX],
+        colorRange: [CHART_COLORS.HIGHLIGHTED, CHART_COLORS.MIN, CHART_COLORS.MAX],
         colorDomain: [-99, seriesSet.min, seriesSet.max],
       };
     } else {
@@ -136,21 +136,27 @@ export const ResourceBarChart = ({
           <YAxis tickFormat={(t) => (Math.round(t) === t ? t : '')} />
         )}
         {seriesSet.map((s, index) => makeSeries(s, index, gantt))}
-        {hint}
       </XYPlot>
     );
   };
 
+  const seriesHasData = () =>
+    seriesSets[seriesKey].reduce((accumulator, series) => accumulator + series.data.length, 0) > 0;
+
   return (
     <>
-      {seriesSets.refs[0].data.length > 0 ? (
-        makeChart()
+      {seriesHasData() ? (
+        <>
+          {makeChart()}
+          <div>{makeLegend()}</div>
+        </>
       ) : (
         <div className={classes.fullWidthContent}>
-          No data to display. Please refine your date range.
+          <Typography variant={variant.prompt}>
+            No data to display. Please refine your date range.
+          </Typography>
         </div>
       )}
-      <div>{seriesSets.refs[0].data.length > 0 ? makeLegend() : null}</div>
     </>
   );
 };

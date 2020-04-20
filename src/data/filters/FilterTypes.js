@@ -1,4 +1,4 @@
 export const FILTER_TYPES = {
-  TEXT: 'TEXT',
-  SELECT: 'SELECT',
+  TEXT: { id: 'TEXT', paramName: 'text' },
+  SELECT: { id: 'SELECT', paramName: 'selectedId' },
 };

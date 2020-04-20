@@ -8,7 +8,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import enGB from 'date-fns/locale/en-GB';
 import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
-import { TaskPanel } from './components/tasks/TaskPanel';
+import { Task } from './components/tasks/Task';
 import { ProfilesPanel } from './components/profile/ProfilesPanel';
 import * as URLS from './Urls';
 import { initialise } from './redux/actions/DbActions';
@@ -42,7 +42,7 @@ export const App = () => {
               <Route exact path="/">
                 <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
               </Route>
-              <Route path={`/${URLS.TASK}/:id`} component={TaskPanel} />
+              <Route path={`/${URLS.TASK}/:id`} component={Task} />
               <Route path={`/${URLS.PROFILE}/:id`} component={ProfilesPanel} />
               <Route path={`/${URLS.PROFILE}/`} component={ProfilesPanel} />
               <Route path={`/${URLS.BROWSE}/:id`} component={MainTabs} />

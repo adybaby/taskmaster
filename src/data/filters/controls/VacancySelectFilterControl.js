@@ -1,34 +1,27 @@
+import * as TYPES from '../../fields/Type';
+import { FIELDS } from '../../fields/Vacancies';
+
 const DEFAULT_FILTER_ID = 'ANY_VACANCIES';
 
 const createExecute = (skills) => (tasks) =>
-  tasks.filter((task) => {
-    if (task.vacancies === null) {
-      return false;
-    }
-    for (let taskCounter = 0; taskCounter < task.vacancies.length; taskCounter++) {
-      for (let cusCounter = 0; cusCounter < skills.length; cusCounter++) {
-        if (task.vacancies[taskCounter].title.includes(skills[cusCounter])) {
-          return true;
-        }
-      }
-    }
-    return false;
-  });
+  tasks.filter(
+    (task) =>
+      task.type === TYPES.INITIATIVE &&
+      task.vacancies.length > 0 &&
+      task.vacancies.filter(
+        (vacancy) => vacancy.status === FIELDS.STATUS.OPEN.id && skills.includes(vacancy.skill)
+      ).length > 0
+  );
 
-const getSkillVacancies = (tasks) => {
-  if (tasks === null) return null;
-  const skillVacancies = [];
-  tasks.forEach((task) => {
-    if (task.vacancies != null) {
-      task.vacancies.forEach((vacancy) => {
-        if (skillVacancies.filter((vac) => vac === vacancy.title).length === 0) {
-          skillVacancies.push(vacancy.title);
-        }
-      });
-    }
-  });
-  return skillVacancies.sort();
-};
+const getSkillVacancies = (tasks) =>
+  [
+    ...new Set(
+      tasks
+        .filter((task) => task.type === TYPES.INITIATIVE && task.vacancies.length > 0)
+        .map((task) => task.vacancies.map((vacancy) => vacancy.skill))
+        .flat()
+    ),
+  ].sort();
 
 export const createVacancySelectFilterControl = (tasks, currentUser) => ({
   options: [

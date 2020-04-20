@@ -89,7 +89,7 @@ export const executeFilterControl = (tasks, filterControl) => {
         const selectedFilter = filterControl.options.find(
           (filter) => filter.id === filterControl.selectedId
         );
-        return selectedFilter.execute(tasks, filterControl.params);
+        return selectedFilter.execute(tasks, selectedFilter.params);
       }
       break;
     }

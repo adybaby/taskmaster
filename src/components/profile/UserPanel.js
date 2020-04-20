@@ -1,75 +1,81 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
-import { styles } from '../../styles/Styles';
-import { SkillList, VacancyDates } from '../fragments/Vacancies';
+import { Divider } from '@material-ui/core';
+import { styles, typographyVariant } from '../../styles/Styles';
+import { SkillsLinks, AuthoredLinks, SignedUpLinks } from '../Link';
+import { formatDate } from '../../util/Dates';
 
 const useStyles = makeStyles(styles);
+const variant = typographyVariant.user;
 
 export const UserPanel = ({ user }) => {
   const classes = useStyles();
 
-  const TaskList = ({ field, title }) =>
-    user[field].length === 0 ? null : (
-      <>
-        <br />
-        <div>
-          <Typography variant="h6">{title}</Typography>
-          {user[field].map((element, index) => (
-            <Typography key={index} variant="body1">
-              <Link className={classes.link} to={`/task/${element.id}`}>
-                {element.title}
-              </Link>
-              {Array.isArray(element.periods) ? (
-                <>
-                  {` `}
-                  <VacancyDates dates={element.periods} noUser={true} />
-                </>
-              ) : null}
-            </Typography>
-          ))}
-        </div>
-      </>
-    );
-
   return (
-    <div className={classes.fullWidthContent}>
-      <div>
-        <Typography variant="h4">
-          {user.name}
-          <Typography variant="caption"> (User ID: {user.id})</Typography>
+    <>
+      <div className={classes.userHeading}>
+        <Typography variant={variant.name}>
+          <b>
+            {user.firstName} {user.lastName}
+          </b>
         </Typography>
       </div>
-      <br />
-      <div>
-        <Typography variant="h6">Bio</Typography>
-        <Typography variant="body1">{user.bio}</Typography>
+      <div className={classes.userContent}>
+        <Typography className={classes.userSectionHeading} variant={variant.heading}>
+          Bio
+        </Typography>
+        <Divider />
+        <Typography className={classes.userSectionBody} variant={variant.body}>
+          {user.bio}
+        </Typography>
+        {user.skills.length > 0 ? (
+          <>
+            <Typography className={classes.userSectionHeading} variant={variant.heading}>
+              Skills
+            </Typography>
+            <Divider />
+            <div className={classes.userSectionBody}>
+              <SkillsLinks user={user} variant={variant.body} />
+            </div>
+          </>
+        ) : null}
+        {user.available.length > 0 ? (
+          <>
+            <Typography className={classes.userSectionHeading} variant={variant.heading}>
+              Available
+            </Typography>
+            <Divider />
+            <Typography className={classes.userSectionBody} variant={variant.body}>
+              {user.available.map(
+                (available) => `${formatDate(available.from)} to ${formatDate(available.to)}`
+              )}
+            </Typography>
+          </>
+        ) : null}
+        {user.authored.length > 0 ? (
+          <>
+            <Typography className={classes.userSectionHeading} variant={variant.heading}>
+              Authored
+            </Typography>
+            <Divider />
+            <div className={classes.userSectionBody}>
+              <AuthoredLinks user={user} variant={variant.body} />
+            </div>
+          </>
+        ) : null}
+        {user.signedUp.length > 0 ? (
+          <>
+            <Typography className={classes.userSectionHeading} variant={variant.heading}>
+              Signed Up
+            </Typography>
+            <Divider />
+            <div className={classes.userSectionBody}>
+              <SignedUpLinks user={user} variant={variant.body} />
+            </div>
+          </>
+        ) : null}
       </div>
-      {user.skills === null ? null : (
-        <>
-          <br />
-          <div>
-            <Typography variant="h6">Skills</Typography>
-            <SkillList variant="body1" skills={user.skills} />
-          </div>
-        </>
-      )}
-      {user.available === null ? null : (
-        <>
-          <br />
-          <div>
-            <Typography variant="h6">Available Dates</Typography>
-            {user.available.map((available, index) => (
-              <Typography key={index} variant="body1">
-                {available.from} to {available.to}
-              </Typography>
-            ))}
-          </div>
-        </>
-      )}
-      <TaskList field="authored" title="Created" />
-      <TaskList field="signedUp" title="Signed Up For" />
-    </div>
+    </>
   );
 };

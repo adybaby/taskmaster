@@ -14,12 +14,15 @@ export const TaskSelectFilter = ({ filterControl }) => {
     dispatch(setTaskListFilterControl({ id: filterControl.id, selectedId: optionId }));
   };
 
-  const handleDateRangeSelected = (optionId, from, to) => {
+  const handleDateRangeSelected = (selectedId, from, to) => {
+    const options = [...filterControl.options];
+    options.find((option) => option.id === selectedId).params = { from, to };
+
     dispatch(
       setTaskListFilterControl({
         id: filterControl.id,
-        selectedId: optionId,
-        params: { from, to },
+        selectedId,
+        options,
       })
     );
   };

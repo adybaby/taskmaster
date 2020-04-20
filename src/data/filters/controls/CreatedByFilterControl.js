@@ -12,7 +12,7 @@ export const createCreatedBySelectFilterControl = (users) => ({
     ...users
       .map((user) => ({
         id: `${user.id}`,
-        label: `${user.name}`,
+        label: `${user.firstName} ${user.lastName}`,
         execute: createExecute(user.id),
       }))
       .sort(),

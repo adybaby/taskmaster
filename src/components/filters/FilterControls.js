@@ -3,7 +3,6 @@ import { TaskSelectFilter } from './TaskSelectFilter';
 import { ChartSelectFilter } from './ChartSelectFilter';
 import { SortControl } from './SortControl';
 import { TASK_FILTER_CONTROL_IDS } from '../../data/filters/TaskListFilterControls';
-import { YEAR_SELECT_FILTER_ID } from '../../data/filters/controls/YearSelectFilterControl';
 
 const taskListfilterIds = [
   TASK_FILTER_CONTROL_IDS.CREATED_DATE,
@@ -28,8 +27,7 @@ export const getCurrentFilters = (
   if (currentTab === tabs.charts)
     return (
       <ChartSelectFilter
-        key={YEAR_SELECT_FILTER_ID}
-        filterControl={chartFilterControls.find((fc) => fc.id === YEAR_SELECT_FILTER_ID)}
+        filterControl={chartFilterControls[0]}
         handleFilterSelected={handleFilterSelected}
       />
     );
@@ -37,12 +35,12 @@ export const getCurrentFilters = (
   if (taskListTabs.includes(currentTab))
     return (
       <>
-        {taskListfilterIds.map((id) => {
+        {taskListfilterIds.map((id, index) => {
           const filterControl = taskListFilterControls.find((fc) => fc.id === id);
           return typeof filterControl.forTaskTypes === 'undefined' ||
             filterControl.forTaskTypes.includes(currentTab.taskType) ? (
             <TaskSelectFilter
-              key={id}
+              key={index}
               filterControl={taskListFilterControls.find((fc) => fc.id === id)}
             />
           ) : null;

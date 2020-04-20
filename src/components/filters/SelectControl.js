@@ -10,7 +10,6 @@ import { Divider } from '@material-ui/core';
 import { styles } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
 import { DatesDialog } from './datesdialog/DateDialog';
-import { YearDialog } from './datesdialog/YearDialog';
 
 const useStyles = makeStyles(styles);
 
@@ -20,10 +19,9 @@ export const SelectControl = ({
   handleDateRangeSelected,
   preCountResults,
   currentTaskType,
-  yearOnly,
 }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const popOverId = open ? 'select-popover' : undefined;
   const selected = control.options.find((option) => option.id === control.selectedId);
@@ -67,11 +65,11 @@ export const SelectControl = ({
       return `${control.label} ${selected.label}`;
     }
 
-    const toDate = formatDate(new Date(control.params.to));
-    if (control.params.from === null) return `${control.label} before ${toDate}`;
+    const toDate = formatDate(new Date(selected.params.to));
+    if (selected.params.from === null) return `${control.label} before ${toDate}`;
 
-    const fromDate = formatDate(new Date(control.params.from));
-    if (control.params.to === null) return `${control.label} after ${fromDate}`;
+    const fromDate = formatDate(new Date(selected.params.from));
+    if (selected.params.to === null) return `${control.label} after ${fromDate}`;
 
     return `${control.label} between ${fromDate} and ${toDate}`;
   };
@@ -125,19 +123,16 @@ export const SelectControl = ({
               >
                 <ListItemText primary={`${option.label} ${count === -1 ? '' : ` (${count})`}`} />
               </ListItem>
+              {option.datePicker ? <Divider /> : null}
             </React.Fragment>
           );
         })}
       </Popover>
-      {yearOnly ? (
-        <YearDialog open={openDates} handleClose={handleCloseDates} />
-      ) : (
-        <DatesDialog
-          open={openDates}
-          handleClose={handleCloseDates}
-          currentPickerTitle={control.label}
-        />
-      )}
+      <DatesDialog
+        open={openDates}
+        handleClose={handleCloseDates}
+        currentPickerTitle={control.label}
+      />
     </div>
   );
 };

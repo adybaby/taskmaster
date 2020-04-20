@@ -3,10 +3,8 @@ import { fade, createMuiTheme } from '@material-ui/core/styles';
 // viewport scaling
 const maxMedium = 900;
 const maxSmall = 715;
-const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall - 1}px)`;
-const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${
-  maxMedium - 1
-}px)`;
+const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall}px)`;
+const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${maxMedium}px)`;
 const mediumOrLargeVp = `@media only screen and (min-width: ${maxSmall + 1}px)`;
 const largeVp = `@media only screen and (min-width: ${maxMedium + 1}px)`;
 const shrinkButton = {
@@ -15,8 +13,67 @@ const shrinkButton = {
   [smallVp]: { minWidth: 0 },
 };
 
+// colours
+const aagBgColor = '#f2faff';
 const datePickerBgColor = '#f2f2f2';
 const tabHighlightColor = '#40a9ff';
+export const CHART_COLORS = { MIN: 'lightGrey', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
+export const KELLY = [
+  '#F2F3F4',
+  '#222222',
+  '#F3C300',
+  '#875692',
+  '#F38400',
+  '#A1CAF1',
+  '#BE0032',
+  '#C2B280',
+  '#848482',
+  '#008856',
+  '#E68FAC',
+  '#0067A5',
+  '#F99379',
+  '#604E97',
+  '#F6A600',
+  '#B3446C',
+  '#DCD300',
+  '#882D17',
+  '#8DB600',
+  '#654522',
+  '#E25822',
+  '#2B3D26',
+];
+
+// typography variants
+export const typographyVariant = {
+  aag: { title: 'body2', value: 'body2', note: 'caption' },
+  task: { heading: 'h5', body: 'body1' },
+  taskList: { tasksCount: 'subtitle1' },
+  taskResult: {
+    editingSummary: 'caption',
+    durationSummary: 'caption',
+    resultDescription: 'body1',
+    title: 'h5',
+    vacancyLinks: 'caption',
+    tagsLinks: 'caption',
+  },
+  chart: {
+    title: 'body1',
+    body: 'body2',
+  },
+  inspector: {
+    title: 'subtitle1',
+    heading: 'body2',
+    body: 'body2',
+    note: 'caption',
+    date: 'subtitle2',
+  },
+  datesDialog: { error: 'body1' },
+  user: {
+    name: 'h5',
+    heading: 'h5',
+    body: 'body1',
+  },
+};
 
 export const theme = createMuiTheme({
   typography: {
@@ -76,7 +133,13 @@ export const styles = () => ({
     color: theme.palette.common.white,
     zIndex: 10,
   },
-
+  appTitle: {
+    textDecoration: 'none',
+    color: 'inherit',
+    '&:focus, &:hover, &:visited, &:link, &:active': {
+      textDecoration: 'none',
+    },
+  },
   // search box
   searchBox: {
     position: 'relative',
@@ -123,8 +186,9 @@ export const styles = () => ({
       opacity: 1,
     },
   },
-  tabIcon: {
-    verticalAlign: 'middle',
+  tabLabel: {
+    display: 'flex',
+    alignItems: 'center',
   },
   filterButton: {
     ...shrinkButton,
@@ -164,22 +228,137 @@ export const styles = () => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
     paddingTop: theme.spacing(1),
   },
-  filterControl: {
-    textTransform: 'none',
-    color: 'dimGray',
-    paddingRight: theme.spacing(3),
-  },
   selectButton: {
     textTransform: 'none',
     color: 'dimGray',
     paddingRight: theme.spacing(3),
   },
 
+  // tasks
+  taskHeading: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottom: `2px solid darkGrey`,
+    paddingLeft: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  taskInfoButton: {
+    paddingRight: theme.spacing(2),
+    width: 0,
+    color: 'dimGrey',
+    '&&': {
+      borderStyle: 'none',
+    },
+    '&:hover,&.Mui-selected&:hover': {
+      backgroundColor: 'transparent',
+    },
+    '&.Mui-selected': {
+      fontWeight: 'bold',
+      color: theme.palette.primary.main,
+      backgroundColor: 'transparent',
+    },
+  },
+  taskContent: { padding: theme.spacing(3) },
+  taskSectionHeading: { paddingBottom: theme.spacing(1) },
+  taskSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+
+  // Map
+  mapContent: { display: 'flex', padding: theme.spacing(2), flexDirection: 'column' },
+  mapDriverTitle: {
+    paddingBottom: theme.spacing(1),
+    borderBottom: `1px solid darkGrey`,
+    marginBottom: theme.spacing(2),
+  },
+
+  // Contributions
+  contributionList: { paddingLeft: theme.spacing(3), paddingBottom: theme.spacing(2) },
+  contributeLink: { paddingBottom: '6px' },
+
+  // Task List
+  taskListEntry: { display: 'flex', flexDirection: 'column', paddingBottom: theme.spacing(3) },
+  taskResult: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  resultDescription: { paddingTop: '4px', paddingBottom: '4px' },
+  resultFooter: { display: 'flex', flexDirection: 'column' },
+
+  // At a glance
+  aagTable: {
+    [smallVp]: {
+      backgroundColor: aagBgColor,
+      padding: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+      marginBottom: theme.spacing(2),
+      minWidth: '270px',
+      transition: 'max-height .25s ease-in-out',
+    },
+    display: 'flex',
+    flexDirection: 'column',
+    [mediumOrLargeVp]: {
+      float: 'right',
+      width: '420px',
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      marginLeft: theme.spacing(5),
+      boxShadow: '0px 3px 10px lightGrey',
+    },
+  },
+  aagBody: {
+    [mediumOrLargeVp]: {
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+  },
+  aagHeader: {
+    [smallVp]: { display: 'none' },
+    [mediumOrLargeVp]: {
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      fontStyle: 'italic',
+      color: theme.palette.common.white,
+      backgroundColor: theme.palette.primary.main,
+    },
+  },
+  aagRow: { display: 'flex', flexDirection: 'row', paddingBottom: theme.spacing(1) },
+  aagTitle: {
+    fontWeight: 'bold',
+    flexBasis: '45%',
+    paddingRight: theme.spacing(4),
+    flexGrow: 1,
+  },
+  aagValue: { flexBasis: '65%', flexGrow: 9 },
+
+  // user profile
+  userHeading: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'centre',
+    justifyContent: 'space-between',
+    borderBottom: `2px solid darkGrey`,
+    paddingLeft: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  userContent: { padding: theme.spacing(3) },
+  userSectionHeading: { paddingBottom: theme.spacing(1) },
+  userSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+  signedUpLink: { paddingBottom: theme.spacing(1) },
+
   // Content Layout - full width
   fullWidthContent: {
     padding: theme.spacing(2),
     paddingLeft: theme.spacing(3),
-    width: '100%',
+    flex: '100%',
   },
   taskBody: {
     marginTop: theme.spacing(2),
@@ -187,12 +366,12 @@ export const styles = () => ({
   },
 
   // Charts
-  contentWithSideBar_Container: {
+  chartsLayoutContainer: {
     display: 'flex',
     height: '100%',
     flexDirection: 'row',
   },
-  contentWithSideBar_sideBarLeft: {
+  chartMenuSideBar: {
     [smallVp]: {
       display: 'none',
     },
@@ -200,7 +379,7 @@ export const styles = () => ({
     maxWidth: '180px',
     flexGrow: '1',
   },
-  contentWithSideBar_sideBarRight: {
+  inspectorSideBar: {
     [smallVp]: {
       display: 'none',
     },
@@ -208,7 +387,7 @@ export const styles = () => ({
     maxWidth: '180px',
     flexGrow: '1',
   },
-  contentWithSideBar_content: {
+  chartLayoutBody: {
     flexGrow: '1',
   },
   chartDrawer: {
@@ -216,6 +395,7 @@ export const styles = () => ({
       display: 'none',
     },
   },
+  chartDrawerBody: { padding: theme.spacing(2) },
   chartSelectButton: {
     [mediumOrLargeVp]: {
       display: 'none',
@@ -236,7 +416,9 @@ export const styles = () => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  chartHint: {
+  inspectorToolTip: {
+    zIndex: 99999,
+    position: 'absolute',
     [smallVp]: {
       display: 'none',
     },
@@ -251,13 +433,8 @@ export const styles = () => ({
   chartMenu: {
     paddingLeft: theme.spacing(1),
   },
-  resourceMarkBlock: { paddingTop: theme.spacing(1) },
+  resourceMarkBlock: { display: 'flex', flexDirection: 'column', paddingTop: theme.spacing(1) },
   resourceMarkSection: { padding: theme.spacing(1) },
-
-  // Task List
-  taskResult: {
-    paddingBottom: theme.spacing(2),
-  },
 
   // datepicker
   datePickerInput: {
@@ -299,13 +476,6 @@ export const styles = () => ({
   },
 
   // links
-  title: {
-    textDecoration: 'none',
-    color: 'inherit',
-    '&:focus, &:hover, &:visited, &:link, &:active': {
-      textDecoration: 'none',
-    },
-  },
   link: {
     textDecoration: 'none',
     color: theme.palette.primary.main,

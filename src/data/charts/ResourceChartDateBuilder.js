@@ -1,5 +1,6 @@
 import * as TASK_TYPES from '../fields/Type';
 import { FIELDS as VACANCY_FIELDS } from '../fields/Vacancies';
+import { KELLY } from '../../styles/Styles';
 
 /* eslint-disable no-param-reassign */
 let tasks = null;
@@ -17,36 +18,11 @@ const seriesSets = {
   skillsAndColors: null,
 };
 
-const KELLY = [
-  '#F2F3F4',
-  '#222222',
-  '#F3C300',
-  '#875692',
-  '#F38400',
-  '#A1CAF1',
-  '#BE0032',
-  '#C2B280',
-  '#848482',
-  '#008856',
-  '#E68FAC',
-  '#0067A5',
-  '#F99379',
-  '#604E97',
-  '#F6A600',
-  '#B3446C',
-  '#DCD300',
-  '#882D17',
-  '#8DB600',
-  '#654522',
-  '#E25822',
-  '#2B3D26',
-];
-
 const xyTemplate = (makeRefs) => {
   const xy = [];
   for (
-    let i = new Date(dateRange.all.first);
-    i.getTime() <= new Date(dateRange.all.last).getTime();
+    let i = new Date(dateRange.first.getTime());
+    i.getTime() <= dateRange.last.getTime();
     i.setDate(i.getDate() + 1)
   ) {
     if (makeRefs) {
@@ -85,25 +61,12 @@ const createSeriesTemplates = () => {
   seriesSets.refs = seriesTemplate(true);
 };
 
-const minMax = (seriesSet) => {
-  seriesSet.min = seriesSet
-    .map((series) =>
-      series.data.reduce((previous, current) => (current.y < previous ? current.y : previous), 0)
-    )
-    .reduce((previous, current) => (current < previous ? current : previous), 0);
-  seriesSet.max = seriesSet
-    .map((series) =>
-      series.data.reduce((previous, current) => (current.y > previous ? current.y : previous), 0)
-    )
-    .reduce((previous, current) => (current > previous ? current : previous), 0);
-};
-
 const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
   const { data } = seriesSets[seriesSetKey][skillsIndex];
   const refData = seriesSets.refs[skillsIndex].data;
 
-  let i = data.findIndex((d) => d.x === new Date(from).getTime());
-  const end = data.findIndex((d) => d.x === new Date(to).getTime());
+  let i = data.findIndex((d) => d.x === from.getTime());
+  const end = data.findIndex((d) => d.x === to.getTime());
   for (i; i <= end; i++) {
     data[i].y++;
     if (signUp !== null) {
@@ -149,27 +112,24 @@ const calcAvailability = () => {
       });
     });
   });
-  minMax(seriesSets.signedUp);
-  minMax(seriesSets.availability);
 };
 
 const calcVacancies = () => {
-  seriesSets.vacancies.forEach((vacancy, skillsIndex) => {
+  skills.forEach((skill, skillsIndex) => {
     tasks
       .filter((task) => task.type === TASK_TYPES.INITIATIVE)
       .forEach((task) => {
         task.vacancies
-          .filter((v) => v.title === vacancy.label)
-          .filter((v) => v.status === VACANCY_FIELDS.STATUS.VACANT.key || Array.isArray(v.status))
-          .forEach((v) => {
+          .filter((vacancy) => vacancy.skill === skill)
+          .filter((vacancy) => vacancy.status === VACANCY_FIELDS.STATUS.OPEN.id)
+          .forEach((vacancy) => {
             updateXY(task.startDate, task.endDate, 'vacancies', skillsIndex, null, {
               task,
-              vacancy: v,
+              vacancy,
             });
           });
       });
   });
-  minMax(seriesSets.vacancies);
 };
 
 const calcActualAvailabilityAndShortFall = () => {
@@ -185,24 +145,61 @@ const calcActualAvailabilityAndShortFall = () => {
       shortfallDayData.y = vacanciesDayData.y - availabilityDayData.y;
     }
   }
-  minMax(seriesSets.actualAvailability);
-  minMax(seriesSets.shortfall);
 };
 
-const removeDatesOutsideTaskRange = (filterDateRange) => {
-  const range = {
-    first: filterDateRange.from !== null ? filterDateRange.from.getTime() : dateRange.all.first,
-    last: filterDateRange.to !== null ? filterDateRange.to.getTime() : dateRange.all.last,
-  };
-  Object.entries(seriesSets).forEach(([key]) => {
-    seriesSets[key].forEach((series, index) => {
-      if (typeof series.data !== 'undefined') {
-        const first = series.data.findIndex((d) => d.x >= range.first);
-        const last = series.data.findIndex((d) => d.x > range.last);
-        seriesSets[key][index].data = series.data.slice(first, last);
-      }
-    });
+const trimAndFilterSeriesSet = (seriesSet, filterDateRange) => {
+  seriesSet.forEach((series) => {
+    if (typeof series.data !== 'undefined') {
+      const attemptedFirst =
+        typeof filterDateRange === 'undefined' ||
+        filterDateRange === null ||
+        filterDateRange.from === null
+          ? 0
+          : series.data.findIndex((d) => d.x >= filterDateRange.from.getTime());
+      const attemptedLast =
+        typeof filterDateRange === 'undefined' ||
+        filterDateRange === null ||
+        filterDateRange.to === null
+          ? series.data.length
+          : series.data.findIndex((d) => d.x > filterDateRange.to.getTime());
+      const first = attemptedFirst === -1 ? 0 : attemptedFirst;
+      const last = attemptedLast === -1 ? series.data.length : attemptedLast;
+      series.data = series.data.slice(first, last).filter((d) => d.y !== 0);
+    }
   });
+};
+
+const trimAndFilterSeriesSets = (filterDateRange) => {
+  trimAndFilterSeriesSet(seriesSets.availability, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.signedUp, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.actualAvailability, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.vacancies, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.shortfall, filterDateRange);
+};
+
+const minMax = (seriesSet) => {
+  let min = seriesSet
+    .map((series) =>
+      series.data.reduce((previous, current) => (current.y < previous ? current.y : previous), 0)
+    )
+    .reduce((previous, current) => (current < previous ? current : previous), 0);
+  const max = seriesSet
+    .map((series) =>
+      series.data.reduce((previous, current) => (current.y > previous ? current.y : previous), 0)
+    )
+    .reduce((previous, current) => (current > previous ? current : previous), 0);
+  // zero entries do not mark on the charts
+  if (min === 0) min = 1;
+  seriesSet.min = min;
+  seriesSet.max = max;
+};
+
+const calcMinMaxYValues = () => {
+  minMax(seriesSets.signedUp);
+  minMax(seriesSets.availability);
+  minMax(seriesSets.vacancies);
+  minMax(seriesSets.actualAvailability);
+  minMax(seriesSets.shortfall);
 };
 
 export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn, filterDateRange) => {
@@ -214,8 +211,7 @@ export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn, filterDa
   calcAvailability();
   calcVacancies();
   calcActualAvailabilityAndShortFall();
-  if (filterDateRange !== null) {
-    removeDatesOutsideTaskRange(filterDateRange);
-  }
+  trimAndFilterSeriesSets(filterDateRange);
+  calcMinMaxYValues();
   return seriesSets;
 };

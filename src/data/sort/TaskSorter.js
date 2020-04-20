@@ -6,7 +6,7 @@ export const SORT_CONTROL_ID = 'SORT_CONTROL_ID';
 export const DEFAULT_SORTER_ID = 'PRIORITY';
 
 const createReversibleSorter = (executor, reverseOrder) =>
-  reverseOrder ? (tasks) => executor(tasks).reverse() : executor;
+  reverseOrder ? (tasks, users) => executor(tasks, users).reverse() : executor;
 
 const createStringSorter = (field) => (tasks) =>
   tasks.sort((a, b) => a[field].localeCompare(b[field]));
@@ -24,7 +24,7 @@ const createDateSorter = (dateField) => (tasks) =>
     if (typeof b[dateField] === 'undefined') {
       return -1;
     }
-    return new Date(a[dateField]) - new Date(b[dateField]);
+    return a[dateField] - b[dateField];
   });
 
 const prioritySorter = (tasks) =>
@@ -36,6 +36,15 @@ const prioritySorter = (tasks) =>
       return sortOrderForCost(a.cost) - sortOrderForCost(b.cost);
     }
     return a.priority - b.priority;
+  });
+
+const createdBySorter = (tasks, users) =>
+  tasks.sort((a, b) => {
+    const userA = users.find((user) => user.id === a.createdBy);
+    const userB = users.find((user) => user.id === b.createdBy);
+    return `${userA.lastName}${userA.firstName}`.localeCompare(
+      `${userB.lastName}${userB.firstName}`
+    );
   });
 
 const SORTERS = [
@@ -51,23 +60,23 @@ const SORTERS = [
   },
   {
     id: 'CREATED_DATE',
-    label: 'created Date (earliest first)',
+    label: 'created date (earliest first)',
     execute: createReversibleSorter(createDateSorter('createdDate')),
   },
   {
     id: 'CREATED_DATE_REVERSE',
-    label: 'created Date (latest first)',
+    label: 'created date (latest first)',
     execute: createReversibleSorter(createDateSorter('createdDate'), true),
   },
   {
     id: 'AUTHOR',
-    label: 'author (A-Z)',
-    execute: createReversibleSorter(createIntegerSorter('createdBy')),
+    label: 'author (surname A-Z)',
+    execute: createReversibleSorter(createdBySorter),
   },
   {
     id: 'AUTHOR_REVERSE',
-    label: 'author (Z-A)',
-    execute: createReversibleSorter(createIntegerSorter('createdBy'), true),
+    label: 'author (surname Z-A)',
+    execute: createReversibleSorter(createdBySorter, true),
   },
   {
     id: 'START_DATE',
@@ -124,5 +133,5 @@ export const createSortControl = () => ({
   options: SORTERS,
 });
 
-export const sortTasks = (tasks, sorterId) =>
-  SORTERS.find((sorter) => sorter.id === sorterId).execute(tasks);
+export const sortTasks = (tasks, users, sorterId) =>
+  SORTERS.find((sorter) => sorter.id === sorterId).execute(tasks, users);

@@ -6,6 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Typography } from '@material-ui/core';
+import { typographyVariant } from '../../../styles/Styles';
+
+const variant = typographyVariant.datesDialog;
 
 export const dialogBase = (
   unit,
@@ -20,7 +23,12 @@ export const dialogBase = (
   classes,
   other
 ) => (
-  <Dialog open={open} onClose={() => handleClose(null, null)} {...other}>
+  <Dialog
+    open={open}
+    onClose={() => handleClose(null, null)}
+    onEscapeKeyDown={() => handleClose(null, null)}
+    {...other}
+  >
     <DialogTitle id="date picker title">Filter By {unit}s</DialogTitle>
     <DialogContent>
       <DialogContentText>
@@ -30,21 +38,21 @@ export const dialogBase = (
       {dialogBody}
       {fromNotValid ? (
         <div className={classes.datesDialogErrorMsg}>
-          <Typography variant="body1">
+          <Typography variant={variant.error}>
             The first {unit} is not a valid {unit}.
           </Typography>
         </div>
       ) : null}
       {toNotValid ? (
         <div className={classes.datesDialogErrorMsg}>
-          <Typography variant="body1">
+          <Typography variant={variant.error}>
             The second {unit} is not a valid {unit}.
           </Typography>
         </div>
       ) : null}
       {datesOutOfOrder ? (
         <div className={classes.datesDialogErrorMsg}>
-          <Typography variant="body1">
+          <Typography variant={variant.error}>
             The first {unit} should be before or the same as the last {unit}.
           </Typography>
         </div>

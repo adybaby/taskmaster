@@ -9,7 +9,6 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import { useSelector } from 'react-redux';
-import { Hint } from 'react-vis';
 import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
@@ -35,6 +34,7 @@ export const ChartPanel = () => {
   const [inspectorPanel, setInspectorPanel] = useState(null);
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
   const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
+  const [mousePosition, setMousePosition] = useState(null);
 
   const titles = [
     'None',
@@ -64,7 +64,8 @@ export const ChartPanel = () => {
     setStackedFolderOpen(!stackedFolderOpen);
   };
 
-  const onValueMouseOver = (dp) => {
+  const onValueMouseOver = (dp, event) => {
+    setMousePosition({ x: event.event.clientX, y: event.event.clientY });
     setDataPoint(dp);
   };
   const onValueClick = (dp) => {
@@ -72,7 +73,7 @@ export const ChartPanel = () => {
     setInspectorDrawerVisible(true);
   };
 
-  const onMouseLeave = () => {
+  const onValueMouseOut = () => {
     setDataPoint(null);
   };
 
@@ -121,14 +122,13 @@ export const ChartPanel = () => {
   );
 
   const hint =
-    dataPoint !== null ? (
-      <Hint
-        className={classes.chartHint}
-        align={{ vertical: 'top', horizontal: 'left' }}
-        value={dataPoint}
+    dataPoint !== null && mousePosition !== null ? (
+      <div
+        style={{ left: mousePosition.x + 10, top: mousePosition.y + 10 }}
+        className={classes.inspectorToolTip}
       >
         <Paper>{dataPoint.markPanel}</Paper>
-      </Hint>
+      </div>
     ) : null;
 
   const chart = (width) => {
@@ -136,8 +136,7 @@ export const ChartPanel = () => {
       seriesSets: resourceSeriesSets,
       onValueMouseOver,
       onValueClick,
-      onMouseLeave,
-      hint,
+      onValueMouseOut,
       width,
       dataPoint,
     };
@@ -210,9 +209,10 @@ export const ChartPanel = () => {
   );
 
   return (
-    <div className={classes.contentWithSideBar_Container}>
-      <div className={classes.contentWithSideBar_sideBarLeft}>{navMenu}</div>
-      <div className={classes.contentWithSideBar_content}>
+    <div className={classes.chartsLayoutContainer}>
+      {hint}
+      <div className={classes.chartMenuSideBar}>{navMenu}</div>
+      <div className={classes.chartLayoutBody}>
         <div className={classes.chartHeader}>
           {chartSelectButton}
           <Typography>
@@ -221,7 +221,7 @@ export const ChartPanel = () => {
         </div>
         <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
       </div>
-      <div className={classes.contentWithSideBar_sideBarRight}>{inspector}</div>
+      <div className={classes.inspectorSideBar}>{inspector}</div>
       {drawer(navMenu, 'left', chartSelectDrawerVisible, () => setChartSelectDrawerVisible(false))}
       {drawer(
         inspector,

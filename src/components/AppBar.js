@@ -23,7 +23,7 @@ export const AppBar = () => {
   const searchText = useSelector((state) => state.taskListfilterControls).find(
     (filterControl) => filterControl.id === TASK_FILTER_CONTROL_IDS.SEARCH_FIELD
   ).text;
-  const userName = useSelector((state) => state.currentUser).name;
+  const userName = useSelector((state) => state.currentUser).firstName;
 
   const handleNewClick = () => {
     // eslint-disable-next-line no-alert
@@ -50,7 +50,7 @@ export const AppBar = () => {
 
   return (
     <div className={classes.appBar}>
-      <Link className={classes.title} to="/" onClick={handleHomeClick}>
+      <Link className={classes.appTitle} to="/" onClick={handleHomeClick}>
         <Typography variant="h6" noWrap>
           TASKMASTER
         </Typography>

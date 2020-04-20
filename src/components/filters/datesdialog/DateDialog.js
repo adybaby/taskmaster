@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { isValid } from 'date-fns';
 import DatePicker from './GbDateClearablePicker';
 import { styles } from '../../../styles/Styles';
-import { formatDate } from '../../../util/Dates';
+import { formatDate, parseGbDateString } from '../../../util/Dates';
 import { dialogBase } from './DialogBase';
 
 const useStyles = makeStyles(styles);
@@ -17,16 +17,16 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
   const toControl = createRef();
 
   const bothDatesBlank = dates.from === '' && dates.to === '';
-  const fromNotValid = dates.from !== '' && isNaN(new Date(dates.from).getTime());
-  const toNotValid = dates.to !== '' && isNaN(new Date(dates.to).getTime());
+  const fromNotValid = dates.from !== '' && isNaN(parseGbDateString(dates.from).getTime());
+  const toNotValid = dates.to !== '' && isNaN(parseGbDateString(dates.to).getTime());
   const datesOutOfOrder =
     dates.from !== '' &&
     dates.to !== '' &&
-    new Date(dates.from).getTime() > new Date(dates.to).getTime();
+    parseGbDateString(dates.from).getTime() > parseGbDateString(dates.to).getTime();
 
   const handleOk = () => {
-    const fromDate = new Date(dates.from);
-    const toDate = new Date(dates.to);
+    const fromDate = parseGbDateString(dates.from);
+    const toDate = parseGbDateString(dates.to);
     handleClose(isValid(fromDate) ? fromDate : null, isValid(toDate) ? toDate : null);
   };
 
@@ -53,6 +53,11 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
 
   const inputProps = {
     fullWidth: true,
+    onKeyPress: (event) => {
+      if (event.key === 'Enter') {
+        handleOk();
+      }
+    },
     InputProps: {
       classes: {
         root: classes.datePickerInput,

@@ -1,29 +1,19 @@
-1) organise vacancy structure:
+1) fix drawer
+ drawer is blocking scrollbar
+ buttons are still active because drawer is open
+ change to mui drawer
 
-vacancies = [{ 
-  role:____,
-  priority:____,
-  status:____,
-  periods:[{
-    from:__, 
-    to:___, 
-    interest:[{
-      userid:___, 
-      from:___, 
-      to:___, 
-      status: accepted|tentative|rejected,
-      comments:______
-    }]
-  }],
-  comments:____
-}]    
+2) get css transition for at a glance to work
 
-2) Charts:
-  a) Add section under stacked title to show selected resources and abilty to change them.
-  b) Add download data button to right of title
+3) Charts:
+  a) improve charts to account for "interest" in vacancies/signups
+  b) Add section under stacked title to show selected resources and abilty to change them.
+  c) Add download data button to right of title
 
-3) restyle task blocks as per wireframe
+4) restyle task blocks as per wireframe
+  a) vacancy blocks still to do
 
-4) Add Capabilities
+5) Add Capabilities
 
-5) DB back end server
+6) DB back end server
+  a) edit tab above users and tasks

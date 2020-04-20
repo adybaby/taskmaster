@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { TaskResult } from './TaskResult';
 import { getVisibleTasks } from '../../redux/selectors/TaskListSelector';
-import { styles } from '../../styles/Styles';
+import { styles, typographyVariant } from '../../styles/Styles';
 
 const useStyles = makeStyles(styles);
+const variant = typographyVariant.taskList;
 
 export const TaskList = () => {
   const classes = useStyles();
@@ -14,9 +15,9 @@ export const TaskList = () => {
 
   return (
     <div className={classes.fullWidthContent}>
-      <Typography variant="subtitle1">{tasks.length} tasks</Typography>
+      <Typography variant={variant.taskList}>{tasks.length} tasks</Typography>
       {tasks.map((task) => (
-        <div key={task.id} className={classes.taskResult}>
+        <div key={task.id} className={classes.taskListEntry}>
           <TaskResult task={task} />
         </div>
       ))}

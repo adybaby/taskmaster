@@ -6,23 +6,26 @@ import { SelectControl } from './SelectControl';
 export const ChartSelectFilter = ({ filterControl, handleFilterSelected }) => {
   const dispatch = useDispatch();
 
-  const handleOptionSelected = (optionId) => {
-    dispatch(setChartFilterControl({ id: filterControl.id, selectedId: optionId }));
+  const handleOptionSelected = (selectedId) => {
+    dispatch(setChartFilterControl({ id: filterControl.id, selectedId }));
     if (typeof handleFilterSelected !== 'undefined') {
-      handleFilterSelected(optionId);
+      handleFilterSelected(selectedId);
     }
   };
 
-  const handleDateRangeSelected = (optionId, from, to) => {
+  const handleDateRangeSelected = (selectedId, from, to) => {
+    const options = [...filterControl.options];
+    options.find((option) => option.id === selectedId).params = { from, to };
+
     dispatch(
       setChartFilterControl({
         id: filterControl.id,
-        selectedId: optionId,
-        params: { from, to },
+        selectedId,
+        options,
       })
     );
     if (typeof handleFilterSelected !== 'undefined') {
-      handleFilterSelected(optionId);
+      handleFilterSelected(selectedId);
     }
   };
 
@@ -31,7 +34,6 @@ export const ChartSelectFilter = ({ filterControl, handleFilterSelected }) => {
       control={filterControl}
       handleOptionSelected={handleOptionSelected}
       handleDateRangeSelected={handleDateRangeSelected}
-      yearOnly={true}
     />
   );
 };

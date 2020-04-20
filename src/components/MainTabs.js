@@ -2,15 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLightbulb, faMap } from '@fortawesome/free-regular-svg-icons';
-import {
-  faSearch,
-  faBullseye,
-  faCodeBranch,
-  faChartBar,
-  faFilter,
-} from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import ToggleButton from '@material-ui/lab/ToggleButton';
@@ -29,6 +20,7 @@ import { MapPanel } from './maps/MapPanel';
 import { ChartPanel } from './charts/ChartPanel';
 import { TaskList } from './browse/TaskList';
 import { getCurrentFilters } from './filters/FilterControls';
+import * as ICONS from '../Icons';
 
 const useStyles = makeStyles(styles);
 
@@ -128,19 +120,17 @@ export const MainTabs = () => {
       component={Link}
       to={`/${URLS.BROWSE}/${tab.url}`}
       label={
-        <div>
-          <FontAwesomeIcon icon={icon} className={classes.tabIcon} />
+        <div className={classes.tabLabel}>
+          {icon}
           <span className={classes.hidingLabel}>{tab.label}</span>
         </div>
       }
     />
   );
 
-  const filterIconColorProps =
+  const filterActive =
     (isATaskFilterActive(taskListFilterControls, tabField.taskType) && tabField !== tabs.charts) ||
-    (isAChartFilterActive(chartFilterControls) && tabField === tabs.charts)
-      ? { style: { color: 'red' } }
-      : {};
+    (isAChartFilterActive(chartFilterControls) && tabField === tabs.charts);
 
   const filterButton = () => (
     <ToggleButton
@@ -150,10 +140,12 @@ export const MainTabs = () => {
       onClick={handleFilterToggle}
       selected={filtersVisible}
     >
-      <FontAwesomeIcon {...filterIconColorProps} icon={faFilter} size="sm" />{' '}
-      <span {...filterIconColorProps} className={classes.hidingLabel}>
-        Filters
-      </span>
+      <div className={classes.tabLabel}>
+        <span style={filterActive ? { color: 'red' } : undefined}>
+          {ICONS.FILTER}
+          <span className={classes.hidingLabel}>Filters{filterActive ? `\u00A0ON` : ``}</span>
+        </span>
+      </div>
     </ToggleButton>
   );
 
@@ -187,12 +179,12 @@ export const MainTabs = () => {
     <>
       <div className={classes.mainTabBar}>
         <Tabs value={tabField.id} indicatorColor="primary">
-          {createTab(tabs.all, faSearch)}
-          {createTab(tabs.drivers, faBullseye)}
-          {createTab(tabs.enablers, faCodeBranch)}
-          {createTab(tabs.initiatives, faLightbulb)}
-          {createTab(tabs.map, faMap)}
-          {createTab(tabs.charts, faChartBar)}
+          {createTab(tabs.all, ICONS.ALL_TAB)}
+          {createTab(tabs.drivers, ICONS.DRIVER)}
+          {createTab(tabs.enablers, ICONS.ENABLER)}
+          {createTab(tabs.initiatives, ICONS.INITIATIVE)}
+          {createTab(tabs.map, ICONS.MAP)}
+          {createTab(tabs.charts, ICONS.CHARTS)}
         </Tabs>
         {showFilterButton ? filterButton() : null}
       </div>

@@ -1,20 +1,24 @@
 export const FIELDS = {
   NECESSITY: {
-    ESSENTIAL: { id: 'ESSENTIAL', label: 'Essential', key: 'E' },
-    DESIRABLE: { id: 'DESIRABLE', label: 'Desirable', key: 'D' },
+    ESSENTIAL: { id: 'ESSENTIAL', label: 'Essential' },
+    DESIRABLE: { id: 'DESIRABLE', label: 'Desirable' },
   },
   STATUS: {
-    VACANT: { id: 'VACANT', label: 'Vacant', key: 'V' },
-    FILLED: { id: 'FILLED', label: 'Filled', key: 'F' },
-    PARTIAL: { id: 'PARTIAL', label: 'Partially Filled', key: 'P' },
+    OPEN: { id: 'OPEN', label: 'Open' },
+    CLOSED: { id: 'CLOSED', label: 'Closed' },
+  },
+  INTEREST_STATUS: {
+    NOT_REVIEWED: { id: 'NOT_REVIEWED', label: 'Not Reviewed' },
+    ACCEPTED: { id: 'ACCEPTED', label: 'Accepted' },
+    TENTATIVE: { id: 'TENTATIVE', label: 'Tentative' },
+    REJECTED: { id: 'REJECTED', label: 'Rejected' },
   },
   ROLE: {
-    FULL_TIME: { id: 'FULL_TIME', label: 'as team member', key: 'F' },
-    CONSULTANCY: { id: 'CONSULTANCY', label: 'for consultancy', key: 'C' },
-    MENTORING: { id: 'MENTORING', label: 'for mentoring', key: 'M' },
-    USER: { id: 'USER', label: 'for user guidance', key: 'U' },
+    FULL_TIME: { id: 'FULL_TIME', label: 'as team member' },
+    CONSULTANCY: { id: 'CONSULTANCY', label: 'for consultancy' },
+    MENTORING: { id: 'MENTORING', label: 'for mentoring' },
+    USER: { id: 'USER', label: 'for user guidance' },
   },
-  AVAILABILITY: { ANY_DATE: { id: 'ANY_DATE', label: 'Flexible on dates', key: 'A' } },
 };
 
 export const decodeField = (field, key) =>

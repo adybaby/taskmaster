@@ -2,11 +2,17 @@
 /* eslint-disable no-nested-ternary */
 import clsx from 'clsx';
 import format from 'date-fns/format';
-import { isSameDay, isBefore, isAfter, isValid } from 'date-fns';
 import React, { useEffect, useState } from 'react';
 import { DatePicker as MuiDatePicker } from '@material-ui/pickers';
 import { createStyles } from '@material-ui/core/styles';
 import { IconButton, withStyles } from '@material-ui/core';
+import {
+  equals,
+  beforeOrE,
+  afterOrE,
+  parseGbDateString,
+  isValidDateString,
+} from '../../../util/Dates';
 
 const styles = createStyles((theme) => ({
   day: {
@@ -40,33 +46,17 @@ const GbClearableDatePicker = (props) => {
         typeof value !== 'undefined' &&
         value !== null &&
         value !== '' &&
-        isValid(new Date(value))
+        isValidDateString(value)
       ) {
-        const delim = value.includes('/')
-          ? /\//g
-          : value.includes('-')
-          ? '-'
-          : value.includes(' ')
-          ? ' '
-          : null;
-        if (delim !== null) {
-          const parts = value.split(delim);
-          if (parts.length === 3 && !isNaN(parts[1])) {
-            setIntVal(new Date(parts[2], parts[1] - 1, parts[0]));
-          } else {
-            setIntVal(new Date(value));
-          }
-        } else {
-          setIntVal(new Date(value));
-        }
+        setIntVal(parseGbDateString(value));
       }
     }
   }, [value, isSynced]);
 
   const renderDay = (date, selectedDate, dayInCurrentMonth) => {
-    const isSame = isSameDay(date, selectedDate);
-    const beforeMin = isBefore(date, new Date(minDate));
-    const afterMax = isAfter(date, new Date(maxDate));
+    const isSame = equals(date, selectedDate);
+    const beforeMin = beforeOrE(date, new Date(minDate));
+    const afterMax = afterOrE(date, new Date(maxDate));
     const emptyValue = value === null || value === '';
 
     const wrapperClassName = clsx({
