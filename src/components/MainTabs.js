@@ -69,7 +69,8 @@ export const MainTabs = () => {
   const classes = useStyles();
 
   const url = useParams().id;
-  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [filterBarVisible, setFilterBarVisible] = useState(false);
+  const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
   const [tabField, setTabField] = useState(DEFAULT_TAB);
   const taskListFilterControls = useSelector((state) => state.taskListfilterControls);
   const chartFilterControls = useSelector((state) => state.chartFilterControls);
@@ -94,14 +95,6 @@ export const MainTabs = () => {
     }
   }, [dispatch, tabFromUrl, tabField, setTabField]);
 
-  const handleFilterToggle = () => {
-    setFiltersVisible(!filtersVisible);
-  };
-
-  const handleChartFilterSelected = () => {
-    setFiltersVisible(false);
-  };
-
   const getCurrentPanel = () => {
     switch (tabField) {
       case tabs.map:
@@ -119,6 +112,7 @@ export const MainTabs = () => {
       className={classes.tab}
       component={Link}
       to={`/${URLS.BROWSE}/${tab.url}`}
+      disableFocusRipple={true}
       label={
         <div className={classes.tabLabel}>
           {icon}
@@ -132,43 +126,67 @@ export const MainTabs = () => {
     (isATaskFilterActive(taskListFilterControls, tabField.taskType) && tabField !== tabs.charts) ||
     (isAChartFilterActive(chartFilterControls) && tabField === tabs.charts);
 
-  const filterButton = () => (
+  const filterBarButton = (
     <ToggleButton
-      value="showFilterBarButton"
+      value="filterBarButton"
       variant="text"
-      className={classes.filterButton}
-      onClick={handleFilterToggle}
-      selected={filtersVisible}
+      className={classes.filterBarButton}
+      onClick={() => setFilterBarVisible(!filterBarVisible)}
+      selected={filterBarVisible}
+      disableFocusRipple={true}
     >
       <div className={classes.tabLabel}>
         <span style={filterActive ? { color: 'red' } : undefined}>
           {ICONS.FILTER}
-          <span className={classes.hidingLabel}>Filters{filterActive ? `\u00A0ON` : ``}</span>
+          {`\u00A0`}Filters{filterActive ? `\u00A0ON` : ``}
         </span>
       </div>
     </ToggleButton>
+  );
+
+  const filterDrawerButton = (
+    <Button
+      value="filterDrawerButton"
+      variant="text"
+      className={classes.filterDrawerButton}
+      onClick={() => setFilterDrawerVisible(!filterDrawerVisible)}
+      disableFocusRipple={true}
+    >
+      <div className={classes.tabLabel}>
+        <span style={filterActive ? { color: 'red' } : undefined}>{ICONS.FILTER}</span>
+      </div>
+    </Button>
+  );
+
+  const filterBar = (
+    <Collapse
+      className={classes.filterBarContainer}
+      in={filterBarVisible}
+      timeout="auto"
+      unmountOnExit
+    >
+      <div className={classes.filterBar}>
+        {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls)}
+      </div>
+    </Collapse>
   );
 
   const filterDrawer = (
     <Drawer
       className={classes.filterDrawerContainer}
       anchor="right"
-      open={filtersVisible}
-      onClose={handleFilterToggle}
+      open={filterDrawerVisible}
+      onClose={() => setFilterDrawerVisible(false)}
     >
       <div className={classes.filterDrawerBody}>
         <List>
-          {getCurrentFilters(
-            tabField,
-            tabs,
-            taskListFilterControls,
-            chartFilterControls,
-            handleChartFilterSelected
+          {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls, () =>
+            setFilterDrawerVisible(false)
           )}
         </List>
       </div>
       <div className={classes.drawerControls}>
-        <Button color="primary" onClick={handleFilterToggle}>
+        <Button color="primary" onClick={() => setFilterDrawerVisible(false)}>
           Close
         </Button>
       </div>
@@ -186,21 +204,16 @@ export const MainTabs = () => {
           {createTab(tabs.map, ICONS.MAP)}
           {createTab(tabs.charts, ICONS.CHARTS)}
         </Tabs>
-        {showFilterButton ? filterButton() : null}
+        {showFilterButton ? (
+          <>
+            {filterBarButton}
+            {filterDrawerButton}
+          </>
+        ) : null}
       </div>
-
       {showFilterButton ? (
         <>
-          <Collapse
-            className={classes.filterBarContainer}
-            in={filtersVisible}
-            timeout="auto"
-            unmountOnExit
-          >
-            <div className={classes.filterBar}>
-              {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls)}
-            </div>
-          </Collapse>
+          {filterBar}
           {filterDrawer}
         </>
       ) : null}

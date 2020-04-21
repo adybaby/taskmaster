@@ -1,20 +1,15 @@
-1) fix drawer
- drawer is blocking scrollbar
- buttons are still active because drawer is open
- change to mui drawer
+1) get css transition for at a glance to work
 
-2) get css transition for at a glance to work
-
-3) Charts:
-  a) add caption to chart for under title (negative is shortfall)
+2) Charts:
+  a) bug: chart range goes one over selected filter range
   b) improve charts to account for "interest" in vacancies/signups
   c) Add section under stacked title to show selected resources and abilty to change them.
   d) Add download data button to right of title
 
-4) restyle task blocks as per wireframe
+3) restyle task blocks as per wireframe
   a) vacancy blocks still to do
 
-5) Add Capabilities
+4) Add Capabilities
 
-6) DB back end server
+5) DB back end server
   a) edit tab above users and tasks

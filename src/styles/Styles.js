@@ -46,6 +46,7 @@ export const typographyVariant = {
   chart: {
     title: 'body1',
     body: 'body2',
+    info: 'caption',
   },
   inspector: {
     title: 'subtitle1',
@@ -62,7 +63,32 @@ export const typographyVariant = {
   },
 };
 
+// viewport scaling
+const maxSmall = 715;
+const maxMedium = 1200;
+
 export const theme = createMuiTheme({
+  breakpoints: {
+    values: {
+      sm: maxSmall,
+      md: maxMedium,
+    },
+    // MUI breakpoints are confusing AF.
+    // For example, down(xs) does not mean "max-width:xs", it means "max-width:s"
+    // (down from the max *range* of xs, where xs is between xs and s).
+    // For that reason I have overriden the methods for up, down, and between in the
+    // theme so that they make sense (i.e. down(sm) means max-width:sm)
+    get down() {
+      return (key) => `@media (max-width:${this.values[key] - 0.5}px)`;
+    },
+    get up() {
+      return (key) => `@media (min-width:${this.values[key] + 0.5}px)`;
+    },
+    get between() {
+      return (keyA, keyB) =>
+        `@media (min-width:${this.values[keyA]}px) and (max-width:${this.values[keyB] - 0.5}px)`;
+    },
+  },
   typography: {
     fontFamily: [
       '-apple-system',
@@ -103,16 +129,14 @@ export const theme = createMuiTheme({
   },
 });
 
-// viewport scaling
-const maxMedium = 900;
-const maxSmall = 715;
-const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall}px)`;
-const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${maxMedium}px)`;
-const mediumOrLargeVp = `@media only screen and (min-width: ${maxSmall + 1}px)`;
-const largeVp = `@media only screen and (min-width: ${maxMedium + 1}px)`;
-const shrinkButton = {
-  [largeVp]: { minWidth: 120 },
-  [mediumVp]: { minWidth: 80 },
+const smallVp = theme.breakpoints.down('sm');
+const mediumVp = theme.breakpoints.between('sm', 'md');
+const mediumOrLargeVp = theme.breakpoints.up('sm');
+const largeVp = theme.breakpoints.up('lg');
+
+const scaledWidth = {
+  [largeVp]: { minWidth: 200 },
+  [mediumVp]: { minWidth: 90 },
   [smallVp]: { minWidth: 0 },
 };
 
@@ -180,7 +204,7 @@ export const styles = () => ({
     zIndex: 1,
   },
   tab: {
-    ...shrinkButton,
+    ...scaledWidth,
     '&:hover': {
       color: tabHighlightColor,
       opacity: 1,
@@ -190,8 +214,13 @@ export const styles = () => ({
     display: 'flex',
     alignItems: 'center',
   },
-  filterButton: {
-    ...shrinkButton,
+  appBarButton: {
+    minWidth: '0px',
+  },
+  filterBarButton: {
+    [smallVp]: {
+      display: 'none',
+    },
     '&&': {
       borderStyle: 'none',
       color: 'dimGray',
@@ -204,8 +233,16 @@ export const styles = () => ({
       color: theme.palette.primary.main,
     },
   },
-  appBarButton: {
+  filterDrawerButton: {
+    [mediumOrLargeVp]: { display: 'none' },
     minWidth: '0px',
+    '&&': {
+      borderStyle: 'none',
+      color: 'dimGray',
+    },
+    '&:hover,&.Mui-selected&:hover': {
+      color: theme.palette.info.light,
+    },
   },
 
   // FilterBar
@@ -376,19 +413,12 @@ export const styles = () => ({
       display: 'none',
     },
     borderRight: `1px solid ${theme.palette.divider}`,
-    maxWidth: '180px',
-    flexGrow: '1',
-  },
-  inspectorSideBar: {
-    [smallVp]: {
-      display: 'none',
-    },
-    borderLeft: `1px solid ${theme.palette.divider}`,
+    minWidth: '100px',
     maxWidth: '180px',
     flexGrow: '1',
   },
   chartLayoutBody: {
-    flexGrow: '1',
+    flexGrow: '8',
   },
   chartDrawer: {
     [mediumOrLargeVp]: {
@@ -401,20 +431,35 @@ export const styles = () => ({
       display: 'none',
     },
     minWidth: 0,
+    paddingLeft: 0,
   },
-  chartHeader: {
+  chartHeadingContainer: {
     paddingLeft: theme.spacing(2),
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
+  chartHeading: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  chartInfo: {},
   continuousChartLegend: { padding: theme.spacing(3) },
   discreteChartLegend: {
     padding: theme.spacing(3),
     display: 'flex',
     flexWrap: 'wrap',
+  },
+  inspectorSideBar: {
+    [smallVp]: {
+      display: 'none',
+    },
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    minWidth: '100px',
+    maxWidth: '200px',
+    flexGrow: '1',
   },
   inspectorToolTip: {
     zIndex: 99999,

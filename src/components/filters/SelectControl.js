@@ -91,6 +91,7 @@ export const SelectControl = ({
         aria-describedby={popOverId}
         onClick={handleOpenFilterControlClick}
         endIcon={<FontAwesomeIcon icon={faCaretDown} />}
+        focusRipple={false}
         {...buttonProps}
       >
         {formatControlLabel()}

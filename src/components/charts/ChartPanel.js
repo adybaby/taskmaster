@@ -34,8 +34,8 @@ export const ChartPanel = () => {
   const chart = (width) => {
     const chartProps = {
       seriesSets: resourceSeriesSets,
-      onValueMouseOver: (dp, event) => {
-        setMousePosition({ x: event.event.clientX, y: event.event.clientY });
+      onValueMouseOver: (dp, { event }) => {
+        setMousePosition({ x: event.clientX, y: event.clientY });
         setDataPoint(dp);
       },
       onValueClick: (dp) => {
@@ -127,11 +127,16 @@ export const ChartPanel = () => {
       {inspectorPopUp}
       <div className={classes.chartMenuSideBar}>{chartMenuBody}</div>
       <div className={classes.chartLayoutBody}>
-        <div className={classes.chartHeader}>
-          {chartMenuDrawerButton}
-          <Typography variant={variant.title}>
-            <b>{selectedChart.chartTitle}</b>
-          </Typography>
+        <div className={classes.chartHeadingContainer}>
+          <div className={classes.chartHeading}>
+            {chartMenuDrawerButton}
+            <Typography variant={variant.title}>
+              <b>{selectedChart.chartTitle}</b>
+            </Typography>
+          </div>
+          <div className={classes.chartInfo}>
+            <Typography variant={variant.info}>{selectedChart.chartInfo}</Typography>
+          </div>
         </div>
         <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
       </div>
