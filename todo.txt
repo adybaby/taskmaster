@@ -6,9 +6,10 @@
 2) get css transition for at a glance to work
 
 3) Charts:
-  a) improve charts to account for "interest" in vacancies/signups
-  b) Add section under stacked title to show selected resources and abilty to change them.
-  c) Add download data button to right of title
+  a) add caption to chart for under title (negative is shortfall)
+  b) improve charts to account for "interest" in vacancies/signups
+  c) Add section under stacked title to show selected resources and abilty to change them.
+  d) Add download data button to right of title
 
 4) restyle task blocks as per wireframe
   a) vacancy blocks still to do

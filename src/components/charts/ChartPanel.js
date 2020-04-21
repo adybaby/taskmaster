@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
-import { styles } from '../../styles/Styles';
+import { styles, typographyVariant } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
 import '../../../node_modules/react-vis/dist/style.css';
 import { ChartMenuGroup } from './ChartMenuGroup';
@@ -17,6 +17,7 @@ const useStyles = makeStyles(styles);
 
 export const ChartPanel = () => {
   const classes = useStyles();
+  const variant = typographyVariant.chart;
   const resourceSeriesSets = useSelector(calculateResourceChartData);
   const [dataPoint, setDataPoint] = useState(null);
   const [selectedChart, setSelectedChart] = useState(chartGroups[0].charts[0]);
@@ -31,7 +32,7 @@ export const ChartPanel = () => {
   };
 
   const chart = (width) => {
-    const props = {
+    const chartProps = {
       seriesSets: resourceSeriesSets,
       onValueMouseOver: (dp, event) => {
         setMousePosition({ x: event.event.clientX, y: event.event.clientY });
@@ -47,7 +48,11 @@ export const ChartPanel = () => {
       width,
       dataPoint,
     };
-    return React.createElement(selectedChart.chart, { gantt: selectedChart.gantt, ...props }, null);
+    return React.createElement(
+      selectedChart.chart,
+      { gantt: selectedChart.gantt, ...chartProps },
+      null
+    );
   };
 
   const chartMenuBody = (
@@ -78,13 +83,15 @@ export const ChartPanel = () => {
   const inspectorSideBar = (
     <>
       <div className={classes.inspectorHeading}>
-        <Typography>
+        <Typography variant={variant.title}>
           <b>Inspector</b>
         </Typography>
       </div>
       {inspectorPanel === null ? (
         <div className={classes.inspectorBody}>
-          <Typography variant="body1">Click on a mark in the chart to inspect it.</Typography>
+          <Typography variant={variant.body}>
+            Click on a mark in the chart to inspect it.
+          </Typography>
         </div>
       ) : (
         inspectorPanel
@@ -122,7 +129,7 @@ export const ChartPanel = () => {
       <div className={classes.chartLayoutBody}>
         <div className={classes.chartHeader}>
           {chartMenuDrawerButton}
-          <Typography>
+          <Typography variant={variant.title}>
             <b>{selectedChart.chartTitle}</b>
           </Typography>
         </div>

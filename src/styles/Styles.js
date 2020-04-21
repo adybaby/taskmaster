@@ -1,18 +1,5 @@
 import { fade, createMuiTheme } from '@material-ui/core/styles';
 
-// viewport scaling
-const maxMedium = 900;
-const maxSmall = 715;
-const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall}px)`;
-const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${maxMedium}px)`;
-const mediumOrLargeVp = `@media only screen and (min-width: ${maxSmall + 1}px)`;
-const largeVp = `@media only screen and (min-width: ${maxMedium + 1}px)`;
-const shrinkButton = {
-  [largeVp]: { minWidth: 120 },
-  [mediumVp]: { minWidth: 80 },
-  [smallVp]: { minWidth: 0 },
-};
-
 // colours
 const aagBgColor = '#f2faff';
 const datePickerBgColor = '#f2f2f2';
@@ -115,6 +102,19 @@ export const theme = createMuiTheme({
     },
   },
 });
+
+// viewport scaling
+const maxMedium = 900;
+const maxSmall = 715;
+const smallVp = `@media only screen and (min-width: 0px) and (max-width: ${maxSmall}px)`;
+const mediumVp = `@media only screen and (min-width: ${maxSmall}px) and (max-width: ${maxMedium}px)`;
+const mediumOrLargeVp = `@media only screen and (min-width: ${maxSmall + 1}px)`;
+const largeVp = `@media only screen and (min-width: ${maxMedium + 1}px)`;
+const shrinkButton = {
+  [largeVp]: { minWidth: 120 },
+  [mediumVp]: { minWidth: 80 },
+  [smallVp]: { minWidth: 0 },
+};
 
 export const styles = () => ({
   // AppBar
