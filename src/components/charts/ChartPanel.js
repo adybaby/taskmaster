@@ -3,125 +3,69 @@ import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
 import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
-import { VacancyChart } from './VacancyChart';
-import { SignedUpChart } from './SignedUpChart';
-import { AvailabilityChart } from './AvailabilityChart';
-import { ActualAvailabilityChart } from './ActualAvailabilityChart';
-import { ExcessChart } from './ExcessChart';
-import { ShortfallChart } from './ShortfallChart';
 import { styles } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
 import '../../../node_modules/react-vis/dist/style.css';
+import { ChartMenuGroup } from './ChartMenuGroup';
+import { chartGroups } from './ChartGroups';
 
 const useStyles = makeStyles(styles);
 
 export const ChartPanel = () => {
   const classes = useStyles();
-  const [listIndex, setListIndex] = useState(1);
-  const [ganttFolderOpen, setGanttFolderOpen] = useState(true);
-  const [stackedFolderOpen, setStackedFolderOpen] = useState(true);
   const resourceSeriesSets = useSelector(calculateResourceChartData);
   const [dataPoint, setDataPoint] = useState(null);
+  const [selectedChart, setSelectedChart] = useState(chartGroups[0].charts[0]);
   const [inspectorPanel, setInspectorPanel] = useState(null);
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
   const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState(null);
 
-  const titles = [
-    'None',
-    'Vacancies',
-    'Stated Availability',
-    'Actual Availability',
-    'Signed Up',
-    'Shortfall',
-    'Vacancies',
-    'Stated Availability',
-    'Actual Availability',
-    'Signed Up',
-    'Shortfall',
-    'Excess',
-  ];
-
-  const handleListItemClick = (event, index) => {
-    setListIndex(index);
+  const handleChartMenuItemClicked = (chart) => {
+    setSelectedChart(chart);
     setChartSelectDrawerVisible(false);
   };
 
-  const handleGanttFolderClicked = () => {
-    setGanttFolderOpen(!ganttFolderOpen);
+  const chart = (width) => {
+    const props = {
+      seriesSets: resourceSeriesSets,
+      onValueMouseOver: (dp, event) => {
+        setMousePosition({ x: event.event.clientX, y: event.event.clientY });
+        setDataPoint(dp);
+      },
+      onValueClick: (dp) => {
+        setInspectorPanel(dp.markPanel);
+        setInspectorDrawerVisible(true);
+      },
+      onValueMouseOut: () => {
+        setDataPoint(null);
+      },
+      width,
+      dataPoint,
+    };
+    return React.createElement(selectedChart.chart, { gantt: selectedChart.gantt, ...props }, null);
   };
 
-  const handleStackedFolderClicked = () => {
-    setStackedFolderOpen(!stackedFolderOpen);
-  };
-
-  const onValueMouseOver = (dp, event) => {
-    setMousePosition({ x: event.event.clientX, y: event.event.clientY });
-    setDataPoint(dp);
-  };
-  const onValueClick = (dp) => {
-    setInspectorPanel(dp.markPanel);
-    setInspectorDrawerVisible(true);
-  };
-
-  const onValueMouseOut = () => {
-    setDataPoint(null);
-  };
-
-  const navFolder = (label, handleClick, open) => (
-    <ListItem button onClick={handleClick}>
-      <ListItemText primary={<b>{label}</b>} />
-      {open ? <ExpandLess /> : <ExpandMore />}
-    </ListItem>
-  );
-
-  const navItem = (label, index) => (
-    <ListItem
-      button
-      key={index}
-      selected={listIndex === index}
-      onClick={(event) => handleListItemClick(event, index)}
-      className={classes.chartListItem}
-    >
-      <ListItemText primary={label} />
-    </ListItem>
-  );
-
-  const navItems = (first, last) => {
-    const list = [];
-    for (let index = first; index <= last; index++) {
-      list.push(navItem(titles[index], index));
-    }
-    return list;
-  };
-
-  const navMenu = (
+  const chartMenuBody = (
     <List component="nav" aria-label="charts list navigation">
-      {navFolder('Resources (Gantt)', handleGanttFolderClicked, ganttFolderOpen)}
-      <Collapse in={ganttFolderOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {navItems(1, 5)}
-        </List>
-      </Collapse>
-      {navFolder('Resources (Stacked)', handleStackedFolderClicked, stackedFolderOpen)}
-      <Collapse in={stackedFolderOpen} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          {navItems(6, 11)}
-        </List>
-      </Collapse>
+      {chartGroups.map((chartGroup, index) => (
+        <ChartMenuGroup
+          key={index}
+          title={chartGroup.groupTitle}
+          charts={chartGroup.charts}
+          handleChartMenuItemClicked={handleChartMenuItemClicked}
+          startOpen={chartGroup.startOpen}
+          selectedChart={selectedChart}
+        />
+      ))}
     </List>
   );
 
-  const hint =
+  const inspectorPopUp =
     dataPoint !== null && mousePosition !== null ? (
       <div
         style={{ left: mousePosition.x + 10, top: mousePosition.y + 10 }}
@@ -131,44 +75,7 @@ export const ChartPanel = () => {
       </div>
     ) : null;
 
-  const chart = (width) => {
-    const props = {
-      seriesSets: resourceSeriesSets,
-      onValueMouseOver,
-      onValueClick,
-      onValueMouseOut,
-      width,
-      dataPoint,
-    };
-    switch (listIndex) {
-      case 1:
-        return <VacancyChart gantt={true} {...props} />;
-      case 2:
-        return <AvailabilityChart gantt={true} {...props} />;
-      case 3:
-        return <ActualAvailabilityChart gantt={true} {...props} />;
-      case 4:
-        return <SignedUpChart gantt={true} {...props} />;
-      case 5:
-        return <ShortfallChart gantt={true} {...props} />;
-      case 6:
-        return <VacancyChart {...props} />;
-      case 7:
-        return <AvailabilityChart {...props} />;
-      case 8:
-        return <ActualAvailabilityChart {...props} />;
-      case 9:
-        return <SignedUpChart {...props} />;
-      case 10:
-        return <ShortfallChart {...props} />;
-      case 11:
-        return <ExcessChart {...props} />;
-      default:
-        return 'Error: Could not find selected chart.';
-    }
-  };
-
-  const inspector = (
+  const inspectorSideBar = (
     <>
       <div className={classes.inspectorHeading}>
         <Typography>
@@ -185,7 +92,7 @@ export const ChartPanel = () => {
     </>
   );
 
-  const drawer = (content, anchor, openProp, onClose, onClick) => (
+  const chartDrawer = (content, anchor, openProp, onClose, onClick) => (
     <Drawer
       className={classes.chartDrawer}
       anchor={anchor}
@@ -202,7 +109,7 @@ export const ChartPanel = () => {
     </Drawer>
   );
 
-  const chartSelectButton = (
+  const chartMenuDrawerButton = (
     <Button className={classes.chartSelectButton} onClick={() => setChartSelectDrawerVisible(true)}>
       <FontAwesomeIcon icon={faBars} />
     </Button>
@@ -210,21 +117,23 @@ export const ChartPanel = () => {
 
   return (
     <div className={classes.chartsLayoutContainer}>
-      {hint}
-      <div className={classes.chartMenuSideBar}>{navMenu}</div>
+      {inspectorPopUp}
+      <div className={classes.chartMenuSideBar}>{chartMenuBody}</div>
       <div className={classes.chartLayoutBody}>
         <div className={classes.chartHeader}>
-          {chartSelectButton}
+          {chartMenuDrawerButton}
           <Typography>
-            <b>{titles[listIndex]}</b>
+            <b>{selectedChart.chartTitle}</b>
           </Typography>
         </div>
         <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
       </div>
-      <div className={classes.inspectorSideBar}>{inspector}</div>
-      {drawer(navMenu, 'left', chartSelectDrawerVisible, () => setChartSelectDrawerVisible(false))}
-      {drawer(
-        inspector,
+      <div className={classes.inspectorSideBar}>{inspectorSideBar}</div>
+      {chartDrawer(chartMenuBody, 'left', chartSelectDrawerVisible, () =>
+        setChartSelectDrawerVisible(false)
+      )}
+      {chartDrawer(
+        inspectorPanel,
         'right',
         inspectorDrawerVisible,
         () => setInspectorDrawerVisible(false),
