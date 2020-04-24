@@ -6,13 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { DatePicker as MuiDatePicker } from '@material-ui/pickers';
 import { createStyles } from '@material-ui/core/styles';
 import { IconButton, withStyles } from '@material-ui/core';
-import {
-  equals,
-  beforeOrE,
-  afterOrE,
-  parseGbDateString,
-  isValidDateString,
-} from '../../../util/Dates';
+import { equals, before, after, ukToUs, isValidDateString } from '../../../util/Dates';
 
 const styles = createStyles((theme) => ({
   day: {
@@ -48,15 +42,15 @@ const GbClearableDatePicker = (props) => {
         value !== '' &&
         isValidDateString(value)
       ) {
-        setIntVal(parseGbDateString(value));
+        setIntVal(new Date(ukToUs(value)));
       }
     }
   }, [value, isSynced]);
 
   const renderDay = (date, selectedDate, dayInCurrentMonth) => {
     const isSame = equals(date, selectedDate);
-    const beforeMin = beforeOrE(date, new Date(minDate));
-    const afterMax = afterOrE(date, new Date(maxDate));
+    const beforeMin = before(date, minDate);
+    const afterMax = after(date, maxDate);
     const emptyValue = value === null || value === '';
 
     const wrapperClassName = clsx({

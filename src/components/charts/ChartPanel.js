@@ -1,19 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import Collapse from '@material-ui/core/Collapse';
 import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
-import { Drawer, Button, Typography } from '@material-ui/core';
+import { Drawer, Button, Typography, Hidden } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
 import { styles, typographyVariant } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
+import { chartGroups } from '../../data/charts/ResourceChartDefinitions';
+import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
-import { ChartMenuGroup } from './ChartMenuGroup';
-import { chartGroups } from './ChartGroups';
 
 const useStyles = makeStyles(styles);
+
+const ChartMenuGroup = ({
+  chartGroup: { label, startOpen, charts },
+  handleChartMenuItemClicked,
+  selectedChart,
+}) => {
+  const classes = useStyles();
+  const [folderOpen, setFolderOpen] = useState(startOpen);
+
+  const onFolderClick = () => {
+    setFolderOpen(!folderOpen);
+  };
+
+  return (
+    <>
+      <ListItem className={classes.chartMenuFolder} button onClick={onFolderClick}>
+        <ListItemText primary={<b>{label}</b>} />
+        {folderOpen ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+
+      <Collapse in={folderOpen} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          {charts.map((chart, index) => (
+            <ListItem
+              button
+              key={index}
+              selected={chart === selectedChart}
+              onClick={() => handleChartMenuItemClicked(chart)}
+              className={classes.chartListItem}
+            >
+              <ListItemText primary={chart.title} />
+            </ListItem>
+          ))}
+        </List>
+      </Collapse>
+    </>
+  );
+};
 
 export const ChartPanel = () => {
   const classes = useStyles();
@@ -24,124 +67,119 @@ export const ChartPanel = () => {
   const [inspectorPanel, setInspectorPanel] = useState(null);
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
   const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
-  const [mousePosition, setMousePosition] = useState(null);
+  const [mousePosition, setMousePosition] = useState(0);
+  const [winWidth, setWinWidth] = useState(window.innerWidth);
+  const [winHeight, setWinHeight] = useState(window.innerHeight);
+
+  const updateWindowDimensions = () => {
+    setWinHeight(window.innerHeight);
+    setWinWidth(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', updateWindowDimensions);
+  }, []);
+
+  useEffect(
+    () => () => {
+      window.removeEventListener('resize', updateWindowDimensions);
+    },
+    []
+  );
 
   const handleChartMenuItemClicked = (chart) => {
     setSelectedChart(chart);
     setChartSelectDrawerVisible(false);
   };
 
-  const chart = (width) => {
-    const chartProps = {
-      seriesSets: resourceSeriesSets,
-      onValueMouseOver: (dp, { event }) => {
+  const resourceChart = (width) => (
+    <ResourceBarChart
+      chart={selectedChart}
+      seriesSet={resourceSeriesSets[selectedChart.seriesKey]}
+      skillsAndColors={resourceSeriesSets.skillsAndColors}
+      refs={resourceSeriesSets.refs}
+      width={width}
+      dataPoint
+      onValueMouseOver={(dp, { event }) => {
         setMousePosition({ x: event.clientX, y: event.clientY });
         setDataPoint(dp);
-      },
-      onValueClick: (dp) => {
+      }}
+      onValueClick={(dp) => {
         setInspectorPanel(dp.markPanel);
         setInspectorDrawerVisible(true);
-      },
-      onValueMouseOut: () => {
+      }}
+      onValueMouseOut={() => {
         setDataPoint(null);
-      },
-      width,
-      dataPoint,
-    };
-    return React.createElement(
-      selectedChart.chart,
-      { gantt: selectedChart.gantt, ...chartProps },
-      null
-    );
-  };
+      }}
+    />
+  );
 
-  const chartMenuBody = (
+  const chartMenuBody = () => (
     <List component="nav" aria-label="charts list navigation">
       {chartGroups.map((chartGroup, index) => (
         <ChartMenuGroup
           key={index}
-          title={chartGroup.groupTitle}
-          charts={chartGroup.charts}
+          chartGroup={chartGroup}
           handleChartMenuItemClicked={handleChartMenuItemClicked}
-          startOpen={chartGroup.startOpen}
           selectedChart={selectedChart}
         />
       ))}
     </List>
   );
 
-  const inspectorPopUp =
-    dataPoint !== null && mousePosition !== null ? (
+  const inspectorPopUp = () => {
+    if (dataPoint === null || mousePosition === null) return null;
+
+    const horizontalPos =
+      mousePosition.x < winWidth / 2
+        ? { left: mousePosition.x + 30 }
+        : { right: winWidth - mousePosition.x + 10 };
+    const verticalPos =
+      mousePosition.y < winHeight / 2
+        ? { top: mousePosition.y + 30 }
+        : { bottom: winHeight - mousePosition.y + 10 };
+
+    return (
       <div
-        style={{ left: mousePosition.x + 10, top: mousePosition.y + 10 }}
         className={classes.inspectorToolTip}
+        style={{
+          ...horizontalPos,
+          ...verticalPos,
+        }}
       >
         <Paper>{dataPoint.markPanel}</Paper>
       </div>
-    ) : null;
-
-  const inspectorSideBar = (
-    <>
-      <div className={classes.inspectorHeading}>
-        <Typography variant={variant.title}>
-          <b>Inspector</b>
-        </Typography>
-      </div>
-      {inspectorPanel === null ? (
-        <div className={classes.inspectorBody}>
-          <Typography variant={variant.body}>
-            Click on a mark in the chart to inspect it.
-          </Typography>
-        </div>
-      ) : (
-        inspectorPanel
-      )}
-    </>
-  );
+    );
+  };
 
   const chartDrawer = (content, anchor, openProp, onClose, onClick) => (
-    <Drawer
-      className={classes.chartDrawer}
-      anchor={anchor}
-      open={openProp}
-      onClose={onClose}
-      onClick={onClick}
-    >
-      <div className={classes.chartMenu}>{content}</div>
-      <div className={classes.drawerControls}>
-        <Button color="primary" onClick={onClose}>
-          Close
-        </Button>
+    <Drawer variant="temporary" anchor={anchor} open={openProp} onClose={onClose} onClick={onClick}>
+      <div className={classes.drawerBody}>
+        {content}
+        <div className={classes.drawerControls}>
+          <Button
+            color="primary"
+            onClick={onClose}
+            fullWidth
+            classes={{ root: classes.closeDrawerButton }}
+          >
+            Close
+          </Button>
+        </div>
       </div>
     </Drawer>
   );
 
-  const chartMenuDrawerButton = (
+  const chartMenuDrawerButton = () => (
     <Button className={classes.chartSelectButton} onClick={() => setChartSelectDrawerVisible(true)}>
       <FontAwesomeIcon icon={faBars} />
     </Button>
   );
 
-  return (
-    <div className={classes.chartsLayoutContainer}>
-      {inspectorPopUp}
-      <div className={classes.chartMenuSideBar}>{chartMenuBody}</div>
-      <div className={classes.chartLayoutBody}>
-        <div className={classes.chartHeadingContainer}>
-          <div className={classes.chartHeading}>
-            {chartMenuDrawerButton}
-            <Typography variant={variant.title}>
-              <b>{selectedChart.chartTitle}</b>
-            </Typography>
-          </div>
-          <div className={classes.chartInfo}>
-            <Typography variant={variant.info}>{selectedChart.chartInfo}</Typography>
-          </div>
-        </div>
-        <AutoSizer>{({ width }) => <div style={{ width }}>{chart(width)}</div>}</AutoSizer>
-      </div>
-      <div className={classes.inspectorSideBar}>{inspectorSideBar}</div>
-      {chartDrawer(chartMenuBody, 'left', chartSelectDrawerVisible, () =>
+  const nonLayoutComponents = () => (
+    <>
+      <Hidden xsDown>{inspectorPopUp()}</Hidden>
+      {chartDrawer(chartMenuBody(), 'left', chartSelectDrawerVisible, () =>
         setChartSelectDrawerVisible(false)
       )}
       {chartDrawer(
@@ -151,6 +189,31 @@ export const ChartPanel = () => {
         () => setInspectorDrawerVisible(false),
         () => setInspectorDrawerVisible(false)
       )}
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {nonLayoutComponents()}
+      <div className={classes.chartsLayoutContainer}>
+        <div className={classes.chartMenuSideBar}>{chartMenuBody()}</div>
+        <div className={classes.chartLayoutBody}>
+          <div className={classes.chartHeadingContainer}>
+            <div className={classes.chartHeading}>
+              {chartMenuDrawerButton()}
+              <Typography variant={variant.title}>
+                <b>{selectedChart.title}</b>
+              </Typography>
+            </div>
+            <div className={classes.chartInfo}>
+              <Typography variant={variant.info}>{selectedChart.info}</Typography>
+            </div>
+          </div>
+          <AutoSizer>
+            {({ width }) => <div style={{ width }}>{resourceChart(width)}</div>}
+          </AutoSizer>
+        </div>
+      </div>
+    </>
   );
 };

@@ -14,6 +14,7 @@ const seriesSets = {
   actualAvailability: null,
   vacancies: null,
   shortfall: null,
+  excess: null,
   refs: null,
   skillsAndColors: null,
 };
@@ -58,6 +59,7 @@ const createSeriesTemplates = () => {
   seriesSets.actualAvailability = seriesTemplate(false);
   seriesSets.vacancies = seriesTemplate(false);
   seriesSets.shortfall = seriesTemplate(false);
+  seriesSets.excess = seriesTemplate(false);
   seriesSets.refs = seriesTemplate(true);
 };
 
@@ -140,9 +142,14 @@ const calcActualAvailabilityAndShortFall = () => {
       const actualAvailabilityDayData = seriesSets.actualAvailability[skillIndex].data[dayIndex];
       const vacanciesDayData = seriesSets.vacancies[skillIndex].data[dayIndex];
       const shortfallDayData = seriesSets.shortfall[skillIndex].data[dayIndex];
+      const excessDayData = seriesSets.excess[skillIndex].data[dayIndex];
 
       actualAvailabilityDayData.y = availabilityDayData.y - signedUpDayData.y;
-      shortfallDayData.y = vacanciesDayData.y - availabilityDayData.y;
+
+      const shortFall = vacanciesDayData.y - availabilityDayData.y;
+
+      shortfallDayData.y = shortFall <= 0 ? 0 : shortFall;
+      excessDayData.y = shortFall >= 0 ? 0 : Math.abs(shortFall);
     }
   }
 };
@@ -169,14 +176,6 @@ const trimAndFilterSeriesSet = (seriesSet, filterDateRange) => {
   });
 };
 
-const trimAndFilterSeriesSets = (filterDateRange) => {
-  trimAndFilterSeriesSet(seriesSets.availability, filterDateRange);
-  trimAndFilterSeriesSet(seriesSets.signedUp, filterDateRange);
-  trimAndFilterSeriesSet(seriesSets.actualAvailability, filterDateRange);
-  trimAndFilterSeriesSet(seriesSets.vacancies, filterDateRange);
-  trimAndFilterSeriesSet(seriesSets.shortfall, filterDateRange);
-};
-
 const minMax = (seriesSet) => {
   let min = seriesSet
     .map((series) =>
@@ -194,12 +193,19 @@ const minMax = (seriesSet) => {
   seriesSet.max = max;
 };
 
-const calcMinMaxYValues = () => {
+const cleanSeriesSets = (filterDateRange) => {
+  trimAndFilterSeriesSet(seriesSets.availability, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.signedUp, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.actualAvailability, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.vacancies, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.shortfall, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.excess, filterDateRange);
   minMax(seriesSets.signedUp);
   minMax(seriesSets.availability);
   minMax(seriesSets.vacancies);
   minMax(seriesSets.actualAvailability);
   minMax(seriesSets.shortfall);
+  minMax(seriesSets.excess);
 };
 
 export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn, filterDateRange) => {
@@ -211,7 +217,6 @@ export const buildChartData = (tasksIn, usersIn, dateRangeIn, skillsIn, filterDa
   calcAvailability();
   calcVacancies();
   calcActualAvailabilityAndShortFall();
-  trimAndFilterSeriesSets(filterDateRange);
-  calcMinMaxYValues();
+  cleanSeriesSets(filterDateRange);
   return seriesSets;
 };

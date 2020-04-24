@@ -1,7 +1,7 @@
 1) get css transition for at a glance to work
 
 2) Charts:
-  a) bug: chart range goes one over selected filter range
+  a) reduce legend values down to values shown on chart
   b) improve charts to account for "interest" in vacancies/signups
   c) Add section under stacked title to show selected resources and abilty to change them.
   d) Add download data button to right of title

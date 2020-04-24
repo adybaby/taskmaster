@@ -8,7 +8,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@material-ui/core';
 import { styles } from '../../styles/Styles';
-import { formatDate } from '../../util/Dates';
+import { formatDateRange } from '../../util/Dates';
 import { DatesDialog } from './datesdialog/DateDialog';
 
 const useStyles = makeStyles(styles);
@@ -52,27 +52,16 @@ export const SelectControl = ({
     }
   };
 
-  const handleCloseDates = (from, to) => {
+  const handleCloseDatesDialog = (range) => {
     setOpenDates(false);
-    if (!(from === null && to === null)) {
-      handleDateRangeSelected(datePickerOptionId, from, to);
+    if (range !== null) {
+      handleDateRangeSelected(datePickerOptionId, range.from, range.to);
     }
     setAnchorEl(null);
   };
 
-  const formatControlLabel = () => {
-    if (!selected.datePicker) {
-      return `${control.label} ${selected.label}`;
-    }
-
-    const toDate = formatDate(new Date(selected.params.to));
-    if (selected.params.from === null) return `${control.label} before ${toDate}`;
-
-    const fromDate = formatDate(new Date(selected.params.from));
-    if (selected.params.to === null) return `${control.label} after ${fromDate}`;
-
-    return `${control.label} between ${fromDate} and ${toDate}`;
-  };
+  const formatControlLabel = () =>
+    `${control.label} ${selected.datePicker ? formatDateRange(selected.params) : selected.label}`;
 
   const buttonProps = {};
   if (!control.dontHighlight && control.selectedId !== control.defaultId) {
@@ -131,8 +120,8 @@ export const SelectControl = ({
       </Popover>
       <DatesDialog
         open={openDates}
-        handleClose={handleCloseDates}
-        currentPickerTitle={control.label}
+        fieldLabel={control.label}
+        handleClose={handleCloseDatesDialog}
       />
     </div>
   );

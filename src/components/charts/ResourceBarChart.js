@@ -14,29 +14,30 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Inspector } from './Inspector';
 import { styles, typographyVariant, CHART_COLORS } from '../../styles/Styles';
+import { types } from '../../data/charts/ResourceChartDefinitions';
+
+const ONE_DAY = 86400000;
 
 const useStyles = makeStyles(styles);
 
 export const ResourceBarChart = ({
-  seriesSets,
-  seriesKey,
-  totalsTitle,
-  positive,
-  gantt,
-  onValueMouseOver,
-  onValueMouseOut,
-  onValueClick,
+  chart,
+  seriesSet,
+  skillsAndColors,
+  refs,
   width,
   dataPoint,
+  onValueMouseOver,
+  onValueClick,
+  onValueMouseOut,
 }) => {
   const classes = useStyles();
   const variant = typographyVariant.chart;
-  const seriesSet = seriesSets[seriesKey];
-  const skills = seriesSets.skillsAndColors.map((s) => s.title);
-  const { refs } = seriesSets;
+  const skills = skillsAndColors.map((skill) => skill.title);
+  const isGantt = chart.type === types.BAR_GANTT.id;
 
   const makeLegend = () =>
-    gantt ? (
+    isGantt ? (
       <div className={classes.continuousChartLegend}>
         <ContinuousColorLegend
           startColor={CHART_COLORS.MIN}
@@ -50,59 +51,60 @@ export const ResourceBarChart = ({
       <DiscreteColorLegend
         className={classes.discreteChartLegend}
         orientation="horizontal"
-        items={seriesSets.skillsAndColors}
+        items={skillsAndColors}
       />
     );
 
   const makeSeriesData = (series, skillsIndex) => {
-    const getStackedY = (y) => {
-      if (typeof positive === 'undefined') {
-        return y;
-      }
-      if (positive) {
-        return y <= 0 ? 0 : y;
-      }
-      return y > 0 ? 0 : Math.abs(y);
-    };
-
     return series.data.map((dataIn) => {
-      const y = gantt ? skillsIndex + 0.9 : getStackedY(dataIn.y);
+      const y = isGantt ? skillsIndex + 0.9 : dataIn.y;
       const data = {
-        x: dataIn.x,
+        x: dataIn.x + ONE_DAY - 1,
         y,
         markPanel: (
           <Inspector
             dayRefData={refs[skillsIndex].data.find((ref) => ref.x === dataIn.x)}
             skillTitle={series.label}
             total={dataIn.y}
-            totalsTitle={totalsTitle}
+            daySummary={chart.daySummary}
           />
         ),
       };
-      if (gantt)
+      if (isGantt) {
         Object.assign(data, {
           color:
             dataPoint !== null && dataPoint.x === dataIn.x && dataPoint.y === skillsIndex + 0.9
               ? -99
               : dataIn.y,
-          x0: dataIn.x + 86400000,
+          x0: dataIn.x,
           y0: skillsIndex + 0.1,
         });
-
+      }
       return data;
     });
   };
 
   const makeSeries = (series, skillsIndex) => {
+    let data = makeSeriesData(series, skillsIndex);
+    if (data.length === 0) return null;
+    if (data.length === 1 && !isGantt) {
+      // this to deal with a react-viz "feature" where time axis require >1 entries
+      data = [{ x: data[0].x - ONE_DAY, y: 0 }, data[0], { x: data[0].x + ONE_DAY, y: 0 }];
+    }
+
     const props = {
       key: skillsIndex,
-      data: makeSeriesData(series, skillsIndex),
+      data,
       onValueMouseOver,
       onValueMouseOut,
       onValueClick,
     };
-    if (!gantt) Object.assign(props, { color: series.color });
-    return gantt ? <VerticalRectSeries {...props} /> : <VerticalBarSeries {...props} />;
+
+    return isGantt ? (
+      <VerticalRectSeries {...props} />
+    ) : (
+      <VerticalBarSeries color={series.color} {...props} />
+    );
   };
 
   const makeChart = () => {
@@ -112,7 +114,7 @@ export const ResourceBarChart = ({
       margin: { top: 20, right: 20, bottom: 70 },
     };
 
-    if (gantt) {
+    if (isGantt) {
       props = {
         ...props,
         margin: { ...props.margin, left: 80 },
@@ -127,7 +129,7 @@ export const ResourceBarChart = ({
       <XYPlot width={width} {...props}>
         <HorizontalGridLines />
         <XAxis tickLabelAngle={-45} />
-        {gantt ? (
+        {isGantt ? (
           <YAxis
             tickFormat={(t, i) => skills[i]}
             tickValues={[...Array(skills.length).keys()].map((i) => i + 0.5)}
@@ -135,20 +137,20 @@ export const ResourceBarChart = ({
         ) : (
           <YAxis tickFormat={(t) => (Math.round(t) === t ? t : '')} />
         )}
-        {seriesSet.map((s, index) => makeSeries(s, index, gantt))}
+        {seriesSet.map((s, index) => makeSeries(s, index, isGantt))}
       </XYPlot>
     );
   };
 
   const seriesHasData = () =>
-    seriesSets[seriesKey].reduce((accumulator, series) => accumulator + series.data.length, 0) > 0;
+    seriesSet.reduce((accumulator, series) => accumulator + series.data.length, 0) > 0;
 
   return (
     <>
       {seriesHasData() ? (
         <>
           {makeChart()}
-          <div>{makeLegend()}</div>
+          {makeLegend()}
         </>
       ) : (
         <div className={classes.fullWidthContent}>

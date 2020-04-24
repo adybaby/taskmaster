@@ -1,9 +1,14 @@
 import { fade, createMuiTheme } from '@material-ui/core/styles';
 
 // colours
+const mainColor = '#4989b6';
+const highlightColor = '#6e9fc4';
 const aagBgColor = '#f2faff';
+const inspectorDaySummaryBgColor = '#b6d0e2';
 const datePickerBgColor = '#f2f2f2';
 const tabHighlightColor = '#40a9ff';
+const strongButtonTextColor = '#696969';
+const strongBorderColor = '#a9a9a9';
 export const CHART_COLORS = { MIN: 'lightGrey', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
 export const KELLY = [
   '#F2F3F4',
@@ -49,11 +54,11 @@ export const typographyVariant = {
     info: 'caption',
   },
   inspector: {
-    title: 'subtitle1',
-    heading: 'body2',
-    body: 'body2',
+    title: 'caption',
+    heading: 'caption',
+    body: 'caption',
     note: 'caption',
-    date: 'subtitle2',
+    date: 'caption',
   },
   datesDialog: { error: 'body1' },
   user: {
@@ -73,21 +78,6 @@ export const theme = createMuiTheme({
       sm: maxSmall,
       md: maxMedium,
     },
-    // MUI breakpoints are confusing AF.
-    // For example, down(xs) does not mean "max-width:xs", it means "max-width:s"
-    // (down from the max *range* of xs, where xs is between xs and s).
-    // For that reason I have overriden the methods for up, down, and between in the
-    // theme so that they make sense (i.e. down(sm) means max-width:sm)
-    get down() {
-      return (key) => `@media (max-width:${this.values[key] - 0.5}px)`;
-    },
-    get up() {
-      return (key) => `@media (min-width:${this.values[key] + 0.5}px)`;
-    },
-    get between() {
-      return (keyA, keyB) =>
-        `@media (min-width:${this.values[keyA]}px) and (max-width:${this.values[keyB] - 0.5}px)`;
-    },
   },
   typography: {
     fontFamily: [
@@ -102,6 +92,11 @@ export const theme = createMuiTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+  },
+  palette: {
+    primary: {
+      main: mainColor,
+    },
   },
   overrides: {
     MuiCssBaseline: {
@@ -129,8 +124,8 @@ export const theme = createMuiTheme({
   },
 });
 
-const smallVp = theme.breakpoints.down('sm');
-const mediumVp = theme.breakpoints.between('sm', 'md');
+const smallVp = theme.breakpoints.down('xs');
+const mediumVp = theme.breakpoints.only('sm');
 const mediumOrLargeVp = theme.breakpoints.up('sm');
 const largeVp = theme.breakpoints.up('lg');
 
@@ -197,16 +192,16 @@ export const styles = () => ({
   mainTabBar: {
     position: 'relative',
     display: 'flex',
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    borderBottom: '1px solid #e8e8e8',
-    paddingLeft: theme.spacing(2),
+    borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.default,
     zIndex: 1,
   },
   tab: {
     ...scaledWidth,
     '&:hover': {
-      color: tabHighlightColor,
+      color: highlightColor,
       opacity: 1,
     },
   },
@@ -218,15 +213,16 @@ export const styles = () => ({
     minWidth: '0px',
   },
   filterBarButton: {
+    paddingRight: theme.spacing(5),
     [smallVp]: {
       display: 'none',
     },
     '&&': {
       borderStyle: 'none',
-      color: 'dimGray',
+      color: strongButtonTextColor,
     },
     '&:hover,&.Mui-selected&:hover': {
-      color: theme.palette.info.light,
+      color: highlightColor,
     },
     '&.Mui-selected': {
       fontWeight: 'bold',
@@ -234,14 +230,15 @@ export const styles = () => ({
     },
   },
   filterDrawerButton: {
+    paddingRight: theme.spacing(5),
     [mediumOrLargeVp]: { display: 'none' },
     minWidth: '0px',
     '&&': {
       borderStyle: 'none',
-      color: 'dimGray',
+      color: strongButtonTextColor,
     },
     '&:hover,&.Mui-selected&:hover': {
-      color: theme.palette.info.light,
+      color: highlightColor,
     },
   },
 
@@ -251,12 +248,6 @@ export const styles = () => ({
       display: 'none',
     },
   },
-  filterDrawerContainer: {
-    [mediumOrLargeVp]: {
-      display: 'none',
-    },
-  },
-  filterDrawerBody: { padding: theme.spacing(1) },
   filterBar: {
     display: 'flex',
     flexDirection: 'row',
@@ -267,8 +258,10 @@ export const styles = () => ({
   },
   selectButton: {
     textTransform: 'none',
-    color: 'dimGray',
-    paddingRight: theme.spacing(3),
+    color: strongButtonTextColor,
+    justifyContent: 'left',
+    [smallVp]: { width: '100%' },
+    paddingLeft: theme.spacing(2),
   },
 
   // tasks
@@ -277,7 +270,7 @@ export const styles = () => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottom: `2px solid darkGrey`,
+    borderBottom: `2px solid ${strongBorderColor}`,
     paddingLeft: theme.spacing(3),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(2),
@@ -286,7 +279,7 @@ export const styles = () => ({
   taskInfoButton: {
     paddingRight: theme.spacing(2),
     width: 0,
-    color: 'dimGrey',
+    color: strongButtonTextColor,
     '&&': {
       borderStyle: 'none',
     },
@@ -307,7 +300,7 @@ export const styles = () => ({
   mapContent: { display: 'flex', padding: theme.spacing(2), flexDirection: 'column' },
   mapDriverTitle: {
     paddingBottom: theme.spacing(1),
-    borderBottom: `1px solid darkGrey`,
+    borderBottom: `1px solid ${strongBorderColor}`,
     marginBottom: theme.spacing(2),
   },
 
@@ -342,7 +335,7 @@ export const styles = () => ({
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
       marginLeft: theme.spacing(5),
-      boxShadow: '0px 3px 10px lightGrey',
+      boxShadow: `0px 3px 10px ${theme.palette.divider}`,
     },
   },
   aagBody: {
@@ -380,7 +373,7 @@ export const styles = () => ({
     flexDirection: 'row',
     alignItems: 'centre',
     justifyContent: 'space-between',
-    borderBottom: `2px solid darkGrey`,
+    borderBottom: `2px solid ${strongBorderColor}`,
     paddingLeft: theme.spacing(3),
     paddingTop: theme.spacing(3),
     paddingBottom: theme.spacing(2),
@@ -405,27 +398,34 @@ export const styles = () => ({
   // Charts
   chartsLayoutContainer: {
     display: 'flex',
-    height: '100%',
     flexDirection: 'row',
+    height: '100%',
   },
   chartMenuSideBar: {
     [smallVp]: {
       display: 'none',
     },
     borderRight: `1px solid ${theme.palette.divider}`,
-    minWidth: '100px',
-    maxWidth: '180px',
-    flexGrow: '1',
+    width: '180px',
+    flexGrow: 0,
   },
-  chartLayoutBody: {
-    flexGrow: '8',
-  },
-  chartDrawer: {
-    [mediumOrLargeVp]: {
+  inspectorSideBar: {
+    [smallVp]: {
       display: 'none',
     },
+    borderLeft: `1px solid ${theme.palette.divider}`,
+    width: '180px',
+    flexGrow: 0,
   },
-  chartDrawerBody: { padding: theme.spacing(2) },
+  chartLayoutBody: { flexGrow: 1 },
+  chartHeadingContainer: {
+    paddingLeft: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+  },
   chartSelectButton: {
     [mediumOrLargeVp]: {
       display: 'none',
@@ -433,17 +433,15 @@ export const styles = () => ({
     minWidth: 0,
     paddingLeft: 0,
   },
-  chartHeadingContainer: {
-    paddingLeft: theme.spacing(2),
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    display: 'flex',
-    flexDirection: 'column',
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
   chartHeading: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  chartMenu: {
+    paddingLeft: theme.spacing(1),
+  },
+  chartMenuFolder: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
   },
   chartInfo: {},
   continuousChartLegend: { padding: theme.spacing(3) },
@@ -452,42 +450,51 @@ export const styles = () => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  inspectorSideBar: {
-    [smallVp]: {
-      display: 'none',
-    },
-    borderLeft: `1px solid ${theme.palette.divider}`,
-    minWidth: '100px',
-    maxWidth: '200px',
-    flexGrow: '1',
-  },
   inspectorToolTip: {
     zIndex: 99999,
-    position: 'absolute',
-    [smallVp]: {
-      display: 'none',
-    },
+    position: 'fixed',
   },
   inspectorHeading: {
     paddingLeft: theme.spacing(1),
     paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
+  },
+  inspectorSectionHeading: {
+    paddingBottom: '3px',
+  },
+  inspectorDaySummary: {
+    backgroundColor: inspectorDaySummaryBgColor,
+  },
+  inspectorLayoutContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  inspectorBody: { paddingLeft: theme.spacing(1), paddingTop: theme.spacing(0) },
+  inspectorInteriorBlock: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: '4px',
+  },
+  inspectorInteriorSection: { padding: theme.spacing(1) },
+
+  // drawer
+  drawerBody: {
+    minWidth: '180px',
+  },
+  drawerControls: {
+    minWidth: '180px',
+    borderTop: `1px solid ${theme.palette.divider}`,
+    paddingBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1),
     borderBottom: `1px solid ${theme.palette.divider}`,
   },
-  inspectorBody: { paddingLeft: theme.spacing(1), paddingTop: theme.spacing(1) },
-  chartMenu: {
-    paddingLeft: theme.spacing(1),
+  closeDrawerButton: {
+    width: '100%',
+    justifyContent: 'left',
+    paddingLeft: theme.spacing(2),
   },
-  resourceMarkBlock: { display: 'flex', flexDirection: 'column', paddingTop: theme.spacing(1) },
-  resourceMarkSection: { padding: theme.spacing(1) },
 
   // datepicker
-  datePickerInput: {
-    '&$datePickerInputFocussed': {
-      backgroundColor: datePickerBgColor,
-    },
-  },
-  datePickerInputFocussed: {},
   datePickerField: {
     [smallVp]: {
       display: 'none',
@@ -498,9 +505,23 @@ export const styles = () => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(1),
   },
-  datesDialogInputBg: { display: 'flex', backgroundColor: datePickerBgColor },
-  datesDialogJoiner: { padding: theme.spacing(1) },
   datesDialogInputsWrapper: { flexGrow: 1 },
+  dateDialogFieldWrapper: {
+    marginBottom: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+    [mediumOrLargeVp]: {
+      '&:focus-within': { backgroundColor: datePickerBgColor },
+      marginTop: theme.spacing(1),
+      paddingTop: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(2),
+    },
+  },
+  dateDialogPickerWrapper: {
+    [smallVp]: { display: 'none' },
+    marginTop: theme.spacing(1),
+    backgroundColor: datePickerBgColor,
+  },
   datesDialogErrorMsg: { paddingTop: theme.spacing(2), color: 'red' },
 
   // label dissappears when small
@@ -509,15 +530,6 @@ export const styles = () => ({
     [smallVp]: {
       display: 'none',
     },
-  },
-
-  // bottom controls of drawers in small display
-  drawerControls: {
-    borderTop: `1px solid ${theme.palette.divider}`,
-    paddingBottom: theme.spacing(1),
-    paddingLeft: theme.spacing(0.5),
-    paddingTop: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.divider}`,
   },
 
   // links

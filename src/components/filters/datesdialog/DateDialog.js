@@ -1,62 +1,56 @@
-/* eslint-disable no-restricted-globals */
 import React, { useState, createRef } from 'react';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import { isValid } from 'date-fns';
-import DatePicker from './GbDateClearablePicker';
 import { styles } from '../../../styles/Styles';
-import { formatDate, parseGbDateString } from '../../../util/Dates';
-import { dialogBase } from './DialogBase';
+import DatePicker from './GbDateClearablePicker';
+import { DateErrors } from './DateErrors';
+
+import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
 
 const useStyles = makeStyles(styles);
 
-export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other }) => {
+export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
   const classes = useStyles();
-  const [dates, setDates] = useState({ from: '', to: '', active: '' });
-
+  const CONTROL = { FROM: 'fromStr', TO: 'toStr' };
   const toControl = createRef();
+  const [fromStr, setFromStr] = useState('');
+  const [toStr, setToStr] = useState('');
+  const [focussed, setFocussed] = useState(CONTROL.FROM);
+  const [valid, setValid] = useState(true);
 
-  const bothDatesBlank = dates.from === '' && dates.to === '';
-  const fromNotValid = dates.from !== '' && isNaN(parseGbDateString(dates.from).getTime());
-  const toNotValid = dates.to !== '' && isNaN(parseGbDateString(dates.to).getTime());
-  const datesOutOfOrder =
-    dates.from !== '' &&
-    dates.to !== '' &&
-    parseGbDateString(dates.from).getTime() > parseGbDateString(dates.to).getTime();
-
-  const handleOk = () => {
-    const fromDate = parseGbDateString(dates.from);
-    const toDate = parseGbDateString(dates.to);
-    handleClose(isValid(fromDate) ? fromDate : null, isValid(toDate) ? toDate : null);
+  const setDateField = (dateStr, setter) => {
+    const usDateStr = ukToUs(dateStr);
+    let date = null;
+    if (isValidDateString(usDateStr)) {
+      date = new Date(usDateStr);
+      setter(formatDate(date));
+    }
+    return date;
   };
 
-  const datePickerProps = {
-    variant: 'static',
-    disableToolbar: true,
-    orientation: 'portrait',
-    fullWidth: true,
-    value: dates[dates.active] === '' ? null : dates[dates.active],
-    defaultDate: null,
-    onAccept: (date) => {
-      if (dates.active === 'from') {
-        toControl.current.focus();
-        setDates({ ...dates, from: formatDate(date), active: 'to' });
-      } else {
-        toControl.current.focus();
-        setDates({ ...dates, to: formatDate(date), active: 'to' });
-      }
-    },
-    onChange: () => {
-      // do nothing
-    },
+  const onSubmit = () => {
+    handleClose({ from: setDateField(fromStr, setFromStr), to: setDateField(toStr, setToStr) });
   };
 
-  const inputProps = {
+  const onCancel = () => {
+    handleClose(null);
+  };
+
+  const makeDateFieldProps = (id, setter, props) => ({
     fullWidth: true,
     onKeyPress: (event) => {
       if (event.key === 'Enter') {
-        handleOk();
+        onSubmit();
       }
+    },
+    onBlur: (event) => {
+      setDateField(event.target.value, setter);
     },
     InputProps: {
       classes: {
@@ -64,77 +58,106 @@ export const DatesDialog = ({ open, handleClose, currentPickerTitle, ...other })
         focused: classes.datePickerInputFocussed,
       },
     },
-  };
-
-  const fromProps = {
-    onChange: (event) => {
-      setDates({ ...dates, from: event.target.value });
-    },
     onFocus: () => {
-      setDates({ ...dates, active: 'from' });
+      setFocussed(id);
     },
-    autoFocus: true,
-    value: dates.from,
-    label: `${currentPickerTitle} on or after..`,
-    ...inputProps,
+    ...props,
+  });
+
+  const makeDatePickerProps = (props) => ({
+    variant: 'static',
+    disableToolbar: true,
+    orientation: 'portrait',
+    fullWidth: true,
+    defaultDate: null,
+    onChange: () => {
+      // do nothing
+    },
+    ...props,
+  });
+
+  const getDateLimitProp = (dateStr) => {
+    const ukStr = ukToUs(dateStr);
+    return isValidDateString(ukStr) ? new Date(ukStr) : undefined;
   };
-
-  const toProps = {
-    onChange: (event) => {
-      setDates({ ...dates, to: event.target.value });
-    },
-    onFocus: () => {
-      setDates({ ...dates, active: 'to' });
-    },
-    value: dates.to,
-    label: `${currentPickerTitle} on or before..`,
-    inputRef: toControl,
-    ...inputProps,
-  };
-
-  if (dates.to !== '' && dates.active === 'from') {
-    datePickerProps.maxDate = dates.to;
-    datePickerProps.initialFocusedDate = dates.to;
-  }
-
-  if (dates.from !== '' && dates.active === 'to') {
-    datePickerProps.minDate = dates.from;
-    datePickerProps.initialFocusedDate = dates.from;
-  }
 
   const dialogBody = (
     <div className={classes.datesDialogBody}>
       <div className={classes.datesDialogInputsWrapper}>
-        <div className={dates.active === 'from' ? classes.datesDialogInputBg : undefined}>
-          <TextField {...fromProps} />
-          <div className={classes.datesDialogJoiner}></div>
+        <div className={classes.dateDialogFieldWrapper}>
+          <TextField
+            {...makeDateFieldProps(CONTROL.FROM, setFromStr, {
+              value: fromStr,
+              label: `${fieldLabel} on or after..`,
+              autoFocus: true,
+              onChange: (event) => {
+                setFromStr(event.target.value);
+              },
+            })}
+          />
         </div>
-        <div className={dates.active === 'to' ? classes.datesDialogInputBg : undefined}>
-          <TextField {...toProps} />
-          <div className={classes.datesDialogJoiner}></div>
+        <div className={classes.dateDialogFieldWrapper}>
+          <TextField
+            {...makeDateFieldProps(CONTROL.TO, setToStr, {
+              value: toStr,
+              label: `${fieldLabel} on or before..`,
+              onChange: (event) => {
+                setToStr(event.target.value);
+              },
+              inputRef: toControl,
+            })}
+          />
         </div>
       </div>
-      <div className={classes.datePickerField}>
-        <DatePicker {...datePickerProps} />
+      <div className={classes.dateDialogPickerWrapper}>
+        {focussed === CONTROL.FROM ? (
+          <DatePicker
+            {...makeDatePickerProps({
+              value: fromStr,
+              maxDate: getDateLimitProp(toStr),
+              onAccept: (date) => {
+                setFromStr(formatDate(date));
+                toControl.current.focus();
+              },
+            })}
+          />
+        ) : (
+          <DatePicker
+            {...makeDatePickerProps({
+              value: toStr,
+              minDate: getDateLimitProp(fromStr),
+              onAccept: (date) => {
+                setToStr(formatDate(date));
+                toControl.current.focus();
+              },
+            })}
+          />
+        )}
       </div>
     </div>
   );
 
   return (
-    <div>
-      {dialogBase(
-        'date',
-        dialogBody,
-        fromNotValid,
-        toNotValid,
-        datesOutOfOrder,
-        bothDatesBlank,
-        open,
-        handleClose,
-        handleOk,
-        classes,
-        other
-      )}
-    </div>
+    <Dialog open={open} onClose={onCancel} onEscapeKeyDown={onCancel} {...other}>
+      <DialogTitle id="date picker title">Filter By Dates</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Enter the date range to filter by. You can leave either field blank to ignore those
+          fields.
+        </DialogContentText>
+        {dialogBody}
+        <DateErrors
+          fromStr={fromStr}
+          toStr={toStr}
+          onValidityChange={(allValid) => setValid(allValid)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancel}>Cancel</Button>
+        <Button disabled={!valid} onClick={onSubmit} color="primary">
+          OK
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };

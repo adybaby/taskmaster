@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import Collapse from '@material-ui/core/Collapse';
-import { Drawer, List, Button } from '@material-ui/core';
+import { Drawer, List, Button, Hidden } from '@material-ui/core';
 import { styles } from '../styles/Styles';
 import { setTaskListFilterControl } from '../redux/actions/TaskListFilterActions';
 import * as URLS from '../Urls';
@@ -173,20 +173,23 @@ export const MainTabs = () => {
 
   const filterDrawer = (
     <Drawer
-      className={classes.filterDrawerContainer}
+      className={classes.drawerBody}
       anchor="right"
       open={filterDrawerVisible}
+      variant="temporary"
       onClose={() => setFilterDrawerVisible(false)}
     >
-      <div className={classes.filterDrawerBody}>
-        <List>
-          {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls, () =>
-            setFilterDrawerVisible(false)
-          )}
-        </List>
-      </div>
+      <List>
+        {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls, () =>
+          setFilterDrawerVisible(false)
+        )}
+      </List>
       <div className={classes.drawerControls}>
-        <Button color="primary" onClick={() => setFilterDrawerVisible(false)}>
+        <Button
+          color="primary"
+          classes={{ root: classes.closeDrawerButton }}
+          onClick={() => setFilterDrawerVisible(false)}
+        >
           Close
         </Button>
       </div>
@@ -214,7 +217,9 @@ export const MainTabs = () => {
       {showFilterButton ? (
         <>
           {filterBar}
-          {filterDrawer}
+          <Hidden xsDown implementation="css">
+            {filterDrawer}
+          </Hidden>
         </>
       ) : null}
 

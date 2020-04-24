@@ -10,22 +10,23 @@ import { UserLink, TaskLink, SkillLink } from '../Link';
 const useStyles = makeStyles(styles);
 const variant = typographyVariant.inspector;
 
-export const Inspector = ({ dayRefData, skillTitle, total, totalsTitle }) => {
+export const Inspector = ({ dayRefData, skillTitle, total, daySummary }) => {
   const classes = useStyles();
 
   const makeBlock = (title, data, showCount, showUser, taskField, datesType, datesField) => (
     <>
-      <Typography variant={variant.Title}>
-        <b>{title}</b>
-      </Typography>
-
+      <div className={classes.inspectorSectionHeading}>
+        <Typography variant={variant.title}>
+          <b>{title}</b>
+        </Typography>
+      </div>
       {data.length > 0 ? (
         data.map((elem, index) => (
-          <div className={classes.resourceMarkBlock} key={index}>
+          <div className={classes.inspectorInteriorBlock} key={index}>
             <div>
               {showCount ? (
                 <>
-                  <Typography style={{ display: 'inline-block' }} variant={variant.Heading}>
+                  <Typography style={{ display: 'inline-block' }} variant={variant.body}>
                     {elem.count} x {skillTitle}
                     {'\u00A0'}required{'\u00A0'}
                   </Typography>
@@ -33,27 +34,31 @@ export const Inspector = ({ dayRefData, skillTitle, total, totalsTitle }) => {
               ) : null}
               {showUser ? (
                 <>
-                  <UserLink userId={elem.user.id} variant={variant.Body} />
+                  <UserLink userId={elem.user.id} variant={variant.body} />
                   {'\u00A0'}as{'\u00A0'}
-                  <SkillLink skill={skillTitle} variant={variant.Body} />
+                  <SkillLink skill={skillTitle} variant={variant.body} />
                 </>
               ) : null}
               {taskField !== null ? (
                 <>
-                  {'\u00A0'}for{'\u00A0'}
-                  <TaskLink task={elem[taskField]} variant={variant.Body} />
+                  <Typography style={{ display: 'inline-block' }} variant={variant.body}>
+                    for{'\u00A0'}
+                  </Typography>
+                  <TaskLink task={elem[taskField]} variant={variant.body} />
                 </>
               ) : null}
             </div>
             {Array.isArray(elem[datesType][datesField])
               ? elem[datesType][datesField].map((period, i) => (
                   <div key={i}>
-                    <Typography variant={variant.Note}>
-                      {formatDate(period.from)}
-                      {'\u00A0'}
-                      <i>to</i>
-                      {'\u00A0'}
-                      {formatDate(period.to)}
+                    <Typography variant={variant.date}>
+                      <i>
+                        {formatDate(period.from)}
+                        {'\u00A0'}
+                        to
+                        {'\u00A0'}
+                        {formatDate(period.to)}
+                      </i>
                     </Typography>
                   </div>
                 ))
@@ -61,30 +66,21 @@ export const Inspector = ({ dayRefData, skillTitle, total, totalsTitle }) => {
           </div>
         ))
       ) : (
-        <Typography variant={variant.Body}>None</Typography>
+        <div className={classes.inspectorInteriorBlock}>
+          <Typography variant={variant.body}>None</Typography>
+        </div>
       )}
     </>
   );
 
-  let displayTotal = total;
-  let displayTitle = displayTotal === 1 ? totalsTitle.singular : totalsTitle.plural;
-
-  if (total < 0) {
-    displayTotal = Math.abs(total);
-    displayTitle = displayTotal === 1 ? totalsTitle.singularNegative : totalsTitle.pluralNegative;
-  }
-
   return (
-    <>
-      <Typography variant={variant.Title} className={classes.resourceMarkSection}>
-        {skillTitle} ({displayTotal} {displayTitle})
-      </Typography>
-      <Divider />
-      <Typography variant={variant.Date} className={classes.resourceMarkSection}>
-        {formatDate(new Date(dayRefData.x))}
-      </Typography>
-      <Divider />
-      <div className={classes.resourceMarkSection}>
+    <div className={classes.inspectorLayoutContainer}>
+      <div className={`${classes.inspectorDaySummary} ${classes.inspectorInteriorSection}`}>
+        <Typography variant={variant.title}>
+          <b>{daySummary(total, skillTitle, formatDate(new Date(dayRefData.x)))}</b>
+        </Typography>
+      </div>
+      <div className={classes.inspectorInteriorSection}>
         {makeBlock(
           'Stated Availability (before Sign-Ups)',
           dayRefData.stated,
@@ -96,13 +92,13 @@ export const Inspector = ({ dayRefData, skillTitle, total, totalsTitle }) => {
         )}
       </div>
       <Divider />
-      <div className={classes.resourceMarkSection}>
+      <div className={classes.inspectorInteriorSection}>
         {makeBlock('Initiatives', dayRefData.vacancies, true, false, 'task', 'vacancy', 'periods')}
       </div>
       <Divider />
-      <div className={classes.resourceMarkSection}>
+      <div className={classes.inspectorInteriorSection}>
         {makeBlock('Signs Ups', dayRefData.signUps, false, true, 'signUp', 'signUp', 'periods')}
       </div>
-    </>
+    </div>
   );
 };
