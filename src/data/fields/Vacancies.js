@@ -1,5 +1,5 @@
 export const FIELDS = {
-  NECESSITY: {
+  PRIORITY: {
     ESSENTIAL: { id: 'ESSENTIAL', label: 'Essential' },
     DESIRABLE: { id: 'DESIRABLE', label: 'Desirable' },
   },
@@ -14,12 +14,16 @@ export const FIELDS = {
     REJECTED: { id: 'REJECTED', label: 'Rejected' },
   },
   ROLE: {
-    FULL_TIME: { id: 'FULL_TIME', label: 'as team member' },
-    CONSULTANCY: { id: 'CONSULTANCY', label: 'for consultancy' },
-    MENTORING: { id: 'MENTORING', label: 'for mentoring' },
-    USER: { id: 'USER', label: 'for user guidance' },
+    FULL_TIME: { id: 'FULL_TIME', label: 'Team member' },
+    CONSULTANCY: { id: 'CONSULTANCY', label: 'Consultant' },
+    MENTORING: { id: 'MENTORING', label: 'Mentoring' },
+    USER: { id: 'USER', label: 'User Guidance' },
   },
 };
 
-export const decodeField = (field, key) =>
-  Object.entries(field).find(([i, val]) => val.key === key)[1];
+const getLabel = (field, value) => Object.values(field).find((val) => val.id === value).label;
+
+export const getPriorityLabel = (value) => getLabel(FIELDS.PRIORITY, value);
+export const getStatusLabel = (value) => getLabel(FIELDS.STATUS, value);
+export const getInterestStatusLabel = (value) => getLabel(FIELDS.INTEREST_STATUS, value);
+export const getRoleLabel = (value) => getLabel(FIELDS.ROLE, value);

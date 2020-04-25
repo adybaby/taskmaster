@@ -9,6 +9,7 @@ import * as TASK_TYPES from '../../data/fields/Type';
 import { INFO as INFO_ICON } from '../../Icons';
 import { AtAGlance } from './AtAGlance';
 import { styles, typographyVariant } from '../../styles/Styles';
+import { Vacancy } from './Vacancy';
 
 const useStyles = makeStyles(styles);
 const variant = typographyVariant.task;
@@ -79,9 +80,11 @@ export const Task = () => {
               Vacancies
             </Typography>
             <Divider />
-            <Typography className={classes.taskSectionBody} variant={variant.body}>
-              TBD
-            </Typography>
+            <div className={`${classes.taskSectionBody} ${classes.vacancySection}`}>
+              {task.vacancies.map((vacancy, index) => (
+                <Vacancy key={index} vacancy={vacancy} />
+              ))}
+            </div>
           </>
         ) : null}
       </div>

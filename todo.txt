@@ -1,3 +1,11 @@
+month picker
+year picker
+can skip tab order of datepicker
+
+vacancy list - sign up to highlight whole period and click on select (whole button?)
+
+created by me
+
 1) get css transition for at a glance to work
 
 2) Charts:

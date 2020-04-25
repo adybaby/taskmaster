@@ -19,7 +19,9 @@ import * as TASK_TYPES from '../data/fields/Type';
 import { MapPanel } from './maps/MapPanel';
 import { ChartPanel } from './charts/ChartPanel';
 import { TaskList } from './browse/TaskList';
-import { getCurrentFilters } from './filters/FilterControls';
+import { TaskSelectFilter } from './filters/TaskSelectFilter';
+import { ChartSelectFilter } from './filters/ChartSelectFilter';
+import { SortControl } from './filters/SortControl';
 import * as ICONS from '../Icons';
 
 const useStyles = makeStyles(styles);
@@ -28,23 +30,27 @@ const tabs = {
   all: {
     id: 'ALL_TAB',
     label: 'All',
+    filterSummaryLabel: 'item',
     url: URLS.ALL,
   },
   drivers: {
     id: 'DRIVERS_TAB',
     label: 'Drivers',
+    filterSummaryLabel: 'driver',
     url: URLS.DRIVERS,
     taskType: TASK_TYPES.DRIVER,
   },
   enablers: {
     id: 'ENABLERS_TAB',
     label: 'Enablers',
+    filterSummaryLabel: 'enabler',
     url: URLS.ENABLERS,
     taskType: TASK_TYPES.ENABLER,
   },
   initiatives: {
     id: 'INITIATIVES_TAB',
     label: 'Initiatives',
+    filterSummaryLabel: 'initiative',
     url: URLS.INITIATIVES,
     taskType: TASK_TYPES.INITIATIVE,
   },
@@ -77,9 +83,7 @@ export const MainTabs = () => {
   const showFilterButton = tabField !== tabs.map;
 
   const tabFromUrl =
-    typeof url !== 'undefined'
-      ? Object.entries(tabs).filter((tab) => tab[1].url === url)[0][1]
-      : tabs.all;
+    typeof url !== 'undefined' ? Object.values(tabs).find((tab) => tab.url === url) : tabs.all;
 
   useEffect(() => {
     if (tabField !== tabFromUrl) {
@@ -95,6 +99,65 @@ export const MainTabs = () => {
     }
   }, [dispatch, tabFromUrl, tabField, setTabField]);
 
+  const visibleTaskFilterControls = [
+    tabs.all,
+    tabs.drivers,
+    tabs.enablers,
+    tabs.initiatives,
+  ].includes(tabField)
+    ? [
+        TASK_FILTER_CONTROL_IDS.CREATED_DATE,
+        TASK_FILTER_CONTROL_IDS.CREATED_BY,
+        TASK_FILTER_CONTROL_IDS.RUNNING,
+        TASK_FILTER_CONTROL_IDS.START_DATE,
+        TASK_FILTER_CONTROL_IDS.END_DATE,
+        TASK_FILTER_CONTROL_IDS.VACANCIES,
+      ]
+        .map((id) => taskListFilterControls.find((fc) => fc.id === id))
+        .filter(
+          (filterControl) =>
+            typeof filterControl.forTaskTypes === 'undefined' ||
+            filterControl.forTaskTypes.includes(tabField.taskType)
+        )
+    : [];
+
+  const activeTaskFilterControls = () => {
+    const searchControl = taskListFilterControls.find(
+      (fc) => fc.id === TASK_FILTER_CONTROL_IDS.SEARCH_FIELD
+    );
+    return [
+      ...visibleTaskFilterControls.filter(
+        (filterControl) => filterControl.selectedId !== filterControl.defaultId
+      ),
+      ...(searchControl.text.length !== 0 ? [searchControl] : []),
+    ];
+  };
+
+  const filterActive =
+    (isATaskFilterActive(taskListFilterControls, tabField.taskType) && tabField !== tabs.charts) ||
+    (isAChartFilterActive(chartFilterControls) && tabField === tabs.charts);
+
+  const makeVisibleFilters = (handleFilterSelected) =>
+    tabField === tabs.charts ? (
+      <ChartSelectFilter
+        filterControl={chartFilterControls[0]}
+        handleFilterSelected={handleFilterSelected}
+      />
+    ) : (
+      <>
+        {visibleTaskFilterControls.map((filterControl, index) => (
+          <TaskSelectFilter key={index} filterControl={filterControl} />
+        ))}
+        <SortControl
+          currentTaskType={
+            taskListFilterControls.find(
+              (filterControl) => filterControl.id === TASK_FILTER_CONTROL_IDS.TYPE
+            ).selectedId
+          }
+        />
+      </>
+    );
+
   const getCurrentPanel = () => {
     switch (tabField) {
       case tabs.map:
@@ -102,7 +165,7 @@ export const MainTabs = () => {
       case tabs.charts:
         return <ChartPanel />;
       default:
-        return <TaskList />;
+        return <TaskList activeFilters={activeTaskFilterControls()} currentTab={tabField} />;
     }
   };
 
@@ -122,11 +185,7 @@ export const MainTabs = () => {
     />
   );
 
-  const filterActive =
-    (isATaskFilterActive(taskListFilterControls, tabField.taskType) && tabField !== tabs.charts) ||
-    (isAChartFilterActive(chartFilterControls) && tabField === tabs.charts);
-
-  const filterBarButton = (
+  const filterBarButton = () => (
     <ToggleButton
       value="filterBarButton"
       variant="text"
@@ -144,7 +203,7 @@ export const MainTabs = () => {
     </ToggleButton>
   );
 
-  const filterDrawerButton = (
+  const filterDrawerButton = () => (
     <Button
       value="filterDrawerButton"
       variant="text"
@@ -158,20 +217,18 @@ export const MainTabs = () => {
     </Button>
   );
 
-  const filterBar = (
+  const filterBar = () => (
     <Collapse
       className={classes.filterBarContainer}
       in={filterBarVisible}
       timeout="auto"
       unmountOnExit
     >
-      <div className={classes.filterBar}>
-        {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls)}
-      </div>
+      <div className={classes.filterBar}>{makeVisibleFilters()}</div>
     </Collapse>
   );
 
-  const filterDrawer = (
+  const filterDrawer = () => (
     <Drawer
       className={classes.drawerBody}
       anchor="right"
@@ -179,11 +236,7 @@ export const MainTabs = () => {
       variant="temporary"
       onClose={() => setFilterDrawerVisible(false)}
     >
-      <List>
-        {getCurrentFilters(tabField, tabs, taskListFilterControls, chartFilterControls, () =>
-          setFilterDrawerVisible(false)
-        )}
-      </List>
+      <List>{makeVisibleFilters(() => setFilterDrawerVisible(false))}</List>
       <div className={classes.drawerControls}>
         <Button
           color="primary"
@@ -209,16 +262,16 @@ export const MainTabs = () => {
         </Tabs>
         {showFilterButton ? (
           <>
-            {filterBarButton}
-            {filterDrawerButton}
+            {filterBarButton()}
+            {filterDrawerButton()}
           </>
         ) : null}
       </div>
       {showFilterButton ? (
         <>
-          {filterBar}
+          {filterBar()}
           <Hidden xsDown implementation="css">
-            {filterDrawer}
+            {filterDrawer()}
           </Hidden>
         </>
       ) : null}

@@ -23,9 +23,14 @@ export const DateErrors = ({ fromStr, toStr, onValidityChange }) => {
     [fromStr, toStr]
   );
 
+  const eitherValid = React.useCallback(
+    () => isValidDateString(ukToUs(fromStr)) || isValidDateString(ukToUs(toStr)),
+    [fromStr, toStr]
+  );
+
   const allValid = React.useCallback(
-    () => fieldValid(fromStr) && fieldValid(toStr) && orderValid(),
-    [fromStr, toStr, fieldValid, orderValid]
+    () => fieldValid(fromStr) && fieldValid(toStr) && orderValid() && eitherValid(),
+    [fromStr, toStr, fieldValid, orderValid, eitherValid]
   );
 
   useEffect(() => {

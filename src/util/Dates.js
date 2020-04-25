@@ -113,6 +113,9 @@ export const getDateRangeForYear = (date) => {
   return { from: new Date(year, 0, 1), to: new Date(year, 11, 31) };
 };
 
+export const areDateRangesOverlapping = (range1, range2) =>
+  !(before(range1.to, range2.from) || after(range1.from, range2.to));
+
 export const formatDate = (date) => {
   const monthNames = [
     'Jan',

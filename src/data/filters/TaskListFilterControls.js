@@ -33,10 +33,12 @@ import { createTaskTypeSelectFilterControl } from './controls/TaskTypeSelectFilt
 import { doesObjectIncludeStr } from '../../util/StringUtils';
 import { INITIATIVE } from '../fields/Type';
 import { FILTER_TYPES } from './FilterTypes';
+import { formatDateRange } from '../../util/Dates';
 
 export const TASK_FILTER_CONTROL_IDS = {
   CREATED_DATE: 'CREATED_DATE',
   CREATED_BY: 'CREATED_BY',
+  RUNNING: 'RUNNING',
   START_DATE: 'START_DATE',
   END_DATE: 'END_DATE',
   VACANCIES: 'VACANCIES',
@@ -59,6 +61,9 @@ export const isAFilterActive = (taskListfilterControls, currentTaskTypeId) => {
   const createdByControl = taskListfilterControls.find(
     (control) => control.id === TASK_FILTER_CONTROL_IDS.CREATED_BY
   );
+  const runningControl = taskListfilterControls.find(
+    (control) => control.id === TASK_FILTER_CONTROL_IDS.RUNNING
+  );
   const startDateControl = taskListfilterControls.find(
     (control) => control.id === TASK_FILTER_CONTROL_IDS.START_DATE
   );
@@ -72,11 +77,42 @@ export const isAFilterActive = (taskListfilterControls, currentTaskTypeId) => {
   return (
     createdDateControl.selectedId !== createdDateControl.defaultId ||
     createdByControl.selectedId !== createdByControl.defaultId ||
+    (runningControl.selectedId !== runningControl.defaultId && currentTaskTypeId === INITIATIVE) ||
     (startDateControl.selectedId !== startDateControl.defaultId &&
       currentTaskTypeId === INITIATIVE) ||
     (endDateControl.selectedId !== endDateControl.defaultId && currentTaskTypeId === INITIATIVE) ||
     (vacanciesControl.selectedId !== vacanciesControl.defaultId && currentTaskTypeId === INITIATIVE)
   );
+};
+
+export const filterSummary = (control) => {
+  const selected = control.options.find((option) => option.id === control.selectedId);
+  return `${control.label} ${
+    selected.datePicker ? formatDateRange(selected.params) : selected.label
+  }`;
+};
+
+export const allFiltersSummary = (activeFilters, currentTab, total) => {
+  const singleTask = total === 1;
+  const taskNoun = singleTask ? currentTab.filterSummaryLabel : `${currentTab.filterSummaryLabel}s`;
+  const collective = activeFilters.length === 0 ? '' : singleTask ? ' is ' : ' are ';
+
+  return activeFilters.reduce((summaryString, filter, index) => {
+    let join = '';
+    if (index < activeFilters.length - 2 && activeFilters.length > 2) {
+      join = ', ';
+    } else if (index < activeFilters.length - 1) {
+      join = ' and ';
+    }
+
+    if (filter.id === TASK_FILTER_CONTROL_IDS.SEARCH_FIELD) {
+      return `${summaryString} ${singleTask ? 'contains' : 'contain'} "${filter.text}"${join}`;
+    }
+    let summaryItem = filterSummary(filter);
+    summaryItem = summaryItem.charAt(0).toLowerCase() + summaryItem.slice(1);
+
+    return `${summaryString}${collective}${summaryItem}${join}`;
+  }, `${total} ${taskNoun}`);
 };
 
 export const executeFilterControl = (tasks, filterControl) => {
@@ -135,6 +171,14 @@ export const createTaskFilterControls = (tasks, users, currentUser) => [
     label: 'Created by',
     type: FILTER_TYPES.SELECT,
     ...createCreatedBySelectFilterControl(users),
+  },
+  {
+    id: TASK_FILTER_CONTROL_IDS.RUNNING,
+    label: 'Running',
+    type: FILTER_TYPES.SELECT,
+    onFilterBar: true,
+    ...createDateSelectFilterControl(null, true),
+    forTaskTypes: [INITIATIVE],
   },
   {
     id: TASK_FILTER_CONTROL_IDS.START_DATE,

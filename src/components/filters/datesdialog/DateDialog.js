@@ -18,6 +18,7 @@ const useStyles = makeStyles(styles);
 export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
   const classes = useStyles();
   const CONTROL = { FROM: 'fromStr', TO: 'toStr' };
+  const fromControl = createRef();
   const toControl = createRef();
   const [fromStr, setFromStr] = useState('');
   const [toStr, setToStr] = useState('');
@@ -49,9 +50,6 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
         onSubmit();
       }
     },
-    onBlur: (event) => {
-      setDateField(event.target.value, setter);
-    },
     InputProps: {
       classes: {
         root: classes.datePickerInput,
@@ -71,7 +69,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
     fullWidth: true,
     defaultDate: null,
     onChange: () => {
-      // do nothing
+      // do nothing - component barfs if not provided
     },
     ...props,
   });
@@ -93,6 +91,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
               onChange: (event) => {
                 setFromStr(event.target.value);
               },
+              inputRef: fromControl,
             })}
           />
         </div>
@@ -109,7 +108,22 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
           />
         </div>
       </div>
-      <div className={classes.dateDialogPickerWrapper}>
+      <div
+        className={classes.dateDialogPickerWrapper}
+        onFocus={() => {
+          switch (focussed) {
+            case CONTROL.FROM: {
+              fromControl.current.focus();
+              break;
+            }
+            case CONTROL.TO: {
+              toControl.current.focus();
+              break;
+            }
+            default: // do nothing
+          }
+        }}
+      >
         {focussed === CONTROL.FROM ? (
           <DatePicker
             {...makeDatePickerProps({

@@ -2,11 +2,12 @@ import { fade, createMuiTheme } from '@material-ui/core/styles';
 
 // colours
 const mainColor = '#4989b6';
+const linkHoverColor = '#66bfed';
+const errorColor = 'red';
 const highlightColor = '#6e9fc4';
 const aagBgColor = '#f2faff';
 const inspectorDaySummaryBgColor = '#b6d0e2';
 const datePickerBgColor = '#f2f2f2';
-const tabHighlightColor = '#40a9ff';
 const strongButtonTextColor = '#696969';
 const strongBorderColor = '#a9a9a9';
 export const CHART_COLORS = { MIN: 'lightGrey', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
@@ -162,7 +163,7 @@ export const styles = () => ({
   // search box
   searchBox: {
     position: 'relative',
-    borderRadius: 'theme.shape.borderRadius',
+    borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
       backgroundColor: fade(theme.palette.common.white, 0.25),
@@ -264,7 +265,28 @@ export const styles = () => ({
     paddingLeft: theme.spacing(2),
   },
 
-  // tasks
+  // Task List
+  taskListContainer: {
+    padding: theme.spacing(2),
+    paddingLeft: theme.spacing(3),
+    flex: '100%',
+  },
+  taskListSummary: {
+    paddingBottom: theme.spacing(2),
+  },
+  taskBody: {
+    marginTop: theme.spacing(2),
+    width: '100%',
+  },
+  taskListEntry: { display: 'flex', flexDirection: 'column', paddingBottom: theme.spacing(3) },
+  taskResult: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  resultDescription: { paddingTop: '4px', paddingBottom: '4px' },
+  resultFooter: { display: 'flex', flexDirection: 'column' },
+
+  // Tasks
   taskHeading: {
     display: 'flex',
     flexDirection: 'row',
@@ -295,6 +317,75 @@ export const styles = () => ({
   taskContent: { padding: theme.spacing(3) },
   taskSectionHeading: { paddingBottom: theme.spacing(1) },
   taskSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+  // vacancies section
+  vacancySection: {
+    display: 'flex',
+    [smallVp]: { width: '100%', flexWrap: 'noWrap', flexDirection: 'column' },
+    [mediumOrLargeVp]: { flexWrap: 'wrap', flexDirection: 'row' },
+  },
+  vacancyContainer: {
+    marginRight: theme.spacing(2),
+    minWidth: '300px',
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  vacancyBody: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'noWrap',
+    padding: theme.spacing(1),
+  },
+  vacancyHeading: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: theme.spacing(1),
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.primary.main,
+  },
+  vacancyStatus: {
+    backgroundColor: fade(theme.palette.common.white, 0.15),
+    color: theme.palette.common.white,
+    paddingTop: '2px',
+    paddingBottom: '2px',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
+    borderRadius: theme.shape.borderRadius,
+    textTransform: 'uppercase',
+  },
+  vacancyFieldsTable: {
+    display: 'grid',
+    gridTemplateColumns: 'auto auto',
+  },
+  vacancyFieldRow: {},
+  vacancyFieldTitle: {
+    fontWeight: 'bold',
+    flexBasis: '45%',
+    paddingRight: theme.spacing(4),
+    width: '100%',
+    flexGrow: 1,
+  },
+  vacancyFieldValue: {
+    width: '100%',
+    flexGrow: 1,
+  },
+  vacancyPeriod: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'top',
+  },
+  periodDate: { flexGrow: 1 },
+  vacancySignUpButton: {
+    flexGrow: 0,
+    padding: 0,
+    margin: 0,
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.common.white,
+  },
 
   // Map
   mapContent: { display: 'flex', padding: theme.spacing(2), flexDirection: 'column' },
@@ -304,21 +395,8 @@ export const styles = () => ({
     marginBottom: theme.spacing(2),
   },
 
-  // Contributions
-  contributionList: { paddingLeft: theme.spacing(3), paddingBottom: theme.spacing(2) },
-  contributeLink: { paddingBottom: '6px' },
-
-  // Task List
-  taskListEntry: { display: 'flex', flexDirection: 'column', paddingBottom: theme.spacing(3) },
-  taskResult: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  resultDescription: { paddingTop: '4px', paddingBottom: '4px' },
-  resultFooter: { display: 'flex', flexDirection: 'column' },
-
   // At a glance
-  aagTable: {
+  aagPanel: {
     [smallVp]: {
       backgroundColor: aagBgColor,
       padding: theme.spacing(2),
@@ -327,8 +405,6 @@ export const styles = () => ({
       minWidth: '270px',
       transition: 'max-height .25s ease-in-out',
     },
-    display: 'flex',
-    flexDirection: 'column',
     [mediumOrLargeVp]: {
       float: 'right',
       width: '420px',
@@ -338,61 +414,31 @@ export const styles = () => ({
       boxShadow: `0px 3px 10px ${theme.palette.divider}`,
     },
   },
-  aagBody: {
-    [mediumOrLargeVp]: {
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(1),
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
+  aagTable: {
+    display: 'grid',
+    gridTemplateColumns: '35% 65%',
+    gridGap: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
   },
   aagHeader: {
     [smallVp]: { display: 'none' },
-    [mediumOrLargeVp]: {
-      paddingTop: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-      fontStyle: 'italic',
-      color: theme.palette.common.white,
-      backgroundColor: theme.palette.primary.main,
-    },
+    fontWeight: 'bold',
+    gridColumn: '1 / span 2',
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.primary.main,
+    fontStyle: 'italic',
+    padding: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   },
-  aagRow: { display: 'flex', flexDirection: 'row', paddingBottom: theme.spacing(1) },
   aagTitle: {
     fontWeight: 'bold',
-    flexBasis: '45%',
-    paddingRight: theme.spacing(4),
-    flexGrow: 1,
+    gridColumn: 1,
+    [mediumOrLargeVp]: { paddingLeft: theme.spacing(2) },
   },
-  aagValue: { flexBasis: '65%', flexGrow: 9 },
-
-  // user profile
-  userHeading: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'centre',
-    justifyContent: 'space-between',
-    borderBottom: `2px solid ${strongBorderColor}`,
-    paddingLeft: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(2),
+  aagValue: {
+    gridColumn: 2,
     paddingRight: theme.spacing(2),
-  },
-  userContent: { padding: theme.spacing(3) },
-  userSectionHeading: { paddingBottom: theme.spacing(1) },
-  userSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
-  signedUpLink: { paddingBottom: theme.spacing(1) },
-
-  // Content Layout - full width
-  fullWidthContent: {
-    padding: theme.spacing(2),
-    paddingLeft: theme.spacing(3),
-    flex: '100%',
-  },
-  taskBody: {
-    marginTop: theme.spacing(2),
-    width: '100%',
   },
 
   // Charts
@@ -417,6 +463,7 @@ export const styles = () => ({
     width: '180px',
     flexGrow: 0,
   },
+  noChartsMessage: { paddingLeft: theme.spacing(2), color: errorColor },
   chartLayoutBody: { flexGrow: 1 },
   chartHeadingContainer: {
     paddingLeft: theme.spacing(2),
@@ -450,6 +497,7 @@ export const styles = () => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  // inspector
   inspectorToolTip: {
     zIndex: 99999,
     position: 'fixed',
@@ -476,6 +524,27 @@ export const styles = () => ({
     paddingTop: '4px',
   },
   inspectorInteriorSection: { padding: theme.spacing(1) },
+
+  // user profile
+  userHeading: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'centre',
+    justifyContent: 'space-between',
+    borderBottom: `2px solid ${strongBorderColor}`,
+    paddingLeft: theme.spacing(3),
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+  },
+  userContent: { padding: theme.spacing(3) },
+  userSectionHeading: { paddingBottom: theme.spacing(1) },
+  userSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+  signedUpLink: { paddingBottom: theme.spacing(1) },
+
+  // Contributions
+  contributionList: { paddingLeft: theme.spacing(3), paddingBottom: theme.spacing(2) },
+  contributeLink: { paddingBottom: '6px' },
 
   // drawer
   drawerBody: {
@@ -522,7 +591,7 @@ export const styles = () => ({
     marginTop: theme.spacing(1),
     backgroundColor: datePickerBgColor,
   },
-  datesDialogErrorMsg: { paddingTop: theme.spacing(2), color: 'red' },
+  datesDialogErrorMsg: { paddingTop: theme.spacing(2), color: errorColor },
 
   // label dissappears when small
   hidingLabel: {
@@ -536,8 +605,12 @@ export const styles = () => ({
   link: {
     textDecoration: 'none',
     color: theme.palette.primary.main,
-    '&:focus, &:hover, &:visited, &:link, &:active': {
+    '&:focus,&:visited, &:link, &:active': {
       textDecoration: 'none',
+    },
+    '&:hover': {
+      textDecoration: 'none',
+      color: linkHoverColor,
     },
   },
 });

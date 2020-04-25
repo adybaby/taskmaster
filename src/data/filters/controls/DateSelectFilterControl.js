@@ -5,17 +5,33 @@ import {
   getDateRangeForWeek,
   getDateRangeForMonth,
   getDateRangeForYear,
+  areDateRangesOverlapping,
 } from '../../../util/Dates';
 
 const DEFAULT_FILTER_ID = `ANY_TIME`;
 
-const createExecute = (dateField) => (tasks, { from, to }) =>
-  tasks.filter((task) =>
-    task[dateField] === null || typeof task[dateField] === 'undefined'
-      ? null
-      : (from === null || afterOrE(task[dateField], from)) &&
-        (to === null || beforeOrE(task[dateField], to))
-  );
+const createExecute = (dateField) =>
+  dateField !== null
+    ? (tasks, { from, to }) =>
+        tasks.filter((task) =>
+          task[dateField] === null || typeof task[dateField] === 'undefined'
+            ? null
+            : (from === null || afterOrE(task[dateField], from)) &&
+              (to === null || beforeOrE(task[dateField], to))
+        )
+    : (tasks, { from, to }) =>
+        tasks.filter((task) =>
+          task.startDate === null || typeof task.startDate === 'undefined'
+            ? null
+            : (from !== null &&
+                to !== null &&
+                areDateRangesOverlapping(
+                  { from, to },
+                  { from: task.startDate, to: task.endDate }
+                )) ||
+              (to === null && afterOrE(task.endDate, from)) ||
+              (from === null && beforeOrE(task.startDate, to))
+        );
 
 export const createDateSelectFilterControl = (dateField, includeFuture) => {
   const options = [

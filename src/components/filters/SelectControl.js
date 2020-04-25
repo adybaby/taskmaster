@@ -8,8 +8,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@material-ui/core';
 import { styles } from '../../styles/Styles';
-import { formatDateRange } from '../../util/Dates';
 import { DatesDialog } from './datesdialog/DateDialog';
+import { filterSummary } from '../../data/filters/TaskListFilterControls';
 
 const useStyles = makeStyles(styles);
 
@@ -24,7 +24,6 @@ export const SelectControl = ({
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const popOverId = open ? 'select-popover' : undefined;
-  const selected = control.options.find((option) => option.id === control.selectedId);
   const [openDates, setOpenDates] = useState(false);
   const [datePickerOptionId, setDatePickerOptionId] = useState(null);
   const theme = useTheme();
@@ -60,9 +59,6 @@ export const SelectControl = ({
     setAnchorEl(null);
   };
 
-  const formatControlLabel = () =>
-    `${control.label} ${selected.datePicker ? formatDateRange(selected.params) : selected.label}`;
-
   const buttonProps = {};
   if (!control.dontHighlight && control.selectedId !== control.defaultId) {
     buttonProps.style = { color: theme.palette.primary.main, fontWeight: 'bold' };
@@ -83,7 +79,7 @@ export const SelectControl = ({
         focusRipple={false}
         {...buttonProps}
       >
-        {formatControlLabel()}
+        {filterSummary(control)}
       </Button>
       <Popover
         id={popOverId}

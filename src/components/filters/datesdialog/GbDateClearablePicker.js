@@ -27,8 +27,7 @@ const styles = createStyles((theme) => ({
 }));
 
 const GbClearableDatePicker = (props) => {
-  const { minDate, maxDate, classes } = props;
-  const { value, ...other } = props;
+  const { minDate, maxDate, classes, value, ...other } = props;
 
   const [intVal, setIntVal] = useState(value);
 

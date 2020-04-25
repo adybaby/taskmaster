@@ -151,7 +151,7 @@ export const TagsLinks = ({ task, ...typographyProps }) =>
     <TaskFilterLinks
       paramName={FILTER_TYPES.TEXT.paramName}
       paramValues={task.tags}
-      filterControlId={TASK_FILTER_CONTROL_IDS.SEARCH_TEXT}
+      filterControlId={TASK_FILTER_CONTROL_IDS.SEARCH_FIELD}
       forInitiatives={false}
       {...typographyProps}
     />
