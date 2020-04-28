@@ -41,6 +41,7 @@ export const typographyVariant = {
   aag: { title: 'body2', value: 'body2', note: 'caption' },
   task: { heading: 'h5', body: 'body1' },
   taskList: { tasksCount: 'subtitle1' },
+  filters: { filterButton: 'body2' },
   taskResult: {
     editingSummary: 'caption',
     durationSummary: 'caption',
@@ -193,7 +194,6 @@ export const styles = () => ({
   mainTabBar: {
     position: 'relative',
     display: 'flex',
-    justifyContent: 'space-between',
     flexDirection: 'row',
     borderBottom: `1px solid ${theme.palette.divider}`,
     backgroundColor: theme.palette.background.default,
@@ -214,7 +214,7 @@ export const styles = () => ({
     minWidth: '0px',
   },
   filterBarButton: {
-    paddingRight: theme.spacing(5),
+    ...scaledWidth,
     [smallVp]: {
       display: 'none',
     },
@@ -231,7 +231,7 @@ export const styles = () => ({
     },
   },
   filterDrawerButton: {
-    paddingRight: theme.spacing(5),
+    ...scaledWidth,
     [mediumOrLargeVp]: { display: 'none' },
     minWidth: '0px',
     '&&': {
@@ -262,7 +262,7 @@ export const styles = () => ({
     color: strongButtonTextColor,
     justifyContent: 'left',
     [smallVp]: { width: '100%' },
-    paddingLeft: theme.spacing(2),
+    paddingLeft: theme.spacing(1),
   },
 
   // Task List
@@ -271,14 +271,22 @@ export const styles = () => ({
     paddingLeft: theme.spacing(3),
     flex: '100%',
   },
-  taskListSummary: {
-    paddingBottom: theme.spacing(2),
+  filterSummary: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'noWrap',
+    alignItems: 'center',
   },
   taskBody: {
     marginTop: theme.spacing(2),
     width: '100%',
   },
-  taskListEntry: { display: 'flex', flexDirection: 'column', paddingBottom: theme.spacing(3) },
+  taskListEntry: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(2),
+  },
   taskResult: {
     display: 'flex',
     flexDirection: 'column',

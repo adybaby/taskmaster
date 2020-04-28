@@ -1,10 +1,9 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import { styles } from '../../styles/Styles';
+import { TASK_TYPE, ICONS } from '../../constants/Constants';
 import { DriverContributionLinks, TaskLink } from '../Link';
-import * as TYPES from '../../data/fields/Type';
-import * as ICONS from '../../Icons';
 
 const useStyles = makeStyles(styles);
 
@@ -15,7 +14,7 @@ export const MapPanel = () => {
   return (
     <div className={classes.mapContent}>
       {tasks
-        .filter((task) => task.type === TYPES.DRIVER)
+        .filter((task) => task.type === TASK_TYPE.DRIVER)
         .map((task) => (
           <div key={task.id}>
             <div className={classes.mapDriverTitle}>

@@ -1,12 +1,10 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
+import { makeStyles } from '@material-ui/core/styles';
 import { styles, typographyVariant } from '../../styles/Styles';
+import { TASK_TYPE, COST, ICONS } from '../../constants/Constants';
 import { ContributionLinks, ContributesToLinks, UserLink } from '../Link';
-import * as TASK_TYPES from '../../data/fields/Type';
-import { displayNameForCost } from '../../data/fields/Cost';
-import * as ICONS from '../../Icons';
 import { formatDate } from '../../util/Dates';
 
 const useStyles = makeStyles(styles);
@@ -42,7 +40,7 @@ export const AtAGlance = ({ task }) => {
           <Typography variant={variant.value}>{task.priority}</Typography>
           <Typography variant={variant.note}>(lower number is higher priority)</Typography>
         </div>
-        {task.type === TASK_TYPES.INITIATIVE ? (
+        {task.type === TASK_TYPE.INITIATIVE ? (
           <>
             <Typography variant={variant.title} className={classes.aagTitle}>
               Duration
@@ -52,13 +50,13 @@ export const AtAGlance = ({ task }) => {
             </Typography>
           </>
         ) : null}
-        {task.type === TASK_TYPES.INITIATIVE ? (
+        {task.type === TASK_TYPE.INITIATIVE ? (
           <>
             <Typography variant={variant.title} className={classes.aagTitle}>
               Cost
             </Typography>
             <Typography variant={variant.value} className={classes.aagValue}>
-              {displayNameForCost(task.cost)}
+              {COST.displayNameForCost(task.cost)}
             </Typography>
           </>
         ) : null}
@@ -89,7 +87,7 @@ export const AtAGlance = ({ task }) => {
               <ContributesToLinks
                 variant={variant.value}
                 task={task}
-                taskIcon={task.type === TASK_TYPES.ENABLER ? ICONS.DRIVER : ICONS.ENABLER}
+                taskIcon={task.type === TASK_TYPE.ENABLER ? ICONS.DRIVER : ICONS.ENABLER}
               />
             </div>
           </>
@@ -103,7 +101,7 @@ export const AtAGlance = ({ task }) => {
               <ContributionLinks
                 variant={variant.value}
                 task={task}
-                taskIcon={task.type === TASK_TYPES.DRIVER ? ICONS.ENABLER : ICONS.INITIATIVE}
+                taskIcon={task.type === TASK_TYPE.DRIVER ? ICONS.ENABLER : ICONS.INITIATIVE}
               />
             </div>
           </>

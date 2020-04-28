@@ -37,6 +37,7 @@ export const Inspector = ({ dayRefData, skillTitle, total, daySummary }) => {
                   <UserLink userId={elem.user.id} variant={variant.body} />
                   {'\u00A0'}as{'\u00A0'}
                   <SkillLink skill={skillTitle} variant={variant.body} />
+                  {'\u00A0'}
                 </>
               ) : null}
               {taskField !== null ? (

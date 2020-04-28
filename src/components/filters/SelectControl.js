@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@material-ui/core';
-import { styles } from '../../styles/Styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import { styles, typographyVariant } from '../../styles/Styles';
+import { TASK_LIST_FILTER_CONTROL_IDS, ICONS } from '../../constants/Constants';
+import { FilterSummary } from './FilterSummary';
 import { DatesDialog } from './datesdialog/DateDialog';
-import { filterSummary } from '../../data/filters/TaskListFilterControls';
 
 const useStyles = makeStyles(styles);
 
-export const SelectControl = ({
-  control,
-  handleOptionSelected,
-  handleDateRangeSelected,
-  preCountResults,
-  currentTaskType,
-}) => {
+export const SelectControl = ({ control, handleOptionSelected, handleDateRangeSelected }) => {
   const classes = useStyles();
+  const variant = typographyVariant.filters;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const popOverId = open ? 'select-popover' : undefined;
   const [openDates, setOpenDates] = useState(false);
   const [datePickerOptionId, setDatePickerOptionId] = useState(null);
+  const currentTaskType = useSelector((state) => state.taskListfilterControls).find(
+    (filterControl) => filterControl.id === TASK_LIST_FILTER_CONTROL_IDS.TYPE
+  ).selectedId;
   const theme = useTheme();
 
   useEffect(() => {
@@ -75,11 +73,14 @@ export const SelectControl = ({
         classes={{ root: classes.selectButton }}
         aria-describedby={popOverId}
         onClick={handleOpenFilterControlClick}
-        endIcon={<FontAwesomeIcon icon={faCaretDown} />}
         focusRipple={false}
         {...buttonProps}
       >
-        {filterSummary(control)}
+        <FilterSummary
+          forControl={control}
+          variant={variant.filterButton}
+          icon={ICONS.DOWN_ARROW}
+        />
       </Button>
       <Popover
         id={popOverId}
@@ -96,7 +97,6 @@ export const SelectControl = ({
         }}
       >
         {control.options.map((option, index) => {
-          const count = typeof preCountResults !== 'undefined' ? preCountResults(option) : -1;
           return (
             <React.Fragment key={index}>
               {option.datePicker ? <Divider /> : null}
@@ -104,21 +104,26 @@ export const SelectControl = ({
                 button
                 selected={option.id === control.selectedId}
                 onClick={(event) => handleListItemClick(event, option.id)}
-                disabled={count === 0 || !validForTaskType(option)}
+                disabled={!validForTaskType(option)}
                 dense
               >
-                <ListItemText primary={`${option.label} ${count === -1 ? '' : ` (${count})`}`} />
+                <ListItemText primary={option.label} />
               </ListItem>
-              {option.datePicker ? <Divider /> : null}
+              {option.datePicker ? (
+                <>
+                  <Divider />{' '}
+                  <DatesDialog
+                    open={openDates}
+                    fieldLabel={control.label}
+                    handleClose={handleCloseDatesDialog}
+                    params={option.params}
+                  />
+                </>
+              ) : null}
             </React.Fragment>
           );
         })}
       </Popover>
-      <DatesDialog
-        open={openDates}
-        fieldLabel={control.label}
-        handleClose={handleCloseDatesDialog}
-      />
     </div>
   );
 };

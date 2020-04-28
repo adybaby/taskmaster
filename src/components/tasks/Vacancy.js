@@ -1,14 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { styles, typographyVariant } from '../../styles/Styles';
-import {
-  getPriorityLabel,
-  getStatusLabel,
-  getInterestStatusLabel,
-  getRoleLabel,
-} from '../../data/fields/Vacancies';
+import { VACANCY } from '../../constants/Constants';
 import { formatDate } from '../../util/Dates';
 
 const useStyles = makeStyles(styles);
@@ -25,7 +20,7 @@ export const Vacancy = ({ vacancy }) => {
         </Typography>
         <div className={classes.vacancyStatus}>
           <Typography variant="caption">
-            <b>{getStatusLabel(vacancy.status)}</b>
+            <b>{VACANCY.getStatusLabel(vacancy.status)}</b>
           </Typography>
         </div>
       </div>
@@ -35,13 +30,13 @@ export const Vacancy = ({ vacancy }) => {
             Role
           </Typography>
           <Typography variant={variant.value} className={classes.vacancyFieldValue}>
-            {getRoleLabel(vacancy.role)}
+            {VACANCY.getRoleLabel(vacancy.role)}
           </Typography>
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
             Priority
           </Typography>
           <Typography variant={variant.value} className={classes.vacancyFieldValue}>
-            {getPriorityLabel(vacancy.priority)}
+            {VACANCY.getPriorityLabel(vacancy.priority)}
           </Typography>
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
             Dates

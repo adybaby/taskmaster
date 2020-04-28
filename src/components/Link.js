@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { styles } from '../styles/Styles';
-import { FILTER_TYPES } from '../data/filters/FilterTypes';
-import { TASK_FILTER_CONTROL_IDS } from '../data/filters/TaskListFilterControls';
-import * as URLS from '../Urls';
+import {
+  URLS,
+  FILTER_TYPES,
+  TASK_LIST_FILTER_CONTROL_IDS,
+  CONTRIBUTES_TO,
+  ICONS,
+} from '../constants/Constants';
+import { formatDate } from '../util/Dates';
 import {
   resetAllTaskListFilterControls,
   setTaskListFilterControl,
-} from '../redux/actions/TaskListFilterActions';
-import { displayNameForLevel } from '../data/fields/ContributesTo';
-import * as ICONS from '../Icons';
-import { formatDate } from '../util/Dates';
+} from '../state/actions/TaskListFilterActions';
 
 const useStyles = makeStyles(styles);
 
@@ -112,7 +114,7 @@ export const UserLink = ({ userId, ...typographyProps }) => {
         <TaskFilterLink
           paramName={FILTER_TYPES.SELECT.paramName}
           paramValue={user.id}
-          filterControlId={TASK_FILTER_CONTROL_IDS.CREATED_BY}
+          filterControlId={TASK_LIST_FILTER_CONTROL_IDS.CREATED_BY}
           label={`\u00A0(${user.authored.length})`}
           forInitiatives={false}
           {...typographyProps}
@@ -126,7 +128,7 @@ export const SkillLink = ({ skill, ...typographyProps }) => (
   <TaskFilterLink
     paramName={FILTER_TYPES.SELECT.paramName}
     paramValue={skill}
-    filterControlId={TASK_FILTER_CONTROL_IDS.VACANCIES}
+    filterControlId={TASK_LIST_FILTER_CONTROL_IDS.VACANCIES}
     label={skill}
     forInitiatives={true}
     {...typographyProps}
@@ -140,7 +142,7 @@ export const VacancyLinks = ({ task, ...typographyProps }) =>
       paramValues={task.vacancies
         .filter((vacancy) => vacancy.status === 'OPEN')
         .map((vacancy) => vacancy.skill)}
-      filterControlId={TASK_FILTER_CONTROL_IDS.VACANCIES}
+      filterControlId={TASK_LIST_FILTER_CONTROL_IDS.VACANCIES}
       forInitiatives={true}
       {...typographyProps}
     />
@@ -151,7 +153,7 @@ export const TagsLinks = ({ task, ...typographyProps }) =>
     <TaskFilterLinks
       paramName={FILTER_TYPES.TEXT.paramName}
       paramValues={task.tags}
-      filterControlId={TASK_FILTER_CONTROL_IDS.SEARCH_FIELD}
+      filterControlId={TASK_LIST_FILTER_CONTROL_IDS.SEARCH_FIELD}
       forInitiatives={false}
       {...typographyProps}
     />
@@ -165,7 +167,7 @@ const ContributeLink = ({ contribute, taskIcon, ...typographyProps }) => {
         <TaskLink task={contribute} taskIcon={taskIcon} {...typographyProps} />
         <br />
         <Typography style={{ display: 'inline-block' }} variant="caption">
-          <i>{displayNameForLevel(contribute.level)}</i>
+          <i>{CONTRIBUTES_TO.displayNameForLevel(contribute.level)}</i>
         </Typography>
       </div>
     </div>
@@ -220,7 +222,7 @@ export const SkillsLinks = ({ user, ...typographyProps }) =>
     <TaskFilterLinks
       paramName={FILTER_TYPES.SELECT.paramName}
       paramValues={user.skills}
-      filterControlId={TASK_FILTER_CONTROL_IDS.VACANCIES}
+      filterControlId={TASK_LIST_FILTER_CONTROL_IDS.VACANCIES}
       forInitiatives={true}
       {...typographyProps}
     />

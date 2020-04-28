@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { Divider } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import * as TASK_TYPES from '../../data/fields/Type';
-import { INFO as INFO_ICON } from '../../Icons';
-import { AtAGlance } from './AtAGlance';
+import { makeStyles } from '@material-ui/core/styles';
 import { styles, typographyVariant } from '../../styles/Styles';
+import { ICONS, TASK_TYPE } from '../../constants/Constants';
+import { AtAGlance } from './AtAGlance';
 import { Vacancy } from './Vacancy';
 
 const useStyles = makeStyles(styles);
@@ -40,7 +39,7 @@ export const Task = () => {
           onClick={() => setInfoVisible(!infoVisible)}
           selected={infoVisible}
         >
-          {INFO_ICON}
+          {ICONS.INFO}
         </ToggleButton>
       </div>
       <div className={classes.taskContent}>
@@ -53,7 +52,7 @@ export const Task = () => {
           {task.moreInformation}
         </Typography>
 
-        {task.type === TASK_TYPES.INITIATIVE ? (
+        {task.type === TASK_TYPE.INITIATIVE ? (
           <>
             <Typography className={classes.taskSectionHeading} variant={variant.heading}>
               Hypotheses

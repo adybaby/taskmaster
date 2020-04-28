@@ -6,14 +6,13 @@ import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import enGB from 'date-fns/locale/en-GB';
+import { URLS, DB_STATUS } from './constants/Constants';
+import { initialise } from './state/actions/DataAndFilterLoaderActions';
+import { theme } from './styles/Styles';
 import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
 import { Task } from './components/tasks/Task';
 import { ProfilesPanel } from './components/profile/ProfilesPanel';
-import * as URLS from './Urls';
-import { initialise } from './redux/actions/DbActions';
-import { DB_STATUS } from './data/db/Db';
-import { theme } from './styles/Styles';
 
 export const App = () => {
   const dispatch = useDispatch();

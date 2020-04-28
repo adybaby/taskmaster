@@ -1,9 +1,0 @@
-export const BROWSE = 'browse';
-export const MAP = 'map';
-export const CHARTS = 'charts';
-export const DRIVERS = 'drivers';
-export const INITIATIVES = 'initiatives';
-export const ENABLERS = 'enablers';
-export const PROFILE = 'profile';
-export const TASK = 'task';
-export const ALL = 'all';

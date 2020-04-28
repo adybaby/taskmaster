@@ -1,18 +1,16 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlusCircle, faUserCircle, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { styles } from '../styles/Styles';
+import { TASK_LIST_FILTER_CONTROL_IDS, ICONS } from '../constants/Constants';
 import {
   setTaskListFilterControl,
   resetAllTaskListFilterControls,
-} from '../redux/actions/TaskListFilterActions';
-import { TASK_FILTER_CONTROL_IDS } from '../data/filters/TaskListFilterControls';
+} from '../state/actions/TaskListFilterActions';
 
 const useStyles = makeStyles(styles);
 
@@ -21,7 +19,7 @@ export const AppBar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const searchText = useSelector((state) => state.taskListfilterControls).find(
-    (filterControl) => filterControl.id === TASK_FILTER_CONTROL_IDS.SEARCH_FIELD
+    (filterControl) => filterControl.id === TASK_LIST_FILTER_CONTROL_IDS.SEARCH_FIELD
   ).text;
   const userName = useSelector((state) => state.currentUser).firstName;
 
@@ -33,7 +31,7 @@ export const AppBar = () => {
   const handleSearchChange = (event) => {
     dispatch(
       setTaskListFilterControl({
-        id: TASK_FILTER_CONTROL_IDS.SEARCH_FIELD,
+        id: TASK_LIST_FILTER_CONTROL_IDS.SEARCH_FIELD,
         text: event.target.value,
       })
     );
@@ -56,9 +54,7 @@ export const AppBar = () => {
         </Typography>
       </Link>
       <div className={classes.searchBox}>
-        <div className={classes.searchIcon}>
-          <FontAwesomeIcon icon={faSearch} />
-        </div>
+        <div className={classes.searchIcon}>{ICONS.SEARCH}</div>
         <InputBase
           value={searchText}
           onChange={handleSearchChange}
@@ -80,7 +76,7 @@ export const AppBar = () => {
         onClick={handleNewClick}
         size="large"
       >
-        <FontAwesomeIcon icon={faPlusCircle} />
+        {ICONS.NEW}
         <span className={classes.hidingLabel}>New..</span>
       </Button>
       <Button
@@ -90,7 +86,7 @@ export const AppBar = () => {
         to="/profile"
         size="large"
       >
-        <FontAwesomeIcon icon={faUserCircle} />
+        {ICONS.PROFILE}
         <span className={classes.hidingLabel}>{userName}</span>
       </Button>
     </div>

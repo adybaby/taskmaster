@@ -13,8 +13,8 @@ import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography, Hidden } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
 import { styles, typographyVariant } from '../../styles/Styles';
-import { calculateResourceChartData } from '../../redux/selectors/ResourceChartDataSelector';
-import { chartGroups } from '../../data/charts/ResourceChartDefinitions';
+import { calculateResourceChartData } from '../../state/selectors/ResourceChartDataSelector';
+import { RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
 import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
 

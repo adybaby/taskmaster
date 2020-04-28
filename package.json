@@ -18,6 +18,8 @@
     "clsx": "^1.0.4",
     "date-fns": "^2.11.0",
     "fibers": "^4.0.2",
+    "jss-plugin-global": "^10.1.1",
+    "jss-plugin-nested": "^10.1.1",
     "node-sass": "^4.13.1",
     "pluralize": "^8.0.0",
     "prettier": "^2.0.2",

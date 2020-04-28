@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Inspector } from './Inspector';
 import { styles, typographyVariant, CHART_COLORS } from '../../styles/Styles';
-import { types } from '../../data/charts/ResourceChartDefinitions';
+import { CHART_TYPES } from '../../constants/Constants';
 
 const ONE_DAY = 86400000;
 
@@ -34,7 +34,7 @@ export const ResourceBarChart = ({
   const classes = useStyles();
   const variant = typographyVariant.chart;
   const skills = skillsAndColors.map((skill) => skill.title);
-  const isGantt = chart.type === types.BAR_GANTT.id;
+  const isGantt = chart.type === CHART_TYPES.BAR_GANTT.id;
 
   const makeLegend = () =>
     isGantt ? (
@@ -125,15 +125,14 @@ export const ResourceBarChart = ({
       props = { ...props, stackBy: 'y' };
     }
 
+    const ganttYTickValues = [...Array(skills.length).keys()].map((i) => i + 0.5);
+
     return (
       <XYPlot width={width} {...props}>
-        <HorizontalGridLines />
+        <HorizontalGridLines tickValues={isGantt ? ganttYTickValues : undefined} />
         <XAxis tickLabelAngle={-45} />
         {isGantt ? (
-          <YAxis
-            tickFormat={(t, i) => skills[i]}
-            tickValues={[...Array(skills.length).keys()].map((i) => i + 0.5)}
-          />
+          <YAxis tickFormat={(t, i) => skills[i]} tickValues={ganttYTickValues} />
         ) : (
           <YAxis tickFormat={(t) => (Math.round(t) === t ? t : '')} />
         )}

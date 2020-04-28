@@ -1,10 +1,15 @@
+bug: datepicker :to does not change to follow :from when clicked
+
 month picker
 year picker
 can skip tab order of datepicker
 
 vacancy list - sign up to highlight whole period and click on select (whole button?)
+lighter color for vacancy header and button, like tone of search box? - make all those same col? - use inspector color?
 
-created by me
+background images on header bars and header bars
+
+url encode filters
 
 1) get css transition for at a glance to work
 

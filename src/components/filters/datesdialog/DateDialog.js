@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -15,7 +15,7 @@ import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
 
 const useStyles = makeStyles(styles);
 
-export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
+export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other }) => {
   const classes = useStyles();
   const CONTROL = { FROM: 'fromStr', TO: 'toStr' };
   const fromControl = createRef();
@@ -34,6 +34,11 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, ...other }) => {
     }
     return date;
   };
+
+  useEffect(() => {
+    setFromStr(params.from !== null ? formatDate(params.from) : '');
+    setToStr(params.to !== null ? formatDate(params.to) : '');
+  }, [params]);
 
   const onSubmit = () => {
     handleClose({ from: setDateField(fromStr, setFromStr), to: setDateField(toStr, setToStr) });

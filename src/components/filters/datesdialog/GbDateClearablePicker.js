@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-nested-ternary */
-import clsx from 'clsx';
-import format from 'date-fns/format';
 import React, { useEffect, useState } from 'react';
 import { DatePicker as MuiDatePicker } from '@material-ui/pickers';
 import { createStyles } from '@material-ui/core/styles';
 import { IconButton, withStyles } from '@material-ui/core';
+import clsx from 'clsx';
+import format from 'date-fns/format';
 import { equals, before, after, ukToUs, isValidDateString } from '../../../util/Dates';
 
 const styles = createStyles((theme) => ({

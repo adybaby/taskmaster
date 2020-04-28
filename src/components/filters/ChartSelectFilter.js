@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setChartFilterControl } from '../../redux/actions/ChartFilterActions';
+import { setChartFilterControl } from '../../state/actions/ChartFilterActions';
 import { SelectControl } from './SelectControl';
 
 export const ChartSelectFilter = ({ filterControl, handleFilterSelected }) => {

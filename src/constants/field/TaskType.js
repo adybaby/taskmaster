@@ -1,0 +1,5 @@
+export const TASK_TYPE = {
+  DRIVER: 'DRIVER',
+  ENABLER: 'ENABLER',
+  INITIATIVE: 'INITIATIVE',
+};
