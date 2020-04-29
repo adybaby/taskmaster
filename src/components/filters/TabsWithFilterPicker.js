@@ -4,24 +4,24 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import Collapse from '@material-ui/core/Collapse';
 import { Drawer, List, Button, Hidden, Tabs } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
-import { ICONS, TABS, TASK_LIST_FILTER_CONTROL_IDS } from '../../constants/Constants';
+import { ICONS, TABS } from '../../constants/Constants';
 import { setTaskListFilterControl } from '../../state/actions/TaskListFilterActions';
 import { setChartFilterControl } from '../../state/actions/ChartFilterActions';
+import { setSortOrder } from '../../state/actions/SortOrderActions';
 import {
   //  getVisibleTaskFilters,
   getFilterBarControls,
   getActiveFilterBarControls,
 } from '../../state/selectors/FilterSelector';
 import { SelectControl } from './SelectControl';
-import { SortControl } from './SortControl';
 
 export const TabsWithFilterPicker = ({ tabs, visible }) => {
   const classes = useStyles();
   const [filterBarVisible, setFilterBarVisible] = useState(false);
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
-  const taskListFilterControls = useSelector((state) => state.taskListfilterControls);
   const isAFilterActive = useSelector(getActiveFilterBarControls).length !== 0;
   const filterBarControls = useSelector(getFilterBarControls);
+  const sortOrder = useSelector((states) => states.sortOrder);
   const currentTab = useSelector((state) => state.currentTab);
 
   const makeSelectControls = (filterDispatcher, handleFilterSelected) =>
@@ -34,19 +34,17 @@ export const TabsWithFilterPicker = ({ tabs, visible }) => {
       />
     ));
 
+  const makeSortControl = () => (
+    <SelectControl control={sortOrder} filterDispatcher={setSortOrder} />
+  );
+
   const makeVisibleFilters = () =>
     currentTab === TABS.charts ? (
       makeSelectControls(setChartFilterControl, () => setFilterDrawerVisible(false))
     ) : (
       <>
         {makeSelectControls(setTaskListFilterControl)}
-        <SortControl
-          currentTaskType={
-            taskListFilterControls.find(
-              (filterControl) => filterControl.id === TASK_LIST_FILTER_CONTROL_IDS.TYPE
-            ).selectedId
-          }
-        />
+        {makeSortControl()}
       </>
     );
 
