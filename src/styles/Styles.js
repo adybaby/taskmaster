@@ -358,7 +358,7 @@ export const useStyles = makeStyles({
   },
   vacancyContainer: {
     marginRight: theme.spacing(2),
-    minWidth: '400px',
+    minWidth: '320px',
     marginBottom: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',

@@ -10,6 +10,11 @@ const variant = typographyVariant.aag;
 export const Vacancy = ({ vacancy }) => {
   const classes = useStyles();
 
+  const handleSignUpClick = () => {
+    // eslint-disable-next-line no-alert
+    window.alert('TBD');
+  };
+
   return (
     <Paper className={classes.vacancyContainer}>
       <div className={classes.vacancyHeading}>
@@ -61,7 +66,12 @@ export const Vacancy = ({ vacancy }) => {
                   ) : null}
                 </div>
                 {vacancy.status === VACANCY.FIELDS.STATUS.OPEN.id ? (
-                  <Button classes={{ root: classes.vacancySignUpButton }}>SIGN UP</Button>
+                  <Button
+                    classes={{ root: classes.vacancySignUpButton }}
+                    onClick={handleSignUpClick}
+                  >
+                    SIGN UP
+                  </Button>
                 ) : null}
               </div>
             ))}

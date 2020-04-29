@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { TASK_TYPE, CONTRIBUTES_TO } from '../../constants/Constants';
+import { TASK_TYPE, CONTRIBUTES_TO } from '../../../../../constants/Constants';
 
 export const prioritise = (tasks) => {
   let highestPriority = 0;

@@ -2,7 +2,7 @@ import { min, max } from 'date-fns';
 import { TASK_TYPE } from '../../../../constants/Constants';
 import taskFile from './tasks.json';
 import userFile from './users.json';
-import { prioritise } from '../../../../data/prioritisation/Prioritise';
+import { prioritise } from './prioritisation/Prioritise';
 import { isValidDateString } from '../../../../util/Dates';
 
 const firstLastDates = (tasks, users) => {

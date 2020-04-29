@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Divider, Button } from '@material-ui/core';
+import { Divider, Button, Tabs, Tab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { ICONS, TASK_TYPE } from '../../constants/Constants';
 import { AtAGlance } from './AtAGlance';
@@ -25,8 +24,20 @@ export const Task = () => {
     }
   }, [dispatch, id, task, tasks]);
 
+  const handleTabChange = () => {
+    // eslint-disable-next-line no-alert
+    window.alert('TBD');
+  };
+
   return task === null ? null : (
     <>
+      <div className={classes.mainTabBar}>
+        <Tabs value={'READ'} indicatorColor="primary" onChange={handleTabChange}>
+          <Tab value={'READ'} className={classes.tab} label={<div>Read</div>} />
+          <Tab value={'EDIT'} className={classes.tab} label={<div>Edit</div>} />
+        </Tabs>
+      </div>
+
       <div className={classes.taskHeading}>
         <Typography variant={variant.heading}>
           <b>{task.title}</b>
