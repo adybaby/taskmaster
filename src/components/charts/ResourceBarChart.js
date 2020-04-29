@@ -10,15 +10,12 @@ import {
   DiscreteColorLegend,
 } from 'react-vis';
 import '../../../node_modules/react-vis/dist/style.css';
-import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { Inspector } from './Inspector';
-import { styles, typographyVariant, CHART_COLORS } from '../../styles/Styles';
+import { useStyles, typographyVariant, CHART_COLORS } from '../../styles/Styles';
 import { CHART_TYPES } from '../../constants/Constants';
 
 const ONE_DAY = 86400000;
-
-const useStyles = makeStyles(styles);
 
 export const ResourceBarChart = ({
   chart,

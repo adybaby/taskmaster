@@ -2,17 +2,14 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
-import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
-import { styles } from '../styles/Styles';
+import { useStyles } from '../styles/Styles';
 import { TASK_LIST_FILTER_CONTROL_IDS, ICONS } from '../constants/Constants';
 import {
   setTaskListFilterControl,
   resetAllTaskListFilterControls,
 } from '../state/actions/TaskListFilterActions';
-
-const useStyles = makeStyles(styles);
 
 export const AppBar = () => {
   const classes = useStyles();

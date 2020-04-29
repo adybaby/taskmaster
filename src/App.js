@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import enGB from 'date-fns/locale/en-GB';
+import { StyledApp } from './styles/Styles';
 import { URLS, DB_STATUS } from './constants/Constants';
 import { initialise } from './state/actions/DataAndFilterLoaderActions';
-import { theme } from './styles/Styles';
 import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
 import { Task } from './components/tasks/Task';
@@ -33,9 +31,8 @@ export const App = () => {
       return <div>There was an error creating the local cache from the database..</div>;
     default:
       return (
-        <MuiThemeProvider theme={theme}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils} locale={enGB}>
-            <CssBaseline />
+        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={enGB}>
+          <StyledApp>
             <AppBar />
             <Switch>
               <Route exact path="/">
@@ -49,8 +46,8 @@ export const App = () => {
                 <Redirect to={`/${URLS.BROWSE}/${URLS.ALL}`} />
               </Route>
             </Switch>
-          </MuiPickersUtilsProvider>
-        </MuiThemeProvider>
+          </StyledApp>
+        </MuiPickersUtilsProvider>
       );
   }
 };

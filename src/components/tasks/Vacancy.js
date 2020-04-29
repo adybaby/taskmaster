@@ -1,12 +1,10 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Paper, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { VACANCY } from '../../constants/Constants';
 import { formatDate } from '../../util/Dates';
 
-const useStyles = makeStyles(styles);
 const variant = typographyVariant.aag;
 
 export const Vacancy = ({ vacancy }) => {
@@ -18,7 +16,10 @@ export const Vacancy = ({ vacancy }) => {
         <Typography variant="body1">
           <b>{vacancy.skill}</b>
         </Typography>
-        <div className={classes.vacancyStatus}>
+        <div
+          data-open={String(vacancy.status === VACANCY.FIELDS.STATUS.OPEN.id)}
+          className={classes.vacancyStatus}
+        >
           <Typography variant="caption">
             <b>{VACANCY.getStatusLabel(vacancy.status)}</b>
           </Typography>
@@ -29,15 +30,19 @@ export const Vacancy = ({ vacancy }) => {
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
             Role
           </Typography>
-          <Typography variant={variant.value} className={classes.vacancyFieldValue}>
-            {VACANCY.getRoleLabel(vacancy.role)}
-          </Typography>
+          <div className={classes.vacancyValueInner}>
+            <Typography variant={variant.value} className={classes.vacancyFieldValue}>
+              {VACANCY.getRoleLabel(vacancy.role)}
+            </Typography>
+          </div>
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
             Priority
           </Typography>
-          <Typography variant={variant.value} className={classes.vacancyFieldValue}>
-            {VACANCY.getPriorityLabel(vacancy.priority)}
-          </Typography>
+          <div className={classes.vacancyValueInner}>
+            <Typography variant={variant.value} className={classes.vacancyFieldValue}>
+              {VACANCY.getPriorityLabel(vacancy.priority)}
+            </Typography>
+          </div>
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
             Dates
           </Typography>
@@ -55,7 +60,9 @@ export const Vacancy = ({ vacancy }) => {
                     </Typography>
                   ) : null}
                 </div>
-                <Button classes={{ root: classes.vacancySignUpButton }}>SIGN UP</Button>
+                {vacancy.status === VACANCY.FIELDS.STATUS.OPEN.id ? (
+                  <Button classes={{ root: classes.vacancySignUpButton }}>SIGN UP</Button>
+                ) : null}
               </div>
             ))}
           </div>

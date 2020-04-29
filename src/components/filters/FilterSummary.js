@@ -1,16 +1,13 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { styles } from '../../styles/Styles';
+import { useStyles } from '../../styles/Styles';
 import { TASK_LIST_FILTER_CONTROL_IDS } from '../../constants/Constants';
 import { resetAllTaskListFilterControls } from '../../state/actions/TaskListFilterActions';
 import { getAllActiveTaskFilters } from '../../state/selectors/FilterSelector';
 import { getVisibleTasks } from '../../state/selectors/TaskListSelector';
 import { formatDateRange } from '../../util/Dates';
-
-const useStyles = makeStyles(styles);
 
 const makeSummaryString = (forControl) => {
   const selected = forControl.options.find((option) => option.id === forControl.selectedId);
@@ -39,7 +36,9 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
 
   const applyStyles = (output) => (
     <span className={classes.filterSummary}>
-      <Typography {...typographyProps}>{output}</Typography>
+      <Typography className={classes.filterSummaryTypography} {...typographyProps}>
+        {output}
+      </Typography>
       {`\u00A0`}
       {icon}
     </span>

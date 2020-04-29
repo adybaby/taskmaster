@@ -1,12 +1,10 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import { Divider } from '@material-ui/core';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { SkillsLinks, AuthoredLinks, SignedUpLinks } from '../Link';
 import { formatDate } from '../../util/Dates';
 
-const useStyles = makeStyles(styles);
 const variant = typographyVariant.user;
 
 export const UserPanel = ({ user }) => {

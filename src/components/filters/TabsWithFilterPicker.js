@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import Collapse from '@material-ui/core/Collapse';
 import { Drawer, List, Button, Hidden, Tabs } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from '../../styles/Styles';
+import { useStyles } from '../../styles/Styles';
 import { ICONS, TABS, TASK_LIST_FILTER_CONTROL_IDS } from '../../constants/Constants';
 import {
   //  getVisibleTaskFilters,
@@ -14,8 +13,6 @@ import {
 import { TaskSelectFilter } from './TaskSelectFilter';
 import { ChartSelectFilter } from './ChartSelectFilter';
 import { SortControl } from './SortControl';
-
-const useStyles = makeStyles(styles);
 
 export const TabsWithFilterPicker = ({ tabs, visible }) => {
   const classes = useStyles();

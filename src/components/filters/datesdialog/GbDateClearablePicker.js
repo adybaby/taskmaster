@@ -1,33 +1,13 @@
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { DatePicker as MuiDatePicker } from '@material-ui/pickers';
-import { createStyles } from '@material-ui/core/styles';
-import { IconButton, withStyles } from '@material-ui/core';
-import clsx from 'clsx';
+import { IconButton } from '@material-ui/core';
 import format from 'date-fns/format';
+import { useStyles } from '../../../styles/Styles';
 import { equals, before, after, ukToUs, isValidDateString } from '../../../util/Dates';
 
-const styles = createStyles((theme) => ({
-  day: {
-    width: 36,
-    height: 36,
-    fontSize: theme.typography.caption.fontSize,
-    margin: '0 2px',
-    color: 'inherit',
-  },
-  disabled: {
-    color: theme.palette.text.disabled,
-  },
-  highlight: {
-    background: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    borderRadius: '50%',
-  },
-}));
-
 const GbClearableDatePicker = (props) => {
-  const { minDate, maxDate, classes, value, ...other } = props;
+  const classes = useStyles();
+  const { minDate, maxDate, value, ...other } = props;
 
   const [intVal, setIntVal] = useState(value);
 
@@ -47,28 +27,31 @@ const GbClearableDatePicker = (props) => {
   }, [value, isSynced]);
 
   const renderDay = (date, selectedDate, dayInCurrentMonth) => {
-    const isSame = equals(date, selectedDate);
-    const beforeMin = before(date, minDate);
-    const afterMax = after(date, maxDate);
+    const dayIsSelected = equals(date, selectedDate);
     const emptyValue = value === null || value === '';
+    const dayDisabled = !dayInCurrentMonth || before(date, minDate) || after(date, maxDate);
 
-    const wrapperClassName = clsx({
-      [classes.highlight]: isSame && !emptyValue,
-    });
-
-    const dayClassName = clsx(classes.day, {
-      [classes.disabled]: !dayInCurrentMonth || beforeMin || afterMax,
-    });
     return (
-      <div className={wrapperClassName}>
-        <IconButton className={dayClassName}>
+      <div
+        data-highlight={String(dayIsSelected && !emptyValue)}
+        className={classes.datePickerDayWrapper}
+      >
+        <IconButton disabled={dayDisabled} className={classes.datePickerDay}>
           <span> {format(date, 'd')} </span>
         </IconButton>
       </div>
     );
   };
 
-  return <MuiDatePicker value={intVal} renderDay={renderDay} {...other} />;
+  return (
+    <MuiDatePicker
+      value={intVal}
+      renderDay={renderDay}
+      minDate={minDate}
+      maxDate={maxDate}
+      {...other}
+    />
+  );
 };
 
-export default withStyles(styles)(GbClearableDatePicker);
+export default GbClearableDatePicker;

@@ -1,12 +1,9 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { VacancyLinks, TagsLinks, UserLink } from '../Link';
 import { formatDate } from '../../util/Dates';
-
-const useStyles = makeStyles(styles);
 
 const variant = typographyVariant.taskResult;
 

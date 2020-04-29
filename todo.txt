@@ -1,8 +1,7 @@
-bug: datepicker :to does not change to follow :from when clicked
+DO I WANT TO GO TO NATIVE CSS?
 
-month picker
-year picker
-can skip tab order of datepicker
+AAG header stretches past table width
+info icon is not centered
 
 vacancy list - sign up to highlight whole period and click on select (whole button?)
 lighter color for vacancy header and button, like tone of search box? - make all those same col? - use inspector color?

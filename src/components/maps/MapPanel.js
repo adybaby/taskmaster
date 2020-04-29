@@ -1,11 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from '../../styles/Styles';
+import { useStyles } from '../../styles/Styles';
 import { TASK_TYPE, ICONS } from '../../constants/Constants';
 import { DriverContributionLinks, TaskLink } from '../Link';
-
-const useStyles = makeStyles(styles);
 
 export const MapPanel = () => {
   const classes = useStyles();

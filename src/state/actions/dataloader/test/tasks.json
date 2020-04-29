@@ -1597,7 +1597,10 @@
       {
         "skill": "Developer",
         "role": "FULL_TIME",
-        "periods": [{ "from": "1 Aug 2021", "to": "14 Oct 2021", "interest": [] }],
+        "periods": [
+          { "from": "1 Aug 2021", "to": "1 Sep 2021", "interest": [] },
+          { "from": "10 Sep 2021", "to": "14 Oct 2021", "interest": [] }
+        ],
         "status": "CLOSED",
         "priority": "ESSENTIAL"
       },

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Divider } from '@material-ui/core';
-import { styles } from '../../styles/Styles';
+import { useStyles } from '../../styles/Styles';
 import { UserPanel } from './UserPanel';
-
-const useStyles = makeStyles(styles);
 
 export const ProfilesPanel = () => {
   const classes = useStyles();

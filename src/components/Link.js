@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from '../styles/Styles';
+import { useStyles } from '../styles/Styles';
 import {
   URLS,
   FILTER_TYPES,
@@ -16,8 +15,6 @@ import {
   resetAllTaskListFilterControls,
   setTaskListFilterControl,
 } from '../state/actions/TaskListFilterActions';
-
-const useStyles = makeStyles(styles);
 
 const TaskFilterLink = ({
   paramName,

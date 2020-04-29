@@ -1,13 +1,10 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import { useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
 import { TaskResult } from './TaskResult';
 import { getVisibleTasks } from '../../state/selectors/TaskListSelector';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { FilterSummary } from '../filters/FilterSummary';
 
-const useStyles = makeStyles(styles);
 const variant = typographyVariant.taskList;
 
 export const TaskList = () => {

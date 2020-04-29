@@ -4,14 +4,11 @@ import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Divider } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { TASK_LIST_FILTER_CONTROL_IDS, ICONS } from '../../constants/Constants';
 import { FilterSummary } from './FilterSummary';
 import { DatesDialog } from './datesdialog/DateDialog';
-
-const useStyles = makeStyles(styles);
 
 export const SelectControl = ({ control, handleOptionSelected, handleDateRangeSelected }) => {
   const classes = useStyles();
@@ -24,7 +21,6 @@ export const SelectControl = ({ control, handleOptionSelected, handleDateRangeSe
   const currentTaskType = useSelector((state) => state.taskListfilterControls).find(
     (filterControl) => filterControl.id === TASK_LIST_FILTER_CONTROL_IDS.TYPE
   ).selectedId;
-  const theme = useTheme();
 
   useEffect(() => {
     const datePickerOption = control.options.find((option) => option.datePicker === true);
@@ -57,26 +53,24 @@ export const SelectControl = ({ control, handleOptionSelected, handleDateRangeSe
     setAnchorEl(null);
   };
 
-  const buttonProps = {};
-  if (!control.dontHighlight && control.selectedId !== control.defaultId) {
-    buttonProps.style = { color: theme.palette.primary.main, fontWeight: 'bold' };
-  }
-
   const validForTaskType = (option) =>
     typeof currentTaskType === 'undefined' ||
     typeof option.forTaskTypes === 'undefined' ||
     option.forTaskTypes.includes(currentTaskType);
 
+  const dataFilterOn = !control.dontHighlight && control.selectedId !== control.defaultId;
+
   return (
     <div>
       <Button
+        data-filter-on={String(dataFilterOn)}
         classes={{ root: classes.selectButton }}
         aria-describedby={popOverId}
         onClick={handleOpenFilterControlClick}
         focusRipple={false}
-        {...buttonProps}
       >
         <FilterSummary
+          data-filter-on={String(dataFilterOn)}
           forControl={control}
           variant={variant.filterButton}
           icon={ICONS.DOWN_ARROW}

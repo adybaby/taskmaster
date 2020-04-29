@@ -4,17 +4,17 @@ import { useParams } from 'react-router-dom';
 import { Divider } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { ICONS, TASK_TYPE } from '../../constants/Constants';
 import { AtAGlance } from './AtAGlance';
 import { Vacancy } from './Vacancy';
 
-const useStyles = makeStyles(styles);
 const variant = typographyVariant.task;
 
 export const Task = () => {
   const classes = useStyles();
+
+  console.log(classes.taskInfoButton);
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks);
   const { id } = useParams();
@@ -35,9 +35,9 @@ export const Task = () => {
         </Typography>
         <ToggleButton
           value="showTaskInfoButton"
-          className={classes.taskInfoButton}
+          classes={{ root: classes.taskInfoButton }}
           onClick={() => setInfoVisible(!infoVisible)}
-          selected={infoVisible}
+          data-selected={String(infoVisible)}
         >
           {ICONS.INFO}
         </ToggleButton>

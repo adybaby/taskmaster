@@ -1,13 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
 import '../../../node_modules/react-vis/dist/style.css';
-import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Divider } from '@material-ui/core';
 import { formatDate } from '../../util/Dates';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { UserLink, TaskLink, SkillLink } from '../Link';
 
-const useStyles = makeStyles(styles);
 const variant = typographyVariant.inspector;
 
 export const Inspector = ({ dayRefData, skillTitle, total, daySummary }) => {

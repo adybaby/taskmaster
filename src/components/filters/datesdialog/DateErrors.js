@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
-import { styles, typographyVariant } from '../../../styles/Styles';
+import { useStyles, typographyVariant } from '../../../styles/Styles';
 import { isValidDateString, ukToUs, beforeOrE } from '../../../util/Dates';
-
-const useStyles = makeStyles(styles);
 
 export const DateErrors = ({ fromStr, toStr, onValidityChange }) => {
   const classes = useStyles();

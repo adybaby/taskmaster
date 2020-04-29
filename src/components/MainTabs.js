@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from '../styles/Styles';
+import { useStyles } from '../styles/Styles';
 import { URLS, TABS, TASK_LIST_FILTER_CONTROL_IDS } from '../constants/Constants';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 import { setTaskListFilterControl } from '../state/actions/TaskListFilterActions';
@@ -11,8 +10,6 @@ import { MapPanel } from './maps/MapPanel';
 import { ChartPanel } from './charts/ChartPanel';
 import { TaskList } from './browse/TaskList';
 import { TabsWithFilterPicker } from './filters/TabsWithFilterPicker';
-
-const useStyles = makeStyles(styles);
 
 export const MainTabs = () => {
   const dispatch = useDispatch();

@@ -6,14 +6,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
-import { styles } from '../../../styles/Styles';
+import { useStyles } from '../../../styles/Styles';
 import DatePicker from './GbDateClearablePicker';
 import { DateErrors } from './DateErrors';
 
 import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
-
-const useStyles = makeStyles(styles);
 
 export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other }) => {
   const classes = useStyles();
@@ -22,18 +19,8 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
   const toControl = createRef();
   const [fromStr, setFromStr] = useState('');
   const [toStr, setToStr] = useState('');
-  const [focussed, setFocussed] = useState(CONTROL.FROM);
+  const [target, setTarget] = useState(CONTROL.FROM);
   const [valid, setValid] = useState(true);
-
-  const setDateField = (dateStr, setter) => {
-    const usDateStr = ukToUs(dateStr);
-    let date = null;
-    if (isValidDateString(usDateStr)) {
-      date = new Date(usDateStr);
-      setter(formatDate(date));
-    }
-    return date;
-  };
 
   useEffect(() => {
     setFromStr(params.from !== null ? formatDate(params.from) : '');
@@ -41,6 +28,16 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
   }, [params]);
 
   const onSubmit = () => {
+    const setDateField = (dateStr, setter) => {
+      const usDateStr = ukToUs(dateStr);
+      let date = null;
+      if (isValidDateString(usDateStr)) {
+        date = new Date(usDateStr);
+        setter(formatDate(date));
+      }
+      return date;
+    };
+
     handleClose({ from: setDateField(fromStr, setFromStr), to: setDateField(toStr, setToStr) });
   };
 
@@ -62,7 +59,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
       },
     },
     onFocus: () => {
-      setFocussed(id);
+      setTarget(id);
     },
     ...props,
   });
@@ -87,7 +84,10 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
   const dialogBody = (
     <div className={classes.datesDialogBody}>
       <div className={classes.datesDialogInputsWrapper}>
-        <div className={classes.dateDialogFieldWrapper}>
+        <div
+          data-target={String(target === CONTROL.FROM)}
+          className={classes.dateDialogFieldWrapper}
+        >
           <TextField
             {...makeDateFieldProps(CONTROL.FROM, setFromStr, {
               value: fromStr,
@@ -100,7 +100,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
             })}
           />
         </div>
-        <div className={classes.dateDialogFieldWrapper}>
+        <div data-target={String(target === CONTROL.TO)} className={classes.dateDialogFieldWrapper}>
           <TextField
             {...makeDateFieldProps(CONTROL.TO, setToStr, {
               value: toStr,
@@ -113,23 +113,8 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
           />
         </div>
       </div>
-      <div
-        className={classes.dateDialogPickerWrapper}
-        onFocus={() => {
-          switch (focussed) {
-            case CONTROL.FROM: {
-              fromControl.current.focus();
-              break;
-            }
-            case CONTROL.TO: {
-              toControl.current.focus();
-              break;
-            }
-            default: // do nothing
-          }
-        }}
-      >
-        {focussed === CONTROL.FROM ? (
+      <div className={classes.dateDialogPickerWrapper}>
+        {target === CONTROL.FROM ? (
           <DatePicker
             {...makeDatePickerProps({
               value: fromStr,
@@ -145,6 +130,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
             {...makeDatePickerProps({
               value: toStr,
               minDate: getDateLimitProp(fromStr),
+              initialFocusedDate: fromStr !== '' ? fromStr : undefined,
               onAccept: (date) => {
                 setToStr(formatDate(date));
                 toControl.current.focus();

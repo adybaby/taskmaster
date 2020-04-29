@@ -1,4 +1,17 @@
-import { fade, createMuiTheme } from '@material-ui/core/styles';
+import React from 'react';
+import {
+  fade,
+  createMuiTheme,
+  StylesProvider,
+  ThemeProvider as MuiThemeProvider,
+  makeStyles,
+} from '@material-ui/core/styles';
+import { create } from 'jss';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import preset from 'jss-preset-default';
+
+const jss = create();
+jss.setup(preset());
 
 // colours
 const mainColor = '#4989b6';
@@ -10,6 +23,10 @@ const inspectorDaySummaryBgColor = '#b6d0e2';
 const datePickerBgColor = '#f2f2f2';
 const strongButtonTextColor = '#696969';
 const strongBorderColor = '#a9a9a9';
+const vacancyHeaderColor = '#b6d0e2';
+const vacancyOpenColor = 'green';
+const vacancyClosedColor = '#a6a6a6';
+const vacancySignUpColor = mainColor;
 export const CHART_COLORS = { MIN: 'lightGrey', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
 export const KELLY = [
   '#F2F3F4',
@@ -41,7 +58,7 @@ export const typographyVariant = {
   aag: { title: 'body2', value: 'body2', note: 'caption' },
   task: { heading: 'h5', body: 'body1' },
   taskList: { tasksCount: 'subtitle1' },
-  filters: { filterButton: 'body2' },
+  filters: { filterButton: 'caption' },
   taskResult: {
     editingSummary: 'caption',
     durationSummary: 'caption',
@@ -74,7 +91,7 @@ export const typographyVariant = {
 const maxSmall = 715;
 const maxMedium = 1200;
 
-export const theme = createMuiTheme({
+const theme = createMuiTheme({
   breakpoints: {
     values: {
       sm: maxSmall,
@@ -137,7 +154,7 @@ const scaledWidth = {
   [smallVp]: { minWidth: 0 },
 };
 
-export const styles = () => ({
+export const useStyles = makeStyles({
   // AppBar
   appBar: {
     position: 'sticky',
@@ -258,11 +275,34 @@ export const styles = () => ({
     paddingTop: theme.spacing(1),
   },
   selectButton: {
-    textTransform: 'none',
-    color: strongButtonTextColor,
-    justifyContent: 'left',
     [smallVp]: { width: '100%' },
+    textTransform: 'none',
+    justifyContent: 'left',
     paddingLeft: theme.spacing(1),
+    '&[data-filter-on="false"]': {
+      fontWeight: 'regular',
+      color: strongButtonTextColor,
+    },
+    '&[data-filter-on="true"]': {
+      fontWeight: 'bold',
+      color: theme.palette.primary.main,
+    },
+  },
+  filterSummary: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'noWrap',
+    alignItems: 'center',
+  },
+  filterSummaryTypography: {
+    '&[data-filter-on="false"]': {
+      fontWeight: 'regular',
+      color: strongButtonTextColor,
+    },
+    '&[data-filter-on="true"]': {
+      fontWeight: 'bold',
+      color: theme.palette.primary.main,
+    },
   },
 
   // Task List
@@ -270,12 +310,6 @@ export const styles = () => ({
     padding: theme.spacing(2),
     paddingLeft: theme.spacing(3),
     flex: '100%',
-  },
-  filterSummary: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'noWrap',
-    alignItems: 'center',
   },
   taskBody: {
     marginTop: theme.spacing(2),
@@ -309,17 +343,23 @@ export const styles = () => ({
   taskInfoButton: {
     paddingRight: theme.spacing(2),
     width: 0,
-    color: strongButtonTextColor,
+    height: 0,
+    backgroundColor: 'white',
     '&&': {
       borderStyle: 'none',
+      height: 0,
+      color: strongButtonTextColor,
+      backgroundColor: 'white',
     },
     '&:hover,&.Mui-selected&:hover': {
-      backgroundColor: 'transparent',
+      color: highlightColor,
+      backgroundColor: 'white',
     },
-    '&.Mui-selected': {
+    '&[data-selected="true"]': {
+      height: 0,
       fontWeight: 'bold',
       color: theme.palette.primary.main,
-      backgroundColor: 'transparent',
+      backgroundColor: 'white',
     },
   },
   taskContent: { padding: theme.spacing(3) },
@@ -333,7 +373,7 @@ export const styles = () => ({
   },
   vacancyContainer: {
     marginRight: theme.spacing(2),
-    minWidth: '300px',
+    minWidth: '400px',
     marginBottom: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
@@ -350,11 +390,16 @@ export const styles = () => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: theme.spacing(1),
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: vacancyHeaderColor,
   },
   vacancyStatus: {
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: 'white',
+    '&[data-open="true"]': {
+      color: vacancyOpenColor,
+    },
+    '&[data-open="false"]': {
+      color: vacancyClosedColor,
+    },
     color: theme.palette.common.white,
     paddingTop: '2px',
     paddingBottom: '2px',
@@ -364,35 +409,53 @@ export const styles = () => ({
     textTransform: 'uppercase',
   },
   vacancyFieldsTable: {
+    width: '100%',
     display: 'grid',
-    gridTemplateColumns: 'auto auto',
+    gridTemplateColumns: '20% 80%',
   },
-  vacancyFieldRow: {},
   vacancyFieldTitle: {
     fontWeight: 'bold',
     flexBasis: '45%',
     paddingRight: theme.spacing(4),
-    width: '100%',
     flexGrow: 1,
   },
   vacancyFieldValue: {
-    width: '100%',
     flexGrow: 1,
   },
   vacancyPeriod: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'top',
+    alignItems: 'stretch',
+    alignContent: 'center',
+    '&:hover': {
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: vacancySignUpColor,
+      color: 'white',
+    },
   },
-  periodDate: { flexGrow: 1 },
+  vacancyValueInner: { paddingLeft: 4 },
+  periodDate: {
+    paddingLeft: 4,
+    display: 'flex',
+    alignItems: 'center',
+    flexGrow: 1,
+    '&:hover': {
+      backgroundColor: 'white',
+      color: theme.palette.text.primary,
+    },
+  },
   vacancySignUpButton: {
     flexGrow: 0,
     padding: 0,
-    margin: 0,
+    margin: 1,
+    alignSelf: 'center',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
+    '&:hover,&.Mui-selected&:hover': {
+      backgroundColor: vacancySignUpColor,
+    },
   },
 
   // Map
@@ -571,7 +634,7 @@ export const styles = () => ({
     paddingLeft: theme.spacing(2),
   },
 
-  // datepicker
+  // date dialog and picker
   datePickerField: {
     [smallVp]: {
       display: 'none',
@@ -585,14 +648,12 @@ export const styles = () => ({
   datesDialogInputsWrapper: { flexGrow: 1 },
   dateDialogFieldWrapper: {
     marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
-    [mediumOrLargeVp]: {
-      '&:focus-within': { backgroundColor: datePickerBgColor },
-      marginTop: theme.spacing(1),
-      paddingTop: theme.spacing(1),
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(2),
-    },
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    '&[data-target="true"]': { backgroundColor: datePickerBgColor },
   },
   dateDialogPickerWrapper: {
     [smallVp]: { display: 'none' },
@@ -600,6 +661,22 @@ export const styles = () => ({
     backgroundColor: datePickerBgColor,
   },
   datesDialogErrorMsg: { paddingTop: theme.spacing(2), color: errorColor },
+  datePickerDayWrapper: {
+    '&[data-highlight="false"]': {
+      background: datePickerBgColor,
+    },
+    '&[data-highlight="true"]': {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      borderRadius: '50%',
+    },
+  },
+  datePickerDay: {
+    width: 36,
+    height: 36,
+    fontSize: theme.typography.caption.fontSize,
+    margin: '0 2px',
+  },
 
   // label dissappears when small
   hidingLabel: {
@@ -622,3 +699,12 @@ export const styles = () => ({
     },
   },
 });
+
+export const StyledApp = ({ children }) => (
+  <StylesProvider jss={jss}>
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </MuiThemeProvider>
+  </StylesProvider>
+);

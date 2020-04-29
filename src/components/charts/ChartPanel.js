@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
@@ -12,13 +11,11 @@ import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography, Hidden } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
-import { styles, typographyVariant } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../state/selectors/ResourceChartDataSelector';
 import { RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
 import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
-
-const useStyles = makeStyles(styles);
 
 const ChartMenuGroup = ({
   chartGroup: { label, startOpen, charts },
