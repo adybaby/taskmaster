@@ -13,8 +13,6 @@ const variant = typographyVariant.task;
 
 export const Task = () => {
   const classes = useStyles();
-
-  console.log(classes.taskInfoButton);
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks);
   const { id } = useParams();
