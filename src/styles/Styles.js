@@ -341,25 +341,10 @@ export const useStyles = makeStyles({
     paddingRight: theme.spacing(2),
   },
   taskInfoButton: {
-    paddingRight: theme.spacing(2),
-    width: 0,
-    height: 0,
-    backgroundColor: 'white',
-    '&&': {
-      borderStyle: 'none',
-      height: 0,
-      color: strongButtonTextColor,
-      backgroundColor: 'white',
-    },
-    '&:hover,&.Mui-selected&:hover': {
-      color: highlightColor,
-      backgroundColor: 'white',
-    },
+    minWidth: 0,
+    color: 'darkGrey',
     '&[data-selected="true"]': {
-      height: 0,
-      fontWeight: 'bold',
       color: theme.palette.primary.main,
-      backgroundColor: 'white',
     },
   },
   taskContent: { padding: theme.spacing(3) },
@@ -468,6 +453,7 @@ export const useStyles = makeStyles({
 
   // At a glance
   aagPanel: {
+    border: `1px solid ${theme.palette.divider}`,
     [smallVp]: {
       backgroundColor: aagBgColor,
       padding: theme.spacing(2),
@@ -488,7 +474,6 @@ export const useStyles = makeStyles({
   aagTable: {
     display: 'grid',
     gridTemplateColumns: '35% 65%',
-    gridGap: theme.spacing(1),
     paddingBottom: theme.spacing(2),
   },
   aagHeader: {
@@ -504,11 +489,13 @@ export const useStyles = makeStyles({
   },
   aagTitle: {
     fontWeight: 'bold',
+    paddingBottom: theme.spacing(1),
     gridColumn: 1,
     [mediumOrLargeVp]: { paddingLeft: theme.spacing(2) },
   },
   aagValue: {
     gridColumn: 2,
+    paddingBottom: theme.spacing(1),
     paddingRight: theme.spacing(2),
   },
 

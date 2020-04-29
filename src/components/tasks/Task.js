@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Divider } from '@material-ui/core';
+import { Divider, Button } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { useStyles, typographyVariant } from '../../styles/Styles';
@@ -33,14 +33,14 @@ export const Task = () => {
         <Typography variant={variant.heading}>
           <b>{task.title}</b>
         </Typography>
-        <ToggleButton
+        <Button
           value="showTaskInfoButton"
           classes={{ root: classes.taskInfoButton }}
           onClick={() => setInfoVisible(!infoVisible)}
           data-selected={String(infoVisible)}
         >
           {ICONS.INFO}
-        </ToggleButton>
+        </Button>
       </div>
       <div className={classes.taskContent}>
         {infoVisible ? <AtAGlance task={task} /> : null}

@@ -1,25 +1,10 @@
-DO I WANT TO GO TO NATIVE CSS?
-
-AAG header stretches past table width
-info icon is not centered
-
-vacancy list - sign up to highlight whole period and click on select (whole button?)
-lighter color for vacancy header and button, like tone of search box? - make all those same col? - use inspector color?
-
-background images on header bars and header bars
-
-url encode filters
-
-1) get css transition for at a glance to work
+1) url encode filters
 
 2) Charts:
   a) reduce legend values down to values shown on chart
   b) improve charts to account for "interest" in vacancies/signups
   c) Add section under stacked title to show selected resources and abilty to change them.
   d) Add download data button to right of title
-
-3) restyle task blocks as per wireframe
-  a) vacancy blocks still to do
 
 4) Add Capabilities
 
