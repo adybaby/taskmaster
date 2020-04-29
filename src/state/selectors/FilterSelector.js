@@ -1,7 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import { createSelector } from 'reselect';
-import { TABS } from '../../constants/common/Tabs';
-import { TASK_LIST_FILTER_CONTROL_IDS } from '../../constants/Constants';
+import { TASK_LIST_FILTER_CONTROL_IDS, TABS } from '../../constants/Constants';
 
 const getTaskListFilterControls = (state) => state.taskListfilterControls;
 const getChartFilterControls = (state) => state.chartFilterControls;

@@ -3,7 +3,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-continue */
 import { createSelector } from 'reselect';
-import { FILTER_TYPES } from '../../constants/filter/FilterTypes';
+import { FILTER_TYPES } from '../../constants/Constants';
 import { getAllActiveTaskFilters } from './FilterSelector';
 
 const getTasks = (state) => state.tasks;
