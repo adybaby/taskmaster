@@ -4,7 +4,7 @@ import { TABS } from '../../constants/common/Tabs';
 import { TASK_LIST_FILTER_CONTROL_IDS } from '../../constants/Constants';
 
 const getTaskListFilterControls = (state) => state.taskListfilterControls;
-const getChartFilterControls = (state) => state.taskListfilterControls;
+const getChartFilterControls = (state) => state.chartFilterControls;
 const getCurrentTab = (state) => state.currentTab;
 
 const FILTER_BAR_CONTROLS = [

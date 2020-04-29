@@ -5,13 +5,14 @@ import Collapse from '@material-ui/core/Collapse';
 import { Drawer, List, Button, Hidden, Tabs } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
 import { ICONS, TABS, TASK_LIST_FILTER_CONTROL_IDS } from '../../constants/Constants';
+import { setTaskListFilterControl } from '../../state/actions/TaskListFilterActions';
+import { setChartFilterControl } from '../../state/actions/ChartFilterActions';
 import {
   //  getVisibleTaskFilters,
   getFilterBarControls,
   getActiveFilterBarControls,
 } from '../../state/selectors/FilterSelector';
-import { TaskSelectFilter } from './TaskSelectFilter';
-import { ChartSelectFilter } from './ChartSelectFilter';
+import { SelectControl } from './SelectControl';
 import { SortControl } from './SortControl';
 
 export const TabsWithFilterPicker = ({ tabs, visible }) => {
@@ -21,21 +22,24 @@ export const TabsWithFilterPicker = ({ tabs, visible }) => {
   const taskListFilterControls = useSelector((state) => state.taskListfilterControls);
   const isAFilterActive = useSelector(getActiveFilterBarControls).length !== 0;
   const filterBarControls = useSelector(getFilterBarControls);
-  const chartFilterControls = useSelector((state) => state.chartFilterControls);
-
   const currentTab = useSelector((state) => state.currentTab);
 
-  const makeVisibleFilters = (handleFilterSelected) =>
-    currentTab === TABS.charts ? (
-      <ChartSelectFilter
-        filterControl={chartFilterControls[0]}
+  const makeSelectControls = (filterDispatcher, handleFilterSelected) =>
+    filterBarControls.map((filterControl, index) => (
+      <SelectControl
+        key={index}
+        control={filterControl}
+        filterDispatcher={filterDispatcher}
         handleFilterSelected={handleFilterSelected}
       />
+    ));
+
+  const makeVisibleFilters = () =>
+    currentTab === TABS.charts ? (
+      makeSelectControls(setChartFilterControl, () => setFilterDrawerVisible(false))
     ) : (
       <>
-        {filterBarControls.map((filterControl, index) => (
-          <TaskSelectFilter key={index} filterControl={filterControl} />
-        ))}
+        {makeSelectControls(setTaskListFilterControl)}
         <SortControl
           currentTaskType={
             taskListFilterControls.find(

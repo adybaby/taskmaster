@@ -1,7 +1,5 @@
 import { ACTION_TYPES, DB_STATUS } from '../../constants/Constants';
-
 import { init } from './dataloader/Db';
-
 import { createTaskFilterControls } from './filterCreators/TaskListFilterControlsCreator';
 import { createChartFilterControls } from './filterCreators/ChartFilterControlsCreator';
 import { createSortControl } from './filterCreators/SortControlCreator';
