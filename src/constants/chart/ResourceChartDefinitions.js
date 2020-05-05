@@ -77,3 +77,10 @@ export const RESOURCE_CHART_DEFINITIONS = Object.values(CHART_TYPES).map(
     })),
   })
 );
+
+export const getResourceChartDefinition = (chartId) =>
+  RESOURCE_CHART_DEFINITIONS.map((group) => group.charts)
+    .flat()
+    .find((ch) => ch.id === chartId);
+
+export const DEFAULT_CHART = RESOURCE_CHART_DEFINITIONS[0].charts[0];

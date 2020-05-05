@@ -1,7 +1,5 @@
 import { TASK_TYPE, VACANCY } from '../../../../constants/Constants';
 
-const DEFAULT_FILTER_ID = 'ANY_VACANCIES';
-
 const createExecute = (skills) => (tasks) =>
   tasks.filter(
     (task) =>
@@ -23,23 +21,20 @@ const getSkillVacancies = (tasks) =>
     ),
   ].sort();
 
-export const createVacancySelectFilterControl = (tasks, currentUser) => ({
-  options: [
-    {
-      id: DEFAULT_FILTER_ID,
-      label: 'any skills',
-    },
-    {
-      id: 'MY_SKILLS',
-      label: 'my skills',
-      execute: createExecute(currentUser.skills),
-    },
-    ...getSkillVacancies(tasks).map((skillVacancy) => ({
-      id: skillVacancy,
-      label: `${skillVacancy}`,
-      execute: createExecute([skillVacancy]),
-    })),
-  ],
-  defaultId: DEFAULT_FILTER_ID,
-  selectedId: DEFAULT_FILTER_ID,
-});
+export const createVacancyFilterOptions = (tasks, currentUser) => [
+  {
+    id: 'ANY_VACANCIES',
+    label: 'any skills',
+    execute: null,
+  },
+  {
+    id: 'MY_SKILLS',
+    label: 'my skills',
+    execute: createExecute(currentUser.skills),
+  },
+  ...getSkillVacancies(tasks).map((skillVacancy) => ({
+    id: skillVacancy,
+    label: `${skillVacancy}`,
+    execute: createExecute([skillVacancy]),
+  })),
+];

@@ -1,46 +1,33 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
-import {
-  URLS,
-  FILTER_TYPES,
-  TASK_LIST_FILTER_CONTROL_IDS,
-  CONTRIBUTES_TO,
-  ICONS,
-} from '../constants/Constants';
+import { URLS, FILTER_IDS, TABS, CONTRIBUTES_TO, ICONS } from '../constants/Constants';
 import { formatDate } from '../util/Dates';
-import {
-  resetAllTaskListFilterControls,
-  setTaskListFilterControl,
-} from '../state/actions/TaskListFilterActions';
+import { resetFilters, setFilterParams } from '../state/actions/FilterActions';
+import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
-const TaskFilterLink = ({
-  paramName,
-  paramValue,
-  filterControlId,
-  url,
-  label,
-  forInitiatives,
-  ...typographyProps
-}) => {
+const TaskFilter = ({ filterId, params, label, ...typographyProps }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const isInitiativeTab =
+    useSelector((state) => state.filters).find((f) => f.id === filterId).tabs[0] ===
+    TABS.initiatives.id;
 
   // Links used to dispatch task filters
-
-  const dispatch = useDispatch();
   const handleClick = () => {
-    dispatch(resetAllTaskListFilterControls());
-    dispatch(setTaskListFilterControl({ id: filterControlId, [paramName]: paramValue }));
+    dispatch(resetFilters());
+    dispatch(setFilterParams(filterId, [params]));
+    dispatch(setCurrentTab(isInitiativeTab ? TABS.initiatives : TABS.all));
   };
 
   return (
     <Typography style={{ display: 'inline-block' }} {...typographyProps}>
       <Link
         className={classes.link}
-        value={paramValue}
-        to={forInitiatives ? `/${URLS.BROWSE}/${URLS.INITIATIVES}` : `/`}
+        value={params}
+        to={`/${URLS.BROWSE}/`}
         onClick={() => handleClick()}
       >
         {label}
@@ -49,27 +36,19 @@ const TaskFilterLink = ({
   );
 };
 
-const TaskFilterLinks = ({
-  paramName,
-  paramValues,
-  filterControlId,
-  forInitiatives,
-  ...typographyProps
-}) =>
-  typeof paramValues !== 'undefined' && paramValues !== null && paramValues.length > 0 ? (
+const TaskFilters = ({ filterId, params, ...typographyProps }) =>
+  typeof params !== 'undefined' && params !== null && params.length > 0 ? (
     <>
-      {[...new Set(paramValues)].map((paramValue, index) => (
-        <React.Fragment key={index}>
-          <TaskFilterLink
-            paramName={paramName}
-            paramValue={paramValue}
-            filterControlId={filterControlId}
+      {[...new Set(params)].map((paramValue, index) => (
+        <Fragment key={index}>
+          <TaskFilter
+            filterId={filterId}
+            params={paramValue}
             label={paramValue}
-            forInitiatives={forInitiatives}
             {...typographyProps}
           />
-          {index < paramValues.length - 1 ? ', ' : null}
-        </React.Fragment>
+          {index < paramValue.length - 1 ? ', ' : null}
+        </Fragment>
       ))}
     </>
   ) : null;
@@ -108,12 +87,10 @@ export const UserLink = ({ userId, ...typographyProps }) => {
         </Link>
       </Typography>
       {user.authored.length > 0 ? (
-        <TaskFilterLink
-          paramName={FILTER_TYPES.SELECT.paramName}
-          paramValue={user.id}
-          filterControlId={TASK_LIST_FILTER_CONTROL_IDS.CREATED_BY}
+        <TaskFilter
+          filterId={FILTER_IDS.CREATED_BY}
+          params={user.id}
           label={`\u00A0(${user.authored.length})`}
-          forInitiatives={false}
           {...typographyProps}
         />
       ) : null}
@@ -121,39 +98,20 @@ export const UserLink = ({ userId, ...typographyProps }) => {
   );
 };
 
-export const SkillLink = ({ skill, ...typographyProps }) => (
-  <TaskFilterLink
-    paramName={FILTER_TYPES.SELECT.paramName}
-    paramValue={skill}
-    filterControlId={TASK_LIST_FILTER_CONTROL_IDS.VACANCIES}
-    label={skill}
-    forInitiatives={true}
-    {...typographyProps}
-  />
-);
-
 export const VacancyLinks = ({ task, ...typographyProps }) =>
   typeof task.vacancies !== 'undefined' && task.vacancies.length > 0 ? (
-    <TaskFilterLinks
-      paramName={FILTER_TYPES.SELECT.paramName}
-      paramValues={task.vacancies
+    <TaskFilters
+      filterId={FILTER_IDS.VACANCIES}
+      params={task.vacancies
         .filter((vacancy) => vacancy.status === 'OPEN')
         .map((vacancy) => vacancy.skill)}
-      filterControlId={TASK_LIST_FILTER_CONTROL_IDS.VACANCIES}
-      forInitiatives={true}
       {...typographyProps}
     />
   ) : null;
 
 export const TagsLinks = ({ task, ...typographyProps }) =>
   typeof task.tags !== 'undefined' && task.tags.length > 0 ? (
-    <TaskFilterLinks
-      paramName={FILTER_TYPES.TEXT.paramName}
-      paramValues={task.tags}
-      filterControlId={TASK_LIST_FILTER_CONTROL_IDS.SEARCH_FIELD}
-      forInitiatives={false}
-      {...typographyProps}
-    />
+    <TaskFilters filterId={FILTER_IDS.SEARCH_FIELD} params={task.tags} {...typographyProps} />
   ) : null;
 
 const ContributeLink = ({ contribute, taskIcon, ...typographyProps }) => {
@@ -214,15 +172,13 @@ export const DriverContributionLinks = ({ task }) => {
   ) : null;
 };
 
+export const SkillLink = ({ skill, ...typographyProps }) => (
+  <TaskFilter filterId={FILTER_IDS.VACANCIES} params={skill} label={skill} {...typographyProps} />
+);
+
 export const SkillsLinks = ({ user, ...typographyProps }) =>
   typeof user.skills !== 'undefined' && user.skills.length > 0 ? (
-    <TaskFilterLinks
-      paramName={FILTER_TYPES.SELECT.paramName}
-      paramValues={user.skills}
-      filterControlId={TASK_LIST_FILTER_CONTROL_IDS.VACANCIES}
-      forInitiatives={true}
-      {...typographyProps}
-    />
+    <TaskFilters filterId={FILTER_IDS.VACANCIES} params={user.skills} {...typographyProps} />
   ) : null;
 
 export const AuthoredLinks = ({ user, ...typographyProps }) =>

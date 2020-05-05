@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
@@ -7,12 +8,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography, Hidden } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { calculateResourceChartData } from '../../state/selectors/ResourceChartDataSelector';
+import { setSelectedChart } from '../../state/actions/SelectedChartActions';
 import { RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
 import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
@@ -57,10 +58,11 @@ const ChartMenuGroup = ({
 
 export const ChartPanel = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const variant = typographyVariant.chart;
   const resourceSeriesSets = useSelector(calculateResourceChartData);
   const [dataPoint, setDataPoint] = useState(null);
-  const [selectedChart, setSelectedChart] = useState(chartGroups[0].charts[0]);
+  const selectedChart = useSelector((state) => state.selectedChart);
   const [inspectorPanel, setInspectorPanel] = useState(null);
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
   const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
@@ -85,7 +87,7 @@ export const ChartPanel = () => {
   );
 
   const handleChartMenuItemClicked = (chart) => {
-    setSelectedChart(chart);
+    dispatch(setSelectedChart(chart));
     setChartSelectDrawerVisible(false);
   };
 

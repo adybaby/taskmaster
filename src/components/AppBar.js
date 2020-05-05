@@ -5,19 +5,17 @@ import InputBase from '@material-ui/core/InputBase';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { useStyles } from '../styles/Styles';
-import { TASK_LIST_FILTER_CONTROL_IDS, ICONS } from '../constants/Constants';
-import {
-  setTaskListFilterControl,
-  resetAllTaskListFilterControls,
-} from '../state/actions/TaskListFilterActions';
+import { ICONS, TABS } from '../constants/Constants';
+import { setFilterParams, resetFilters } from '../state/actions/FilterActions';
+import { setCurrentTab } from '../state/actions/CurrentTabActions';
+import { getSearchFilter, getSearchText } from '../state/selectors/FilterSelector';
 
 export const AppBar = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const searchText = useSelector((state) => state.taskListfilterControls).find(
-    (filterControl) => filterControl.id === TASK_LIST_FILTER_CONTROL_IDS.SEARCH_FIELD
-  ).text;
+  const searchFilter = useSelector(getSearchFilter);
+  const searchText = useSelector(getSearchText);
   const userName = useSelector((state) => state.currentUser).firstName;
 
   const handleNewClick = () => {
@@ -26,21 +24,17 @@ export const AppBar = () => {
   };
 
   const handleSearchChange = (event) => {
-    dispatch(
-      setTaskListFilterControl({
-        id: TASK_LIST_FILTER_CONTROL_IDS.SEARCH_FIELD,
-        text: event.target.value,
-      })
-    );
+    dispatch(setFilterParams(searchFilter.id, [event.target.value]));
   };
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
+    dispatch(setCurrentTab(TABS.all));
     history.push('/');
   };
 
   const handleHomeClick = () => {
-    dispatch(resetAllTaskListFilterControls());
+    dispatch(resetFilters());
   };
 
   return (

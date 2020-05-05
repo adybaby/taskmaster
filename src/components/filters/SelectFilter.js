@@ -6,11 +6,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Divider } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { TASK_LIST_FILTER_CONTROL_IDS, ICONS } from '../../constants/Constants';
+import { ICONS } from '../../constants/Constants';
 import { FilterSummary } from './FilterSummary';
 import { DatesDialog } from './datesdialog/DateDialog';
+import { setFilterParams } from '../../state/actions/FilterActions';
 
-export const SelectControl = ({ control, filterDispatcher, handleFilterSelected }) => {
+export const SelectFilter = ({ filter }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const variant = typographyVariant.filters;
@@ -18,38 +19,18 @@ export const SelectControl = ({ control, filterDispatcher, handleFilterSelected 
   const open = Boolean(anchorEl);
   const popOverId = open ? 'select-popover' : undefined;
   const [openDates, setOpenDates] = useState(false);
-  const [datePickerOptionId, setDatePickerOptionId] = useState(null);
-  const currentTaskType = useSelector((state) => state.taskListfilterControls).find(
-    (filterControl) => filterControl.id === TASK_LIST_FILTER_CONTROL_IDS.TYPE
-  ).selectedId;
+  const [datePickerOption, setDatePickerOption] = useState(null);
+  const currentTab = useSelector((state) => state.currentTab);
 
   useEffect(() => {
-    const datePickerOption = control.options.find((option) => option.datePicker === true);
-    if (typeof datePickerOption !== 'undefined')
-      setDatePickerOptionId(control.options.find((option) => option.datePicker === true).id);
-  }, [control.options]);
+    setDatePickerOption(filter.options.find((option) => option.datePicker === true));
+  }, [filter]);
 
-  const handleOptionSelected = (selectedId) => {
-    dispatch(filterDispatcher({ id: control.id, selectedId }));
-    if (typeof handleFilterSelected !== 'undefined') {
-      handleFilterSelected(selectedId);
-    }
+  const handleFilterUpdate = (selectedOption, params) => {
+    dispatch(setFilterParams(filter.id, [selectedOption.id, ...params]));
   };
 
-  const handleDateRangeSelected = (selectedId, from, to) => {
-    const options = [...control.options];
-    options.find((option) => option.id === selectedId).params = { from, to };
-
-    dispatch(
-      filterDispatcher({
-        id: control.id,
-        selectedId,
-        options,
-      })
-    );
-  };
-
-  const handleOpenFilterControlClick = (event) => {
+  const handleOpenFilter = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -57,11 +38,11 @@ export const SelectControl = ({ control, filterDispatcher, handleFilterSelected 
     setAnchorEl(null);
   };
 
-  const handleListItemClick = (event, optionId) => {
-    if (optionId === datePickerOptionId) {
+  const handleListItemClick = (event, selectedOption) => {
+    if (selectedOption === datePickerOption) {
       setOpenDates(true);
     } else {
-      handleOptionSelected(optionId);
+      handleFilterUpdate(selectedOption, []);
       setAnchorEl(null);
     }
   };
@@ -69,30 +50,28 @@ export const SelectControl = ({ control, filterDispatcher, handleFilterSelected 
   const handleCloseDatesDialog = (range) => {
     setOpenDates(false);
     if (range !== null) {
-      handleDateRangeSelected(datePickerOptionId, range.from, range.to);
+      handleFilterUpdate(datePickerOption, [range.from, range.to]);
     }
     setAnchorEl(null);
   };
 
-  const validForTaskType = (option) =>
-    typeof currentTaskType === 'undefined' ||
-    typeof option.forTaskTypes === 'undefined' ||
-    option.forTaskTypes.includes(currentTaskType);
+  const validForTab = (option) =>
+    typeof option.tabs === 'undefined' || option.tabs.includes(currentTab.id);
 
-  const dataFilterOn = !control.dontHighlight && control.selectedId !== control.defaultId;
+  const dateFilterOn = String(filter.isActive(currentTab) && !filter.isSortFilter());
 
   return (
     <div>
       <Button
-        data-filter-on={String(dataFilterOn)}
+        data-filter-on={dateFilterOn}
         classes={{ root: classes.selectButton }}
         aria-describedby={popOverId}
-        onClick={handleOpenFilterControlClick}
+        onClick={handleOpenFilter}
         focusRipple={false}
       >
         <FilterSummary
-          data-filter-on={String(dataFilterOn)}
-          forControl={control}
+          data-filter-on={dateFilterOn}
+          forControl={filter}
           variant={variant.filterButton}
           icon={ICONS.DOWN_ARROW}
         />
@@ -111,27 +90,26 @@ export const SelectControl = ({ control, filterDispatcher, handleFilterSelected 
           horizontal: 'center',
         }}
       >
-        {control.options.map((option, index) => {
+        {filter.options.map((option, index) => {
           return (
             <React.Fragment key={index}>
               {option.datePicker ? <Divider /> : null}
               <ListItem
                 button
-                selected={option.id === control.selectedId}
-                onClick={(event) => handleListItemClick(event, option.id)}
-                disabled={!validForTaskType(option)}
+                selected={filter.isSelected(option)}
+                onClick={(event) => handleListItemClick(event, option)}
+                disabled={!validForTab(option)}
                 dense
               >
                 <ListItemText primary={option.label} />
               </ListItem>
               {option.datePicker ? (
                 <>
-                  <Divider />{' '}
                   <DatesDialog
                     open={openDates}
-                    fieldLabel={control.label}
+                    fieldLabel={filter.label}
                     handleClose={handleCloseDatesDialog}
-                    params={option.params}
+                    params={filter.customRange}
                   />
                 </>
               ) : null}

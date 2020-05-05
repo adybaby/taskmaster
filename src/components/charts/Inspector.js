@@ -19,20 +19,20 @@ export const Inspector = ({ dayRefData, skillTitle, total, daySummary }) => {
         </Typography>
       </div>
       {data.length > 0 ? (
-        data.map((elem, index) => (
+        data.map((dataItem, index) => (
           <div className={classes.inspectorInteriorBlock} key={index}>
             <div>
               {showCount ? (
                 <>
                   <Typography style={{ display: 'inline-block' }} variant={variant.body}>
-                    {elem.count} x {skillTitle}
+                    {dataItem.count} x <SkillLink skill={skillTitle} variant={variant.body} />
                     {'\u00A0'}required{'\u00A0'}
                   </Typography>
                 </>
               ) : null}
               {showUser ? (
                 <>
-                  <UserLink userId={elem.user.id} variant={variant.body} />
+                  <UserLink userId={dataItem.user.id} variant={variant.body} />
                   {'\u00A0'}as{'\u00A0'}
                   <SkillLink skill={skillTitle} variant={variant.body} />
                   {'\u00A0'}
@@ -43,12 +43,12 @@ export const Inspector = ({ dayRefData, skillTitle, total, daySummary }) => {
                   <Typography style={{ display: 'inline-block' }} variant={variant.body}>
                     for{'\u00A0'}
                   </Typography>
-                  <TaskLink task={elem[taskField]} variant={variant.body} />
+                  <TaskLink task={dataItem[taskField]} variant={variant.body} />
                 </>
               ) : null}
             </div>
-            {Array.isArray(elem[datesType][datesField])
-              ? elem[datesType][datesField].map((period, i) => (
+            {Array.isArray(dataItem[datesType][datesField])
+              ? dataItem[datesType][datesField].map((period, i) => (
                   <div key={i}>
                     <Typography variant={variant.date}>
                       <i>

@@ -12,7 +12,7 @@ import { DateErrors } from './DateErrors';
 
 import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
 
-export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other }) => {
+export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other }) => {
   const classes = useStyles();
   const CONTROL = { FROM: 'fromStr', TO: 'toStr' };
   const fromControl = createRef();
@@ -23,9 +23,11 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, params, ...other })
   const [valid, setValid] = useState(true);
 
   useEffect(() => {
-    setFromStr(params.from !== null ? formatDate(params.from) : '');
-    setToStr(params.to !== null ? formatDate(params.to) : '');
-  }, [params]);
+    if (initRange !== null && typeof initRange !== 'undefined') {
+      setFromStr(initRange.from !== null ? formatDate(initRange.from) : '');
+      setToStr(initRange.to !== null ? formatDate(initRange.to) : '');
+    }
+  }, [initRange]);
 
   const onSubmit = () => {
     const setDateField = (dateStr, setter) => {
