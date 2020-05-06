@@ -107,9 +107,9 @@ export const SelectFilter = ({ filter }) => {
                 <>
                   <DatesDialog
                     open={openDates}
-                    fieldLabel={filter.label}
+                    fieldLabel={filter.labels.filter}
                     handleClose={handleCloseDatesDialog}
-                    params={filter.customRange}
+                    initRange={filter.customRange}
                   />
                 </>
               ) : null}

@@ -10,7 +10,7 @@ export class TextFilter extends Filter {
   get new() {
     return new TextFilter({
       id: this.id,
-      label: this.label,
+      labels: this.labels,
       tabs: this.tabs,
       isOnFilterBar: this.isOnFilterBar,
       isTaskFilter: this.isTaskFilter,

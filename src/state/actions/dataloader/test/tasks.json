@@ -84,7 +84,7 @@
         "type": "ENABLER",
         "level": "MI",
         "contributions": [
-          { "id": "34", "title": "Supply Automation", "type": "INITIATIVE", "level": "MA" },
+          { "id": "34", "title": "Suppliers Automation", "type": "INITIATIVE", "level": "MA" },
           { "id": "35", "title": "3P Distributors", "type": "INITIATIVE", "level": "MI" },
           { "id": "36", "title": "3P Web Services", "type": "INITIATIVE", "level": "MI" }
         ]
@@ -337,7 +337,7 @@
     "createdBy": "22",
     "createdDate": "10-Jan-2020",
     "modifiedDate": "18-Jan-2020",
-    "shortDescription": "We haven't reviewed our supply chain in a while - it's worth taking a look",
+    "shortDescription": "We haven't reviewed our Suppliers chain in a while - it's worth taking a look",
     "moreInformation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
     "relatedLinks": ["http://www.google.com", "http://www.amazon.com"],
     "tags": ["COSTS", "SUPPLIERS"],
@@ -437,7 +437,7 @@
     "contributions": [
       {
         "id": "34",
-        "title": "Supply Automation",
+        "title": "Suppliers Automation",
         "type": "INITIATIVE",
         "level": "MA",
         "contributions": []
@@ -480,14 +480,14 @@
     "endDate": "16-Apr-2021",
     "vacancies": [
       {
-        "skill": "Designer",
+        "skill": "Designers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Mar 2021", "to": "8 Mar 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -508,7 +508,7 @@
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Mar 2021", "to": "10 Apr 2021", "interest": [] }],
         "status": "CLOSED",
@@ -538,14 +538,14 @@
     "endDate": "16-Apr-2021",
     "vacancies": [
       {
-        "skill": "Designer",
+        "skill": "Designers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Mar 2021", "to": "8 Mar 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -566,14 +566,14 @@
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Mar 2021", "to": "10 Apr 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Mar 2021", "to": "8 Apr 2021", "interest": [] }],
         "status": "CLOSED",
@@ -610,7 +610,7 @@
     "endDate": "01-Jun-2021",
     "vacancies": [
       {
-        "skill": "Designer",
+        "skill": "Designers",
         "role": "MENTORING",
         "periods": [{ "from": "01-Apr-2021", "to": "01-Jun-2021", "interest": [] }],
         "status": "OPEN",
@@ -647,7 +647,7 @@
     "endDate": "01-Jul-2021",
     "vacancies": [
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2021", "to": "1 Jul 2021", "interest": [] }],
         "status": "OPEN",
@@ -684,7 +684,7 @@
     "endDate": "01-Aug-2021",
     "vacancies": [
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "14-Jun-2021", "to": "01-Aug-2021", "interest": [] }],
         "status": "OPEN",
@@ -721,7 +721,7 @@
     "endDate": "01-Oct-2021",
     "vacancies": [
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "MENTORING",
         "periods": [
           {
@@ -772,7 +772,7 @@
     "endDate": "01-Dec-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Oct 2021", "to": "1 Dec 2021", "interest": [] }],
         "status": "OPEN",
@@ -786,7 +786,7 @@
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Oct 2021", "to": "1 Dec 2021", "interest": [] }],
         "status": "OPEN",
@@ -823,7 +823,7 @@
     "endDate": "01-Feb-2022",
     "vacancies": [
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -881,7 +881,7 @@
     "endDate": "01-Apr-2022",
     "vacancies": [
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "MENTORING",
         "periods": [{ "from": "1 Dec 2021", "to": "1 Apr 2022", "interest": [] }],
         "status": "CLOSED",
@@ -918,7 +918,7 @@
     "endDate": "01-Jun-2021",
     "vacancies": [
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Apr 2021", "to": "1 Jun 2021", "interest": [] }],
         "status": "OPEN",
@@ -955,7 +955,7 @@
     "endDate": "01-Jul-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2021", "to": "10 Jun 2021", "interest": [] }],
         "status": "CLOSED",
@@ -969,7 +969,7 @@
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2001", "to": "1 Jul 2021", "interest": [] }],
         "status": "OPEN",
@@ -1006,7 +1006,7 @@
     "endDate": "14-Sep-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "CONSULTANCY",
         "periods": [{ "from": "01-Aug-2021", "to": "14-Sep-2021", "interest": [] }],
         "status": "CLOSED",
@@ -1043,7 +1043,7 @@
     "endDate": "01-Oct-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -1095,7 +1095,7 @@
     "endDate": "01-Oct-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "13 Aug 2021", "to": "1 Oct 2021", "interest": [] }],
         "status": "OPEN",
@@ -1133,7 +1133,7 @@
     "endDate": "01-Feb-2022",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "CONSULTANCY",
         "periods": [{ "from": "01-Nov-2021", "to": "01-Feb-2022", "interest": [] }],
         "status": "CLOSED",
@@ -1171,7 +1171,7 @@
     "endDate": "14-Jan-2022",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "CONSULTANCY",
         "periods": [{ "from": "01-Dec-2021", "to": "14-Jan-2022", "interest": [] }],
         "status": "CLOSED",
@@ -1208,14 +1208,14 @@
     "endDate": "01-Jun-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "CONSULTANCY",
         "periods": [{ "from": "1 Apr 2021", "to": "14 Apr 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "DESIRABLE"
       },
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -1266,14 +1266,14 @@
     "endDate": "01-Jul-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2021", "to": "1 Jul 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Supply",
+        "skill": "Suppliers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2021", "to": "1 Jul 2021", "interest": [] }],
         "status": "OPEN",
@@ -1288,7 +1288,7 @@
     "createdBy": "24",
     "createdDate": "09-Jan-2020",
     "modifiedDate": "15-Jan-2020",
-    "shortDescription": "Run a test supply batch with best suppliers from Identification task",
+    "shortDescription": "Run a test Suppliers batch with best suppliers from Identification task",
     "moreInformation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
     "relatedLinks": ["http://www.google.com", "http://www.amazon.com"],
     "tags": ["COSTS", "SUPPLIERS", "OVERSEAS"],
@@ -1303,14 +1303,14 @@
     "endDate": "18-Sep-2021",
     "vacancies": [
       {
-        "skill": "Supply",
+        "skill": "Suppliers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Aug 2021", "to": "18 Sep 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Aug 2021", "to": "18 Sep 2021", "interest": [] }],
         "status": "OPEN",
@@ -1347,14 +1347,14 @@
     "endDate": "01-Oct-2021",
     "vacancies": [
       {
-        "skill": "Supply",
+        "skill": "Suppliers",
         "role": "FULL_TIME",
         "periods": [{ "from": "18 Aug 2021", "to": "1 Oct 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "18 Aug 2021", "to": "1 Oct 2021", "interest": [] }],
         "status": "OPEN",
@@ -1438,12 +1438,12 @@
   },
   {
     "id": "34",
-    "title": "Supply Automation",
+    "title": "Suppliers Automation",
     "type": "INITIATIVE",
     "createdBy": "24",
     "createdDate": "10-Jan-2020",
     "modifiedDate": "18-Jan-2020",
-    "shortDescription": "Can we automate 90% of the supply chain, and does that lead to cost savings?",
+    "shortDescription": "Can we automate 90% of the Suppliers chain, and does that lead to cost savings?",
     "moreInformation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
     "relatedLinks": ["http://www.google.com", "http://www.amazon.com"],
     "tags": ["COSTS", "AUTOMATION", "SUPPLIERS"],
@@ -1458,7 +1458,7 @@
     "endDate": "01-Jun-2021",
     "vacancies": [
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -1486,21 +1486,21 @@
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Apr 2021", "to": "1 Jun 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "PM",
+        "skill": "PMs",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Apr 2021", "to": "14 Apr 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Supply",
+        "skill": "Suppliers",
         "role": "FULL_TIME",
         "periods": [
           {
@@ -1544,14 +1544,14 @@
     "endDate": "01-Jul-2021",
     "vacancies": [
       {
-        "skill": "Researcher",
+        "skill": "Researchers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2021", "to": "1 Jul 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Supply",
+        "skill": "Suppliers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Jun 2021", "to": "1 Jul 2021", "interest": [] }],
         "status": "OPEN",
@@ -1566,7 +1566,7 @@
     "createdBy": "24",
     "createdDate": "05-Jan-2020",
     "modifiedDate": "23-Jan-2020",
-    "shortDescription": "Can we use more third parties for our website to reduce maintenance and development costs?",
+    "shortDescription": "Can we use more third parties for our website to reduce maintenance and develoPMsent costs?",
     "moreInformation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
     "relatedLinks": ["http://www.google.com", "http://www.amazon.com"],
     "tags": ["COSTS", "AUTOMATION", "WEBSITE"],
@@ -1581,21 +1581,21 @@
     "endDate": "14-Oct-2021",
     "vacancies": [
       {
-        "skill": "Designer",
+        "skill": "Designers",
         "role": "MENTORING",
         "periods": [{ "from": "1 Aug 2021", "to": "14 Oct 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "DESIRABLE"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Aug 2021", "to": "14 Oct 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [
           { "from": "1 Aug 2021", "to": "1 Sep 2021", "interest": [] },
@@ -1605,21 +1605,21 @@
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Developer",
+        "skill": "Developers",
         "role": "FULL_TIME",
         "periods": [{ "from": "1 Aug 2021", "to": "14 Oct 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Customer",
+        "skill": "Customers",
         "role": "USER",
         "periods": [{ "from": "1 Aug 2021", "to": "14 Oct 2021", "interest": [] }],
         "status": "OPEN",
         "priority": "ESSENTIAL"
       },
       {
-        "skill": "Customer",
+        "skill": "Customers",
         "role": "USER",
         "periods": [{ "from": "1 Aug 2021", "to": "14 Oct 2021", "interest": [] }],
         "status": "OPEN",

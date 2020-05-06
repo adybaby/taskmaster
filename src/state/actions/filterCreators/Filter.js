@@ -3,7 +3,7 @@ import { FILTER_IDS } from '../../../constants/Constants';
 export class Filter {
   id;
 
-  label;
+  labels;
 
   tabs;
 
@@ -13,12 +13,12 @@ export class Filter {
 
   isTaskFilter;
 
-  constructor({ id, label, tabs, isOnFilterBar, isTaskFilter, params }) {
+  constructor({ id, labels, tabs, isOnFilterBar, isTaskFilter, params }) {
     if (typeof id === 'undefined' || id === null) {
       throw new Error('Cannot construct a filter without an ID');
     }
-    if (typeof label === 'undefined' || label === null) {
-      throw new Error(`Cannot construct a filter without a label : ${id}`);
+    if (typeof labels === 'undefined' || labels === null) {
+      throw new Error(`Cannot construct a filter without labels : ${id}`);
     }
     if (typeof tabs === 'undefined' || tabs === null) {
       throw new Error(`Cannot construct a filter without specyfying applicable tabs: ${id}`);
@@ -44,7 +44,7 @@ export class Filter {
       );
     }
     this.id = id;
-    this.label = label;
+    this.labels = labels;
     this.tabs = tabs;
     this.isOnFilterBar = isOnFilterBar;
     this.isTaskFilter = isTaskFilter;
@@ -86,4 +86,9 @@ export class Filter {
     typeof currentTab === 'undefined' || currentTab === null || this.tabs.includes(currentTab.id);
 
   isSortFilter = () => this.id === FILTER_IDS.SORT;
+
+  // for date filters to override if the filter selects past tasks
+  selectsPastTasks = () => {
+    return false;
+  };
 }

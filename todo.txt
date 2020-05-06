@@ -1,11 +1,22 @@
-1) Charts:
-  a) add chart to see number of usrs signed up, authored, with skills
-  b) reduce legend values down to values shown on chart
-  c) improve charts to account for "interest" in vacancies/signups
-  d) Add section under stacked title to show selected resources and abilty to change them.
-  e) Add download data button to right of title
+Charts:
+  - add chart to see number of usrs signed up, authored, with skills
+  - reduce legend values down to values shown on chart
+  - improve charts to account for "interest" in vacancies/signups
+  - Add section under stacked title to show selected resources and abilty to change them.
+  - Add download data button to right of title
 
-4) Add Capabilities
+Add Capabilities
 
-5) DB back end server
-  a) edit tab above users and tasks
+Aria
+
+Unit testing
+
+DB back end server
+  - business tasks to:
+    - add task
+    - delete task
+    - update task
+    - add user
+    - delete user
+    - update user
+  - nodde back end for db persistence and accounts

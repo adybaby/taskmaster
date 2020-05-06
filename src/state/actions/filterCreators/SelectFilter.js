@@ -1,4 +1,5 @@
 import { Filter } from './Filter';
+import { beforeOrE } from '../../../util/Dates';
 
 export class SelectFilter extends Filter {
   isSelectFilter = true;
@@ -9,13 +10,17 @@ export class SelectFilter extends Filter {
 
   params;
 
-  constructor({ options, ...filterProps }) {
+  constructor({ options, forPastTasks, ...filterProps }) {
     super({ params: [options[0].id], ...filterProps });
     if (typeof options === 'undefined' || options === null || options.length === 0) {
       throw new Error('Cannot construct a select filter without options');
     }
     this.options = options;
     this.defaultOptionId = options[0].id;
+
+    if (typeof forPastTasks !== 'undefined') {
+      this.forPastTasks = forPastTasks;
+    }
   }
 
   get selectedOption() {
@@ -25,10 +30,11 @@ export class SelectFilter extends Filter {
   get new() {
     return new SelectFilter({
       id: this.id,
-      label: this.label,
+      labels: this.labels,
       tabs: this.tabs,
       isOnFilterBar: this.isOnFilterBar,
       isTaskFilter: this.isTaskFilter,
+      forPastTasks: this.forPastTasks,
       options: this.options,
     });
   }
@@ -47,6 +53,16 @@ export class SelectFilter extends Filter {
       ? this.selectedOption.range
       : this.customRange;
   }
+
+  selectsPastTasks = () => {
+    if (typeof this.forPastTasks !== 'undefined') {
+      return this.forPastTasks;
+    }
+    if (typeof this.range !== 'undefined') {
+      return beforeOrE(this.range.to, new Date());
+    }
+    return false;
+  };
 
   isSelected = (option) => this.params[0].id === option.id;
 

@@ -8,13 +8,6 @@ import { getFiltersForSummary } from '../../state/selectors/FilterSelector';
 import { getVisibleTasks } from '../../state/selectors/TaskListSelector';
 import { formatDateRange } from '../../util/Dates';
 
-const makeSummaryString = (forControl) => {
-  const selected = forControl.selectedOption;
-  return `${forControl.label} ${
-    selected.datePicker ? formatDateRange(forControl.customRange) : selected.label
-  }`;
-};
-
 export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -22,14 +15,42 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const filtersForSummary = useSelector(getFiltersForSummary);
   const taskListTotal = useSelector(getVisibleTasks).length;
 
-  const appendClearButton = (summaryString) => (
-    <>
-      {summaryString}{' '}
-      <Button className={classes.link} onClick={() => dispatch(resetFilters())}>
-        CLEAR
-      </Button>
-    </>
-  );
+  const getFilterLabelAndValue = (filter, singleTask) => {
+    let label = null;
+    if (typeof singleTask === 'undefined') {
+      label = filter.labels.filter;
+    } else if (filter.selectsPastTasks()) {
+      label = singleTask ? filter.labels.summaryPastSingular : filter.labels.summaryPastPlural;
+    } else {
+      label = singleTask ? filter.labels.summarySingular : filter.labels.summaryPlural;
+    }
+
+    let value = null;
+    if (filter.isTextFilter) {
+      value = `"${filter.params[0]}"`;
+    } else {
+      const selected = filter.selectedOption;
+      if (selected.datePicker) {
+        value = formatDateRange(filter.customRange);
+      } else {
+        value = selected.label;
+      }
+    }
+
+    return `${label} ${value}`;
+  };
+
+  const getListSeparator = (index) => {
+    if (index < filtersForSummary.length - 2 && filtersForSummary.length > 2) {
+      return ', ';
+    }
+    if (index < filtersForSummary.length - 1) {
+      return ' and ';
+    }
+    return '';
+  };
+
+  const getTotalsLabel = (total) => (total === 0 ? 'No' : total);
 
   const applyStyles = (output) => (
     <span className={classes.filterSummary}>
@@ -41,35 +62,36 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
     </span>
   );
 
-  if (typeof forControl !== 'undefined') return applyStyles(makeSummaryString(forControl));
+  const appendClearButton = (summaryString) => (
+    <>
+      {summaryString}{' '}
+      <Button className={classes.link} onClick={() => dispatch(resetFilters())}>
+        CLEAR
+      </Button>
+    </>
+  );
+
+  if (typeof forControl !== 'undefined') {
+    return applyStyles(getFilterLabelAndValue(forControl));
+  }
 
   const singleTask = taskListTotal === 1;
-  const taskNoun = singleTask ? currentTab.filterSummaryLabel : `${currentTab.filterSummaryLabel}s`;
+  const taskType = singleTask ? currentTab.filterSummaryLabel : `${currentTab.filterSummaryLabel}s`;
+  const totalsLabel = getTotalsLabel(taskListTotal);
 
-  if (filtersForSummary.length === 0) return applyStyles(`${taskListTotal} ${taskNoun}`);
-  const collective = singleTask ? ' is ' : ' are ';
+  if (filtersForSummary.length === 0) {
+    return applyStyles(`${totalsLabel} ${taskType}`);
+  }
 
   return applyStyles(
     appendClearButton(
       filtersForSummary.reduce((summaryString, filter, index) => {
-        let join = '';
-        if (index < filtersForSummary.length - 2 && filtersForSummary.length > 2) {
-          join = ', ';
-        } else if (index < filtersForSummary.length - 1) {
-          join = ' and ';
-        }
-
-        if (filter.isTextFilter) {
-          return `${summaryString} ${singleTask ? 'contains' : 'contain'} "${
-            filter.params[0]
-          }"${join}`;
-        }
-
-        let summaryItem = makeSummaryString(filter);
-        summaryItem = summaryItem.charAt(0).toLowerCase() + summaryItem.slice(1);
-
-        return `${summaryString}${collective}${summaryItem}${join}`;
-      }, `${taskListTotal} ${taskNoun}`)
+        return (
+          `${summaryString} ` +
+          `${getFilterLabelAndValue(filter, singleTask)}` +
+          `${getListSeparator(index)}`
+        );
+      }, `${totalsLabel} ${taskType}`)
     )
   );
 };

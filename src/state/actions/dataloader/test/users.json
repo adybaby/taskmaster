@@ -4,7 +4,7 @@
     "firstName": "Adrian",
     "lastName": "Marconi",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Designer"],
+    "skills": ["Designers"],
     "available": [{ "from": "1 Jan 2021", "to": "1 Aug 2021" }],
     "authored": [
       { "id": "3", "title": "Attract overseas purchases" },
@@ -17,7 +17,7 @@
     "firstName": "Ernie",
     "lastName": "Jones",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Designer", "Developer", "PM"],
+    "skills": ["Designers", "Developers", "PMs"],
     "available": [{ "from": "1 Mar 2021", "to": "1 Aug 2021" }],
     "authored": [
       { "id": "17", "title": "Shop in LA" },
@@ -36,7 +36,7 @@
     "firstName": "Jill",
     "lastName": "Fring",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Developer"],
+    "skills": ["Developers"],
     "available": [
       { "from": "1 Mar 2021", "to": "1 Aug 2021" },
       { "from": "1 Dec 2021", "to": "1 Feb 2022" }
@@ -62,7 +62,7 @@
     "firstName": "Marie",
     "lastName": "White",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Developer"],
+    "skills": ["Developers"],
     "available": [{ "from": "1 Mar 2021", "to": "1 Aug 2021" }],
     "authored": [],
     "signedUp": [
@@ -83,7 +83,7 @@
     "firstName": "Karen",
     "lastName": "Grey",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Researcher"],
+    "skills": ["Researchers"],
     "available": [{ "from": "1 Mar 2021", "to": "1 Aug 2021" }],
     "authored": [],
     "signedUp": [
@@ -99,7 +99,7 @@
     "firstName": "Ben",
     "lastName": "Green",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Researcher"],
+    "skills": ["Researchers"],
     "available": [{ "from": "1 Jun 2021", "to": "1 Dec 2021" }],
     "authored": [],
     "signedUp": [
@@ -120,7 +120,7 @@
     "firstName": "Josh",
     "lastName": "Jones",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["PM", "Logistics"],
+    "skills": ["PMs", "Logistics"],
     "available": [{ "from": "1 Apr 2021", "to": "1 Dec 2021" }],
     "authored": [],
     "signedUp": [
@@ -141,7 +141,7 @@
     "firstName": "Kev",
     "lastName": "Black",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["PM"],
+    "skills": ["PMs"],
     "available": [{ "from": "1 Jun 2021", "to": "1 Dec 2021" }],
     "authored": [],
     "signedUp": []
@@ -151,7 +151,7 @@
     "firstName": "Lisa",
     "lastName": "Rea",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Logistics", "Supply", "Researcher", "PM"],
+    "skills": ["Logistics", "Suppliers", "Researchers", "PMs"],
     "available": [{ "from": "1 Mar 2021", "to": "1 Jun 2022" }],
     "authored": [
       { "id": "1", "title": "Improve Toy Sales through new ranges" },
@@ -180,7 +180,7 @@
     "firstName": "Lauren",
     "lastName": "Grahams",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Designer", "Developer", "Researcher"],
+    "skills": ["Designers", "Developers", "Researchers"],
     "available": [{ "from": "1 Dec 2021", "to": "1 Jun 2022" }],
     "authored": [],
     "signedUp": [
@@ -196,7 +196,7 @@
     "firstName": "Kat",
     "lastName": "Young",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Logistics", "PM"],
+    "skills": ["Logistics", "PMs"],
     "available": [{ "from": "1 Nov 2021", "to": "1 Jun 2022" }],
     "authored": [],
     "signedUp": [
@@ -212,7 +212,7 @@
     "firstName": "Katie",
     "lastName": "Haynes",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Developer", "Designer"],
+    "skills": ["Developers", "Designers"],
     "available": [{ "from": "1 May 2021", "to": "1 Nov 2021" }],
     "authored": [],
     "signedUp": []
@@ -222,7 +222,7 @@
     "firstName": "Phil",
     "lastName": "Lee",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["PM"],
+    "skills": ["PMs"],
     "available": [{ "from": "1 May 2021", "to": "1 Nov 2021" }],
     "authored": [],
     "signedUp": []
@@ -232,7 +232,7 @@
     "firstName": "Chris",
     "lastName": "Hills",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["PM", "Researcher"],
+    "skills": ["PMs", "Researchers"],
     "available": [{ "from": "1 May 2021", "to": "1 Nov 2021" }],
     "authored": [],
     "signedUp": [
@@ -290,7 +290,7 @@
     "firstName": "Becki",
     "lastName": "Hay",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["PM"],
+    "skills": ["PMs"],
     "available": [{ "from": "1 Dec 2021", "to": "1 Jun 2022" }],
     "authored": [],
     "signedUp": [
@@ -306,7 +306,7 @@
     "firstName": "Billie",
     "lastName": "Pitt",
     "bio": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dignissim sodales ut eu sem integer vitae justo eget magna. Purus viverra accumsan in nisl. Condimentum vitae sapien pellentesque habitant morbi tristique senectus. Aenean euismod elementum nisi quis eleifend quam adipiscing vitae proin. Feugiat in fermentum posuere urna nec tincidunt praesent semper feugiat. Egestas egestas fringilla phasellus faucibus scelerisque eleifend donec pretium vulputate. Massa tempor nec feugiat nisl pretium fusce id velit ut. Sed arcu non odio euismod. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi.",
-    "skills": ["Developer"],
+    "skills": ["Developers"],
     "available": [{ "from": "1 Mar 2021", "to": "1 Aug 2021" }],
     "authored": [],
     "signedUp": [
