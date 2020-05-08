@@ -10,6 +10,7 @@ import {
   getFilterBarFilters,
   getActiveFilterBarFilters,
 } from '../../state/selectors/FilterSelector';
+import { DropDownFilter } from './DropDownFilter';
 import { SelectFilter } from './SelectFilter';
 import { CheckGroupFilter } from './CheckGroupFilter';
 
@@ -24,15 +25,17 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const currentTab = useSelector((state) => state.currentTab);
 
   const makeSelectControls = () =>
-    filterBarFilters.map((filter, index) => {
-      if (filter.isSelectFilter) {
-        return <SelectFilter key={index} filter={filter} />;
-      }
-      if (filter.isCheckGroupFilter) {
-        return <CheckGroupFilter key={index} filter={filter} />;
-      }
-      return 'Error - filter not found';
-    });
+    filterBarFilters.map((filter, index) => (
+      <DropDownFilter key={index} filter={filter}>
+        {filter.isSelectFilter ? (
+          <SelectFilter />
+        ) : filter.isCheckGroupFilter ? (
+          <CheckGroupFilter />
+        ) : (
+          <div>Error - Filter filter.id has no known type</div>
+        )}
+      </DropDownFilter>
+    ));
 
   const filterBarButton = () => (
     <ToggleButton
