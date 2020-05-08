@@ -74,11 +74,8 @@ export class Filter {
     }
     const filterIdAndParamIds = {
       filterId: this.id,
-      params: [this.params[0]],
+      params: this.params,
     };
-    if (this.params.length > 1) {
-      filterIdAndParamIds.params.push(...this.params.slice(1, 3));
-    }
     return filterIdAndParamIds;
   };
 

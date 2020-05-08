@@ -9,7 +9,10 @@ export const getVisibleTasks = createSelector(
   [getTasks, getCurrentTab, getAllActiveFilters],
   (tasks, currentTab, activeFilters) => {
     let filteredTasks = activeFilters.reduce(
-      (currentFilteredTasks, filter) => filter.execute(currentFilteredTasks, currentTab),
+      (currentFilteredTasks, filter) =>
+        filter.isTaskFilter
+          ? filter.execute(currentFilteredTasks, currentTab)
+          : currentFilteredTasks,
       tasks
     );
     if (currentTab.taskType !== null && currentTab !== DEFAULT_TAB) {

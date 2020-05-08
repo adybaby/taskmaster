@@ -28,12 +28,28 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
     let value = null;
     if (filter.isTextFilter) {
       value = `"${filter.params[0]}"`;
-    } else {
+    } else if (filter.isSelectFilter) {
       const selected = filter.selectedOption;
       if (selected.datePicker) {
         value = formatDateRange(filter.customRange);
       } else {
         value = selected.label;
+      }
+    } else if (filter.isCheckGroupFilter) {
+      const checked = filter.getChecked();
+      switch (checked.length) {
+        case 0:
+          value = 'None';
+          break;
+        case 1:
+          value = checked[0].id;
+          break;
+        case 2:
+          value = `${checked[0].id} and ${checked[1].id}`;
+          break;
+        default:
+          value = `${checked[0].id}, ${checked[1].id} and ${checked.length - 2} more`;
+          break;
       }
     }
 

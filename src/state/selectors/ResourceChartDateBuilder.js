@@ -92,26 +92,28 @@ const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
 
 const calcAvailability = () => {
   users.forEach((user) => {
-    user.skills.forEach((skill) => {
-      const skillsIndex = skills.indexOf(skill);
+    user.skills
+      .filter((skill) => skills.includes(skill))
+      .forEach((skill) => {
+        const skillsIndex = skills.indexOf(skill);
 
-      user.available.forEach((available) => {
-        updateXY(
-          available.from,
-          available.to,
-          'availability',
-          skillsIndex,
-          { user, signUp: null },
-          null
-        );
-      });
+        user.available.forEach((available) => {
+          updateXY(
+            available.from,
+            available.to,
+            'availability',
+            skillsIndex,
+            { user, signUp: null },
+            null
+          );
+        });
 
-      user.signedUp.forEach((su) => {
-        su.periods.forEach((period) => {
-          updateXY(period.from, period.to, 'signedUp', skillsIndex, { user, signUp: su }, null);
+        user.signedUp.forEach((su) => {
+          su.periods.forEach((period) => {
+            updateXY(period.from, period.to, 'signedUp', skillsIndex, { user, signUp: su }, null);
+          });
         });
       });
-    });
   });
 };
 

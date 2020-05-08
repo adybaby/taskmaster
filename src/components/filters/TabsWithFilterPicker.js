@@ -11,6 +11,7 @@ import {
   getActiveFilterBarFilters,
 } from '../../state/selectors/FilterSelector';
 import { SelectFilter } from './SelectFilter';
+import { CheckGroupFilter } from './CheckGroupFilter';
 
 export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const dispatch = useDispatch();
@@ -23,9 +24,15 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const currentTab = useSelector((state) => state.currentTab);
 
   const makeSelectControls = () =>
-    filterBarFilters.map((filterControl, index) => (
-      <SelectFilter key={index} filter={filterControl} />
-    ));
+    filterBarFilters.map((filter, index) => {
+      if (filter.isSelectFilter) {
+        return <SelectFilter key={index} filter={filter} />;
+      }
+      if (filter.isCheckGroupFilter) {
+        return <CheckGroupFilter key={index} filter={filter} />;
+      }
+      return 'Error - filter not found';
+    });
 
   const filterBarButton = () => (
     <ToggleButton

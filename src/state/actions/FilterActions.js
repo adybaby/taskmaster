@@ -6,6 +6,12 @@ export const setFilters = (filters) => ({
   filters,
 });
 
+// reset  specified filter to its default state (effectively clearing it)
+export const resetFilter = (filter) => ({
+  type: ACTION_TYPES.RESET_FILTER,
+  filter,
+});
+
 // reset  all filters to their default state (effectively clearing them all)
 export const resetFilters = () => ({
   type: ACTION_TYPES.RESET_FILTERS,

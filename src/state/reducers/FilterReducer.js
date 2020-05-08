@@ -5,6 +5,9 @@ export const filterReducer = (state = [], action) => {
     case ACTION_TYPES.SET_FILTERS: {
       return action.filters;
     }
+    case ACTION_TYPES.RESET_FILTER: {
+      return state.map((filter) => (filter.id === action.filter.id ? filter.new : filter));
+    }
     case ACTION_TYPES.RESET_FILTERS: {
       return state.map((filter) =>
         filter.isSortFilter() || !filter.isTaskFilter ? filter : filter.new

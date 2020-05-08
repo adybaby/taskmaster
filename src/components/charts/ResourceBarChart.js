@@ -129,11 +129,11 @@ export const ResourceBarChart = ({
         <HorizontalGridLines tickValues={isGantt ? ganttYTickValues : undefined} />
         <XAxis tickLabelAngle={-45} />
         {isGantt ? (
-          <YAxis tickFormat={(t, i) => skills[i]} tickValues={ganttYTickValues} />
+          <YAxis tickFormat={(t, i) => skills.reverse()[i]} tickValues={ganttYTickValues} />
         ) : (
           <YAxis tickFormat={(t) => (Math.round(t) === t ? t : '')} />
         )}
-        {seriesSet.map((s, index) => makeSeries(s, index, isGantt))}
+        {seriesSet.map((s, index) => makeSeries(s, index, isGantt)).reverse()}
       </XYPlot>
     );
   };

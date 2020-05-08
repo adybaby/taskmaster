@@ -304,6 +304,14 @@ export const useStyles = makeStyles({
       color: theme.palette.primary.main,
     },
   },
+  checkGroupControlButton: {
+    color: theme.palette.primary.main,
+    fontWeight: 'bold',
+  },
+  checkGroupMaxSelectedWarning: {
+    backgroundColor: '#800000',
+    color: 'white',
+  },
 
   // Task List
   taskListContainer: {
@@ -358,7 +366,8 @@ export const useStyles = makeStyles({
   },
   vacancyContainer: {
     marginRight: theme.spacing(2),
-    minWidth: '320px',
+    [mediumOrLargeVp]: { minWidth: '320px' },
+    [smallVp]: { minWidth: '260px' },
     marginBottom: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
@@ -396,7 +405,8 @@ export const useStyles = makeStyles({
   vacancyFieldsTable: {
     width: '100%',
     display: 'grid',
-    gridTemplateColumns: '20% 80%',
+    [mediumOrLargeVp]: { gridTemplateColumns: '20% 80%' },
+    [smallVp]: { gridTemplateColumns: '30% 70%' },
   },
   vacancyFieldTitle: {
     fontWeight: 'bold',
@@ -409,10 +419,14 @@ export const useStyles = makeStyles({
   },
   vacancyPeriod: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'stretch',
-    alignContent: 'center',
+    [mediumOrLargeVp]: {
+      flexWrap: 'noWrap',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'stretch',
+      alignContent: 'center',
+    },
+    [smallVp]: { flexWrap: 'wrap', flexDirection: 'col' },
     '&:hover': {
       borderRadius: theme.shape.borderRadius,
       backgroundColor: vacancySignUpColor,
@@ -421,6 +435,7 @@ export const useStyles = makeStyles({
   },
   vacancyValueInner: { paddingLeft: 4 },
   periodDate: {
+    [smallVp]: { flexWrap: 'wrap', flexDirection: 'col' },
     paddingLeft: 4,
     display: 'flex',
     alignItems: 'center',

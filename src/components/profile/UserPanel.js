@@ -30,7 +30,7 @@ export const UserPanel = ({ user }) => {
         {user.skills.length > 0 ? (
           <>
             <Typography className={classes.userSectionHeading} variant={variant.heading}>
-              Skills
+              Skill Groups
             </Typography>
             <Divider />
             <div className={classes.userSectionBody}>

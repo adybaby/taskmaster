@@ -13,7 +13,13 @@ export const calculateResourceChartData = createSelector(
   [getTasks, getUsers, getDateRange, getSkills, getFilterBarFilters],
   (tasks, users, dateRange, skills, filterBarFilters) => {
     return {
-      ...buildChartData(tasks, users, dateRange, skills, filterBarFilters[0].range),
+      ...buildChartData(
+        tasks,
+        users,
+        dateRange,
+        filterBarFilters[1].getChecked().map((skill) => skill.id),
+        filterBarFilters[0].range
+      ),
     };
   }
 );

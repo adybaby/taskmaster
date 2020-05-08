@@ -60,7 +60,7 @@ export const initialise = (uriConfiguration) => (dispatch) => {
       dispatch(setSkills(skills));
       dispatch(setDateRange(dateRange));
       dispatch(setCurrentUser(users[0]));
-      dispatch(setFilters(createFilters(tasks, users, users[0])));
+      dispatch(setFilters(createFilters(tasks, users, users[0], skills)));
 
       if (uriConfiguration !== null) {
         updateStateFromUriConfiguration(dispatch, uriConfiguration);

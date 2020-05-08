@@ -5,10 +5,11 @@ import { createDateFilterOptions } from './controls/DateFilterOptions';
 import { createSortOptions } from './controls/SortOptions';
 import { SelectFilter } from './SelectFilter';
 import { TextFilter } from './TextFilter';
+import { CheckGroupFilter } from './CheckGroupFilter';
 
 const taskTabs = [TABS.all.id, TABS.drivers.id, TABS.enablers.id, TABS.initiatives.id];
 
-export const createFilters = (tasks, users, currentUser) => [
+export const createFilters = (tasks, users, currentUser, skills) => [
   new SelectFilter({
     id: FILTER_IDS.CREATED_DATE,
     labels: {
@@ -90,14 +91,6 @@ export const createFilters = (tasks, users, currentUser) => [
     forPastTasks: false,
     options: createVacancyFilterOptions(tasks, currentUser),
   }),
-  new SelectFilter({
-    id: FILTER_IDS.CHART_RANGE,
-    labels: { filter: 'Date range:' },
-    tabs: [TABS.charts.id],
-    isOnFilterBar: true,
-    isTaskFilter: false,
-    options: createDateFilterOptions('startDate', true),
-  }),
   new TextFilter({
     id: FILTER_IDS.SEARCH_FIELD,
     labels: {
@@ -117,5 +110,21 @@ export const createFilters = (tasks, users, currentUser) => [
     isOnFilterBar: true,
     isTaskFilter: true,
     options: createSortOptions(users),
+  }),
+  new SelectFilter({
+    id: FILTER_IDS.CHART_RANGE,
+    labels: { filter: 'Date range:' },
+    tabs: [TABS.charts.id],
+    isOnFilterBar: true,
+    isTaskFilter: false,
+    options: createDateFilterOptions('startDate', true),
+  }),
+  new CheckGroupFilter({
+    id: FILTER_IDS.SKILLS_RANGE,
+    labels: { filter: 'Skill Groups:' },
+    tabs: [TABS.charts.id],
+    isOnFilterBar: true,
+    isTaskFilter: false,
+    options: skills,
   }),
 ];

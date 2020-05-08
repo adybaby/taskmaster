@@ -1,8 +1,6 @@
 Charts:
   - add chart to see number of usrs signed up, authored, with skills
-  - reduce legend values down to values shown on chart
   - improve charts to account for "interest" in vacancies/signups
-  - Add section under stacked title to show selected resources and abilty to change them.
   - Add download data button to right of title
 
 Add Capabilities
