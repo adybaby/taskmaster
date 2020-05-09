@@ -539,12 +539,17 @@ export const useStyles = makeStyles({
   noChartsMessage: { paddingLeft: theme.spacing(2), color: errorColor },
   chartLayoutBody: { flexGrow: 1 },
   chartHeadingContainer: {
+    paddingTop: 4,
     paddingLeft: theme.spacing(2),
-    paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(1),
     paddingRight: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
+  },
+  chartHeading: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'stretch',
   },
   chartSelectButton: {
     [mediumOrLargeVp]: {
@@ -553,15 +558,27 @@ export const useStyles = makeStyles({
     minWidth: 0,
     paddingLeft: 0,
   },
-  chartHeading: {
+  chartHeadingLabel: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  chartDownloadButton: {
+    minwidth: 0,
+    marginLeft: 'auto',
+    color: theme.palette.primary.main,
+  },
+  chartMenuBody: {
+    paddingTop: 0,
   },
   chartMenu: {
     paddingLeft: theme.spacing(1),
   },
   chartMenuFolder: {
     borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  chartListItem: {
+    paddingLeft: theme.spacing(1),
   },
   chartInfo: {},
   continuousChartLegend: { padding: theme.spacing(3) },

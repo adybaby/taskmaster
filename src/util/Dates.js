@@ -23,7 +23,13 @@ export const isValidDate = (date) =>
   !isNaN(date);
 
 export const ukToUs = (dateStr) => {
-  if (!isValidDateString(dateStr)) return null;
+  if (
+    typeof dateStr === 'undefined' ||
+    dateStr === null ||
+    (typeof dateStr !== 'string' && !isNaN(dateStr))
+  ) {
+    return null;
+  }
 
   const delim = dateStr.includes('/')
     ? /\//g

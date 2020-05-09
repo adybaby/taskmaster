@@ -41,7 +41,8 @@ const getSkillsAndColors = () =>
  * {label:string, color:#string, data:[{x,y}]}
  * */
 const seriesTemplate = (makeRefs) => {
-  const template = skills.map((skill, index) => ({
+  const template = {};
+  template.series = skills.map((skill, index) => ({
     label: skill,
     color: KELLY[index],
     data: xyTemplate(makeRefs),
@@ -62,9 +63,9 @@ const createSeriesTemplates = () => {
   seriesSets.refs = seriesTemplate(true);
 };
 
-const updateXY = (from, to, seriesSetKey, skillsIndex, signUp, vacancy) => {
-  const { data } = seriesSets[seriesSetKey][skillsIndex];
-  const refData = seriesSets.refs[skillsIndex].data;
+const updateXY = (from, to, seriesSetKey, seriesIndex, signUp, vacancy) => {
+  const { data } = seriesSets[seriesSetKey].series[seriesIndex];
+  const refData = seriesSets.refs.series[seriesIndex].data;
 
   let i = data.findIndex((d) => d.x === from.getTime());
   const end = data.findIndex((d) => d.x === to.getTime());
@@ -136,14 +137,15 @@ const calcVacancies = () => {
 };
 
 const calcActualAvailabilityAndShortFall = () => {
-  for (let skillIndex = 0; skillIndex < skills.length; skillIndex++) {
-    for (let dayIndex = 0; dayIndex < seriesSets.availability[0].data.length; dayIndex++) {
-      const availabilityDayData = seriesSets.availability[skillIndex].data[dayIndex];
-      const signedUpDayData = seriesSets.signedUp[skillIndex].data[dayIndex];
-      const actualAvailabilityDayData = seriesSets.actualAvailability[skillIndex].data[dayIndex];
-      const vacanciesDayData = seriesSets.vacancies[skillIndex].data[dayIndex];
-      const shortfallDayData = seriesSets.shortfall[skillIndex].data[dayIndex];
-      const excessDayData = seriesSets.excess[skillIndex].data[dayIndex];
+  for (let seriesIndex = 0; seriesIndex < skills.length; seriesIndex++) {
+    for (let dayIndex = 0; dayIndex < seriesSets.availability.series[0].data.length; dayIndex++) {
+      const availabilityDayData = seriesSets.availability.series[seriesIndex].data[dayIndex];
+      const signedUpDayData = seriesSets.signedUp.series[seriesIndex].data[dayIndex];
+      const actualAvailabilityDayData =
+        seriesSets.actualAvailability.series[seriesIndex].data[dayIndex];
+      const vacanciesDayData = seriesSets.vacancies.series[seriesIndex].data[dayIndex];
+      const shortfallDayData = seriesSets.shortfall.series[seriesIndex].data[dayIndex];
+      const excessDayData = seriesSets.excess.series[seriesIndex].data[dayIndex];
 
       actualAvailabilityDayData.y = availabilityDayData.y - signedUpDayData.y;
 
@@ -155,8 +157,8 @@ const calcActualAvailabilityAndShortFall = () => {
   }
 };
 
-const trimAndFilterSeriesSet = (seriesSet, filterDateRange) => {
-  seriesSet.forEach((series) => {
+const trimAndFilterSeriesSet = (seriesSet, filterDateRange, includeZeros) => {
+  seriesSet.series.forEach((series) => {
     if (typeof series.data !== 'undefined') {
       const attemptedFirst =
         typeof filterDateRange === 'undefined' ||
@@ -172,18 +174,23 @@ const trimAndFilterSeriesSet = (seriesSet, filterDateRange) => {
           : series.data.findIndex((d) => d.x > filterDateRange.to.getTime());
       const first = attemptedFirst === -1 ? 0 : attemptedFirst;
       const last = attemptedLast === -1 ? series.data.length : attemptedLast;
-      series.data = series.data.slice(first, last).filter((d) => d.y !== 0);
+
+      series.data = series.data.slice(first, last);
+
+      if (!includeZeros) {
+        series.data = series.data.filter((d) => d.y !== 0);
+      }
     }
   });
 };
 
 const minMax = (seriesSet) => {
-  let min = seriesSet
+  let min = seriesSet.series
     .map((series) =>
       series.data.reduce((previous, current) => (current.y < previous ? current.y : previous), 0)
     )
     .reduce((previous, current) => (current < previous ? current : previous), 0);
-  const max = seriesSet
+  const max = seriesSet.series
     .map((series) =>
       series.data.reduce((previous, current) => (current.y > previous ? current.y : previous), 0)
     )
@@ -201,6 +208,7 @@ const cleanSeriesSets = (filterDateRange) => {
   trimAndFilterSeriesSet(seriesSets.vacancies, filterDateRange);
   trimAndFilterSeriesSet(seriesSets.shortfall, filterDateRange);
   trimAndFilterSeriesSet(seriesSets.excess, filterDateRange);
+  trimAndFilterSeriesSet(seriesSets.refs, filterDateRange, true);
   minMax(seriesSets.signedUp);
   minMax(seriesSets.availability);
   minMax(seriesSets.vacancies);

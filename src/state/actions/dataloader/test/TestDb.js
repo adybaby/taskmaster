@@ -18,15 +18,16 @@ const firstLastDates = (tasks, users) => {
   return { first: min(allDates), last: max(allDates) };
 };
 
-const enumerateSkills = (tasks, users) => [
-  ...new Set(
-    tasks
-      .filter((task) => task.type === TASK_TYPE.INITIATIVE)
-      .map((task) => task.vacancies.map((vacancy) => vacancy.skill))
-      .flat(),
-    users.map((user) => user.skills).flat()
-  ),
-];
+const enumerateSkills = (tasks, users) =>
+  [
+    ...new Set(
+      tasks
+        .filter((task) => task.type === TASK_TYPE.INITIATIVE)
+        .map((task) => task.vacancies.map((vacancy) => vacancy.skill))
+        .flat(),
+      users.map((user) => user.skills).flat()
+    ),
+  ].sort();
 
 export const init = () =>
   new Promise((resolve) => {

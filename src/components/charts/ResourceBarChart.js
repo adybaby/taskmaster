@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
   XYPlot,
   VerticalRectSeries,
@@ -27,11 +27,27 @@ export const ResourceBarChart = ({
   onValueMouseOver,
   onValueClick,
   onValueMouseOut,
+  setDownloadEnabled,
 }) => {
   const classes = useStyles();
   const variant = typographyVariant.chart;
-  const skills = skillsAndColors.map((skill) => skill.title);
+  // const skills = skillsAndColors.map((skill) => skill.title);
   const isGantt = chart.type === CHART_TYPES.BAR_GANTT.id;
+
+  const orderedSeriesSet = { ...seriesSet }; // [...seriesSet];
+  orderedSeriesSet.series = [...orderedSeriesSet.series];
+  const orderedSkillsAndColors = [...skillsAndColors];
+  const orderedRefs = { ...refs }; // [...refs];
+  orderedRefs.series = [...orderedRefs.series];
+
+  // reverse order as gantt chart populates from bottom to top
+  if (isGantt) {
+    orderedSeriesSet.series.reverse();
+    orderedSkillsAndColors.reverse();
+    orderedRefs.series.reverse();
+  }
+
+  const orderedSkills = orderedSkillsAndColors.map((skill) => skill.title);
 
   const makeLegend = () =>
     isGantt ? (
@@ -39,16 +55,16 @@ export const ResourceBarChart = ({
         <ContinuousColorLegend
           startColor={CHART_COLORS.MIN}
           endColor={CHART_COLORS.MAX}
-          startTitle={seriesSet.min}
-          midTitle={Math.floor(seriesSet.max / 2)}
-          endTitle={seriesSet.max}
+          startTitle={orderedSeriesSet.min}
+          midTitle={Math.floor(orderedSeriesSet.max / 2)}
+          endTitle={orderedSeriesSet.max}
         />
       </div>
     ) : (
       <DiscreteColorLegend
         className={classes.discreteChartLegend}
         orientation="horizontal"
-        items={skillsAndColors}
+        items={orderedSkillsAndColors}
       />
     );
 
@@ -60,7 +76,7 @@ export const ResourceBarChart = ({
         y,
         markPanel: (
           <Inspector
-            dayRefData={refs[skillsIndex].data.find((ref) => ref.x === dataIn.x)}
+            dayRefData={orderedRefs.series[skillsIndex].data.find((ref) => ref.x === dataIn.x)}
             skillTitle={series.label}
             total={dataIn.y}
             daySummary={chart.daySummary}
@@ -85,7 +101,7 @@ export const ResourceBarChart = ({
     let data = makeSeriesData(series, skillsIndex);
     if (data.length === 0) return null;
     if (data.length === 1 && !isGantt) {
-      // this to deal with a react-viz "feature" where time axis require >1 entries
+      // this to deal with a react-viz "feature" where time axis require >1 x entries
       data = [{ x: data[0].x - ONE_DAY, y: 0 }, data[0], { x: data[0].x + ONE_DAY, y: 0 }];
     }
 
@@ -116,30 +132,38 @@ export const ResourceBarChart = ({
         ...props,
         margin: { ...props.margin, left: 80 },
         colorRange: [CHART_COLORS.HIGHLIGHTED, CHART_COLORS.MIN, CHART_COLORS.MAX],
-        colorDomain: [-99, seriesSet.min, seriesSet.max],
+        colorDomain: [-99, orderedSeriesSet.min, orderedSeriesSet.max],
       };
     } else {
       props = { ...props, stackBy: 'y' };
     }
 
-    const ganttYTickValues = [...Array(skills.length).keys()].map((i) => i + 0.5);
+    const ganttYTickValues = [...Array(orderedSkills.length).keys()].map((i) => i + 0.5);
 
     return (
       <XYPlot width={width} {...props}>
         <HorizontalGridLines tickValues={isGantt ? ganttYTickValues : undefined} />
         <XAxis tickLabelAngle={-45} />
         {isGantt ? (
-          <YAxis tickFormat={(t, i) => skills.reverse()[i]} tickValues={ganttYTickValues} />
+          <YAxis tickFormat={(t, i) => orderedSkills[i]} tickValues={ganttYTickValues} />
         ) : (
           <YAxis tickFormat={(t) => (Math.round(t) === t ? t : '')} />
         )}
-        {seriesSet.map((s, index) => makeSeries(s, index, isGantt)).reverse()}
+        {orderedSeriesSet.series.map((s, index) => makeSeries(s, index, isGantt))}
       </XYPlot>
     );
   };
 
-  const seriesHasData = () =>
-    seriesSet.reduce((accumulator, series) => accumulator + series.data.length, 0) > 0;
+  const seriesHasData = useCallback(
+    () =>
+      orderedSeriesSet.series.reduce((accumulator, series) => accumulator + series.data.length, 0) >
+      0,
+    [orderedSeriesSet]
+  );
+
+  useEffect(() => {
+    setDownloadEnabled(seriesHasData);
+  }, [seriesHasData, setDownloadEnabled]);
 
   return (
     <>

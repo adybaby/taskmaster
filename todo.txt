@@ -1,7 +1,8 @@
 Charts:
   - add chart to see number of usrs signed up, authored, with skills
   - improve charts to account for "interest" in vacancies/signups
-  - Add download data button to right of title
+
+  - hints around buttons
 
 Add Capabilities
 

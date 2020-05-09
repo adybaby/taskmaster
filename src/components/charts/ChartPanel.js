@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
 import { Drawer, Button, Typography, Hidden } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
+import FileSaver from 'file-saver';
 import { useStyles, typographyVariant } from '../../styles/Styles';
+import { formatDate } from '../../util/Dates';
 import { calculateResourceChartData } from '../../state/selectors/ResourceChartDataSelector';
 import { setSelectedChart } from '../../state/actions/SelectedChartActions';
-import { RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
+import { ICONS, RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
 import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
 
@@ -33,7 +32,9 @@ const ChartMenuGroup = ({
   return (
     <>
       <ListItem className={classes.chartMenuFolder} button onClick={onFolderClick}>
-        <ListItemText primary={<b>{label}</b>} />
+        <Typography className={classes.chartListItem}>
+          <b>{label}</b>
+        </Typography>
         {folderOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
 
@@ -45,9 +46,10 @@ const ChartMenuGroup = ({
               key={index}
               selected={chart === selectedChart}
               onClick={() => handleChartMenuItemClicked(chart)}
-              className={classes.chartListItem}
             >
-              <ListItemText primary={chart.title} />
+              <Typography className={classes.chartListItem} noWrap={true}>
+                {chart.title}
+              </Typography>
             </ListItem>
           ))}
         </List>
@@ -67,6 +69,7 @@ export const ChartPanel = () => {
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
   const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState(0);
+  const [downloadEnabled, setDownloadEnabled] = useState(true);
   const [winWidth, setWinWidth] = useState(window.innerWidth);
   const [winHeight, setWinHeight] = useState(window.innerHeight);
 
@@ -91,6 +94,38 @@ export const ChartPanel = () => {
     setChartSelectDrawerVisible(false);
   };
 
+  const handleDownloadClicked = () => {
+    const refsData = resourceSeriesSets.refs.series[0].data;
+    const dayCount = refsData.length;
+    const series = resourceSeriesSets[selectedChart.seriesKey];
+
+    const colHeadings = ['Skill Group'];
+    for (let index = 0; index < dayCount; index++) {
+      colHeadings.push(formatDate(new Date(refsData[index].x)));
+    }
+    const lines = [colHeadings.join(',')];
+
+    series.series.forEach((skill) => {
+      const line = [skill.label];
+
+      for (let index = 0; index < dayCount; index++) {
+        const dayData = skill.data[index];
+        if (typeof dayData === 'undefined') {
+          line.push(0);
+        } else {
+          line.push(dayData.y);
+        }
+      }
+
+      lines.push(line.join(','));
+    });
+
+    const chartDataStr = lines.join('\n');
+
+    const blob = new Blob([chartDataStr], { type: 'text/plain;charset=utf-8' });
+    FileSaver.saveAs(blob, `taskmaster_${selectedChart.seriesKey}.csv`);
+  };
+
   const resourceChart = (width) => (
     <ResourceBarChart
       chart={selectedChart}
@@ -110,11 +145,12 @@ export const ChartPanel = () => {
       onValueMouseOut={() => {
         setDataPoint(null);
       }}
+      setDownloadEnabled={setDownloadEnabled}
     />
   );
 
   const chartMenuBody = () => (
-    <List component="nav" aria-label="charts list navigation">
+    <List className={classes.chartMenuBody} component="nav" aria-label="charts list navigation">
       {chartGroups.map((chartGroup, index) => (
         <ChartMenuGroup
           key={index}
@@ -169,9 +205,22 @@ export const ChartPanel = () => {
     </Drawer>
   );
 
-  const chartMenuDrawerButton = () => (
+  const chartSelectButton = () => (
     <Button className={classes.chartSelectButton} onClick={() => setChartSelectDrawerVisible(true)}>
-      <FontAwesomeIcon icon={faBars} />
+      {ICONS.MENU}
+    </Button>
+  );
+
+  const downloadButton = () => (
+    <Button
+      disabled={!downloadEnabled}
+      className={classes.chartDownloadButton}
+      onClick={handleDownloadClicked}
+    >
+      {ICONS.DOWNLOAD}
+      <span className={classes.hidingLabel}>
+        <b>DOWNLOAD</b>
+      </span>
     </Button>
   );
 
@@ -199,10 +248,11 @@ export const ChartPanel = () => {
         <div className={classes.chartLayoutBody}>
           <div className={classes.chartHeadingContainer}>
             <div className={classes.chartHeading}>
-              {chartMenuDrawerButton()}
-              <Typography variant={variant.title}>
+              {chartSelectButton()}
+              <Typography classes={{ root: classes.chartHeadingLabel }} variant={variant.title}>
                 <b>{selectedChart.title}</b>
               </Typography>
+              {downloadButton()}
             </div>
             <div className={classes.chartInfo}>
               <Typography variant={variant.info}>{selectedChart.info}</Typography>

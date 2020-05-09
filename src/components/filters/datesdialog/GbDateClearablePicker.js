@@ -19,7 +19,7 @@ const GbClearableDatePicker = (props) => {
         typeof value !== 'undefined' &&
         value !== null &&
         value !== '' &&
-        isValidDateString(value)
+        isValidDateString(ukToUs(value))
       ) {
         setIntVal(new Date(ukToUs(value)));
       }

@@ -9,6 +9,8 @@ import {
   faUserCircle,
   faInfoCircle,
   faCaretDown,
+  faDownload,
+  faBars,
 } from '@fortawesome/free-solid-svg-icons';
 import { faLightbulb, faMap } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,4 +28,6 @@ export const ICONS = {
   PROFILE: <FontAwesomeIcon icon={faUserCircle} />,
   INFO: <FontAwesomeIcon size="lg" icon={faInfoCircle} />,
   DOWN_ARROW: <FontAwesomeIcon icon={faCaretDown} />,
+  DOWNLOAD: <FontAwesomeIcon icon={faDownload} />,
+  MENU: <FontAwesomeIcon icon={faBars} />,
 };
