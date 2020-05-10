@@ -35,12 +35,13 @@ export const AppBar = () => {
   };
 
   const handleHomeClick = () => {
+    dispatch(setCurrentTab(TABS.all));
     dispatch(resetFilters());
   };
 
   return (
     <div className={classes.appBar}>
-      <Tooltip title="Reset filters and show all tasks">
+      <Tooltip title="Reset task filters and show all tasks">
         <Link className={classes.appTitle} to="/" onClick={handleHomeClick}>
           <Typography variant="h6" noWrap>
             TASKMASTER
