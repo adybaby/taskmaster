@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Tab from '@material-ui/core/Tab';
+import { Tooltip } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
 import { TABS } from '../constants/Constants';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
@@ -38,10 +39,12 @@ export const MainTabs = () => {
         className={classes.tab}
         disableFocusRipple={true}
         label={
-          <div className={classes.tabLabel}>
-            {tab.icon}
-            <span className={classes.hidingLabel}>{tab.label}</span>
-          </div>
+          <Tooltip title={tab.label}>
+            <div className={classes.tabLabel}>
+              {tab.icon}
+              <span className={classes.hidingLabel}>{tab.label}</span>
+            </div>
+          </Tooltip>
         }
       />
     ));

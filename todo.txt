@@ -2,8 +2,6 @@ Charts:
   - add chart to see number of usrs signed up, authored, with skills
   - improve charts to account for "interest" in vacancies/signups
 
-  - hints around buttons
-
 Add Capabilities
 
 Aria

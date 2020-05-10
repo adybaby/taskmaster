@@ -6,7 +6,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import Paper from '@material-ui/core/Paper';
-import { Drawer, Button, Typography, Hidden } from '@material-ui/core';
+import { Drawer, Button, Typography, Hidden, Tooltip } from '@material-ui/core';
 import { AutoSizer } from 'react-virtualized';
 import FileSaver from 'file-saver';
 import { useStyles, typographyVariant } from '../../styles/Styles';
@@ -205,22 +205,29 @@ export const ChartPanel = () => {
   );
 
   const chartSelectButton = () => (
-    <Button className={classes.chartSelectButton} onClick={() => setChartSelectDrawerVisible(true)}>
-      {ICONS.MENU}
-    </Button>
+    <Tooltip title="Select Chart">
+      <Button
+        className={classes.chartSelectButton}
+        onClick={() => setChartSelectDrawerVisible(true)}
+      >
+        {ICONS.MENU}
+      </Button>
+    </Tooltip>
   );
 
   const downloadButton = () => (
-    <Button
-      disabled={!downloadEnabled}
-      className={classes.chartDownloadButton}
-      onClick={handleDownloadClicked}
-    >
-      {ICONS.DOWNLOAD}
-      <span className={classes.hidingLabel}>
-        <b>DOWNLOAD</b>
-      </span>
-    </Button>
+    <Tooltip title="DOWNLOAD CSV">
+      <Button
+        disabled={!downloadEnabled}
+        className={classes.chartDownloadButton}
+        onClick={handleDownloadClicked}
+      >
+        {ICONS.DOWNLOAD}
+        <span className={classes.hidingLabel}>
+          <b>DOWNLOAD</b>
+        </span>
+      </Button>
+    </Tooltip>
   );
 
   const nonLayoutComponents = () => (

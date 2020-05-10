@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import Collapse from '@material-ui/core/Collapse';
-import { Drawer, List, Button, Hidden, Tabs } from '@material-ui/core';
+import { Drawer, List, Button, Hidden, Tabs, Tooltip } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
 import { ICONS } from '../../constants/Constants';
 import { setFilterBarVisible } from '../../state/actions/FilterBarVisibleActions';
@@ -38,35 +38,39 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
     ));
 
   const filterBarButton = () => (
-    <ToggleButton
-      value="filterBarButton"
-      variant="text"
-      className={classes.filterBarButton}
-      onClick={() => dispatch(setFilterBarVisible(!filterBarVisible))}
-      selected={filterBarVisible}
-      disableFocusRipple={true}
-    >
-      <div className={classes.tabLabel}>
-        <span style={isAFilterActive ? { color: 'red' } : undefined}>
-          {ICONS.FILTER}
-          {`\u00A0`}Filters{isAFilterActive ? `\u00A0ON` : ``}
-        </span>
-      </div>
-    </ToggleButton>
+    <Tooltip title="Open Filter Bar">
+      <ToggleButton
+        value="filterBarButton"
+        variant="text"
+        className={classes.filterBarButton}
+        onClick={() => dispatch(setFilterBarVisible(!filterBarVisible))}
+        selected={filterBarVisible}
+        disableFocusRipple={true}
+      >
+        <div className={classes.tabLabel}>
+          <span style={isAFilterActive ? { color: 'red' } : undefined}>
+            {ICONS.FILTER}
+            {`\u00A0`}Filters{isAFilterActive ? `\u00A0ON` : ``}
+          </span>
+        </div>
+      </ToggleButton>
+    </Tooltip>
   );
 
   const filterDrawerButton = () => (
-    <Button
-      value="filterDrawerButton"
-      variant="text"
-      className={classes.filterDrawerButton}
-      onClick={() => setFilterDrawerVisible(!filterDrawerVisible)}
-      disableFocusRipple={true}
-    >
-      <div className={classes.tabLabel}>
-        <span style={isAFilterActive ? { color: 'red' } : undefined}>{ICONS.FILTER}</span>
-      </div>
-    </Button>
+    <Tooltip title="Open Filter Drawer">
+      <Button
+        value="filterDrawerButton"
+        variant="text"
+        className={classes.filterDrawerButton}
+        onClick={() => setFilterDrawerVisible(!filterDrawerVisible)}
+        disableFocusRipple={true}
+      >
+        <div className={classes.tabLabel}>
+          <span style={isAFilterActive ? { color: 'red' } : undefined}>{ICONS.FILTER}</span>
+        </div>
+      </Button>
+    </Tooltip>
   );
 
   const filterBar = () => (

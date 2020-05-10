@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
+import { Tooltip } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
 import { ICONS, TABS } from '../constants/Constants';
 import { setFilterParams, resetFilters } from '../state/actions/FilterActions';
@@ -39,47 +40,55 @@ export const AppBar = () => {
 
   return (
     <div className={classes.appBar}>
-      <Link className={classes.appTitle} to="/" onClick={handleHomeClick}>
-        <Typography variant="h6" noWrap>
-          TASKMASTER
-        </Typography>
-      </Link>
-      <div className={classes.searchBox}>
-        <div className={classes.searchIcon}>{ICONS.SEARCH}</div>
-        <InputBase
-          value={searchText}
-          onChange={handleSearchChange}
-          onKeyPress={(event) => {
-            if (event.key === 'Enter') {
-              handleSearchSubmit(event);
-            }
-          }}
-          placeholder="Search…"
-          classes={{
-            root: classes.searchInputRoot,
-            input: classes.searchTextRoot,
-          }}
-        />
-      </div>
-      <Button
-        classes={{ root: classes.appBarButton }}
-        color="inherit"
-        onClick={handleNewClick}
-        size="large"
-      >
-        {ICONS.NEW}
-        <span className={classes.hidingLabel}>New..</span>
-      </Button>
-      <Button
-        className={classes.appBarButton}
-        color="inherit"
-        component={Link}
-        to="/profile"
-        size="large"
-      >
-        {ICONS.PROFILE}
-        <span className={classes.hidingLabel}>{userName}</span>
-      </Button>
+      <Tooltip title="Reset filters and show all tasks">
+        <Link className={classes.appTitle} to="/" onClick={handleHomeClick}>
+          <Typography variant="h6" noWrap>
+            TASKMASTER
+          </Typography>
+        </Link>
+      </Tooltip>
+      <Tooltip title="Search for tasks containing..">
+        <div className={classes.searchBox}>
+          <div className={classes.searchIcon}>{ICONS.SEARCH}</div>
+          <InputBase
+            value={searchText}
+            onChange={handleSearchChange}
+            onKeyPress={(event) => {
+              if (event.key === 'Enter') {
+                handleSearchSubmit(event);
+              }
+            }}
+            placeholder="Search…"
+            classes={{
+              root: classes.searchInputRoot,
+              input: classes.searchTextRoot,
+            }}
+          />
+        </div>
+      </Tooltip>
+      <Tooltip title="Add a new driver, enabler, or initiative">
+        <Button
+          classes={{ root: classes.appBarButton }}
+          color="inherit"
+          onClick={handleNewClick}
+          size="large"
+        >
+          {ICONS.NEW}
+          <span className={classes.hidingLabel}>New..</span>
+        </Button>
+      </Tooltip>
+      <Tooltip title="View your user profile">
+        <Button
+          className={classes.appBarButton}
+          color="inherit"
+          component={Link}
+          to="/profile"
+          size="large"
+        >
+          {ICONS.PROFILE}
+          <span className={classes.hidingLabel}>{userName}</span>
+        </Button>
+      </Tooltip>
     </div>
   );
 };
