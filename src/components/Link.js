@@ -6,20 +6,22 @@ import { useStyles } from '../styles/Styles';
 import { URLS, FILTER_IDS, TABS, CONTRIBUTES_TO, ICONS } from '../constants/Constants';
 import { formatDate } from '../util/Dates';
 import { resetFilters, setFilterParams } from '../state/actions/FilterActions';
+import { setFilterBarVisible } from '../state/actions/FilterBarVisibleActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
 const TaskFilter = ({ filterId, params, label, ...typographyProps }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const isInitiativeTab =
-    useSelector((state) => state.filters).find((f) => f.id === filterId).tabs[0] ===
-    TABS.initiatives.id;
+  const filter = useSelector((state) => state.filters).find((f) => f.id === filterId);
 
   // Links used to dispatch task filters
   const handleClick = () => {
     dispatch(resetFilters());
     dispatch(setFilterParams(filterId, [params]));
-    dispatch(setCurrentTab(isInitiativeTab ? TABS.initiatives : TABS.all));
+    if (filter.isOnFilterBar) {
+      dispatch(setFilterBarVisible(true));
+    }
+    dispatch(setCurrentTab(filter.tabs[0] === TABS.initiatives.id ? TABS.initiatives : TABS.all));
   };
 
   return (
@@ -47,7 +49,7 @@ const TaskFilters = ({ filterId, params, ...typographyProps }) =>
             label={paramValue}
             {...typographyProps}
           />
-          {index < paramValue.length - 1 ? ', ' : null}
+          {index < params.length - 1 ? ', ' : null}
         </Fragment>
       ))}
     </>
