@@ -96,33 +96,32 @@ export const ChartPanel = () => {
 
   const handleDownloadClicked = () => {
     const refsData = resourceSeriesSets.refs.series[0].data;
+    const series = resourceSeriesSets[selectedChart.seriesKey].series;
+
     const dayCount = refsData.length;
-    const series = resourceSeriesSets[selectedChart.seriesKey];
+    const lines = [];
 
     const colHeadings = ['Skill Group'];
-    for (let index = 0; index < dayCount; index++) {
-      colHeadings.push(formatDate(new Date(refsData[index].x)));
+    for (let dayIndex = 0; dayIndex < dayCount; dayIndex++) {
+      colHeadings.push(formatDate(new Date(refsData[dayIndex].x)));
     }
-    const lines = [colHeadings.join(',')];
+    lines.push(colHeadings.join(','));
 
-    series.series.forEach((skill) => {
-      const line = [skill.label];
+    series.forEach((thisSeries) => {
+      const line = [thisSeries.label];
 
-      for (let index = 0; index < dayCount; index++) {
-        const dayData = skill.data[index];
-        if (typeof dayData === 'undefined') {
-          line.push(0);
-        } else {
-          line.push(dayData.y);
-        }
+      for (let dayIndex = 0; dayIndex < dayCount; dayIndex++) {
+        const refX = refsData[dayIndex].x;
+        const currentSeriesDay = thisSeries.data.find((data) => data.x === refX);
+        line.push(typeof currentSeriesDay !== 'undefined' ? currentSeriesDay.y : 0);
       }
 
       lines.push(line.join(','));
     });
 
     const chartDataStr = lines.join('\n');
-
     const blob = new Blob([chartDataStr], { type: 'text/plain;charset=utf-8' });
+
     FileSaver.saveAs(blob, `taskmaster_${selectedChart.seriesKey}.csv`);
   };
 
