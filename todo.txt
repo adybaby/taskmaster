@@ -1,5 +1,10 @@
 test: make 150,000 task file and 5000 user file
 
+prioritise panel
+ - change order of drivers and change status of drivers and enablers - active/disabled (fulfilled)/disabled (on hold)/disabled (replaced/no longer relevant)
+ - higher than/lower than - list
+ - change contribution of initiatives and enablers
+
 Charts:
   - add chart to see number of usrs signed up, authored, with skills
   - improve charts to account for "interest" in vacancies/signups
