@@ -8,7 +8,7 @@ import { useStyles } from '../../styles/Styles';
 import { UserPanel } from './UserPanel';
 
 export const ProfilesPanel = () => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const { id } = useParams();
   const currentUser = useSelector((state) => state.currentUser);
   const [user, setUser] = useState(currentUser);

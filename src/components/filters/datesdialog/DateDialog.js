@@ -13,7 +13,7 @@ import { DateErrors } from './DateErrors';
 import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
 
 export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const CONTROL = { FROM: 'fromStr', TO: 'toStr' };
   const fromControl = createRef();
   const toControl = createRef();

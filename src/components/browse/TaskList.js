@@ -8,7 +8,7 @@ import { FilterSummary } from '../filters/FilterSummary';
 const variant = typographyVariant.taskList;
 
 export const TaskList = () => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const tasks = useSelector(getVisibleTasks);
 
   return (

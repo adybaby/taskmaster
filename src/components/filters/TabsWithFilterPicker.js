@@ -16,7 +16,7 @@ import { CheckGroupFilter } from './CheckGroupFilter';
 
 export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const classes = useStyles()();
   const filterBarVisible = useSelector((state) => state.filterBarVisible);
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
   const isAFilterActive =

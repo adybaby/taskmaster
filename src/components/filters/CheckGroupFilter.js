@@ -8,7 +8,7 @@ import { setFilterParams, resetFilter } from '../../state/actions/FilterActions'
 
 export const CheckGroupFilter = ({ filter, closeMenu }) => {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const classes = useStyles()();
   const [maxReached, setMaxReached] = useState(false);
 
   const handleListItemClick = (param) => {

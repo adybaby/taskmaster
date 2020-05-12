@@ -4,7 +4,7 @@ import { useStyles, typographyVariant } from '../../../styles/Styles';
 import { isValidDateString, ukToUs, beforeOrE } from '../../../util/Dates';
 
 export const DateErrors = ({ fromStr, toStr, onValidityChange }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const variant = typographyVariant.datesDialog;
 
   const fieldValid = React.useCallback(

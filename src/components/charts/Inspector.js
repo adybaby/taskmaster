@@ -9,7 +9,7 @@ import { UserLink, TaskLink, SkillLink } from '../Link';
 const variant = typographyVariant.inspector;
 
 export const Inspector = ({ dayRefData, skillTitle, total, daySummary }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const makeBlock = (title, data, showCount, showUser, taskField, datesType, datesField) => (
     <>

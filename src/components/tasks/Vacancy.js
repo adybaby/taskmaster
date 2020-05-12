@@ -8,7 +8,7 @@ import { formatDate } from '../../util/Dates';
 const variant = typographyVariant.aag;
 
 export const Vacancy = ({ vacancy }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const handleSignUpClick = () => {
     // eslint-disable-next-line no-alert

@@ -10,7 +10,7 @@ import { formatDateRange } from '../../util/Dates';
 
 export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const classes = useStyles()();
   const currentTab = useSelector((state) => state.currentTab);
   const filtersForSummary = useSelector(getFiltersForSummary);
   const taskListTotal = useSelector(getVisibleTasks).length;

@@ -6,7 +6,7 @@ import { useStyles } from '../../../styles/Styles';
 import { equals, before, after, ukToUs, isValidDateString } from '../../../util/Dates';
 
 const GbClearableDatePicker = (props) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const { minDate, maxDate, value, ...other } = props;
 
   const [intVal, setIntVal] = useState(value);

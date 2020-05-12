@@ -29,7 +29,7 @@ export const ResourceBarChart = ({
   onValueMouseOut,
   setDownloadEnabled,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const variant = typographyVariant.chart;
   // const skills = skillsAndColors.map((skill) => skill.title);
   const isGantt = chart.type === CHART_TYPES.BAR_GANTT.id;

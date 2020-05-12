@@ -5,7 +5,7 @@ import { TASK_TYPE, ICONS } from '../../constants/Constants';
 import { DriverContributionLinks, TaskLink } from '../Link';
 
 export const MapPanel = () => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const tasks = useSelector((state) => state.tasks);
 
   return (

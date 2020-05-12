@@ -9,7 +9,7 @@ import { formatDate } from '../../util/Dates';
 const variant = typographyVariant.aag;
 
 export const AtAGlance = ({ task }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   return (
     <div className={classes.aagPanel}>

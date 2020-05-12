@@ -8,7 +8,7 @@ import { formatDate } from '../../util/Dates';
 const variant = typographyVariant.taskResult;
 
 export const TaskResult = ({ task }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   const DurationSummary = ({ ...typographyProps }) =>
     typeof task.startDate !== 'undefined' ? (

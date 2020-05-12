@@ -12,7 +12,7 @@ import { setCurrentTab } from '../state/actions/CurrentTabActions';
 import { getSearchFilter, getSearchText } from '../state/selectors/FilterSelector';
 
 export const AppBar = () => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const dispatch = useDispatch();
   const history = useHistory();
   const searchFilter = useSelector(getSearchFilter);

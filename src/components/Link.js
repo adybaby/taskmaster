@@ -10,7 +10,7 @@ import { setFilterBarVisible } from '../state/actions/FilterBarVisibleActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
 const TaskFilter = ({ filterId, params, label, ...typographyProps }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filters).find((f) => f.id === filterId);
 
@@ -58,7 +58,7 @@ const TaskFilters = ({ filterId, params, ...typographyProps }) =>
 // Links used to display active Task fields
 
 export const TaskLink = ({ task, taskIcon, ...typographyProps }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   return (
     <Typography style={{ display: 'inline-block' }} {...typographyProps}>
       <Link className={classes.link} to={`/${URLS.TASK}/${task.id}`}>
@@ -77,7 +77,7 @@ export const TaskLink = ({ task, taskIcon, ...typographyProps }) => {
 
 export const UserLink = ({ userId, ...typographyProps }) => {
   const user = useSelector((state) => state.users).find((u) => u.id === userId);
-  const classes = useStyles();
+  const classes = useStyles()();
 
   return (
     <>
@@ -117,7 +117,7 @@ export const TagsLinks = ({ task, ...typographyProps }) =>
   ) : null;
 
 const ContributeLink = ({ contribute, taskIcon, ...typographyProps }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   return (
     <div className={classes.contributeLink}>
       <div>
@@ -154,7 +154,7 @@ export const ContributesToLinks = ({ task, taskIcon, ...typographyProps }) => (
 );
 
 export const DriverContributionLinks = ({ task }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   return typeof task.contributions !== 'undefined' && task.contributions.length > 0 ? (
     <div className={classes.contributionList}>
       {task.contributions.map((contribute, index) => (
@@ -193,7 +193,7 @@ export const AuthoredLinks = ({ user, ...typographyProps }) =>
     : null;
 
 export const SignedUpLinks = ({ user, ...typographyProps }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   return typeof user.signedUp !== 'undefined' && user.signedUp.length > 0
     ? user.signedUp.map((signedUp, index) => (
         <div key={index} className={classes.signedUpLink}>

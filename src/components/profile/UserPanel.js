@@ -8,7 +8,7 @@ import { formatDate } from '../../util/Dates';
 const variant = typographyVariant.user;
 
 export const UserPanel = ({ user }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
 
   return (
     <>

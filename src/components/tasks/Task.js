@@ -11,7 +11,7 @@ import { Vacancy } from './Vacancy';
 const variant = typographyVariant.task;
 
 export const Task = () => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks);
   const { id } = useParams();

@@ -7,7 +7,7 @@ import { ICONS } from '../../constants/Constants';
 import { FilterSummary } from './FilterSummary';
 
 export const DropDownFilter = ({ filter, ...props }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const variant = typographyVariant.filters;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);

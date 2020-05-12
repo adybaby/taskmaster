@@ -22,7 +22,7 @@ const ChartMenuGroup = ({
   handleChartMenuItemClicked,
   selectedChart,
 }) => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const [folderOpen, setFolderOpen] = useState(startOpen);
 
   const onFolderClick = () => {
@@ -59,7 +59,7 @@ const ChartMenuGroup = ({
 };
 
 export const ChartPanel = () => {
-  const classes = useStyles();
+  const classes = useStyles()();
   const dispatch = useDispatch();
   const variant = typographyVariant.chart;
   const resourceSeriesSets = useSelector(calculateResourceChartData);

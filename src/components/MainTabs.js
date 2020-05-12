@@ -12,7 +12,7 @@ import { TabsWithFilterPicker } from './filters/TabsWithFilterPicker';
 
 export const MainTabs = () => {
   const dispatch = useDispatch();
-  const classes = useStyles();
+  const classes = useStyles()();
   const currentTab = useSelector((state) => state.currentTab);
   const showFilterButton = currentTab !== TABS.map;
 
