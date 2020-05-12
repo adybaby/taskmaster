@@ -72,6 +72,9 @@ export const App = () => {
               <Route exact path="/">
                 <Redirect to={`/${URLS.BROWSE}/`} />
               </Route>
+              <Route exact path="/index.html">
+                <Redirect to={`/${URLS.BROWSE}/`} />
+              </Route>
               <Route path={`/${URLS.TASK}/:id`} component={Task} />
               <Route path={`/${URLS.PROFILE}/:id`} component={ProfilesPanel} />
               <Route path={`/${URLS.PROFILE}/`} component={ProfilesPanel} />
