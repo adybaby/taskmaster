@@ -39,6 +39,7 @@ export const App = () => {
   const currentJsonConfig = getCurrentJsonConfig();
 
   useEffect(() => {
+    console.log(location.pathname);
     if (dbStatus === DB_STATUS.NOT_INITIALISED) {
       const config =
         currentJsonConfig !== null
