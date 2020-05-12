@@ -8,5 +8,7 @@ const COSTS_DATA = {
 
 export const COST = {
   displayNameForCost: (cost) => COSTS_DATA[cost].displayName,
+  codeForDisplayName: (name) =>
+    Object.values(COSTS_DATA).find((cost) => cost.displayName === name).id,
   sortOrderForCost: (cost) => COSTS_DATA[cost].sortOrder,
 };
