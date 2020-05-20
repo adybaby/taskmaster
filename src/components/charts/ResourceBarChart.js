@@ -21,7 +21,7 @@ export const ResourceBarChart = ({
   chart,
   seriesSet,
   skillsAndColors,
-  refs,
+  inspectorData,
   width,
   dataPoint,
   onValueMouseOver,
@@ -31,23 +31,21 @@ export const ResourceBarChart = ({
 }) => {
   const classes = useStyles()();
   const variant = typographyVariant.chart;
-  // const skills = skillsAndColors.map((skill) => skill.title);
   const isGantt = chart.type === CHART_TYPES.BAR_GANTT.id;
-
-  const orderedSeriesSet = { ...seriesSet }; // [...seriesSet];
+  const orderedSeriesSet = { ...seriesSet };
   orderedSeriesSet.series = [...orderedSeriesSet.series];
   const orderedSkillsAndColors = [...skillsAndColors];
-  const orderedRefs = { ...refs }; // [...refs];
-  orderedRefs.series = [...orderedRefs.series];
+  const orderedInspectorData = { ...inspectorData };
+  orderedInspectorData.series = [...orderedInspectorData.series];
 
   // reverse order as gantt chart populates from bottom to top
   if (isGantt) {
     orderedSeriesSet.series.reverse();
     orderedSkillsAndColors.reverse();
-    orderedRefs.series.reverse();
+    orderedInspectorData.series.reverse();
   }
 
-  const orderedSkills = orderedSkillsAndColors.map((skill) => skill.title);
+  const orderedSkills = orderedSkillsAndColors.map((skill) => skill.label);
 
   const makeLegend = () =>
     isGantt ? (
@@ -74,9 +72,11 @@ export const ResourceBarChart = ({
       const data = {
         x: dataIn.x + ONE_DAY - 1,
         y,
-        markPanel: (
+        inspector: (
           <Inspector
-            dayRefData={orderedRefs.series[skillsIndex].data.find((ref) => ref.x === dataIn.x)}
+            inspectorData={orderedInspectorData.series[skillsIndex].data.find(
+              (ref) => ref.x === dataIn.x
+            )}
             skillTitle={series.label}
             total={dataIn.y}
             daySummary={chart.daySummary}

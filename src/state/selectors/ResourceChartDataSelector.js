@@ -2,18 +2,20 @@ import { createSelector } from 'reselect';
 import { buildChartData } from './ResourceChartDateBuilder';
 import { getFilterBarFilters } from './FilterSelector';
 
-const getTasks = (state) => state.tasks;
+const getVacancies = (state) => state.vacancies;
+const getInterest = (state) => state.interest;
 const getUsers = (state) => state.users;
 const getDateRange = (state) => state.dateRange;
 
 export const calculateResourceChartData = createSelector(
-  [getTasks, getUsers, getDateRange, getFilterBarFilters],
-  (tasks, users, dateRange, filterBarFilters) => ({
+  [getVacancies, getInterest, getUsers, getDateRange, getFilterBarFilters],
+  (vacancies, interest, users, dateRange, filterBarFilters) => ({
     ...buildChartData(
-      tasks,
+      vacancies,
+      interest,
       users,
       dateRange,
-      filterBarFilters[1].getChecked().map((skill) => skill.id),
+      filterBarFilters[1].getChecked(),
       filterBarFilters[0].range
     ),
   })

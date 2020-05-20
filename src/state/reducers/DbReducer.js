@@ -1,4 +1,5 @@
-import { ACTION_TYPES, DB_STATUS } from '../../constants/Constants';
+import { DB_STATUS } from '../../constants/Constants';
+import { ACTION_TYPES } from '../actions/ActionTypes';
 
 export const dbReducer = (state = DB_STATUS.NOT_INITIALISED, action) => {
   switch (action.type) {

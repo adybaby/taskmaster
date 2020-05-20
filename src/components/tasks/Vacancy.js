@@ -2,7 +2,6 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Paper, Button } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { VACANCY } from '../../constants/Constants';
 import { formatDate } from '../../util/Dates';
 
 const variant = typographyVariant.aag;
@@ -19,14 +18,11 @@ export const Vacancy = ({ vacancy }) => {
     <Paper className={classes.vacancyContainer}>
       <div className={classes.vacancyHeading}>
         <Typography variant="body1">
-          <b>{vacancy.skill}</b>
+          <b>{vacancy.skillTitle}</b>
         </Typography>
-        <div
-          data-open={String(vacancy.status === VACANCY.FIELDS.STATUS.OPEN.id)}
-          className={classes.vacancyStatus}
-        >
+        <div data-open={String(vacancy.status === 'Open')} className={classes.vacancyStatus}>
           <Typography variant="caption">
-            <b>{VACANCY.getStatusLabel(vacancy.status)}</b>
+            <b>{vacancy.status}</b>
           </Typography>
         </div>
       </div>
@@ -37,7 +33,7 @@ export const Vacancy = ({ vacancy }) => {
           </Typography>
           <div className={classes.vacancyValueInner}>
             <Typography variant={variant.value} className={classes.vacancyFieldValue}>
-              {VACANCY.getRoleLabel(vacancy.role)}
+              {vacancy.role}
             </Typography>
           </div>
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
@@ -45,36 +41,25 @@ export const Vacancy = ({ vacancy }) => {
           </Typography>
           <div className={classes.vacancyValueInner}>
             <Typography variant={variant.value} className={classes.vacancyFieldValue}>
-              {VACANCY.getPriorityLabel(vacancy.priority)}
+              {vacancy.priority}
             </Typography>
           </div>
           <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
             Dates
           </Typography>
           <div className={classes.vacancyFieldValue}>
-            {vacancy.periods.map((period, index) => (
-              <div key={index} className={classes.vacancyPeriod}>
-                <div className={classes.periodDate}>
-                  <Typography variant={variant.value}>
-                    {formatDate(period.from)} to {formatDate(period.to)}
-                  </Typography>
-                  {period.interest.length > 0 ? (
-                    <Typography variant={variant.value}>
-                      {period.interest.length}{' '}
-                      {period.interest.length === 1 ? 'person is' : 'people are'} interested.
-                    </Typography>
-                  ) : null}
-                </div>
-                {vacancy.status === VACANCY.FIELDS.STATUS.OPEN.id ? (
-                  <Button
-                    classes={{ root: classes.vacancySignUpButton }}
-                    onClick={handleSignUpClick}
-                  >
-                    SIGN UP
-                  </Button>
-                ) : null}
+            <div className={classes.vacancyPeriod}>
+              <div className={classes.periodDate}>
+                <Typography variant={variant.value}>
+                  {formatDate(vacancy.startDate)} to {formatDate(vacancy.endDate)}
+                </Typography>
               </div>
-            ))}
+              {vacancy.status === 'Open' ? (
+                <Button classes={{ root: classes.vacancySignUpButton }} onClick={handleSignUpClick}>
+                  SIGN UP
+                </Button>
+              ) : null}
+            </div>
           </div>
         </div>
       </div>

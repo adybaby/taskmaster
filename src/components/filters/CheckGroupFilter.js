@@ -20,7 +20,7 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
         setFilterParams(
           filter.id,
           filter.params.map((stateParam) =>
-            stateParam.id === param.id ? { id: stateParam.id, checked: !param.checked } : stateParam
+            stateParam.id === param.id ? { ...stateParam, checked: !param.checked } : stateParam
           )
         )
       );
@@ -35,7 +35,7 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
     dispatch(
       setFilterParams(
         filter.id,
-        filter.params.map((param) => ({ id: param.id, checked: false }))
+        filter.params.map((param) => ({ ...param, checked: false }))
       )
     );
   };
@@ -76,7 +76,7 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
             disableRipple
           />
         </ListItemIcon>
-        <ListItemText id={param.id} primary={param.id} />
+        <ListItemText id={param.id} primary={param.label} />
       </ListItem>
     )),
   ];

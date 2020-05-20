@@ -1,20 +1,21 @@
-const createExecute = (userId) => (tasks) =>
-  tasks.filter((task) => task.createdBy === userId);
+import { formatUserName } from '../../../../util/Users';
+
+const createExecute = (userId) => (tasks) => tasks.filter((task) => task.createdBy === userId);
 
 export const createCreatedByFilterOptions = (users, currentUser) => [
   {
-    id: "ANY_AUTHOR",
-    label: "any author",
+    id: 'ANY_AUTHOR',
+    label: 'Any author',
   },
   {
-    id: "ME",
-    label: "me",
+    id: 'ME',
+    label: 'Me',
     execute: createExecute(currentUser.id),
   },
   ...users
     .map((user) => ({
       id: `${user.id}`,
-      label: `${user.firstName} ${user.lastName}`,
+      label: formatUserName(user),
       execute: createExecute(user.id),
     }))
     .sort(),

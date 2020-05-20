@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
@@ -16,8 +16,14 @@ export const AppBar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const searchFilter = useSelector(getSearchFilter);
-  const searchText = useSelector(getSearchText);
-  const userName = useSelector((state) => state.currentUser).firstName;
+  const [searchText, setSearchText] = useState('');
+  const stateSearchText = useSelector(getSearchText);
+  const currentTab = useSelector((state) => state.currentTab);
+  const userName = useSelector((state) => state.currentUser).firstNames[0];
+
+  useEffect(() => {
+    setSearchText(stateSearchText);
+  }, [stateSearchText]);
 
   const handleNewClick = () => {
     // eslint-disable-next-line no-alert
@@ -25,13 +31,16 @@ export const AppBar = () => {
   };
 
   const handleSearchChange = (event) => {
-    dispatch(setFilterParams(searchFilter.id, [event.target.value]));
+    setSearchText(event.target.value);
   };
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    dispatch(setCurrentTab(TABS.all));
-    history.push('/');
+    dispatch(setFilterParams(searchFilter.id, [event.target.value]));
+    if (currentTab.taskType === null) {
+      dispatch(setCurrentTab(TABS.all));
+      history.push('/');
+    }
   };
 
   const handleHomeClick = () => {

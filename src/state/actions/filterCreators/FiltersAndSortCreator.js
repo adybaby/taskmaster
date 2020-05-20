@@ -9,7 +9,7 @@ import { CheckGroupFilter } from './CheckGroupFilter';
 
 const taskTabs = [TABS.all.id, TABS.drivers.id, TABS.enablers.id, TABS.initiatives.id];
 
-export const createFilters = (tasks, users, currentUser, skills) => [
+export const createFilters = (users, currentUser, vacancies, skills) => [
   new SelectFilter({
     id: FILTER_IDS.CREATED_DATE,
     labels: {
@@ -89,7 +89,7 @@ export const createFilters = (tasks, users, currentUser, skills) => [
     isOnFilterBar: true,
     isTaskFilter: true,
     forPastTasks: false,
-    options: createVacancyFilterOptions(tasks, currentUser),
+    options: createVacancyFilterOptions(currentUser, vacancies, skills),
   }),
   new TextFilter({
     id: FILTER_IDS.SEARCH_FIELD,
@@ -125,6 +125,6 @@ export const createFilters = (tasks, users, currentUser, skills) => [
     tabs: [TABS.charts.id],
     isOnFilterBar: true,
     isTaskFilter: false,
-    options: skills,
+    options: skills.map((skill) => ({ id: skill.id, label: skill.title })),
   }),
 ];

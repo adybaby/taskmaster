@@ -42,8 +42,8 @@ export class SelectFilter extends Filter {
   get customRange() {
     return this.params.length === 3
       ? {
-          from: this.params[1],
-          to: this.params[2],
+          startDate: this.params[1],
+          endDate: this.params[2],
         }
       : undefined;
   }

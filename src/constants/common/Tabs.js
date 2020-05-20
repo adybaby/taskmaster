@@ -1,4 +1,3 @@
-import { TASK_TYPE } from '../field/TaskType';
 import { ICONS } from './Icons';
 
 export const TABS = {
@@ -6,28 +5,28 @@ export const TABS = {
     id: 'ALL_TAB',
     label: 'All',
     filterSummaryLabel: 'item',
-    taskType: TASK_TYPE.ALL,
+    taskType: 'ALL',
     icon: ICONS.ALL_TAB,
   },
   drivers: {
     id: 'DRIVERS_TAB',
     label: 'Drivers',
     filterSummaryLabel: 'driver',
-    taskType: TASK_TYPE.DRIVER,
+    taskType: 'DRIVER',
     icon: ICONS.DRIVER,
   },
   enablers: {
     id: 'ENABLERS_TAB',
     label: 'Enablers',
     filterSummaryLabel: 'enabler',
-    taskType: TASK_TYPE.ENABLER,
+    taskType: 'ENABLER',
     icon: ICONS.ENABLER,
   },
   initiatives: {
     id: 'INITIATIVES_TAB',
     label: 'Initiatives',
     filterSummaryLabel: 'initiative',
-    taskType: TASK_TYPE.INITIATIVE,
+    taskType: 'INITIATIVE',
     icon: ICONS.INITIATIVE,
   },
   map: {

@@ -103,24 +103,24 @@ export const day = (date, days) => {
 export const getDateRangeForWeek = (date) => {
   if (!isValidDate(date)) return null;
   return {
-    from: day(startOfWeek(date, { weekStartsOn: 1 }), 1),
-    to: day(endOfWeek(date, { weekStartsOn: 1 }), -2),
+    startDate: day(startOfWeek(date, { weekStartsOn: 1 }), 1),
+    endDate: day(endOfWeek(date, { weekStartsOn: 1 }), -2),
   };
 };
 
 export const getDateRangeForMonth = (date) => {
   if (!isValidDate(date)) return null;
-  return { from: day(startOfMonth(date), 1), to: endOfMonth(date) };
+  return { startDate: day(startOfMonth(date), 1), endDate: endOfMonth(date) };
 };
 
 export const getDateRangeForYear = (date) => {
   if (!isValidDate(date)) return null;
   const year = date.getFullYear();
-  return { from: new Date(year, 0, 1), to: new Date(year, 11, 31) };
+  return { startDate: new Date(year, 0, 1), endDate: new Date(year, 11, 31) };
 };
 
 export const areDateRangesOverlapping = (range1, range2) =>
-  !(before(range1.to, range2.from) || after(range1.from, range2.to));
+  !(before(range1.endDate, range2.startDate) || after(range1.startDate, range2.endDate));
 
 export const formatDate = (date) => {
   const monthNames = [
@@ -144,12 +144,13 @@ export const formatDate = (date) => {
   return isNaN(date.getTime()) ? date : `${inDay} ${monthNames[monthIndex]} ${year}`;
 };
 
-export const formatDateRange = ({ from, to }) => {
-  if (from === null && to === null) return '';
-  if (from !== null && to !== null && equals(from, to)) return `on ${formatDate(to)}`;
-  if (from === null) return `before ${formatDate(to)}`;
-  if (to === null) return `after ${formatDate(from)}`;
-  return `between ${formatDate(from)} and ${formatDate(to)}`;
+export const formatDateRange = ({ startDate, endDate }) => {
+  if (startDate === null && endDate === null) return '';
+  if (startDate !== null && endDate !== null && equals(startDate, endDate))
+    return `on ${formatDate(endDate)}`;
+  if (startDate === null) return `before ${formatDate(endDate)}`;
+  if (endDate === null) return `after ${formatDate(startDate)}`;
+  return `between ${formatDate(startDate)} and ${formatDate(endDate)}`;
 };
 
 export const filterTasksByDate = (tasks, range, dateField) => {
@@ -157,9 +158,9 @@ export const filterTasksByDate = (tasks, range, dateField) => {
     if (typeof task[dateField] === 'undefined' || task[dateField] === null) return false;
 
     const date = dateOnly(task[dateField]).getTime();
-    const from = dateOnly(range.from).getTime();
-    const to = dateOnly(range.to).getTime();
+    const startDate = dateOnly(range.startDate).getTime();
+    const endDate = dateOnly(range.endDate).getTime();
 
-    return (from === null || date >= from) && (to === null || date <= to);
+    return (startDate === null || date >= startDate) && (endDate === null || date <= endDate);
   });
 };

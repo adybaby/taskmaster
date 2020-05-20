@@ -39,7 +39,6 @@ export const App = () => {
   const currentJsonConfig = getCurrentJsonConfig();
 
   useEffect(() => {
-    console.log(location.pathname);
     if (dbStatus === DB_STATUS.NOT_INITIALISED) {
       const config =
         currentJsonConfig !== null
@@ -59,11 +58,16 @@ export const App = () => {
 
   switch (dbStatus) {
     case DB_STATUS.NOT_INITIALISED:
-      return <div>A local cache has not yet been created from the database..</div>;
+      return <div>Getting the database ready, please wait..</div>;
     case DB_STATUS.INITIALISING:
-      return <div>Please wait whilst a local cache of the database is created..</div>;
+      return <div>Grabbing data from the database, please wait..</div>;
     case DB_STATUS.ERROR:
-      return <div>There was an error creating the local cache from the database..</div>;
+      return (
+        <div>
+          There was a problem contacting the database. If there are no known outages, please contact
+          IT Support.
+        </div>
+      );
     default:
       return (
         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={enGB}>

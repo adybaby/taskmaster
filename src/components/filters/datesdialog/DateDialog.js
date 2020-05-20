@@ -14,18 +14,18 @@ import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
 
 export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other }) => {
   const classes = useStyles()();
-  const CONTROL = { FROM: 'fromStr', TO: 'toStr' };
-  const fromControl = createRef();
-  const toControl = createRef();
-  const [fromStr, setFromStr] = useState('');
-  const [toStr, setToStr] = useState('');
-  const [target, setTarget] = useState(CONTROL.FROM);
+  const CONTROL = { START_DATE: 'startDateStr', END_DATE: 'endDateStr' };
+  const startDateControl = createRef();
+  const endDateControl = createRef();
+  const [startDateStr, setStartDateStr] = useState('');
+  const [endDateStr, setEndDateStr] = useState('');
+  const [target, setTarget] = useState(CONTROL.START_DATE);
   const [valid, setValid] = useState(true);
 
   useEffect(() => {
     if (initRange !== null && typeof initRange !== 'undefined') {
-      setFromStr(initRange.from !== null ? formatDate(initRange.from) : '');
-      setToStr(initRange.to !== null ? formatDate(initRange.to) : '');
+      setStartDateStr(initRange.startDate !== null ? formatDate(initRange.startDate) : '');
+      setEndDateStr(initRange.endDate !== null ? formatDate(initRange.endDate) : '');
     }
   }, [initRange]);
 
@@ -40,14 +40,17 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other
       return date;
     };
 
-    handleClose({ from: setDateField(fromStr, setFromStr), to: setDateField(toStr, setToStr) });
+    handleClose({
+      startDate: setDateField(startDateStr, setStartDateStr),
+      endDate: setDateField(endDateStr, setEndDateStr),
+    });
   };
 
   const onCancel = () => {
     handleClose(null);
   };
 
-  const makeDateFieldProps = (id, setter, props) => ({
+  const makeDateFieldProps = (id, props) => ({
     fullWidth: true,
     onKeyPress: (event) => {
       if (event.key === 'Enter') {
@@ -87,55 +90,58 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other
     <div className={classes.datesDialogBody}>
       <div className={classes.datesDialogInputsWrapper}>
         <div
-          data-target={String(target === CONTROL.FROM)}
+          data-target={String(target === CONTROL.START_DATE)}
           className={classes.dateDialogFieldWrapper}
         >
           <TextField
-            {...makeDateFieldProps(CONTROL.FROM, setFromStr, {
-              value: fromStr,
+            {...makeDateFieldProps(CONTROL.START_DATE, {
+              value: startDateStr,
               label: `${fieldLabel} on or after..`,
               autoFocus: true,
               onChange: (event) => {
-                setFromStr(event.target.value);
+                setStartDateStr(event.target.value);
               },
-              inputRef: fromControl,
+              inputRef: startDateControl,
             })}
           />
         </div>
-        <div data-target={String(target === CONTROL.TO)} className={classes.dateDialogFieldWrapper}>
+        <div
+          data-target={String(target === CONTROL.END_DATE)}
+          className={classes.dateDialogFieldWrapper}
+        >
           <TextField
-            {...makeDateFieldProps(CONTROL.TO, setToStr, {
-              value: toStr,
+            {...makeDateFieldProps(CONTROL.END_DATE, {
+              value: endDateStr,
               label: `${fieldLabel} on or before..`,
               onChange: (event) => {
-                setToStr(event.target.value);
+                setEndDateStr(event.target.value);
               },
-              inputRef: toControl,
+              inputRef: endDateControl,
             })}
           />
         </div>
       </div>
       <div className={classes.dateDialogPickerWrapper}>
-        {target === CONTROL.FROM ? (
+        {target === CONTROL.START_DATE ? (
           <DatePicker
             {...makeDatePickerProps({
-              value: fromStr,
-              maxDate: getDateLimitProp(toStr),
+              value: startDateStr,
+              maxDate: getDateLimitProp(endDateStr),
               onAccept: (date) => {
-                setFromStr(formatDate(date));
-                toControl.current.focus();
+                setStartDateStr(formatDate(date));
+                endDateControl.current.focus();
               },
             })}
           />
         ) : (
           <DatePicker
             {...makeDatePickerProps({
-              value: toStr,
-              minDate: getDateLimitProp(fromStr),
-              initialFocusedDate: fromStr !== '' ? fromStr : undefined,
+              value: endDateStr,
+              minDate: getDateLimitProp(startDateStr),
+              initialFocusedDate: startDateStr !== '' ? startDateStr : undefined,
               onAccept: (date) => {
-                setToStr(formatDate(date));
-                toControl.current.focus();
+                setEndDateStr(formatDate(date));
+                endDateControl.current.focus();
               },
             })}
           />
@@ -154,8 +160,8 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other
         </DialogContentText>
         {dialogBody}
         <DateErrors
-          fromStr={fromStr}
-          toStr={toStr}
+          startDateStr={startDateStr}
+          endDateStr={endDateStr}
           onValidityChange={(allValid) => setValid(allValid)}
         />
       </DialogContent>

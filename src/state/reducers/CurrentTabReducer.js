@@ -1,4 +1,5 @@
-import { ACTION_TYPES, TABS, DEFAULT_TAB } from '../../constants/Constants';
+import { TABS, DEFAULT_TAB } from '../../constants/Constants';
+import { ACTION_TYPES } from '../actions/ActionTypes';
 
 export const currentTabReducer = (state = DEFAULT_TAB, action) => {
   switch (action.type) {

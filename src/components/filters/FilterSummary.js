@@ -42,15 +42,19 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
           value = 'None';
           break;
         case 1:
-          value = checked[0].id;
+          value = checked[0].label;
           break;
         case 2:
-          value = `${checked[0].id} and ${checked[1].id}`;
+          value = `${checked[0].label} and ${checked[1].label}`;
           break;
         default:
-          value = `${checked[0].id}, ${checked[1].id} and ${checked.length - 2} more`;
+          value = `${checked[0].label}, ${checked[1].label} and ${checked.length - 2} more`;
           break;
       }
+    }
+
+    if (value.length > 1 && value[1] !== value[1].toUpperCase()) {
+      value = value.toLowerCase();
     }
 
     return `${label} ${value}`;

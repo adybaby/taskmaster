@@ -1,4 +1,6 @@
-import { ACTION_TYPES, DB_STATUS } from '../../constants/Constants';
+import { DB_STATUS } from '../../constants/Constants';
+import { ACTION_TYPES } from './ActionTypes';
+
 import { init } from './dataloader/Db';
 import { createFilters } from './filterCreators/FiltersAndSortCreator';
 import { setFilters, setFiltersParams } from './FilterActions';
@@ -36,6 +38,21 @@ const setDateRange = (dateRange) => ({
   dateRange,
 });
 
+const setVacancies = (vacancies) => ({
+  type: ACTION_TYPES.SET_VACANCIES,
+  vacancies,
+});
+
+const setInterest = (interest) => ({
+  type: ACTION_TYPES.SET_INTEREST,
+  interest,
+});
+
+const setContributionLinks = (contributionLinks) => ({
+  type: ACTION_TYPES.SET_CONTRIBUTION_LINKS,
+  contributionLinks,
+});
+
 const updateStateFromUriConfiguration = (dispatch, uriConfiguration) => {
   if (typeof uriConfiguration.currentTabId !== 'undefined') {
     dispatch(setCurrentTabById(uriConfiguration.currentTabId));
@@ -54,13 +71,16 @@ const updateStateFromUriConfiguration = (dispatch, uriConfiguration) => {
 export const initialise = (uriConfiguration) => (dispatch) => {
   dispatch(setDbStatus(DB_STATUS.INITIALISING));
   init()
-    .then(({ users, tasks, skills, dateRange }) => {
+    .then(({ tasks, users, skills, vacancies, interest, contributionLinks, dateRange }) => {
       dispatch(setUsers(users));
       dispatch(setTasks(tasks));
       dispatch(setSkills(skills));
       dispatch(setDateRange(dateRange));
       dispatch(setCurrentUser(users[0]));
-      dispatch(setFilters(createFilters(tasks, users, users[0], skills)));
+      dispatch(setVacancies(vacancies));
+      dispatch(setInterest(interest));
+      dispatch(setContributionLinks(contributionLinks));
+      dispatch(setFilters(createFilters(users, users[0], vacancies, skills)));
 
       if (uriConfiguration !== null) {
         updateStateFromUriConfiguration(dispatch, uriConfiguration);

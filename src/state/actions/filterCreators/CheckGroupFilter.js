@@ -17,7 +17,9 @@ export class CheckGroupFilter extends Filter {
     const makeCheckList = () =>
       options
         .map((option, index) =>
-          index < maxChecked ? { id: option, checked: true } : { id: option, checked: false }
+          index < maxChecked
+            ? { id: option.id, label: option.label, checked: true }
+            : { id: option.id, label: option.label, checked: false }
         )
         .sort();
 

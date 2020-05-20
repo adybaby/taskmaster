@@ -1,23 +1,24 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import MuiLink from '@material-ui/core/Link';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
-import { URLS, FILTER_IDS, TABS, CONTRIBUTES_TO, ICONS } from '../constants/Constants';
+import { URLS, FILTER_IDS, TABS, ICONS } from '../constants/Constants';
 import { formatDate } from '../util/Dates';
 import { resetFilters, setFilterParams } from '../state/actions/FilterActions';
 import { setFilterBarVisible } from '../state/actions/FilterBarVisibleActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
-const TaskFilter = ({ filterId, params, label, ...typographyProps }) => {
+// Link which sets given filter ID with given params opens appropriate view
+const TaskFilterParamLink = ({ filterId, param, label, ...typographyProps }) => {
   const classes = useStyles()();
   const dispatch = useDispatch();
   const filter = useSelector((state) => state.filters).find((f) => f.id === filterId);
 
-  // Links used to dispatch task filters
   const handleClick = () => {
     dispatch(resetFilters());
-    dispatch(setFilterParams(filterId, [params]));
+    dispatch(setFilterParams(filterId, [param]));
     if (filter.isOnFilterBar) {
       dispatch(setFilterBarVisible(true));
     }
@@ -28,7 +29,7 @@ const TaskFilter = ({ filterId, params, label, ...typographyProps }) => {
     <Typography style={{ display: 'inline-block' }} {...typographyProps}>
       <Link
         className={classes.link}
-        value={params}
+        value={param}
         to={`/${URLS.BROWSE}/`}
         onClick={() => handleClick()}
       >
@@ -38,30 +39,12 @@ const TaskFilter = ({ filterId, params, label, ...typographyProps }) => {
   );
 };
 
-const TaskFilters = ({ filterId, params, ...typographyProps }) =>
-  typeof params !== 'undefined' && params !== null && params.length > 0 ? (
-    <>
-      {[...new Set(params)].map((paramValue, index) => (
-        <Fragment key={index}>
-          <TaskFilter
-            filterId={filterId}
-            params={paramValue}
-            label={paramValue}
-            {...typographyProps}
-          />
-          {index < params.length - 1 ? ', ' : null}
-        </Fragment>
-      ))}
-    </>
-  ) : null;
-
-// Links used to display active Task fields
-
-export const TaskLink = ({ task, taskIcon, ...typographyProps }) => {
+// Link which opens given task
+export const TaskLink = ({ taskId, taskTitle, inLabelBrackets, taskIcon, ...typographyProps }) => {
   const classes = useStyles()();
   return (
     <Typography style={{ display: 'inline-block' }} {...typographyProps}>
-      <Link className={classes.link} to={`/${URLS.TASK}/${task.id}`}>
+      <Link className={classes.link} to={`/${URLS.TASK}/${taskId}`}>
         {typeof taskIcon !== 'undefined' ? (
           <>
             {taskIcon}
@@ -69,150 +52,225 @@ export const TaskLink = ({ task, taskIcon, ...typographyProps }) => {
             {`\u00A0`}
           </>
         ) : null}
-        {task.title}
+        {`${taskTitle}${typeof inLabelBrackets !== 'undefined' ? ` (${inLabelBrackets})` : ''}`}
       </Link>
     </Typography>
   );
 };
 
-export const UserLink = ({ userId, ...typographyProps }) => {
-  const user = useSelector((state) => state.users).find((u) => u.id === userId);
+// Link which opens given user
+export const UserLink = ({ userId, userName, ...typographyProps }) => {
   const classes = useStyles()();
 
   return (
     <>
       <Typography style={{ display: 'inline-block' }} {...typographyProps}>
-        <Link className={classes.link} value={user.id} to={`/${URLS.PROFILE}/${user.id}`}>
-          {user.firstName}
-          {`\u00A0`}
-          {user.lastName}
+        <Link className={classes.link} value={userId} to={`/${URLS.PROFILE}/${userId}`}>
+          {userName}
         </Link>
       </Typography>
-      {user.authored.length > 0 ? (
-        <TaskFilter
-          filterId={FILTER_IDS.CREATED_BY}
-          params={user.id}
-          label={`\u00A0(${user.authored.length})`}
-          {...typographyProps}
-        />
-      ) : null}
     </>
   );
 };
 
-export const VacancyLinks = ({ task, ...typographyProps }) =>
-  typeof task.vacancies !== 'undefined' && task.vacancies.length > 0 ? (
-    <TaskFilters
-      filterId={FILTER_IDS.VACANCIES}
-      params={task.vacancies
-        .filter((vacancy) => vacancy.status === 'OPEN')
-        .map((vacancy) => vacancy.skill)}
-      {...typographyProps}
-    />
-  ) : null;
+// convenience method for the inspector which wraps taskfilterparamlink
 
-export const TagsLinks = ({ task, ...typographyProps }) =>
-  typeof task.tags !== 'undefined' && task.tags.length > 0 ? (
-    <TaskFilters filterId={FILTER_IDS.SEARCH_FIELD} params={task.tags} {...typographyProps} />
-  ) : null;
+export const SkillLink = ({ skillId, skillTitle, ...typographyProps }) => (
+  <TaskFilterParamLink
+    filterId={FILTER_IDS.VACANCIES}
+    param={skillId}
+    label={skillTitle}
+    {...typographyProps}
+  />
+);
 
-const ContributeLink = ({ contribute, taskIcon, ...typographyProps }) => {
-  const classes = useStyles()();
-  return (
-    <div className={classes.contributeLink}>
-      <div>
-        <TaskLink task={contribute} taskIcon={taskIcon} {...typographyProps} />
-        <br />
-        <Typography style={{ display: 'inline-block' }} variant="caption">
-          <i>{CONTRIBUTES_TO.displayNameForLevel(contribute.level)}</i>
-        </Typography>
-      </div>
-    </div>
+// convenience methods for a specific array field of a user or task
+// which groups together lists of the above link elements for each of the elements in that array field
+// or returning an "is empty" message if the field is an empty array
+
+const delimitLinks = (links, delimiter, noLinksMessage, typographyProps) =>
+  links.length === 0 ? (
+    <Typography key="empty" style={{ display: 'inline-block' }} {...typographyProps}>
+      {noLinksMessage}
+    </Typography>
+  ) : (
+    links.reduce((prev, curr) => [prev, delimiter, curr])
   );
-};
-
-const ContributeLinks = ({ task, field, taskIcon, ...typographyProps }) =>
-  typeof task[field] !== 'undefined' && task[field].length > 0 ? (
-    <div>
-      {task[field].map((contribute, index) => (
-        <ContributeLink
-          key={index}
-          taskIcon={taskIcon}
-          contribute={contribute}
-          {...typographyProps}
-        />
-      ))}
-    </div>
-  ) : null;
-
-export const ContributionLinks = ({ task, taskIcon, ...typographyProps }) => (
-  <ContributeLinks task={task} field="contributions" taskIcon={taskIcon} {...typographyProps} />
-);
-
-export const ContributesToLinks = ({ task, taskIcon, ...typographyProps }) => (
-  <ContributeLinks task={task} field="contributesTo" taskIcon={taskIcon} {...typographyProps} />
-);
-
-export const DriverContributionLinks = ({ task }) => {
-  const classes = useStyles()();
-  return typeof task.contributions !== 'undefined' && task.contributions.length > 0 ? (
-    <div className={classes.contributionList}>
-      {task.contributions.map((contribute, index) => (
-        <div key={index}>
-          <ContributeLink
-            key={index}
-            taskIcon={ICONS.ENABLER}
-            contribute={contribute}
-            variant="h6"
-          />
-          <div className={classes.contributionList}>
-            <ContributionLinks task={contribute} taskIcon={ICONS.INITIATIVE} variant="body1" />
-          </div>
-        </div>
-      ))}
-    </div>
-  ) : null;
-};
-
-export const SkillLink = ({ skill, ...typographyProps }) => (
-  <TaskFilter filterId={FILTER_IDS.VACANCIES} params={skill} label={skill} {...typographyProps} />
-);
-
-export const SkillsLinks = ({ user, ...typographyProps }) =>
-  typeof user.skills !== 'undefined' && user.skills.length > 0 ? (
-    <TaskFilters filterId={FILTER_IDS.VACANCIES} params={user.skills} {...typographyProps} />
-  ) : null;
 
 export const AuthoredLinks = ({ user, ...typographyProps }) =>
-  typeof user.authored !== 'undefined' && user.authored.length > 0
-    ? user.authored.map((authored, index) => (
-        <div key={index}>
-          <TaskLink task={authored} {...typographyProps} />
-        </div>
-      ))
-    : null;
+  delimitLinks(
+    user.authored.map((task, index) => (
+      <TaskLink key={index} taskId={task.id} taskTitle={task.title} {...typographyProps} />
+    )),
+    <br key="br" />,
+    'None',
+    typographyProps
+  );
 
 export const SignedUpLinks = ({ user, ...typographyProps }) => {
   const classes = useStyles()();
-  return typeof user.signedUp !== 'undefined' && user.signedUp.length > 0
-    ? user.signedUp.map((signedUp, index) => (
-        <div key={index} className={classes.signedUpLink}>
-          <div>
-            <TaskLink task={signedUp} {...typographyProps} />
-            <br />
-            {typeof signedUp.periods !== 'undefined' && signedUp.periods.length > 0
-              ? signedUp.periods.map((period, i) => (
-                  <Typography key={i} variant="caption">
-                    {formatDate(period.from)}
-                    <i>
-                      {`\u00A0`}to{`\u00A0`}
-                    </i>
-                    {formatDate(period.to)}
-                  </Typography>
-                ))
-              : null}
+  return delimitLinks(
+    user.signedUp.map((signedUp, index) => (
+      <div key={index} className={classes.signedUpLink}>
+        <TaskLink taskId={signedUp.id} taskTitle={signedUp.title} {...typographyProps} />
+        <br />
+        <Typography {...typographyProps}>
+          {formatDate(signedUp.startDate)}
+          <i>
+            {`\u00A0`}to{`\u00A0`}
+          </i>
+          {formatDate(signedUp.endDate)}
+        </Typography>
+      </div>
+    )),
+    <br key="br" />,
+    'None declared',
+    typographyProps
+  );
+};
+
+export const UserSkillsLinks = ({ user, ...typographyProps }) =>
+  delimitLinks(
+    user.skills.map((skill, index) => (
+      <TaskFilterParamLink
+        key={index}
+        filterId={FILTER_IDS.VACANCIES}
+        param={skill.id}
+        label={skill.title}
+        {...typographyProps}
+      />
+    )),
+    <br key="br" />,
+    'None declared',
+    typographyProps
+  );
+
+export const AvailabilityLinks = ({ user, ...typographyProps }) =>
+  delimitLinks(
+    user.available.map((available, index) => (
+      <Typography key={index} {...typographyProps}>
+        {`${formatDate(available.startDate)} to ${formatDate(available.endDate)}`}
+      </Typography>
+    )),
+    '',
+    'None declared',
+    typographyProps
+  );
+
+export const RelatedLinks = ({ task, ...typographyProps }) => {
+  const classes = useStyles()();
+  return delimitLinks(
+    task.relatedLinks.map((relatedLink, index) => (
+      <MuiLink key={index} href={relatedLink} className={classes.link} {...typographyProps}>
+        {relatedLink}
+      </MuiLink>
+    )),
+    ', ',
+    'None',
+    typographyProps
+  );
+};
+
+export const TagLinks = ({ task, ...typographyProps }) =>
+  delimitLinks(
+    task.tags.map((tag, index) => (
+      <TaskFilterParamLink
+        key={index}
+        filterId={FILTER_IDS.SEARCH_FIELD}
+        param={tag}
+        label={tag}
+        {...typographyProps}
+      />
+    )),
+    ', ',
+    'None',
+    typographyProps
+  );
+
+export const VacancyLinks = ({ task, ...typographyProps }) =>
+  delimitLinks(
+    task.requiredSkills.map((requiredSkill, index) => (
+      <TaskFilterParamLink
+        key={index}
+        filterId={FILTER_IDS.VACANCIES}
+        param={requiredSkill.id}
+        label={`${requiredSkill.count} x ${requiredSkill.title}`}
+        {...typographyProps}
+      />
+    )),
+    ', ',
+    'None',
+    typographyProps
+  );
+
+export const ContributionLinks = ({ task, ...typographyProps }) =>
+  delimitLinks(
+    task.contributions.map((contribution, index) => (
+      <TaskLink
+        key={index}
+        taskId={contribution.id}
+        taskTitle={contribution.title}
+        inLabelBrackets={contribution.contribution}
+        taskIcon={task.type === 'DRIVER' ? ICONS.ENABLER : ICONS.INITIATIVE}
+        {...typographyProps}
+      />
+    )),
+    '',
+    'None',
+    typographyProps
+  );
+
+export const ContributesToLinks = ({ task, ...typographyProps }) =>
+  delimitLinks(
+    task.contributesTo.map((contributesTo, index) => (
+      <TaskLink
+        key={index}
+        taskId={contributesTo.id}
+        taskTitle={contributesTo.title}
+        inLabelBrackets={contributesTo.contribution}
+        taskIcon={task.type === 'ENABLER' ? ICONS.DRIVER : ICONS.ENABLER}
+        {...typographyProps}
+      />
+    )),
+    '',
+    'None',
+    typographyProps
+  );
+
+export const DriverContributionLinks = ({ task }) => {
+  const classes = useStyles()();
+
+  return (
+    <div key={task.id}>
+      <div className={classes.mapDriverTitle}>
+        <TaskLink taskId={task.id} taskTitle={task.title} taskIcon={ICONS.DRIVER} variant="h5" />
+      </div>
+      <div className={classes.contributionList}>
+        {task.contributions.map((contribution, index) => (
+          <div key={index}>
+            <TaskLink
+              taskId={contribution.id}
+              taskTitle={contribution.title}
+              inLabelBrackets={contribution.contribution}
+              taskIcon={ICONS.ENABLER}
+              variant="h6"
+            />
+            <div className={classes.contributionList}>
+              {contribution.contributorContributions.map((contributorContribution, innerIndex) => (
+                <div key={innerIndex}>
+                  <TaskLink
+                    taskId={contributorContribution.id}
+                    taskTitle={contributorContribution.title}
+                    inLabelBrackets={contributorContribution.contribution}
+                    taskIcon={ICONS.INITIATIVE}
+                    variant="body1"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))
-    : null;
+        ))}
+      </div>
+    </div>
+  );
 };

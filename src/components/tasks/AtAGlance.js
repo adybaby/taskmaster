@@ -1,9 +1,8 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { TASK_TYPE, COST, ICONS } from '../../constants/Constants';
-import { ContributionLinks, ContributesToLinks, UserLink } from '../Link';
+import { ICONS } from '../../constants/Constants';
+import { ContributesToLinks, ContributionLinks, UserLink, RelatedLinks } from '../Link';
 import { formatDate } from '../../util/Dates';
 
 const variant = typographyVariant.aag;
@@ -38,7 +37,7 @@ export const AtAGlance = ({ task }) => {
           <Typography variant={variant.value}>{task.priority}</Typography>
           <Typography variant={variant.note}>(lower number is higher priority)</Typography>
         </div>
-        {task.type === TASK_TYPE.INITIATIVE ? (
+        {task.type === 'INITIATIVE' ? (
           <>
             <Typography variant={variant.title} className={classes.aagTitle}>
               Duration
@@ -46,24 +45,14 @@ export const AtAGlance = ({ task }) => {
             <Typography variant={variant.value} className={classes.aagValue}>
               {formatDate(task.startDate)} <i>to</i> {formatDate(task.endDate)}
             </Typography>
-          </>
-        ) : null}
-        {task.type === TASK_TYPE.INITIATIVE ? (
-          <>
             <Typography variant={variant.title} className={classes.aagTitle}>
               Cost
             </Typography>
             <Typography variant={variant.value} className={classes.aagValue}>
-              {COST.displayNameForCost(task.cost)}
+              {task.cost}
             </Typography>
           </>
         ) : null}
-        <Typography variant={variant.title} className={classes.aagTitle}>
-          Created By
-        </Typography>
-        <div className={classes.aagValue}>
-          <UserLink variant={variant.value} userId={task.createdBy} />
-        </div>
         <Typography variant={variant.title} className={classes.aagTitle}>
           Created On
         </Typography>
@@ -71,56 +60,44 @@ export const AtAGlance = ({ task }) => {
           {formatDate(task.createdDate)}
         </Typography>
         <Typography variant={variant.title} className={classes.aagTitle}>
+          Created By
+        </Typography>
+        <div className={classes.aagValue}>
+          <UserLink variant={variant.value} userId={task.createdBy} userName={task.createdByName} />
+        </div>
+        <Typography variant={variant.title} className={classes.aagTitle}>
           Last Modified On
         </Typography>
         <Typography variant={variant.value} className={classes.aagValue}>
           {formatDate(task.modifiedDate)}
         </Typography>
-        {typeof task.contributesTo !== 'undefined' ? (
-          <>
-            <Typography variant={variant.title} className={classes.aagTitle}>
-              Contributes To
-            </Typography>
-            <div className={classes.aagValue}>
-              <ContributesToLinks
-                variant={variant.value}
-                task={task}
-                taskIcon={task.type === TASK_TYPE.ENABLER ? ICONS.DRIVER : ICONS.ENABLER}
-              />
-            </div>
-          </>
-        ) : null}
-        {typeof task.contributions !== 'undefined' ? (
-          <>
-            <Typography variant={variant.title} className={classes.aagTitle}>
-              Contributions
-            </Typography>
-            <div className={classes.aagValue}>
-              <ContributionLinks
-                variant={variant.value}
-                task={task}
-                taskIcon={task.type === TASK_TYPE.DRIVER ? ICONS.ENABLER : ICONS.INITIATIVE}
-              />
-            </div>
-          </>
-        ) : null}
+        <Typography variant={variant.title} className={classes.aagTitle}>
+          Last Modified By
+        </Typography>
+        <div className={classes.aagValue}>
+          <UserLink
+            variant={variant.value}
+            userId={task.modifiedBy}
+            userName={task.modifiedByName}
+          />
+        </div>
+        <Typography variant={variant.title} className={classes.aagTitle}>
+          Contributes To
+        </Typography>
+        <div className={classes.aagValue}>
+          <ContributesToLinks task={task} variant={variant.value} />
+        </div>
+        <Typography variant={variant.title} className={classes.aagTitle}>
+          Contributions
+        </Typography>
+        <div className={classes.aagValue}>
+          <ContributionLinks task={task} variant={variant.value} />
+        </div>
         <Typography variant={variant.title} className={classes.aagTitle}>
           Related Links
         </Typography>
         <div className={classes.aagValue}>
-          {task.relatedLinks.length > 0 ? (
-            task.relatedLinks.map((relatedLink, index) => (
-              <Typography key={index} variant={variant.value} className={classes.aagValue}>
-                <Link href={relatedLink} className={classes.link} variant="inherit">
-                  {relatedLink}
-                </Link>
-              </Typography>
-            ))
-          ) : (
-            <Typography variant={variant.value} className={classes.aagValue}>
-              <i>None</i>
-            </Typography>
-          )}
+          <RelatedLinks task={task} variant={variant.value} className={classes.aagValue} />
         </div>
       </div>
     </div>

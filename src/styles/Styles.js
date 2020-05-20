@@ -609,10 +609,8 @@ export const useStyles = () =>
       flexDirection: 'column',
     },
     inspectorBody: { paddingLeft: theme.spacing(1), paddingTop: theme.spacing(0) },
-    inspectorInteriorBlock: {
-      display: 'flex',
-      flexDirection: 'column',
-      paddingTop: '4px',
+    inspectorLine: {
+      paddingBottom: 6,
     },
     inspectorInteriorSection: { padding: theme.spacing(1) },
 

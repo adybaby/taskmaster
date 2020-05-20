@@ -1,11 +1,12 @@
-import { TASK_TYPE, VACANCY } from '../../constants/Constants';
 import { KELLY } from '../../styles/Styles';
 
 /* eslint-disable no-param-reassign */
-let tasks = null;
+let vacancies = null;
+let interest = null;
 let users = null;
 let dateRange = null;
 let skills = null;
+let skillIds = null;
 
 const seriesSets = {
   availability: null,
@@ -14,19 +15,19 @@ const seriesSets = {
   vacancies: null,
   shortfall: null,
   excess: null,
-  refs: null,
+  inspectorData: null,
   skillsAndColors: null,
 };
 
-const xyTemplate = (makeRefs) => {
+const timeSeriesTemplate = (isInspector) => {
   const xy = [];
   for (
     let i = new Date(dateRange.first.getTime());
     i.getTime() <= dateRange.last.getTime();
     i.setDate(i.getDate() + 1)
   ) {
-    if (makeRefs) {
-      xy.push({ x: i.getTime(), y: 0, signUps: [], vacancies: [], stated: [] });
+    if (isInspector) {
+      xy.push({ x: i.getTime(), signedUp: [], vacancies: [], availability: [] });
     } else {
       xy.push({ x: i.getTime(), y: 0 });
     }
@@ -35,108 +36,109 @@ const xyTemplate = (makeRefs) => {
 };
 
 const getSkillsAndColors = () =>
-  skills.map((skill, index) => ({ title: skill, color: KELLY[index], strokeWidth: 15 }));
+  skills.map((skill, index) => ({ title: skill.label, color: KELLY[index], strokeWidth: 15 }));
 
-/**
- * {label:string, color:#string, data:[{x,y}]}
- * */
-const seriesTemplate = (makeRefs) => {
-  const template = {};
-  template.series = skills.map((skill, index) => ({
-    label: skill,
+const seriesTemplate = () => ({
+  series: skills.map((skill, index) => ({
+    id: skill.id,
+    label: skill.label,
     color: KELLY[index],
-    data: xyTemplate(makeRefs),
-  }));
-  template.min = 0;
-  template.max = 0;
-  return template;
-};
+    data: timeSeriesTemplate(),
+  })),
+  min: 0,
+  max: 0,
+});
+
+const inspectorDataTemplate = () => ({
+  series: skills.map((skill) => ({
+    id: skill.id,
+    label: skill.label,
+    data: timeSeriesTemplate(true),
+  })),
+});
 
 const createSeriesTemplates = () => {
   seriesSets.skillsAndColors = getSkillsAndColors();
-  seriesSets.availability = seriesTemplate(false);
-  seriesSets.signedUp = seriesTemplate(false);
-  seriesSets.actualAvailability = seriesTemplate(false);
-  seriesSets.vacancies = seriesTemplate(false);
-  seriesSets.shortfall = seriesTemplate(false);
-  seriesSets.excess = seriesTemplate(false);
-  seriesSets.refs = seriesTemplate(true);
+  seriesSets.availability = seriesTemplate();
+  seriesSets.signedUp = seriesTemplate();
+  seriesSets.actualAvailability = seriesTemplate();
+  seriesSets.vacancies = seriesTemplate();
+  seriesSets.shortfall = seriesTemplate();
+  seriesSets.excess = seriesTemplate();
+  seriesSets.inspectorData = inspectorDataTemplate();
 };
 
-const updateXY = (from, to, seriesSetKey, seriesIndex, signUp, vacancy) => {
-  const { data } = seriesSets[seriesSetKey].series[seriesIndex];
-  const refData = seriesSets.refs.series[seriesIndex].data;
+const addResourceInfoForDateRange = (
+  dateRangeSource,
+  skillId,
+  seriesSetKey,
+  inspectorDataEntry
+) => {
+  const { data } = seriesSets[seriesSetKey].series.find((series) => series.id === skillId);
+  const startIndex = data.findIndex((d) => d.x === dateRangeSource.startDate.getTime());
+  const endIndex = data.findIndex((d) => d.x === dateRangeSource.endDate.getTime());
+  const inspectorSeriesData = seriesSets.inspectorData.series.find(
+    (series) => series.id === skillId
+  ).data;
 
-  let i = data.findIndex((d) => d.x === from.getTime());
-  const end = data.findIndex((d) => d.x === to.getTime());
-  for (i; i <= end; i++) {
+  for (let i = startIndex; i <= endIndex; i++) {
     data[i].y++;
-    if (signUp !== null) {
-      if (signUp.signUp !== null) {
-        refData[i].signUps.push(signUp);
-      } else {
-        refData[i].stated.push(signUp);
-      }
-    }
-    if (vacancy !== null) {
-      const refVacancies = refData[i].vacancies;
-      const entry = refVacancies.filter((v) => v.task.id === vacancy.task.id)[0];
-      if (typeof entry === 'undefined') {
-        vacancy.count = 1;
-        refVacancies.push({ ...vacancy });
-      } else {
-        entry.count += 1;
-      }
-    }
+    inspectorSeriesData[i][seriesSetKey].push(inspectorDataEntry);
   }
 };
 
-const calcAvailability = () => {
+const addAvailabilityInfo = () => {
   users.forEach((user) => {
     user.skills
-      .filter((skill) => skills.includes(skill))
-      .forEach((skill) => {
-        const skillsIndex = skills.indexOf(skill);
-
+      .filter((userSkill) => skillIds.includes(userSkill.id))
+      .forEach((userSkill) => {
         user.available.forEach((available) => {
-          updateXY(
-            available.from,
-            available.to,
-            'availability',
-            skillsIndex,
-            { user, signUp: null },
-            null
-          );
-        });
-
-        user.signedUp.forEach((su) => {
-          su.periods.forEach((period) => {
-            updateXY(period.from, period.to, 'signedUp', skillsIndex, { user, signUp: su }, null);
+          addResourceInfoForDateRange(available, userSkill.id, 'availability', {
+            userId: user.id,
+            userName: user.formattedName,
+            skillId: userSkill.id,
+            startDate: available.startDate,
+            endDate: available.endDate,
           });
         });
       });
   });
 };
 
-const calcVacancies = () => {
-  skills.forEach((skill, skillsIndex) => {
-    tasks
-      .filter((task) => task.type === TASK_TYPE.INITIATIVE)
-      .forEach((task) => {
-        task.vacancies
-          .filter((vacancy) => vacancy.skill === skill)
-          .filter((vacancy) => vacancy.status === VACANCY.FIELDS.STATUS.OPEN.id)
-          .forEach((vacancy) => {
-            updateXY(task.startDate, task.endDate, 'vacancies', skillsIndex, null, {
-              task,
-              vacancy,
-            });
-          });
+const addVacanciesAndInterestInfo = () => {
+  vacancies
+    .filter((vacancy) => skillIds.includes(vacancy.skillId) && vacancy.status === 'Open')
+    .forEach((vacancy) => {
+      // add vacancy
+      addResourceInfoForDateRange(vacancy, vacancy.skillId, 'vacancies', {
+        taskId: vacancy.taskId,
+        taskTitle: vacancy.taskTitle,
+        skillId: vacancy.skillId,
+        startDate: vacancy.startDate,
+        endDate: vacancy.endDate,
       });
-  });
+
+      interest
+        .filter(
+          (userInterest) =>
+            userInterest.vacancyId === vacancy.id && userInterest.status === 'ACCEPTED'
+        )
+        .forEach((userInterest) => {
+          // add sign up
+          addResourceInfoForDateRange(userInterest, vacancy.skillId, 'signedUp', {
+            taskId: vacancy.taskId,
+            taskTitle: vacancy.taskTitle,
+            userId: userInterest.userId,
+            userName: userInterest.userName,
+            skillId: vacancy.skillId,
+            startDate: userInterest.startDate,
+            endDate: userInterest.endDate,
+          });
+        });
+    });
 };
 
-const calcActualAvailabilityAndShortFall = () => {
+const calcActualAvailabilityAndShortFallInfo = () => {
   for (let seriesIndex = 0; seriesIndex < skills.length; seriesIndex++) {
     for (let dayIndex = 0; dayIndex < seriesSets.availability.series[0].data.length; dayIndex++) {
       const availabilityDayData = seriesSets.availability.series[seriesIndex].data[dayIndex];
@@ -157,34 +159,64 @@ const calcActualAvailabilityAndShortFall = () => {
   }
 };
 
-const trimAndFilterSeriesSet = (seriesSet, filterDateRange, includeZeros) => {
+const findLastIndex = (array, findFunction) => {
+  let i = array.length - 1;
+  for (i; i >= 0; i--) {
+    if (findFunction(array[i])) {
+      break;
+    }
+  }
+  return i;
+};
+
+const trimAndFilterSeriesSet = (seriesSet, filterDateRange, isInspectorData) => {
   seriesSet.series.forEach((series) => {
     if (typeof series.data !== 'undefined') {
-      const attemptedFirst =
+      const firstIndexSpecifiedByFilter =
         typeof filterDateRange === 'undefined' ||
         filterDateRange === null ||
-        filterDateRange.from === null
+        filterDateRange.startDate === null
           ? 0
-          : series.data.findIndex((d) => d.x >= filterDateRange.from.getTime());
-      const attemptedLast =
+          : series.data.findIndex((d) => d.x >= filterDateRange.startDate.getTime());
+      const firstNonEmptyIndex = series.data.findIndex((d) =>
+        isInspectorData
+          ? d.availability.length > 0 || d.signedUp.length > 0 || d.vacancies.length > 0
+          : d.y !== 0
+      );
+
+      const lastIndexSpecifiedByFilter =
         typeof filterDateRange === 'undefined' ||
         filterDateRange === null ||
-        filterDateRange.to === null
+        filterDateRange.endDate === null
           ? series.data.length
-          : series.data.findIndex((d) => d.x > filterDateRange.to.getTime());
-      const first = attemptedFirst === -1 ? 0 : attemptedFirst;
-      const last = attemptedLast === -1 ? series.data.length : attemptedLast;
+          : series.data.findIndex((d) => d.x > filterDateRange.endDate.getTime());
+
+      const lastNonEmptyIndex = findLastIndex(series.data, (d) =>
+        isInspectorData
+          ? d.availability.length > 0 || d.signedUp.length > 0 || d.vacancies.length > 0
+          : d.y !== 0
+      );
+
+      const first = Math.max(
+        ...[0, firstIndexSpecifiedByFilter, firstNonEmptyIndex].filter((x) => x !== -1)
+      );
+      const last =
+        Math.min(
+          ...[series.data.length - 1, lastIndexSpecifiedByFilter, lastNonEmptyIndex].filter(
+            (x) => x !== -1
+          )
+        ) + 1;
 
       series.data = series.data.slice(first, last);
 
-      if (!includeZeros) {
+      if (!isInspectorData) {
         series.data = series.data.filter((d) => d.y !== 0);
       }
     }
   });
 };
 
-const minMax = (seriesSet) => {
+const findStartAndEndDates = (seriesSet) => {
   let min = seriesSet.series
     .map((series) =>
       series.data.reduce((previous, current) => (current.y < previous ? current.y : previous), 0)
@@ -208,24 +240,35 @@ const cleanSeriesSets = (filterDateRange) => {
   trimAndFilterSeriesSet(seriesSets.vacancies, filterDateRange);
   trimAndFilterSeriesSet(seriesSets.shortfall, filterDateRange);
   trimAndFilterSeriesSet(seriesSets.excess, filterDateRange);
-  trimAndFilterSeriesSet(seriesSets.refs, filterDateRange, true);
-  minMax(seriesSets.signedUp);
-  minMax(seriesSets.availability);
-  minMax(seriesSets.vacancies);
-  minMax(seriesSets.actualAvailability);
-  minMax(seriesSets.shortfall);
-  minMax(seriesSets.excess);
+  trimAndFilterSeriesSet(seriesSets.inspectorData, filterDateRange, true);
+  findStartAndEndDates(seriesSets.signedUp);
+  findStartAndEndDates(seriesSets.availability);
+  findStartAndEndDates(seriesSets.vacancies);
+  findStartAndEndDates(seriesSets.actualAvailability);
+  findStartAndEndDates(seriesSets.shortfall);
+  findStartAndEndDates(seriesSets.excess);
 };
 
-export const buildChartData = (tasksIn, usersIn, dateRangeIn, requiredSkills, filterDateRange) => {
-  tasks = tasksIn;
+export const buildChartData = (
+  vacanciesIn,
+  interestIn,
+  usersIn,
+  dateRangeIn,
+  requiredSkills,
+  filterDateRange
+) => {
+  vacancies = vacanciesIn;
+  interest = interestIn;
   users = usersIn;
   dateRange = dateRangeIn;
   skills = requiredSkills;
+  skillIds = skills.map((skill) => skill.id);
+
   createSeriesTemplates();
-  calcAvailability();
-  calcVacancies();
-  calcActualAvailabilityAndShortFall();
+  addAvailabilityInfo();
+  addVacanciesAndInterestInfo();
+  calcActualAvailabilityAndShortFallInfo();
   cleanSeriesSets(filterDateRange);
+
   return seriesSets;
 };

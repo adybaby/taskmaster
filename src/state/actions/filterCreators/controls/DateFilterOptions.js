@@ -9,88 +9,102 @@ import {
 } from '../../../../util/Dates';
 
 const createExecute = (dateField, defaultParams) => (tasks, params) => {
-  let from = null;
-  let to = null;
+  let startDate = null;
+  let endDate = null;
   if (typeof defaultParams !== 'undefined') {
-    from = defaultParams.from;
-    to = defaultParams.to;
+    startDate = defaultParams.startDate;
+    endDate = defaultParams.endDate;
   } else {
-    from = params.from;
-    to = params.to;
+    startDate = params.startDate;
+    endDate = params.endDate;
   }
-  return dateField !== null
-    ? tasks.filter((task) =>
-        task[dateField] === null || typeof task[dateField] === 'undefined'
-          ? null
-          : (from === null || afterOrE(task[dateField], from)) &&
-            (to === null || beforeOrE(task[dateField], to))
-      )
-    : tasks.filter((task) =>
-        task.startDate === null || typeof task.startDate === 'undefined'
-          ? null
-          : (from !== null &&
-              to !== null &&
-              areDateRangesOverlapping({ from, to }, { from: task.startDate, to: task.endDate })) ||
-            (to === null && afterOrE(task.endDate, from)) ||
-            (from === null && beforeOrE(task.startDate, to))
+
+  if (dateField !== null) {
+    return tasks.filter((task) => {
+      if (task[dateField] === null || typeof task[dateField] === 'undefined') {
+        return false;
+      }
+      return (
+        (startDate === null || afterOrE(task[dateField], startDate)) &&
+        (endDate === null || beforeOrE(task[dateField], endDate))
       );
+    });
+  }
+
+  return tasks.filter((task) => {
+    if (task.startDate === null || typeof task.startDate === 'undefined') {
+      return false;
+    }
+
+    if (startDate !== null && endDate !== null) {
+      return areDateRangesOverlapping(
+        { startDate, endDate },
+        { startDate: task.startDate, endDate: task.endDate }
+      );
+    }
+
+    return (
+      (startDate === null || afterOrE(task.startDate, startDate)) &&
+      (endDate === null || beforeOrE(task.endDate, endDate))
+    );
+  });
 };
 
 export const createDateFilterOptions = (dateField, includeFuture) => {
   const options = [
     {
       id: `ANY_TIME`,
-      label: 'at any time',
-      range: { from: null, to: null },
-      execute: createExecute(dateField, { from: null, to: null }),
+      label: 'At any time',
+      range: { startDate: null, endDate: null },
+      execute: createExecute(dateField, { startDate: null, endDate: null }),
     },
     {
       id: `TODAY`,
-      label: 'today',
-      range: { from: day(), to: day() },
-      execute: createExecute(dateField, { from: day(), to: day() }),
+      label: 'Today',
+      range: { startDate: day(), endDate: day() },
+      execute: createExecute(dateField, { startDate: day(), endDate: day() }),
     },
     {
       id: `THIS_WEEK`,
-      label: 'this week',
+      label: 'This week',
       range: getDateRangeForWeek(day()),
       execute: createExecute(dateField, getDateRangeForWeek(day())),
     },
     {
       id: `THIS_MONTH`,
-      label: 'this month',
+      label: 'This month',
       range: getDateRangeForMonth(day()),
       execute: createExecute(dateField, getDateRangeForMonth(day())),
     },
     {
       id: `THIS_YEAR`,
-      label: 'this year',
+      label: 'This year',
       range: getDateRangeForYear(day()),
       execute: createExecute(dateField, getDateRangeForYear(day())),
     },
     {
       id: `PAST_WEEK`,
-      label: 'in the past week',
-      range: { from: day(null, -7), to: day() },
-      execute: createExecute(dateField, { from: day(null, -7), to: day() }),
+      label: 'In the past week',
+      range: { startDate: day(null, -7), endDate: day() },
+      execute: createExecute(dateField, { startDate: day(null, -7), endDate: day() }),
     },
     {
       id: `PAST_MONTH`,
-      label: 'in the past month',
-      range: { from: day(null, -31), to: day() },
-      execute: createExecute(dateField, { from: day(null, -31), to: day() }),
+      label: 'In the past month',
+      range: { startDate: day(null, -31), endDate: day() },
+      execute: createExecute(dateField, { startDate: day(null, -31), endDate: day() }),
     },
     {
       id: `PAST_YEAR`,
-      label: 'in the past year',
-      range: { from: day(null, -365), to: day() },
-      execute: createExecute(dateField, { from: day(null, -365), to: day() }),
+      label: 'In the past year',
+      range: { startDate: day(null, -365), endDate: day() },
+      execute: createExecute(dateField, { startDate: day(null, -365), endDate: day() }),
     },
     {
       id: `OLDER`,
-      label: 'over a year ago',
-      range: { from: null, to: day(null, -365) },
-      execute: createExecute(dateField, { from: null, to: day(null, -365) }),
+      label: 'Over a year ago',
+      range: { startDate: null, endDate: day(null, -365) },
+      execute: createExecute(dateField, { startDate: null, endDate: day(null, -365) }),
     },
   ];
 
@@ -99,28 +113,28 @@ export const createDateFilterOptions = (dateField, includeFuture) => {
       ...[
         {
           id: `COMING_WEEK`,
-          label: 'in the coming week',
-          range: { from: day(), to: day(null, 7) },
-          execute: createExecute(dateField, { from: day(), to: day(null, 7) }),
+          label: 'In the coming week',
+          range: { startDate: day(), endDate: day(null, 7) },
+          execute: createExecute(dateField, { startDate: day(), endDate: day(null, 7) }),
         },
         {
           id: `COMING_MONTH`,
-          label: 'in the coming month',
-          range: { from: day(), to: day(null, 31) },
-          execute: createExecute(dateField, { from: day(), to: day(null, 31) }),
+          label: 'In the coming month',
+          range: { startDate: day(), endDate: day(null, 31) },
+          execute: createExecute(dateField, { startDate: day(), endDate: day(null, 31) }),
         },
         {
           id: `COMING_YEAR`,
-          label: 'in the coming year',
-          range: { from: day(), to: day(null, 365) },
+          label: 'In the coming year',
+          range: { startDate: day(), endDate: day(null, 365) },
           execute: createExecute(dateField, {
-            from: day(),
-            to: day(null, 365),
+            startDate: day(),
+            endDate: day(null, 365),
           }),
         },
         {
           id: `NEXT_YEAR`,
-          label: 'next year',
+          label: 'Next year',
           range: getDateRangeForYear(day(null, 365)),
           execute: createExecute(dateField, getDateRangeForYear(day(null, 365))),
         },

@@ -1,4 +1,4 @@
-import { ACTION_TYPES } from '../../constants/Constants';
+import { ACTION_TYPES } from './ActionTypes';
 
 export const setSelectedChart = (selectedChart) => ({
   type: ACTION_TYPES.SET_SELECTED_CHART,

@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../../styles/Styles';
 import { isValidDateString, ukToUs, beforeOrE } from '../../../util/Dates';
 
-export const DateErrors = ({ fromStr, toStr, onValidityChange }) => {
+export const DateErrors = ({ startDateStr, endDateStr, onValidityChange }) => {
   const classes = useStyles()();
   const variant = typographyVariant.datesDialog;
 
@@ -14,20 +14,20 @@ export const DateErrors = ({ fromStr, toStr, onValidityChange }) => {
 
   const orderValid = React.useCallback(
     () =>
-      fromStr === '' ||
-      toStr === '' ||
-      beforeOrE(new Date(ukToUs(fromStr)), new Date(ukToUs(toStr))),
-    [fromStr, toStr]
+      startDateStr === '' ||
+      endDateStr === '' ||
+      beforeOrE(new Date(ukToUs(startDateStr)), new Date(ukToUs(endDateStr))),
+    [startDateStr, endDateStr]
   );
 
   const eitherValid = React.useCallback(
-    () => isValidDateString(ukToUs(fromStr)) || isValidDateString(ukToUs(toStr)),
-    [fromStr, toStr]
+    () => isValidDateString(ukToUs(startDateStr)) || isValidDateString(ukToUs(endDateStr)),
+    [startDateStr, endDateStr]
   );
 
   const allValid = React.useCallback(
-    () => fieldValid(fromStr) && fieldValid(toStr) && orderValid() && eitherValid(),
-    [fromStr, toStr, fieldValid, orderValid, eitherValid]
+    () => fieldValid(startDateStr) && fieldValid(endDateStr) && orderValid() && eitherValid(),
+    [startDateStr, endDateStr, fieldValid, orderValid, eitherValid]
   );
 
   useEffect(() => {
@@ -36,12 +36,12 @@ export const DateErrors = ({ fromStr, toStr, onValidityChange }) => {
 
   return allValid() ? null : (
     <>
-      {!fieldValid(fromStr) ? (
+      {!fieldValid(startDateStr) ? (
         <div className={classes.datesDialogErrorMsg}>
           <Typography variant={variant.error}>The first date is not a valid date.</Typography>
         </div>
       ) : null}
-      {!fieldValid(toStr) ? (
+      {!fieldValid(endDateStr) ? (
         <div className={classes.datesDialogErrorMsg}>
           <Typography variant={variant.error}>The second date is not a valid date.</Typography>
         </div>

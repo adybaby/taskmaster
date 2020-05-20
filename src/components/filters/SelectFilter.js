@@ -32,7 +32,7 @@ export const SelectFilter = ({ filter, closeMenu }) => {
   const handleCloseDatesDialog = (range) => {
     setOpenDates(false);
     if (range !== null) {
-      handleFilterUpdate(datePickerOption, [range.from, range.to]);
+      handleFilterUpdate(datePickerOption, [range.startDate, range.endDate]);
     }
     closeMenu();
   };

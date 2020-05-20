@@ -1,4 +1,4 @@
-import { ACTION_TYPES } from '../../constants/Constants';
+import { ACTION_TYPES } from '../actions/ActionTypes';
 
 export const filterBarVisibleReducer = (state = false, action) => {
   switch (action.type) {

@@ -94,16 +94,54 @@ export const ChartPanel = () => {
     setChartSelectDrawerVisible(false);
   };
 
-  const handleDownloadClicked = () => {
-    const refsData = resourceSeriesSets.refs.series[0].data;
-    const series = resourceSeriesSets[selectedChart.seriesKey].series;
+  const getTimeAxisForSeries = (series) => {
+    const firstDateInMs = series.reduce((soonest, seriesEntry) => {
+      const data = seriesEntry.data;
 
-    const dayCount = refsData.length;
+      if (data.length === 0) {
+        return soonest;
+      }
+
+      if (soonest === 0) {
+        return data[0].x;
+      }
+
+      return data[0].x < soonest ? data[0].x : soonest;
+    }, 0);
+
+    const lastDateInMs = series.reduce((latest, seriesEntry) => {
+      const data = seriesEntry.data;
+
+      if (data.length === 0) {
+        return latest;
+      }
+
+      return data[data.length - 1].x > latest ? data[data.length - 1].x : latest;
+    }, 0);
+
+    const timeAxis = [];
+
+    for (
+      let dayDate = new Date(firstDateInMs);
+      dayDate.getTime() <= lastDateInMs;
+      dayDate.setDate(dayDate.getDate() + 1)
+    ) {
+      timeAxis.push(dayDate.getTime());
+    }
+
+    return timeAxis;
+  };
+
+  const handleDownloadClicked = () => {
+    const series = resourceSeriesSets[selectedChart.seriesKey].series;
+    const timeAxis = getTimeAxisForSeries(series);
+
+    const dayCount = timeAxis.length;
     const lines = [];
 
     const colHeadings = ['Skill Group'];
     for (let dayIndex = 0; dayIndex < dayCount; dayIndex++) {
-      colHeadings.push(formatDate(new Date(refsData[dayIndex].x)));
+      colHeadings.push(formatDate(new Date(timeAxis[dayIndex])));
     }
     lines.push(colHeadings.join(','));
 
@@ -111,9 +149,9 @@ export const ChartPanel = () => {
       const line = [thisSeries.label];
 
       for (let dayIndex = 0; dayIndex < dayCount; dayIndex++) {
-        const refX = refsData[dayIndex].x;
-        const currentSeriesDay = thisSeries.data.find((data) => data.x === refX);
-        line.push(typeof currentSeriesDay !== 'undefined' ? currentSeriesDay.y : 0);
+        const currentDayInMs = timeAxis[dayIndex];
+        const seriesEntryForDay = thisSeries.data.find((data) => data.x === currentDayInMs);
+        line.push(typeof seriesEntryForDay !== 'undefined' ? seriesEntryForDay.y : 0);
       }
 
       lines.push(line.join(','));
@@ -130,15 +168,15 @@ export const ChartPanel = () => {
       chart={selectedChart}
       seriesSet={resourceSeriesSets[selectedChart.seriesKey]}
       skillsAndColors={resourceSeriesSets.skillsAndColors}
-      refs={resourceSeriesSets.refs}
+      inspectorData={resourceSeriesSets.inspectorData}
       width={width}
       dataPoint
-      onValueMouseOver={(dp, { event }) => {
+      onValueMouseOver={(hoveredDataPoint, { event }) => {
         setMousePosition({ x: event.clientX, y: event.clientY });
-        setDataPoint(dp);
+        setDataPoint(hoveredDataPoint);
       }}
-      onValueClick={(dp) => {
-        setInspectorPanel(dp.markPanel);
+      onValueClick={(clickedDataPoint) => {
+        setInspectorPanel(clickedDataPoint.inspector);
         setInspectorDrawerVisible(true);
       }}
       onValueMouseOut={() => {
@@ -181,7 +219,7 @@ export const ChartPanel = () => {
           ...verticalPos,
         }}
       >
-        <Paper>{dataPoint.markPanel}</Paper>
+        <Paper>{dataPoint.inspector}</Paper>
       </div>
     );
   };
@@ -217,16 +255,18 @@ export const ChartPanel = () => {
 
   const downloadButton = () => (
     <Tooltip title="DOWNLOAD CSV">
-      <Button
-        disabled={!downloadEnabled}
-        className={classes.chartDownloadButton}
-        onClick={handleDownloadClicked}
-      >
-        {ICONS.DOWNLOAD}
-        <span className={classes.hidingLabel}>
-          <b>DOWNLOAD</b>
-        </span>
-      </Button>
+      <span className={classes.chartDownloadButton}>
+        <Button
+          disabled={!downloadEnabled}
+          className={classes.chartDownloadButton}
+          onClick={handleDownloadClicked}
+        >
+          {ICONS.DOWNLOAD}
+          <span className={classes.hidingLabel}>
+            <b>DOWNLOAD</b>
+          </span>
+        </Button>
+      </span>
     </Tooltip>
   );
 

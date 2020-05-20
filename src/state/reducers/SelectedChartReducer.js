@@ -1,4 +1,5 @@
-import { ACTION_TYPES, getResourceChartDefinition, DEFAULT_CHART } from '../../constants/Constants';
+import { getResourceChartDefinition, DEFAULT_CHART } from '../../constants/Constants';
+import { ACTION_TYPES } from '../actions/ActionTypes';
 
 export const selectedChartReducer = (state = DEFAULT_CHART, action) => {
   switch (action.type) {

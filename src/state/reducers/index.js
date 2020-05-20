@@ -2,6 +2,9 @@ import { combineReducers } from 'redux';
 import { taskReducer } from './TaskReducer';
 import { currentUserReducer, usersReducer } from './UserReducer';
 import { skillsReducer } from './SkillsReducer';
+import { vacanciesReducer } from './VacanciesReducer';
+import { interestReducer } from './InterestReducer';
+import { contributionLinksReducer } from './ContributionLinksReducer';
 import { dateRangeReducer } from './DateRangeReducer';
 import { filterReducer } from './FilterReducer';
 import { selectedChartReducer } from './SelectedChartReducer';
@@ -20,6 +23,9 @@ const rootReducer = combineReducers({
   selectedChart: selectedChartReducer,
   filterBarVisible: filterBarVisibleReducer,
   dbStatus: dbReducer,
+  vacancies: vacanciesReducer,
+  interest: interestReducer,
+  contributionLinks: contributionLinksReducer,
 });
 
 export default rootReducer;

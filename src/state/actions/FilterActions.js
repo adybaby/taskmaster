@@ -1,4 +1,4 @@
-import { ACTION_TYPES } from '../../constants/Constants';
+import { ACTION_TYPES } from './ActionTypes';
 
 // set filter objects from created state filter objects
 export const setFilters = (filters) => ({

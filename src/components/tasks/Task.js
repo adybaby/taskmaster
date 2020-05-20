@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Divider, Button, Tabs, Tab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { ICONS, TASK_TYPE } from '../../constants/Constants';
+import { ICONS } from '../../constants/Constants';
 import { AtAGlance } from './AtAGlance';
 import { Vacancy } from './Vacancy';
 
@@ -12,17 +12,12 @@ const variant = typographyVariant.task;
 
 export const Task = () => {
   const classes = useStyles()();
-  const dispatch = useDispatch();
-  const tasks = useSelector((state) => state.tasks);
   const { id } = useParams();
-  const [task, setTask] = useState(null);
   const [infoVisible, setInfoVisible] = useState(true);
-
-  useEffect(() => {
-    if (task === null || task.id !== id) {
-      setTask(tasks.filter((tsk) => tsk.id === id)[0]);
-    }
-  }, [dispatch, id, task, tasks]);
+  const task = useSelector((state) => state.tasks).find((t) => t.id === id);
+  const vacancies = useSelector((state) => state.vacancies).filter(
+    (vacancy) => vacancy.taskId === id
+  );
 
   const handleTabChange = () => {
     // eslint-disable-next-line no-alert
@@ -61,7 +56,7 @@ export const Task = () => {
           {task.moreInformation}
         </Typography>
 
-        {task.type === TASK_TYPE.INITIATIVE ? (
+        {task.type === 'INITIATIVE' ? (
           <>
             <Typography className={classes.taskSectionHeading} variant={variant.heading}>
               Hypotheses
@@ -89,7 +84,7 @@ export const Task = () => {
             </Typography>
             <Divider />
             <div className={`${classes.taskSectionBody} ${classes.vacancySection}`}>
-              {task.vacancies.map((vacancy, index) => (
+              {vacancies.map((vacancy, index) => (
                 <Vacancy key={index} vacancy={vacancy} />
               ))}
             </div>
