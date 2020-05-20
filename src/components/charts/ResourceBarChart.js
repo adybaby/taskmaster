@@ -45,7 +45,7 @@ export const ResourceBarChart = ({
     orderedInspectorData.series.reverse();
   }
 
-  const orderedSkills = orderedSkillsAndColors.map((skill) => skill.label);
+  const orderedSkills = orderedSkillsAndColors.map((skill) => skill.title);
 
   const makeLegend = () =>
     isGantt ? (
