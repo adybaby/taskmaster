@@ -29,12 +29,9 @@ export class SelectFilter extends Filter {
 
   get new() {
     return new SelectFilter({
-      id: this.id,
-      labels: this.labels,
-      tabs: this.tabs,
-      isOnFilterBar: this.isOnFilterBar,
-      isTaskFilter: this.isTaskFilter,
+      ...this.getDefaultSuperProps(),
       forPastTasks: this.forPastTasks,
+      pluralizeOptionLabels: this.pluralizeOptionLabels,
       options: this.options,
     });
   }

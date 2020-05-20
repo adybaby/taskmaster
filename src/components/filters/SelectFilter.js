@@ -40,6 +40,8 @@ export const SelectFilter = ({ filter, closeMenu }) => {
   const validForTab = (option) =>
     typeof option.tabs === 'undefined' || option.tabs.includes(currentTab.id);
 
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
   return filter.options.map((option, index) => (
     <React.Fragment key={index}>
       {option.datePicker ? <Divider /> : null}
@@ -50,7 +52,7 @@ export const SelectFilter = ({ filter, closeMenu }) => {
         disabled={!validForTab(option)}
         dense
       >
-        <ListItemText primary={option.label} />
+        <ListItemText primary={capitalize(option.label)} />
       </ListItem>
       {option.datePicker ? (
         <>

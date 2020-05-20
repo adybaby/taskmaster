@@ -35,11 +35,7 @@ export class CheckGroupFilter extends Filter {
 
   get new() {
     return new CheckGroupFilter({
-      id: this.id,
-      labels: this.labels,
-      tabs: this.tabs,
-      isOnFilterBar: this.isOnFilterBar,
-      isTaskFilter: this.isTaskFilter,
+      ...this.getDefaultSuperProps(),
       options: this.options,
     });
   }

@@ -14,12 +14,12 @@ export const createVacancyFilterOptions = (currentUser, vacancies, skills) => {
   return [
     {
       id: 'ANY_VACANCIES',
-      label: 'Any skills',
+      label: 'any skills',
       execute: null,
     },
     {
       id: 'MY_SKILLS',
-      label: 'My skills',
+      label: 'my skills',
       execute: createExecute(
         currentUser.skills.map((skill) => skill.id),
         vacancies

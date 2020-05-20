@@ -89,6 +89,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isOnFilterBar: true,
     isTaskFilter: true,
     forPastTasks: false,
+    pluralizeOptionLabels: true,
     options: createVacancyFilterOptions(currentUser, vacancies, skills),
   }),
   new TextFilter({

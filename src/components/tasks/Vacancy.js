@@ -14,11 +14,13 @@ export const Vacancy = ({ vacancy }) => {
     window.alert('TBD');
   };
 
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
   return (
     <Paper className={classes.vacancyContainer}>
       <div className={classes.vacancyHeading}>
         <Typography variant="body1">
-          <b>{vacancy.skillTitle}</b>
+          <b>{capitalize(vacancy.skillTitle)}</b>
         </Typography>
         <div data-open={String(vacancy.status === 'Open')} className={classes.vacancyStatus}>
           <Typography variant="caption">

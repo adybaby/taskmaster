@@ -63,6 +63,8 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
     </Fragment>
   );
 
+  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
   return [
     getGroupControls(),
     ...filter.params.map((param, index) => (
@@ -76,7 +78,7 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
             disableRipple
           />
         </ListItemIcon>
-        <ListItemText id={param.id} primary={param.label} />
+        <ListItemText id={param.id} primary={capitalize(param.label)} />
       </ListItem>
     )),
   ];

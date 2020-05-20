@@ -1,11 +1,11 @@
 [
-  { "id": "1", "title": "Designers" },
-  { "id": "2", "title": "Developers" },
-  { "id": "3", "title": "Researchers" },
-  { "id": "4", "title": "Marketing" },
-  { "id": "5", "title": "PMs" },
-  { "id": "6", "title": "Logistics" },
-  { "id": "7", "title": "Supply" },
+  { "id": "1", "title": "designer" },
+  { "id": "2", "title": "developer" },
+  { "id": "3", "title": "researcher" },
+  { "id": "4", "title": "marketing" },
+  { "id": "5", "title": "PM" },
+  { "id": "6", "title": "logistics" },
+  { "id": "7", "title": "supply" },
   { "id": "8", "title": "HR" },
-  { "id": "9", "title": "Customers" }
+  { "id": "9", "title": "customer" }
 ]

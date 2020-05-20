@@ -88,6 +88,8 @@ export const SkillLink = ({ skillId, skillTitle, ...typographyProps }) => (
 // which groups together lists of the above link elements for each of the elements in that array field
 // or returning an "is empty" message if the field is an empty array
 
+const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+
 const delimitLinks = (links, delimiter, noLinksMessage, typographyProps) =>
   links.length === 0 ? (
     <Typography key="empty" style={{ display: 'inline-block' }} {...typographyProps}>
@@ -136,7 +138,7 @@ export const UserSkillsLinks = ({ user, ...typographyProps }) =>
         key={index}
         filterId={FILTER_IDS.VACANCIES}
         param={skill.id}
-        label={skill.title}
+        label={capitalize(skill.title)}
         {...typographyProps}
       />
     )),
@@ -194,7 +196,7 @@ export const VacancyLinks = ({ task, ...typographyProps }) =>
         key={index}
         filterId={FILTER_IDS.VACANCIES}
         param={requiredSkill.id}
-        label={`${requiredSkill.count} x ${requiredSkill.title}`}
+        label={`${requiredSkill.count} x ${capitalize(requiredSkill.title)}`}
         {...typographyProps}
       />
     )),

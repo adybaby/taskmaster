@@ -13,7 +13,9 @@ export class Filter {
 
   isTaskFilter;
 
-  constructor({ id, labels, tabs, isOnFilterBar, isTaskFilter, params }) {
+  pluralizeOptionLabels;
+
+  constructor({ id, labels, tabs, isOnFilterBar, isTaskFilter, pluralizeOptionLabels, params }) {
     if (typeof id === 'undefined' || id === null) {
       throw new Error('Cannot construct a filter without an ID');
     }
@@ -43,13 +45,24 @@ export class Filter {
         `Cannot construct a filter ${id} without specifying at least one param (${params})`
       );
     }
+
     this.id = id;
     this.labels = labels;
     this.tabs = tabs;
     this.isOnFilterBar = isOnFilterBar;
     this.isTaskFilter = isTaskFilter;
+    this.pluralizeOptionLabels = pluralizeOptionLabels;
     this.params = params;
   }
+
+  getDefaultSuperProps = () => ({
+    id: this.id,
+    labels: this.labels,
+    tabs: this.tabs,
+    isOnFilterBar: this.isOnFilterBar,
+    isTaskFilter: this.isTaskFilter,
+    pluralizeOptionLabels: this.pluralizeOptionLabels,
+  });
 
   newFilterWithParams = (params) => {
     if (typeof params === 'undefined' || params === null) {

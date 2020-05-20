@@ -9,11 +9,7 @@ export class TextFilter extends Filter {
 
   get new() {
     return new TextFilter({
-      id: this.id,
-      labels: this.labels,
-      tabs: this.tabs,
-      isOnFilterBar: this.isOnFilterBar,
-      isTaskFilter: this.isTaskFilter,
+      ...this.getDefaultSuperProps(),
     });
   }
 

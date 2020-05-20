@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
+import pluralize from 'pluralize';
 import { useStyles } from '../../styles/Styles';
 import { resetFilters } from '../../state/actions/FilterActions';
 import { getFiltersForSummary } from '../../state/selectors/FilterSelector';
@@ -53,8 +54,8 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
       }
     }
 
-    if (value.length > 1 && value[1] !== value[1].toUpperCase()) {
-      value = value.toLowerCase();
+    if (filter.pluralizeOptionLabels) {
+      value = pluralize(value);
     }
 
     return `${label} ${value}`;
@@ -96,7 +97,9 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   }
 
   const singleTask = taskListTotal === 1;
-  const taskType = singleTask ? currentTab.filterSummaryLabel : `${currentTab.filterSummaryLabel}s`;
+  const taskType = singleTask
+    ? currentTab.filterSummaryLabel
+    : `${pluralize(currentTab.filterSummaryLabel)}`;
   const totalsLabel = getTotalsLabel(taskListTotal);
 
   if (filtersForSummary.length === 0) {
