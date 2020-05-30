@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useQueryParam, withQueryParams, BooleanParam } from 'use-query-params';
 import { TABS, DEFAULT_CHART, getResourceChartDefinition } from './constants/Constants';
 import { getUserSelectedFilters } from './state/selectors/FilterSelector';
-import { formatUrlDate } from './util/Dates';
+import { formatUrlDate, ukToUs } from './util/Dates';
 import { setFiltersParams } from './state/actions/FilterParamActions';
 import { setSelectedChart } from './state/actions/SelectedChartActions';
 import { setCurrentTab } from './state/actions/CurrentTabActions';
@@ -56,11 +56,7 @@ const decodeParamsForFilter = (paramStrs) => {
       return { id: values[0], checked: values[1] === 'true' };
     });
   } else if (paramStrs.length === 3) {
-    params = [
-      paramStrs[0],
-      new Date(paramStrs[1].split('_').join('/')),
-      new Date(paramStrs[2].split('_').join('/')),
-    ];
+    params = [paramStrs[0], new Date(ukToUs(paramStrs[1])), new Date(ukToUs(paramStrs[2]))];
   }
   return params;
 };

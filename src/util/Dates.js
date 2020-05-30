@@ -35,6 +35,8 @@ export const ukToUs = (dateStr) => {
     ? /\//g
     : dateStr.includes('-')
     ? '-'
+    : dateStr.includes('_')
+    ? '_'
     : dateStr.includes(' ')
     ? ' '
     : dateStr.includes(':')
