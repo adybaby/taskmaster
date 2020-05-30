@@ -37,7 +37,7 @@ const encodeParamsForFilter = (params) => {
     return undefined;
   }
   if (params.length > 0 && typeof params[0].id !== 'undefined') {
-    return params.map((param) => [param.id, param.checked].join('_'));
+    return params.map((param) => [param.id, param.checked].join('__'));
   }
   if (params.length !== 3) {
     return params;
@@ -50,9 +50,9 @@ const decodeParamsForFilter = (paramStrs) => {
     return undefined;
   }
   let params = paramStrs;
-  if (paramStrs.length > 1 && params[0].includes('_')) {
+  if (paramStrs.length > 1 && params[0].includes('__')) {
     params = paramStrs.map((param) => {
-      const values = param.split('_');
+      const values = param.split('__');
       return { id: values[0], checked: values[1] === 'true' };
     });
   } else if (paramStrs.length === 3) {
