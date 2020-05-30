@@ -2,7 +2,14 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { ICONS } from '../../constants/Constants';
-import { ContributesToLinks, ContributionLinks, UserLink, RelatedLinks } from '../Link';
+import {
+  ContributesToLinks,
+  ContributionLinks,
+  UserLink,
+  RelatedLinks,
+  TagLinks,
+  VacancyLinks,
+} from '../Link';
 import { formatDate } from '../../util/Dates';
 
 const variant = typographyVariant.aag;
@@ -94,10 +101,22 @@ export const AtAGlance = ({ task }) => {
           <ContributionLinks task={task} variant={variant.value} />
         </div>
         <Typography variant={variant.title} className={classes.aagTitle}>
+          Vacant Skills
+        </Typography>
+        <div className={classes.aagValue}>
+          <VacancyLinks task={task} variant={variant.value} />
+        </div>
+        <Typography variant={variant.title} className={classes.aagTitle}>
           Related Links
         </Typography>
         <div className={classes.aagValue}>
-          <RelatedLinks task={task} variant={variant.value} className={classes.aagValue} />
+          <RelatedLinks task={task} variant={variant.value} />
+        </div>
+        <Typography variant={variant.title} className={classes.aagTitle}>
+          Tags
+        </Typography>
+        <div className={classes.aagValue}>
+          <TagLinks task={task} variant={variant.value} />
         </div>
       </div>
     </div>
