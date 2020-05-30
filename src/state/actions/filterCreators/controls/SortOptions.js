@@ -62,61 +62,61 @@ const prioritySorter = (tasks) =>
 
 export const createSortOptions = (users) => [
   {
-    id: 'SORT_CONTROL_ID',
+    id: 'sort_control_id',
     label: 'priority (highest first)',
     execute: prioritySorter,
   },
   {
-    id: 'PRIORITY_REVERSE',
+    id: 'priority_reverse',
     label: 'priority (lowest first)',
     execute: (tasks) => prioritySorter(tasks).reverse(),
   },
   {
-    id: 'CREATED_DATE',
+    id: 'created_date',
     label: 'created date (earliest first)',
     execute: createDateSorter('createdDate'),
   },
   {
-    id: 'CREATED_DATE_REVERSE',
+    id: 'created_date_reverse',
     label: 'created date (latest first)',
     execute: (tasks) => createDateSorter('createdDate')(tasks).reverse(),
   },
   {
-    id: 'AUTHOR',
+    id: 'author',
     label: 'author (surname A-Z)',
     execute: createCreatedBySorter(users),
   },
   {
-    id: 'AUTHOR_REVERSE',
+    id: 'author_reverse',
     label: 'author (surname Z-A)',
     execute: (tasks) => createCreatedBySorter(users)(tasks).reverse(),
   },
   {
-    id: 'START_DATE',
+    id: 'start_date',
     label: 'start date (earliest first)',
     tabs: [TABS.initiatives.id],
     execute: createDateSorter('startDate'),
   },
   {
-    id: 'START_DATE_REVERSE',
+    id: 'start_date_reverse',
     label: 'start date (latest first)',
     tabs: [TABS.initiatives.id],
     execute: (tasks) => createDateSorter('startDate')(tasks).reverse(),
   },
   {
-    id: 'END_DATE',
+    id: 'end_date',
     label: 'end date (earliest first)',
     tabs: [TABS.initiatives.id],
     execute: createDateSorter('endDate'),
   },
   {
-    id: 'END_DATE_REVERSE',
+    id: 'end_date_reverse',
     label: 'end date (latest first)',
     tabs: [TABS.initiatives.id],
     execute: (tasks) => createDateSorter('endDate')(tasks).reverse(),
   },
   {
-    id: 'TITLE',
+    id: 'title',
     label: 'title (A-Z)',
     execute: createStringSorter('title'),
   },
@@ -126,12 +126,12 @@ export const createSortOptions = (users) => [
     execute: (tasks) => createStringSorter('title')(tasks).reverse(),
   },
   {
-    id: 'ID',
+    id: 'id',
     label: 'ID (ascending)',
     execute: createIntegerSorter('id'),
   },
   {
-    id: 'ID_REVERSE',
+    id: 'id_reverse',
     label: 'ID (descending)',
     execute: (tasks) => createIntegerSorter('id')(tasks).reverse(),
   },

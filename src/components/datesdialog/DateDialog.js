@@ -6,13 +6,22 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
-import { useStyles } from '../../../styles/Styles';
+import { useStyles } from '../../styles/Styles';
 import DatePicker from './GbDateClearablePicker';
 import { DateErrors } from './DateErrors';
 
-import { formatDate, ukToUs, isValidDateString } from '../../../util/Dates';
+import { formatDate, ukToUs, isValidDateString } from '../../util/Dates';
 
-export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other }) => {
+export const DatesDialog = ({
+  open,
+  prompt,
+  firstDateLabel,
+  secondDateLabel,
+  handleClose,
+  initRange,
+  requireBothDates,
+  ...other
+}) => {
   const classes = useStyles()();
   const CONTROL = { START_DATE: 'startDateStr', END_DATE: 'endDateStr' };
   const startDateControl = createRef();
@@ -96,7 +105,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other
           <TextField
             {...makeDateFieldProps(CONTROL.START_DATE, {
               value: startDateStr,
-              label: `${fieldLabel} on or after..`,
+              label: firstDateLabel,
               autoFocus: true,
               onChange: (event) => {
                 setStartDateStr(event.target.value);
@@ -112,7 +121,7 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other
           <TextField
             {...makeDateFieldProps(CONTROL.END_DATE, {
               value: endDateStr,
-              label: `${fieldLabel} on or before..`,
+              label: secondDateLabel,
               onChange: (event) => {
                 setEndDateStr(event.target.value);
               },
@@ -155,14 +164,19 @@ export const DatesDialog = ({ open, fieldLabel, handleClose, initRange, ...other
       <DialogTitle id="date picker title">Filter By Dates</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Enter the date range to filter by. You can leave either field blank to ignore those
-          fields.
+          {prompt}
+          {!requireBothDates ? (
+            <>{`\u00A0`}You can leave either field blank to ignore those fields.</>
+          ) : (
+            <>{`\u00A0`}Please enter both a start and end date.</>
+          )}
         </DialogContentText>
         {dialogBody}
         <DateErrors
           startDateStr={startDateStr}
           endDateStr={endDateStr}
           onValidityChange={(allValid) => setValid(allValid)}
+          requireBothDates={requireBothDates}
         />
       </DialogContent>
       <DialogActions>

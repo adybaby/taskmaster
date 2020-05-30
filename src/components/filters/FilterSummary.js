@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import pluralize from 'pluralize';
 import { useStyles } from '../../styles/Styles';
-import { resetFilters } from '../../state/actions/FilterActions';
+import { resetAllFilterParams } from '../../state/actions/FilterParamActions';
 import { getFiltersForSummary } from '../../state/selectors/FilterSelector';
 import { getVisibleTasks } from '../../state/selectors/TaskListSelector';
 import { formatDateRange } from '../../util/Dates';
@@ -14,6 +14,8 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const classes = useStyles()();
   const currentTab = useSelector((state) => state.currentTab);
   const filtersForSummary = useSelector(getFiltersForSummary);
+  const filters = useSelector((state) => state.filters);
+  const filterParams = useSelector((state) => state.filterParams);
   const taskListTotal = useSelector(getVisibleTasks).length;
 
   const getFilterLabelAndValue = (filter, singleTask) => {
@@ -27,29 +29,32 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
     }
 
     let value = null;
+    const params = filterParams[filter.id];
     if (filter.isTextFilter) {
-      value = `"${filter.params[0]}"`;
+      value = `"${params[0]}"`;
     } else if (filter.isSelectFilter) {
-      const selected = filter.selectedOption;
+      const selected = filter.options.find((option) => option.id === params[0]);
       if (selected.datePicker) {
-        value = formatDateRange(filter.customRange);
+        value = formatDateRange({ startDate: params[1], endDate: params[2] });
       } else {
         value = selected.label;
       }
     } else if (filter.isCheckGroupFilter) {
-      const checked = filter.getChecked();
+      const checked = params.filter((param) => param.checked);
+      const getOptionLabel = (paramIndex) =>
+        filter.options.find((o) => o.id === checked[paramIndex].id).label;
       switch (checked.length) {
         case 0:
           value = 'None';
           break;
         case 1:
-          value = checked[0].label;
+          value = getOptionLabel(0);
           break;
         case 2:
-          value = `${checked[0].label} and ${checked[1].label}`;
+          value = `${getOptionLabel(0)} and ${getOptionLabel(1)}`;
           break;
         default:
-          value = `${checked[0].label}, ${checked[1].label} and ${checked.length - 2} more`;
+          value = `${getOptionLabel(0)}, ${getOptionLabel(1)} and ${checked.length - 2} more`;
           break;
       }
     }
@@ -86,7 +91,7 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const appendClearButton = (summaryString) => (
     <>
       {summaryString}{' '}
-      <Button className={classes.link} onClick={() => dispatch(resetFilters())}>
+      <Button className={classes.link} onClick={() => dispatch(resetAllFilterParams(filters))}>
         CLEAR
       </Button>
     </>

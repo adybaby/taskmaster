@@ -62,6 +62,10 @@ export const equals = (date1, date2) => {
   return dateOnly(date1).getTime() === dateOnly(date2).getTime();
 };
 
+export const sameRange = (range1, range2) => {
+  return equals(range1.startDate, range2.startDate) && equals(range1.endDate, range2.endDate);
+};
+
 export const before = (date1, date2) => {
   if (!isValidDate(date1) || !isValidDate(date2)) return null;
   return dateOnly(date1).getTime() < dateOnly(date2).getTime();
@@ -142,6 +146,10 @@ export const formatDate = (date) => {
   const year = date.getFullYear();
 
   return isNaN(date.getTime()) ? date : `${inDay} ${monthNames[monthIndex]} ${year}`;
+};
+
+export const formatUrlDate = (date) => {
+  return `${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}`;
 };
 
 export const formatDateRange = ({ startDate, endDate }) => {

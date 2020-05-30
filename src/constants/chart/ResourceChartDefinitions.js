@@ -1,26 +1,26 @@
 import pluralize from 'pluralize';
 
 export const CHART_TYPES = {
-  BAR_GANTT: { id: 'BAR_GANTT', label: 'Resources (Gantt)', startOpen: true },
-  BAR_STACKED: { id: 'BAR_STACKED', label: 'Resources (Stacked)', startOpen: true },
+  BAR_GANTT: { id: 'bar_gantt', label: 'Resources (Gantt)', startOpen: true },
+  BAR_STACKED: { id: 'bar_stacked', label: 'Resources (Stacked)', startOpen: true },
 };
 
 const chartDescriptions = [
   {
-    id: 'VACANCIES',
+    id: 'vacancies',
     title: 'Vacancies',
     info: 'Initiatives which have open vacancies on the given dates.',
     seriesKey: 'vacancies',
     noun: 'vacancy',
   },
   {
-    id: 'AVAILABILITY',
+    id: 'availability',
     title: 'Stated Availability',
     info: 'Initiatives which have open vacancies on the given dates.',
     seriesKey: 'availability',
   },
   {
-    id: 'ACTUAL_AVAILABILITY',
+    id: 'actual_availability',
     title: 'Actual Availability',
     info:
       'The dates that users with particular skills have said they are' +
@@ -28,14 +28,14 @@ const chartDescriptions = [
     seriesKey: 'actualAvailability',
   },
   {
-    id: 'SIGNED_UP',
+    id: 'signed_up',
     title: 'Signed Up',
     info: 'The number of skills that are signed up to vacancies on a given date.',
     seriesKey: 'signedUp',
     adjective: 'signed up',
   },
   {
-    id: 'SHORTFALL',
+    id: 'shortfall',
     title: 'Shortfall',
     info:
       'Open vacancies on a given date minus the number of users which have said they are available',
@@ -43,7 +43,7 @@ const chartDescriptions = [
     adjective: 'needed',
   },
   {
-    id: 'EXCESS',
+    id: 'excess',
     title: 'Excess',
     info: 'The numbers of skills available which are not currently required.',
     seriesKey: 'excess',
@@ -78,9 +78,10 @@ export const RESOURCE_CHART_DEFINITIONS = Object.values(CHART_TYPES).map(
   })
 );
 
-export const getResourceChartDefinition = (chartId) =>
-  RESOURCE_CHART_DEFINITIONS.map((group) => group.charts)
+export const getResourceChartDefinition = (chartId) => {
+  return RESOURCE_CHART_DEFINITIONS.map((group) => group.charts)
     .flat()
     .find((ch) => ch.id === chartId);
+};
 
 export const DEFAULT_CHART = RESOURCE_CHART_DEFINITIONS[0].charts[0];

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -7,54 +7,21 @@ import enGB from 'date-fns/locale/en-GB';
 import { StyledApp } from './styles/Styles';
 import { URLS, DB_STATUS } from './constants/Constants';
 import { initialise } from './state/actions/DataAndFilterLoaderActions';
-import { getStateConfiguration } from './state/selectors/StateConfigurationSelector';
 import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
 import { Task } from './components/tasks/Task';
 import { ProfilesPanel } from './components/profile/ProfilesPanel';
-import { isValidDateString } from './util/Dates';
-import { writeToHistory } from './HistoryWriter';
+import HistoryWriter from './HistoryWriter';
 
 export const App = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const dbStatus = useSelector((state) => state.dbStatus);
-  const stateConfiguration = useSelector(getStateConfiguration);
-  const decodedPathname = decodeURIComponent(location.pathname);
-
-  const getCurrentJsonConfig = () => {
-    const startIndex = decodedPathname.indexOf('{');
-    if (startIndex !== -1) {
-      const lastIndex = decodedPathname.lastIndexOf('}');
-      if (lastIndex !== -1) {
-        const jsonConfig = decodedPathname.slice(startIndex, lastIndex + 1);
-        if (jsonConfig.length > 2) {
-          return jsonConfig;
-        }
-      }
-    }
-    return null;
-  };
-
-  const currentJsonConfig = getCurrentJsonConfig();
 
   useEffect(() => {
     if (dbStatus === DB_STATUS.NOT_INITIALISED) {
-      const config =
-        currentJsonConfig !== null
-          ? JSON.parse(currentJsonConfig, (key, value) =>
-              isValidDateString(value) ? new Date(value) : value
-            )
-          : null;
-      dispatch(initialise(config));
+      dispatch(initialise());
     }
-  }, [dispatch, dbStatus, currentJsonConfig, location]);
-
-  useEffect(() => {
-    if (dbStatus === DB_STATUS.INITIALISED && decodedPathname.includes(URLS.BROWSE)) {
-      writeToHistory(currentJsonConfig, stateConfiguration);
-    }
-  }, [dispatch, dbStatus, currentJsonConfig, decodedPathname, stateConfiguration]);
+  }, [dispatch, dbStatus]);
 
   switch (dbStatus) {
     case DB_STATUS.NOT_INITIALISED:
@@ -72,6 +39,7 @@ export const App = () => {
       return (
         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={enGB}>
           <StyledApp>
+            <HistoryWriter />
             <AppBar />
             <Switch>
               <Route exact path="/">

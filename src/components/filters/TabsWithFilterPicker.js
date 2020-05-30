@@ -6,10 +6,7 @@ import { Drawer, List, Button, Hidden, Tabs, Tooltip } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
 import { ICONS } from '../../constants/Constants';
 import { setFilterBarVisible } from '../../state/actions/FilterBarVisibleActions';
-import {
-  getFilterBarFilters,
-  getActiveFilterBarFilters,
-} from '../../state/selectors/FilterSelector';
+import { getFiltersForFilterBar } from '../../state/selectors/FilterSelector';
 import { DropDownFilter } from './DropDownFilter';
 import { SelectFilter } from './SelectFilter';
 import { CheckGroupFilter } from './CheckGroupFilter';
@@ -19,14 +16,23 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const classes = useStyles()();
   const filterBarVisible = useSelector((state) => state.filterBarVisible);
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
-  const isAFilterActive =
-    useSelector(getActiveFilterBarFilters).filter((filter) => !filter.isSortFilter()).length > 0;
-  const filterBarFilters = useSelector(getFilterBarFilters);
+  const filterBarFilters = useSelector(getFiltersForFilterBar);
+  const filterParams = useSelector((state) => state.filterParams);
   const currentTab = useSelector((state) => state.currentTab);
+
+  const isAFilterActive = () => {
+    for (let index = 0; index < filterBarFilters.length; index++) {
+      const filter = filterBarFilters[index];
+      if (!filter.isDefaultParams(filterParams[filter.id])) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   const makeSelectControls = () =>
     filterBarFilters.map((filter, index) => (
-      <DropDownFilter key={index} filter={filter}>
+      <DropDownFilter key={index} filter={filter} params={filterParams[filter.id]}>
         {filter.isSelectFilter ? (
           <SelectFilter />
         ) : filter.isCheckGroupFilter ? (
@@ -48,9 +54,9 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
         disableFocusRipple={true}
       >
         <div className={classes.tabLabel}>
-          <span style={isAFilterActive ? { color: 'red' } : undefined}>
+          <span style={isAFilterActive() ? { color: 'red' } : undefined}>
             {ICONS.FILTER}
-            {`\u00A0`}Filters{isAFilterActive ? `\u00A0ON` : ``}
+            {`\u00A0`}Filters{isAFilterActive() ? `\u00A0ON` : ``}
           </span>
         </div>
       </ToggleButton>
@@ -67,7 +73,7 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
         disableFocusRipple={true}
       >
         <div className={classes.tabLabel}>
-          <span style={isAFilterActive ? { color: 'red' } : undefined}>{ICONS.FILTER}</span>
+          <span style={isAFilterActive() ? { color: 'red' } : undefined}>{ICONS.FILTER}</span>
         </div>
       </Button>
     </Tooltip>

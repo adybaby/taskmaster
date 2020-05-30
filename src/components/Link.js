@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
 import { URLS, FILTER_IDS, TABS, ICONS } from '../constants/Constants';
 import { formatDate } from '../util/Dates';
-import { resetFilters, setFilterParams } from '../state/actions/FilterActions';
+import { resetAllFilterParams, setFilterParams } from '../state/actions/FilterParamActions';
 import { setFilterBarVisible } from '../state/actions/FilterBarVisibleActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
@@ -14,10 +14,11 @@ import { setCurrentTab } from '../state/actions/CurrentTabActions';
 const TaskFilterParamLink = ({ filterId, param, label, ...typographyProps }) => {
   const classes = useStyles()();
   const dispatch = useDispatch();
-  const filter = useSelector((state) => state.filters).find((f) => f.id === filterId);
+  const filters = useSelector((state) => state.filters);
+  const filter = filters[filterId];
 
   const handleClick = () => {
-    dispatch(resetFilters());
+    dispatch(resetAllFilterParams(filters));
     dispatch(setFilterParams(filterId, [param]));
     if (filter.isOnFilterBar) {
       dispatch(setFilterBarVisible(true));

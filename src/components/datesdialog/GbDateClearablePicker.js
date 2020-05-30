@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { DatePicker as MuiDatePicker } from '@material-ui/pickers';
 import { IconButton } from '@material-ui/core';
 import format from 'date-fns/format';
-import { useStyles } from '../../../styles/Styles';
-import { equals, before, after, ukToUs, isValidDateString } from '../../../util/Dates';
+import { useStyles } from '../../styles/Styles';
+import { equals, before, after, ukToUs, isValidDateString } from '../../util/Dates';
 
 const GbClearableDatePicker = (props) => {
   const classes = useStyles()();

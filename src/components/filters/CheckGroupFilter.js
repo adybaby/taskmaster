@@ -4,22 +4,23 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Checkbox, ListItemIcon, Divider, Collapse } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
-import { setFilterParams, resetFilter } from '../../state/actions/FilterActions';
+import { setFilterParams, resetFilterParams } from '../../state/actions/FilterParamActions';
 
-export const CheckGroupFilter = ({ filter, closeMenu }) => {
+export const CheckGroupFilter = ({ filter, params, closeMenu }) => {
   const dispatch = useDispatch();
   const classes = useStyles()();
   const [maxReached, setMaxReached] = useState(false);
+  const numberChecked = params.filter((p) => p.checked).length;
 
   const handleListItemClick = (param) => {
-    if (!param.checked && filter.getChecked().length === filter.maxChecked) {
+    if (!param.checked && numberChecked === filter.maxChecked) {
       setMaxReached(true);
     } else {
       setMaxReached(false);
       dispatch(
         setFilterParams(
           filter.id,
-          filter.params.map((stateParam) =>
+          params.map((stateParam) =>
             stateParam.id === param.id ? { ...stateParam, checked: !param.checked } : stateParam
           )
         )
@@ -28,14 +29,14 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
   };
 
   const handleSelectDefaultClick = () => {
-    dispatch(resetFilter(filter));
+    dispatch(resetFilterParams(filter));
   };
 
   const handleSelectNoneClick = () => {
     dispatch(
       setFilterParams(
         filter.id,
-        filter.params.map((param) => ({ ...param, checked: false }))
+        params.map((param) => ({ ...param, checked: false }))
       )
     );
   };
@@ -67,7 +68,7 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
 
   return [
     getGroupControls(),
-    ...filter.params.map((param, index) => (
+    ...params.map((param, index) => (
       <ListItem key={index} dense button color="primary" onClick={() => handleListItemClick(param)}>
         <ListItemIcon>
           <Checkbox
@@ -78,7 +79,10 @@ export const CheckGroupFilter = ({ filter, closeMenu }) => {
             disableRipple
           />
         </ListItemIcon>
-        <ListItemText id={param.id} primary={capitalize(param.label)} />
+        <ListItemText
+          id={param.id}
+          primary={capitalize(filter.options.find((option) => option.id === param.id).label)}
+        />
       </ListItem>
     )),
   ];

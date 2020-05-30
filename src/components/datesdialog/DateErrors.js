@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Typography } from '@material-ui/core';
-import { useStyles, typographyVariant } from '../../../styles/Styles';
-import { isValidDateString, ukToUs, beforeOrE } from '../../../util/Dates';
+import { useStyles, typographyVariant } from '../../styles/Styles';
+import { isValidDateString, ukToUs, beforeOrE } from '../../util/Dates';
 
-export const DateErrors = ({ startDateStr, endDateStr, onValidityChange }) => {
+export const DateErrors = ({ startDateStr, endDateStr, onValidityChange, requireBothDates }) => {
   const classes = useStyles()();
   const variant = typographyVariant.datesDialog;
 
@@ -25,9 +25,18 @@ export const DateErrors = ({ startDateStr, endDateStr, onValidityChange }) => {
     [startDateStr, endDateStr]
   );
 
+  const bothValid = React.useCallback(
+    () => isValidDateString(ukToUs(startDateStr)) && isValidDateString(ukToUs(endDateStr)),
+    [startDateStr, endDateStr]
+  );
+
   const allValid = React.useCallback(
-    () => fieldValid(startDateStr) && fieldValid(endDateStr) && orderValid() && eitherValid(),
-    [startDateStr, endDateStr, fieldValid, orderValid, eitherValid]
+    () =>
+      fieldValid(startDateStr) &&
+      fieldValid(endDateStr) &&
+      orderValid() &&
+      ((!requireBothDates && eitherValid()) || bothValid()),
+    [startDateStr, endDateStr, fieldValid, orderValid, eitherValid, bothValid, requireBothDates]
   );
 
   useEffect(() => {
@@ -39,6 +48,13 @@ export const DateErrors = ({ startDateStr, endDateStr, onValidityChange }) => {
       {!fieldValid(startDateStr) ? (
         <div className={classes.datesDialogErrorMsg}>
           <Typography variant={variant.error}>The first date is not a valid date.</Typography>
+        </div>
+      ) : null}
+      {!bothValid() && requireBothDates ? (
+        <div className={classes.datesDialogErrorMsg}>
+          <Typography variant={variant.error}>
+            You must enter both a start and an end date .
+          </Typography>
         </div>
       ) : null}
       {!fieldValid(endDateStr) ? (

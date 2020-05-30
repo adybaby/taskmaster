@@ -3,21 +3,12 @@ import { Filter } from './Filter';
 export class TextFilter extends Filter {
   isTextFilter = true;
 
-  constructor(filterProps) {
-    super({ params: [''], ...filterProps });
+  constructor(filterParams) {
+    super(filterParams);
+    this.defaultParams = [''];
   }
 
-  get new() {
-    return new TextFilter({
-      ...this.getDefaultSuperProps(),
-    });
-  }
-
-  isActive = (currentTab) => {
-    return this.appliesToTab(currentTab) && this.params[0] !== '';
-  };
-
-  execute = (tasks, currentTabId) => {
+  execute = (tasks, params) => {
     const doesObjectIncludeStr = (str) => {
       const escapeRegExp = () => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
 
@@ -38,9 +29,10 @@ export class TextFilter extends Filter {
       };
     };
 
-    if (!this.isActive(currentTabId)) {
-      return tasks;
-    }
-    return tasks.filter(doesObjectIncludeStr(this.params[0]));
+    return tasks.filter(doesObjectIncludeStr(params[0]));
+  };
+
+  isDefaultParams = (params) => {
+    return params[0] === '';
   };
 }

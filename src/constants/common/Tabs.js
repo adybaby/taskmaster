@@ -2,41 +2,41 @@ import { ICONS } from './Icons';
 
 export const TABS = {
   all: {
-    id: 'ALL_TAB',
+    id: 'all',
     label: 'All',
     filterSummaryLabel: 'item',
     taskType: 'ALL',
     icon: ICONS.ALL_TAB,
   },
   drivers: {
-    id: 'DRIVERS_TAB',
+    id: 'drivers',
     label: 'Drivers',
     filterSummaryLabel: 'driver',
     taskType: 'DRIVER',
     icon: ICONS.DRIVER,
   },
   enablers: {
-    id: 'ENABLERS_TAB',
+    id: 'enablers',
     label: 'Enablers',
     filterSummaryLabel: 'enabler',
     taskType: 'ENABLER',
     icon: ICONS.ENABLER,
   },
   initiatives: {
-    id: 'INITIATIVES_TAB',
+    id: 'initiatives',
     label: 'Initiatives',
     filterSummaryLabel: 'initiative',
     taskType: 'INITIATIVE',
     icon: ICONS.INITIATIVE,
   },
   map: {
-    id: 'MAP_TAB',
+    id: 'map',
     label: 'Map',
     taskType: null,
     icon: ICONS.MAP,
   },
   charts: {
-    id: 'CHARTS_TAB',
+    id: 'charts',
     label: 'Charts',
     taskType: null,
     icon: ICONS.CHARTS,

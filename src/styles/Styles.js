@@ -19,11 +19,13 @@ const linkHoverColor = '#66bfed';
 const errorColor = 'red';
 const highlightColor = '#6e9fc4';
 const aagBgColor = '#f2faff';
+const interestVacancyInfoBgColor = '#f2faff';
 const inspectorDaySummaryBgColor = '#b6d0e2';
 const datePickerBgColor = '#f2f2f2';
 const strongButtonTextColor = '#696969';
 const strongBorderColor = '#a9a9a9';
 const vacancyHeaderColor = '#b6d0e2';
+const interestDialogHeaderColor = '#b6d0e2';
 const vacancyOpenColor = 'green';
 const vacancyClosedColor = '#a6a6a6';
 const vacancySignUpColor = mainColor;
@@ -359,6 +361,7 @@ export const useStyles = () =>
     taskContent: { padding: theme.spacing(3) },
     taskSectionHeading: { paddingBottom: theme.spacing(1) },
     taskSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+
     // vacancies section
     vacancySection: {
       display: 'flex',
@@ -458,6 +461,44 @@ export const useStyles = () =>
         backgroundColor: vacancySignUpColor,
       },
     },
+
+    // interest section
+    interestDialogHeader: {
+      padding: theme.spacing(2),
+      backgroundColor: interestDialogHeaderColor,
+    },
+    interestDialogContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    interestVacancyHeader: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingTop: theme.spacing(2),
+    },
+    interestVacancyInfoContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      backgroundColor: interestVacancyInfoBgColor,
+    },
+    interestVacancyInfoTable: {
+      display: 'grid',
+      gridTemplateColumns: '30% 70%',
+      padding: theme.spacing(2),
+    },
+    interestControlsContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      padding: theme.spacing(2),
+    },
+    interestSignUpOptionRadio: {},
+    interestNestedRadioGroup: { paddingLeft: theme.spacing(3), paddingBottom: theme.spacing(2) },
+    interestComments: {
+      marginTop: theme.spacing(3),
+      paddingBottom: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+    interestButton: {},
 
     // Map
     mapContent: { display: 'flex', padding: theme.spacing(2), flexDirection: 'column' },

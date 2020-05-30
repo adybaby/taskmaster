@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Divider } from '@material-ui/core';
-import { DatesDialog } from './datesdialog/DateDialog';
-import { setFilterParams } from '../../state/actions/FilterActions';
+import { DatesDialog } from '../datesdialog/DateDialog';
+import { setFilterParams } from '../../state/actions/FilterParamActions';
 
-export const SelectFilter = ({ filter, closeMenu }) => {
+export const SelectFilter = ({ filter, params, closeMenu }) => {
   const dispatch = useDispatch();
   const [openDates, setOpenDates] = useState(false);
   const [datePickerOption, setDatePickerOption] = useState(null);
@@ -16,8 +16,8 @@ export const SelectFilter = ({ filter, closeMenu }) => {
     setDatePickerOption(filter.options.find((option) => option.datePicker === true));
   }, [filter]);
 
-  const handleFilterUpdate = (selectedOption, params) => {
-    dispatch(setFilterParams(filter.id, [selectedOption.id, ...params]));
+  const handleFilterUpdate = (selectedOption, customRange) => {
+    dispatch(setFilterParams(filter.id, [selectedOption.id, ...customRange]));
   };
 
   const handleListItemClick = (selectedOption) => {
@@ -47,7 +47,7 @@ export const SelectFilter = ({ filter, closeMenu }) => {
       {option.datePicker ? <Divider /> : null}
       <ListItem
         button
-        selected={filter.isSelected(option)}
+        selected={option.id === params[0]}
         onClick={() => handleListItemClick(option)}
         disabled={!validForTab(option)}
         dense
@@ -58,9 +58,13 @@ export const SelectFilter = ({ filter, closeMenu }) => {
         <>
           <DatesDialog
             open={openDates}
-            fieldLabel={filter.labels.filter}
+            prompt="Enter a date range to filter by."
+            firstDateLabel={`${filter.labels.filter} on or after`}
+            secondDateLabel={`${filter.labels.filter} on or before`}
             handleClose={handleCloseDatesDialog}
-            initRange={filter.customRange}
+            initRange={
+              params.length === 3 ? { startDate: params[1], endDate: params[2] } : undefined
+            }
           />
         </>
       ) : null}

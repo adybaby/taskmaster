@@ -7,6 +7,7 @@ import { interestReducer } from './InterestReducer';
 import { contributionLinksReducer } from './ContributionLinksReducer';
 import { dateRangeReducer } from './DateRangeReducer';
 import { filterReducer } from './FilterReducer';
+import { filterParamsReducer } from './FilterParamsReducer';
 import { selectedChartReducer } from './SelectedChartReducer';
 import { dbReducer } from './DbReducer';
 import { currentTabReducer } from './CurrentTabReducer';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   dateRange: dateRangeReducer,
   currentUser: currentUserReducer,
   filters: filterReducer,
+  filterParams: filterParamsReducer,
   currentTab: currentTabReducer,
   selectedChart: selectedChartReducer,
   filterBarVisible: filterBarVisibleReducer,

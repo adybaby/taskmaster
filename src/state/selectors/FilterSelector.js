@@ -1,31 +1,30 @@
 import { createSelector } from 'reselect';
-import { FILTER_IDS } from '../../constants/Constants';
 
 const getFilters = (state) => state.filters;
 const getCurrentTab = (state) => state.currentTab;
+const getFilterParams = (state) => state.filterParams;
 
-export const getFilterBarFilters = createSelector(
+export const getUserSelectedFilters = createSelector(
+  [getCurrentTab, getFilters, getFilterParams],
+  (currentTab, filters, filterParams) =>
+    Object.values(filters).filter(
+      (filter) =>
+        filter.appliesToTab(currentTab.id) && !filter.isDefaultParams(filterParams[filter.id])
+    )
+);
+
+export const getUserSelectedTaskFilters = createSelector([getUserSelectedFilters], (filters) =>
+  filters.filter((filter) => filter.isTaskFilter)
+);
+
+export const getFiltersForFilterBar = createSelector(
   [getCurrentTab, getFilters],
   (currentTab, filters) =>
-    filters.filter((filter) => filter.isOnFilterBar && filter.appliesToTab(currentTab))
+    Object.values(filters).filter(
+      (filter) => filter.appliesToTab(currentTab.id) && filter.isOnFilterBar
+    )
 );
 
-export const getActiveFilterBarFilters = createSelector(
-  [getCurrentTab, getFilterBarFilters],
-  (currentTab, filterBarFilters) => filterBarFilters.filter((filter) => filter.isActive(currentTab))
-);
-
-export const getAllActiveFilters = createSelector(
-  [getCurrentTab, getFilters],
-  (currentTab, filters) => filters.filter((filter) => filter.isActive(currentTab))
-);
-
-export const getFiltersForSummary = createSelector([getAllActiveFilters], (filters) =>
+export const getFiltersForSummary = createSelector([getUserSelectedTaskFilters], (filters) =>
   filters.filter((filter) => !filter.isSortFilter())
 );
-
-export const getSearchFilter = createSelector([getFilters], (filters) =>
-  filters.find((filter) => filter.id === FILTER_IDS.SEARCH_FIELD)
-);
-
-export const getSearchText = createSelector([getSearchFilter], (filter) => filter.params[0]);

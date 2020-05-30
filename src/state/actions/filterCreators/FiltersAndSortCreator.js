@@ -9,8 +9,8 @@ import { CheckGroupFilter } from './CheckGroupFilter';
 
 const taskTabs = [TABS.all.id, TABS.drivers.id, TABS.enablers.id, TABS.initiatives.id];
 
-export const createFilters = (users, currentUser, vacancies, skills) => [
-  new SelectFilter({
+export const createFilters = (users, currentUser, vacancies, skills) => ({
+  [FILTER_IDS.CREATED_DATE]: new SelectFilter({
     id: FILTER_IDS.CREATED_DATE,
     labels: {
       filter: 'Created',
@@ -23,7 +23,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     forPastTasks: true,
     options: createDateFilterOptions('createdDate', false),
   }),
-  new SelectFilter({
+  [FILTER_IDS.CREATED_BY]: new SelectFilter({
     id: FILTER_IDS.CREATED_BY,
     labels: {
       filter: 'Created by',
@@ -36,7 +36,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     forPastTasks: true,
     options: createCreatedByFilterOptions(users, currentUser),
   }),
-  new SelectFilter({
+  [FILTER_IDS.RUNNING]: new SelectFilter({
     id: FILTER_IDS.RUNNING,
     labels: {
       filter: 'Running',
@@ -50,7 +50,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: true,
     options: createDateFilterOptions(null, true),
   }),
-  new SelectFilter({
+  [FILTER_IDS.START_DATE]: new SelectFilter({
     id: FILTER_IDS.START_DATE,
     labels: {
       filter: 'Starting',
@@ -64,7 +64,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: true,
     options: createDateFilterOptions('startDate', true),
   }),
-  new SelectFilter({
+  [FILTER_IDS.END_DATE]: new SelectFilter({
     id: FILTER_IDS.END_DATE,
     labels: {
       filter: 'Ending',
@@ -78,7 +78,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: true,
     options: createDateFilterOptions('endDate', true),
   }),
-  new SelectFilter({
+  [FILTER_IDS.VACANCIES]: new SelectFilter({
     id: FILTER_IDS.VACANCIES,
     labels: {
       filter: 'Requires',
@@ -92,7 +92,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     pluralizeOptionLabels: true,
     options: createVacancyFilterOptions(currentUser, vacancies, skills),
   }),
-  new TextFilter({
+  [FILTER_IDS.SEARCH_FIELD]: new TextFilter({
     id: FILTER_IDS.SEARCH_FIELD,
     labels: {
       filter: 'Search..',
@@ -104,7 +104,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: true,
     forPastTasks: false,
   }),
-  new SelectFilter({
+  [FILTER_IDS.SORT]: new SelectFilter({
     id: FILTER_IDS.SORT,
     labels: { filter: 'Sorted by' },
     tabs: taskTabs,
@@ -112,7 +112,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: true,
     options: createSortOptions(users),
   }),
-  new SelectFilter({
+  [FILTER_IDS.CHART_RANGE]: new SelectFilter({
     id: FILTER_IDS.CHART_RANGE,
     labels: { filter: 'Date range:' },
     tabs: [TABS.charts.id],
@@ -120,7 +120,7 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: false,
     options: createDateFilterOptions('startDate', true),
   }),
-  new CheckGroupFilter({
+  [FILTER_IDS.SKILLS_RANGE]: new CheckGroupFilter({
     id: FILTER_IDS.SKILLS_RANGE,
     labels: { filter: 'Skill Groups:' },
     tabs: [TABS.charts.id],
@@ -128,4 +128,4 @@ export const createFilters = (users, currentUser, vacancies, skills) => [
     isTaskFilter: false,
     options: skills.map((skill) => ({ id: skill.id, label: skill.title })),
   }),
-];
+});

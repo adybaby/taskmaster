@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
-import React, { createElement } from 'react';
+import React, { createElement, Fragment } from 'react';
 import '../../../node_modules/react-vis/dist/style.css';
 import { Typography, Divider } from '@material-ui/core';
-import { formatDate } from '../../util/Dates';
+import { formatDate, sameRange } from '../../util/Dates';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { UserLink, TaskLink, SkillLink } from '../Link';
+import { UserLink, TaskLink } from '../Link';
 
 const variant = typographyVariant.inspector;
 
@@ -23,21 +23,10 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
     </Typography>
   );
 
-  const UserInSkillGroupForTaskLine = ({
-    userId,
-    userName,
-    skillId,
-    taskId,
-    taskTitle,
-    ...dates
-  }) => (
+  const AvailabilityLine = ({ userId, userName, skillId, taskId, taskTitle, ...dates }) => (
     <div className={classes.inspectorLine}>
       <div>
         <UserLink userId={userId} userName={userName} variant={variant.body} />
-        <Typography style={{ display: 'inline-block' }} variant={variant.body}>
-          {'\u00A0'}in group{'\u00A0'}
-        </Typography>
-        <SkillLink skillId={skillId} skillTitle={skillTitle} variant={variant.body} />
         {typeof taskId !== 'undefined' ? (
           <>
             <Typography style={{ display: 'inline-block' }} variant={variant.body}>
@@ -53,17 +42,18 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
     </div>
   );
 
-  const RoleRequiredForTaskLine = ({ skillId, taskId, taskTitle, ...dates }) => (
+  const VacanciesLine = ({ taskId, taskTitle, dates }) => (
     <div className={classes.inspectorLine}>
       <div>
-        <SkillLink skillId={skillId} skillTitle={skillTitle} variant={variant.body} />
-        <Typography style={{ display: 'inline-block' }} variant={variant.body}>
-          {'\u00A0'}required for{'\u00A0'}
-        </Typography>
         <TaskLink taskId={taskId} taskTitle={taskTitle} variant={variant.body} />
       </div>
       <div>
-        <DateLine {...dates} />
+        {dates.map((dateRange, index) => (
+          <Fragment key={index}>
+            <DateLine key={index} {...dateRange} />
+            {dateRange.count > 1 ? ` (${dateRange.count})` : ''}
+          </Fragment>
+        ))}
       </div>
     </div>
   );
@@ -94,6 +84,30 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
     </>
   );
 
+  const groupVacancies = (vacanciesData) => {
+    const grouped = {};
+    vacanciesData.forEach((data) => {
+      const currentRange = { startDate: data.startDate, endDate: data.endDate };
+      if (typeof grouped[data.taskId] === 'undefined') {
+        grouped[data.taskId] = {
+          taskId: data.taskId,
+          taskTitle: data.taskTitle,
+          dates: [{ ...currentRange, count: 1 }],
+        };
+      } else {
+        const matchingDate = grouped[data.taskId].dates.find((existingRange) =>
+          sameRange(existingRange, currentRange)
+        );
+        if (typeof matchingDate !== 'undefined') {
+          matchingDate.count += 1;
+        } else {
+          grouped[data.taskId].dates.push(currentRange);
+        }
+      }
+    });
+    return Object.values(grouped);
+  };
+
   return (
     <div className={classes.inspectorLayoutContainer}>
       <div className={`${classes.inspectorDaySummary} ${classes.inspectorInteriorSection}`}>
@@ -103,17 +117,17 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
       </div>
       <InspectorSection
         title="Stated Availability (before Sign-Ups)"
-        lineElement={UserInSkillGroupForTaskLine}
+        lineElement={AvailabilityLine}
         data={inspectorData.availability}
       />
       <InspectorSection
         title="Vacancies"
-        lineElement={RoleRequiredForTaskLine}
-        data={inspectorData.vacancies}
+        lineElement={VacanciesLine}
+        data={groupVacancies(inspectorData.vacancies)}
       />
       <InspectorSection
         title="Sign Ups"
-        lineElement={UserInSkillGroupForTaskLine}
+        lineElement={AvailabilityLine}
         data={inspectorData.signedUp}
       />
     </div>

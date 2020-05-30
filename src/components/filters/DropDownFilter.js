@@ -1,18 +1,16 @@
 import React, { useState, cloneElement } from 'react';
-import { useSelector } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { ICONS } from '../../constants/Constants';
 import { FilterSummary } from './FilterSummary';
 
-export const DropDownFilter = ({ filter, ...props }) => {
+export const DropDownFilter = ({ filter, params, ...props }) => {
   const classes = useStyles()();
   const variant = typographyVariant.filters;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const popOverId = open ? 'select-popover' : undefined;
-  const currentTab = useSelector((state) => state.currentTab);
 
   const openMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,7 +20,7 @@ export const DropDownFilter = ({ filter, ...props }) => {
     setAnchorEl(null);
   };
 
-  const filterOn = String(filter.isActive(currentTab) && !filter.isSortFilter());
+  const filterOn = String(!filter.isDefaultParams(params) && !filter.isSortFilter());
 
   return (
     <div>
@@ -54,7 +52,7 @@ export const DropDownFilter = ({ filter, ...props }) => {
           horizontal: 'center',
         }}
       >
-        <div>{cloneElement(props.children, { filter, closeMenu })}</div>
+        <div>{cloneElement(props.children, { filter, params, closeMenu })}</div>
       </Popover>
     </div>
   );

@@ -5,53 +5,32 @@ export class CheckGroupFilter extends Filter {
 
   options;
 
-  params;
-
   maxChecked;
-
-  defaultCheckedOptions;
 
   constructor({ options, ...filterProps }) {
     const maxChecked = 20;
 
-    const makeCheckList = () =>
-      options
-        .map((option, index) =>
-          index < maxChecked
-            ? { id: option.id, label: option.label, checked: true }
-            : { id: option.id, label: option.label, checked: false }
-        )
-        .sort();
-
-    super({ params: makeCheckList(), ...filterProps });
+    super(filterProps);
     if (typeof options === 'undefined' || options === null || options.length === 0) {
       throw new Error('Cannot construct a check group filter without options');
     }
 
     this.maxChecked = maxChecked;
     this.options = options;
-    this.defaultCheckedOptions = makeCheckList();
+    this.defaultParams = options
+      .map((option, index) =>
+        index < maxChecked ? { id: option.id, checked: true } : { id: option.id, checked: false }
+      )
+      .sort();
   }
 
-  get new() {
-    return new CheckGroupFilter({
-      ...this.getDefaultSuperProps(),
-      options: this.options,
-    });
-  }
-
-  getChecked = () => this.params.filter((param) => param.checked);
-
-  isActive = (currentTab) => {
-    if (!this.appliesToTab(currentTab)) {
-      return false;
+  isDefaultParams = (params) => {
+    for (let index = 0; index < params.length; index++) {
+      const param = params[index];
+      if (this.defaultParams.find((dp) => dp.id === param.id).checked !== param.checked) {
+        return false;
+      }
     }
-    let active = false;
-    let i = 0;
-    while (i < this.params.length && !active) {
-      active = this.params[i].checked !== this.defaultCheckedOptions[i].checked;
-      i++;
-    }
-    return active;
+    return true;
   };
 }

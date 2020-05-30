@@ -4,11 +4,11 @@ const createExecute = (userId) => (tasks) => tasks.filter((task) => task.created
 
 export const createCreatedByFilterOptions = (users, currentUser) => [
   {
-    id: 'ANY_AUTHOR',
+    id: 'any',
     label: 'any author',
   },
   {
-    id: 'ME',
+    id: 'me',
     label: 'Me',
     execute: createExecute(currentUser.id),
   },

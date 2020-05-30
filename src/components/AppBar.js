@@ -6,24 +6,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { Tooltip } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
-import { ICONS, TABS } from '../constants/Constants';
-import { setFilterParams, resetFilters } from '../state/actions/FilterActions';
+import { ICONS, TABS, FILTER_IDS } from '../constants/Constants';
+import { setFilterParams, resetAllFilterParams } from '../state/actions/FilterParamActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
-import { getSearchFilter, getSearchText } from '../state/selectors/FilterSelector';
 
 export const AppBar = () => {
   const classes = useStyles()();
   const dispatch = useDispatch();
   const history = useHistory();
-  const searchFilter = useSelector(getSearchFilter);
+  const filters = useSelector((state) => state.filters);
+  const searchFilterParams = useSelector((state) => state.filterParams)[FILTER_IDS.SEARCH_FIELD];
   const [searchText, setSearchText] = useState('');
-  const stateSearchText = useSelector(getSearchText);
   const currentTab = useSelector((state) => state.currentTab);
   const userName = useSelector((state) => state.currentUser).firstNames[0];
 
   useEffect(() => {
-    setSearchText(stateSearchText);
-  }, [stateSearchText]);
+    setSearchText(searchFilterParams[0]);
+  }, [searchFilterParams]);
 
   const handleNewClick = () => {
     // eslint-disable-next-line no-alert
@@ -36,7 +35,7 @@ export const AppBar = () => {
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    dispatch(setFilterParams(searchFilter.id, [event.target.value]));
+    dispatch(setFilterParams(FILTER_IDS.SEARCH_FIELD, [event.target.value]));
     if (currentTab.taskType === null) {
       dispatch(setCurrentTab(TABS.all));
       history.push('/');
@@ -45,7 +44,7 @@ export const AppBar = () => {
 
   const handleHomeClick = () => {
     dispatch(setCurrentTab(TABS.all));
-    dispatch(resetFilters());
+    dispatch(resetAllFilterParams(filters));
   };
 
   return (
