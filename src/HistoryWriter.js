@@ -32,11 +32,37 @@ export const ChartParam = {
   },
 };
 
-const checkForDates = (params) => {
+const encodeParamsForFilter = (params) => {
+  if (typeof params === 'undefined') {
+    return undefined;
+  }
+  if (params.length > 0 && typeof params[0].id !== 'undefined') {
+    return params.map((param) => [param.id, param.checked].join('_'));
+  }
   if (params.length !== 3) {
     return params;
   }
   return [params[0], formatUrlDate(params[1]), formatUrlDate(params[2])];
+};
+
+const decodeParamsForFilter = (paramStrs) => {
+  if (typeof paramStrs === 'undefined') {
+    return undefined;
+  }
+  let params = paramStrs;
+  if (paramStrs.length > 1 && params[0].includes('_')) {
+    params = paramStrs.map((param) => {
+      const values = param.split('_');
+      return { id: values[0], checked: values[1] === 'true' };
+    });
+  } else if (paramStrs.length === 3) {
+    params = [
+      paramStrs[0],
+      new Date(paramStrs[1].split('_').join('/')),
+      new Date(paramStrs[2].split('_').join('/')),
+    ];
+  }
+  return params;
 };
 
 export const FiltersParam = {
@@ -45,7 +71,7 @@ export const FiltersParam = {
       return undefined;
     }
     const encodedStr = filterDescriptions
-      .map((fd) => `${fd.id}~${checkForDates(filterParams[fd.id]).join('#')}`)
+      .map((fd) => `${fd.id}~${encodeParamsForFilter(filterParams[fd.id]).join('#')}`)
       .join('$');
 
     return encodedStr;
@@ -59,14 +85,7 @@ export const FiltersParam = {
     const filters = strFilters.split('$');
     filters.forEach((filter) => {
       const [filterId, paramsStr] = filter.split('~');
-      let params = paramsStr.split('#');
-      if (params.length === 3) {
-        params = [
-          params[0],
-          new Date(params[1].split('_').join('/')),
-          new Date(params[2].split('_').join('/')),
-        ];
-      }
+      const params = decodeParamsForFilter(paramsStr.split('#'));
       filterParams[filterId] = params;
     });
     return filterParams;
