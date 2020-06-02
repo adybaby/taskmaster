@@ -36,7 +36,7 @@ export const AppBar = () => {
   const handleSearchSubmit = (event) => {
     event.preventDefault();
     dispatch(setFilterParams(FILTER_IDS.SEARCH_FIELD, [event.target.value]));
-    if (currentTab.taskType === null) {
+    if (currentTab === null || currentTab.taskType === null) {
       dispatch(setCurrentTab(TABS.all));
       history.push('/');
     }

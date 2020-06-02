@@ -9,7 +9,9 @@ export const getUserSelectedFilters = createSelector(
   (currentTab, filters, filterParams) =>
     Object.values(filters).filter(
       (filter) =>
-        filter.appliesToTab(currentTab.id) && !filter.isDefaultParams(filterParams[filter.id])
+        currentTab !== null &&
+        filter.appliesToTab(currentTab.id) &&
+        !filter.isDefaultParams(filterParams[filter.id])
     )
 );
 
@@ -21,7 +23,7 @@ export const getFiltersForFilterBar = createSelector(
   [getCurrentTab, getFilters],
   (currentTab, filters) =>
     Object.values(filters).filter(
-      (filter) => filter.appliesToTab(currentTab.id) && filter.isOnFilterBar
+      (filter) => currentTab !== null && filter.appliesToTab(currentTab.id) && filter.isOnFilterBar
     )
 );
 

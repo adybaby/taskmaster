@@ -77,6 +77,7 @@ export const Interest = ({ vacancy, open, onClose, onConfirm, onWithdraw, ...oth
         onClose={onClose}
         onEscapeKeyDown={onClose}
         className={classes.interestDialogContainer}
+        classes={{ paper: classes.interestDialogPaper }}
         {...other}
       >
         <div className={classes.interestDialogHeader}>

@@ -4,8 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import enGB from 'date-fns/locale/en-GB';
-import { StyledApp } from './styles/Styles';
-import { URLS, DB_STATUS } from './constants/Constants';
+import { Typography } from '@material-ui/core';
+import UseAnimations from 'react-useanimations';
+import { StyledApp, useStyles } from './styles/Styles';
+import { URLS, DB_STATUS, ICONS } from './constants/Constants';
 import { initialise } from './state/actions/DataAndFilterLoaderActions';
 import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
@@ -14,6 +16,8 @@ import { ProfilesPanel } from './components/profile/ProfilesPanel';
 import HistoryWriter from './HistoryWriter';
 
 export const App = () => {
+  const classes = useStyles()();
+
   const dispatch = useDispatch();
   const dbStatus = useSelector((state) => state.dbStatus);
 
@@ -25,14 +29,32 @@ export const App = () => {
 
   switch (dbStatus) {
     case DB_STATUS.NOT_INITIALISED:
-      return <div>Getting the database ready, please wait..</div>;
     case DB_STATUS.INITIALISING:
-      return <div>Grabbing data from the database, please wait..</div>;
+      return (
+        <div className={classes.initialisingBg}>
+          <div className={classes.initialisingPageContainer}>
+            <div className={classes.initiatilising}>
+              <div className={classes.initialisingIcon}>
+                <UseAnimations animationKey="loading2" size={56} />
+              </div>
+              <Typography variant="h6">Taskmaster is starting up..</Typography>
+            </div>
+          </div>
+        </div>
+      );
     case DB_STATUS.ERROR:
       return (
-        <div>
-          There was a problem contacting the database. If there are no known outages, please contact
-          IT Support.
+        <div className={classes.initErrBg}>
+          <div className={classes.initialisingPageContainer}>
+            <div className={classes.initiatilisingError}>
+              <div className={classes.initialisingIcon}>{ICONS.ALERT}</div>
+              <Typography variant="h6">There was a problem contacting the database.</Typography>
+              <br />
+              <Typography variant="body2">
+                If there are no known outages, please contact IT Support.
+              </Typography>
+            </div>
+          </div>
         </div>
       );
     default:

@@ -38,7 +38,9 @@ export const SelectFilter = ({ filter, params, closeMenu }) => {
   };
 
   const validForTab = (option) =>
-    typeof option.tabs === 'undefined' || option.tabs.includes(currentTab.id);
+    typeof option.tabs === 'undefined' ||
+    currentTab === null ||
+    option.tabs.includes(currentTab.id);
 
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 

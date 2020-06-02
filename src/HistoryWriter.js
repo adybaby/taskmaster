@@ -12,7 +12,7 @@ import { setFilterBarVisible } from './state/actions/FilterBarVisibleActions';
 
 export const TabParam = {
   encode(tab) {
-    return typeof tab !== 'undefined' && tab !== TABS.all ? tab.id : undefined;
+    return typeof tab !== 'undefined' && tab !== null && tab !== TABS.all ? tab.id : undefined;
   },
 
   decode(strTab) {
@@ -144,6 +144,6 @@ const HistoryWriter = ({ query, setQuery }) => {
 };
 
 export default withQueryParams(
-  { chart: ChartParam, bar: BooleanParam, tab: TabParam, filters: FiltersParam },
+  { chart: ChartParam, tab: TabParam, bar: BooleanParam, filters: FiltersParam },
   HistoryWriter
 );

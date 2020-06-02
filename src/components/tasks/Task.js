@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Divider, Button, Tabs, Tab } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -7,17 +7,27 @@ import { useStyles, typographyVariant } from '../../styles/Styles';
 import { ICONS } from '../../constants/Constants';
 import { AtAGlance } from './AtAGlance';
 import { Vacancy } from './Vacancy';
+import { setCurrentTab } from '../../state/actions/CurrentTabActions';
 
 const variant = typographyVariant.task;
 
 export const Task = () => {
   const classes = useStyles()();
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [infoVisible, setInfoVisible] = useState(true);
   const task = useSelector((state) => state.tasks).find((t) => t.id === id);
   const vacancies = useSelector((state) => state.vacancies).filter(
     (vacancy) => vacancy.taskId === id
   );
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (!mounted) {
+      dispatch(setCurrentTab(null));
+      setMounted(true);
+    }
+  }, [dispatch, mounted]);
 
   const handleTabChange = () => {
     // eslint-disable-next-line no-alert

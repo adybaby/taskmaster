@@ -15,6 +15,12 @@ jss.setup(preset());
 
 // colours
 const mainColor = '#4989b6';
+const initBgColor = '#edf3f8';
+const initDialogColor = '#b6d0e2';
+const initTextColor = '#24445b';
+const initErrPageBgColor = '#f6eeee';
+const initErrBgColor = '#532d2d';
+const initErrTextColor = '#f6eeee';
 const linkHoverColor = '#66bfed';
 const errorColor = 'red';
 const highlightColor = '#6e9fc4';
@@ -158,6 +164,52 @@ const scaledWidth = {
 
 export const useStyles = () =>
   makeStyles({
+    // startup
+    initialisingBg: {
+      minHeight: '100vh',
+      minWidth: '100vw',
+      backgroundColor: initBgColor,
+    },
+    initErrBg: {
+      minHeight: '100vh',
+      minWidth: '100vw',
+      backgroundColor: initErrPageBgColor,
+    },
+    initialisingPageContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '60vh',
+      minWidth: '100vw',
+    },
+    initiatilising: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+      justifyContent: 'center',
+      backgroundColor: initDialogColor,
+      color: initTextColor,
+      borderRadius: theme.shape.borderRadius,
+      boxShadow: `0px 3px 10px ${theme.palette.divider}`,
+      padding: theme.spacing(3),
+    },
+    initiatilisingError: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
+      backgroundColor: initErrBgColor,
+      color: initErrTextColor,
+      borderRadius: theme.shape.borderRadius,
+      boxShadow: `0px 3px 10px ${theme.palette.divider}`,
+      padding: theme.spacing(3),
+    },
+    initialisingIcon: {
+      padding: theme.spacing(2),
+    },
+
     // AppBar
     appBar: {
       position: 'sticky',
@@ -463,13 +515,20 @@ export const useStyles = () =>
     },
 
     // interest section
-    interestDialogHeader: {
-      padding: theme.spacing(2),
-      backgroundColor: interestDialogHeaderColor,
-    },
     interestDialogContainer: {
       display: 'flex',
       flexDirection: 'column',
+    },
+    interestDialogPaper: {
+      [smallVp]: {
+        maxWidth: '100%',
+        width: '100%',
+        margin: 0,
+      },
+    },
+    interestDialogHeader: {
+      padding: theme.spacing(2),
+      backgroundColor: interestDialogHeaderColor,
     },
     interestVacancyHeader: {
       paddingLeft: theme.spacing(2),

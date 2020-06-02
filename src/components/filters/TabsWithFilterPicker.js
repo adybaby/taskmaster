@@ -23,7 +23,7 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const isAFilterActive = () => {
     for (let index = 0; index < filterBarFilters.length; index++) {
       const filter = filterBarFilters[index];
-      if (!filter.isDefaultParams(filterParams[filter.id])) {
+      if (!filter.isDefaultParams(filterParams[filter.id]) && !filter.isSortFilter()) {
         return true;
       }
     }

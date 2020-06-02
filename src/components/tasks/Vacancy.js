@@ -26,7 +26,6 @@ export const Vacancy = ({ vacancy }) => {
   };
 
   const onInterestConfirmed = (interest) => {
-    console.log(interest);
     setOpenInterestDialog(false);
   };
 

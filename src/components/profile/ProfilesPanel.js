@@ -6,6 +6,7 @@ import Tab from '@material-ui/core/Tab';
 import { Divider } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
 import { UserPanel } from './UserPanel';
+import { setCurrentTab } from '../../state/actions/CurrentTabActions';
 
 export const ProfilesPanel = () => {
   const classes = useStyles()();
@@ -15,12 +16,17 @@ export const ProfilesPanel = () => {
   const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const [currentTabId, setCurrentTabId] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof id !== 'undefined' && id !== null) {
-      setUser(users.filter((usr) => usr.id === id)[0]);
+    if (!mounted) {
+      if (typeof id !== 'undefined' && id !== null) {
+        setUser(users.filter((usr) => usr.id === id)[0]);
+      }
+      dispatch(setCurrentTab(null));
+      setMounted(true);
     }
-  }, [dispatch, id, users]);
+  }, [dispatch, id, users, mounted]);
 
   const getCurrentPanel = () => {
     switch (currentTabId) {
