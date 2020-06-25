@@ -1,33 +1,4 @@
-import { min, max } from 'date-fns';
-import { prioritise } from './prioritisation/Prioritise';
-import { isValidDateString } from '../../../../util/Dates';
-import { formatUserName } from '../../../../util/Users';
-
-import tasksFile from './tasks.json';
-import usersFile from './users.json';
-import contributionLinksFile from './contribution_links.json';
-import vacanciesFile from './vacancies.json';
-import interestFile from './interest.json';
-import skillsFile from './skills.json';
-
-const firstLastDates = (tasks, users) => {
-  const allDates = [
-    ...tasks
-      .filter((task) => task.type === 'INITIATIVE')
-      .map((task) => [task.startDate, task.endDate])
-      .flat(),
-    ...users
-      .map((user) => user.available.map((available) => [available.startDate, available.endDate]))
-      .flat(2),
-  ];
-  return { first: min(allDates), last: max(allDates) };
-};
-
-// this second parse is a hack to convert string dates to actual dates without having to mess with webpack's json loader
-const loadJsonFile = (file) =>
-  JSON.parse(JSON.stringify(file), (key, value) =>
-    isValidDateString(value) ? new Date(value) : value
-  );
+import { formatUserName } from '../../../util/Users';
 
 const getContributionLinks = (
   taskId,
@@ -56,7 +27,7 @@ const getContributionLinks = (
           : undefined,
     }));
 
-const denormaliseLinks = (
+export const denormaliseLinks = (
   normalTasks,
   normalUsers,
   normalSkills,
@@ -170,36 +141,3 @@ const denormaliseLinks = (
 
   return { users, tasks, interest, vacancies };
 };
-
-export const init = () =>
-  new Promise((resolve) => {
-    const normalTasks = loadJsonFile(tasksFile);
-    const normalUsers = loadJsonFile(usersFile);
-    const skills = loadJsonFile(skillsFile).sort((a, b) => a.title.localeCompare(b.title));
-    const normalVacancies = loadJsonFile(vacanciesFile);
-    const normalInterest = loadJsonFile(interestFile);
-    const contributionLinks = loadJsonFile(contributionLinksFile);
-
-    // copy the titles and key summary info of linked items into the item itself, for performance
-    const { tasks, users, interest, vacancies } = denormaliseLinks(
-      normalTasks,
-      normalUsers,
-      skills,
-      normalVacancies,
-      normalInterest,
-      contributionLinks
-    );
-
-    // derive the priorities of things based on their contributions to their parent tasks
-    prioritise(tasks);
-
-    resolve({
-      tasks,
-      users,
-      skills,
-      vacancies,
-      interest,
-      contributionLinks,
-      dateRange: firstLastDates(tasks, users),
-    });
-  });

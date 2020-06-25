@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-nested-ternary */
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
+import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, min, max } from 'date-fns';
 
 export const isValidDateString = (dateStr) => {
   if (
@@ -173,4 +173,24 @@ export const filterTasksByDate = (tasks, range, dateField) => {
 
     return (startDate === null || date >= startDate) && (endDate === null || date <= endDate);
   });
+};
+
+export const firstLastDates = (tasks, users) => {
+  const allDates = [
+    ...tasks
+      .filter((task) => task.type === 'INITIATIVE')
+      .map((task) => [task.startDate, task.endDate])
+      .flat(),
+    ...users
+      .map((user) => user.available.map((available) => [available.startDate, available.endDate]))
+      .flat(2),
+  ];
+  return { first: min(allDates), last: max(allDates) };
+};
+
+// re serialises all the data passed, then deserialises it parsing the dates as actual date objects
+export const stringDatesToRealDates = (data) => {
+  return JSON.parse(JSON.stringify(data), (key, value) =>
+    isValidDateString(value) ? new Date(value) : value
+  );
 };

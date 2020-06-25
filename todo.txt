@@ -1,6 +1,21 @@
+map prioritisation screen
+sort by priority
+change minor/major/etc and get quicktips for them
+priority 1 of x and a seeding hint
+filter bar open not passing with copy-paste url
+MAKE A VIDEO!
+
  - change order of drivers and change status of drivers and enablers - active/disabled (fulfilled)/disabled (on hold)/disabled (replaced/no longer relevant)
  - higher than/lower than - list
  - change contribution of initiatives and enablers
+
+demo charts to find vacad want to narrow down
+back to initiatives - set my skills next year ux
+send url to boss
+boss has a mobile
+changes filter to designer 
+send job back to me
+
 
 Charts:
   - add chart to see number of usrs signed up, authored, with skills

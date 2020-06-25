@@ -42,6 +42,18 @@ export const App = () => {
           </div>
         </div>
       );
+    case DB_STATUS.OPERATION_COMPLETE:
+      return (
+        <div className={classes.initialisingBg}>
+          <div className={classes.initialisingPageContainer}>
+            <div className={classes.initiatilising}>
+              <Typography variant="h6">
+                Taskmaster has completed the requested data operation.{' '}
+              </Typography>
+            </div>
+          </div>
+        </div>
+      );
     case DB_STATUS.ERROR:
       return (
         <div className={classes.initErrBg}>

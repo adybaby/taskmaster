@@ -1,7 +1,7 @@
 import { DB_STATUS } from '../../constants/Constants';
 import { ACTION_TYPES } from './ActionTypes';
 
-import { init } from './dataloader/Db';
+import { loadAll, overwriteDbWithJsonFiles as dbOverwrite } from './data/Db';
 import { createFilters } from './filterCreators/FiltersAndSortCreator';
 import { initFilters } from './FilterActions';
 import { initFilterParams } from './FilterParamActions';
@@ -53,7 +53,7 @@ const setContributionLinks = (contributionLinks) => ({
 
 export const initialise = () => (dispatch) => {
   dispatch(setDbStatus(DB_STATUS.INITIALISING));
-  init()
+  loadAll()
     .then(({ tasks, users, skills, vacancies, interest, contributionLinks, dateRange }) => {
       dispatch(setUsers(users));
       dispatch(setTasks(tasks));
@@ -68,5 +68,22 @@ export const initialise = () => (dispatch) => {
       dispatch(initFilterParams(filters));
       dispatch(setDbStatus(DB_STATUS.INITIALISED));
     })
-    .catch(setDbStatus(DB_STATUS.ERROR));
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log(e);
+      dispatch(setDbStatus(DB_STATUS.ERROR));
+    });
+};
+
+export const overwriteDbWithJsonFiles = () => (dispatch) => {
+  dispatch(setDbStatus(DB_STATUS.INITIALISING));
+  dbOverwrite()
+    .then(() => {
+      dispatch(setDbStatus(DB_STATUS.OPERATION_COMPLETE));
+    })
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log(e);
+      dispatch(setDbStatus(DB_STATUS.ERROR));
+    });
 };

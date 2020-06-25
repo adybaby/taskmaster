@@ -1,5 +1,6 @@
 {
   "name": "taskmaster",
+  "description": "Task Master",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -20,6 +21,7 @@
     "file-saver": "^2.0.2",
     "history": "^4.10.1",
     "immer": "^6.0.9",
+    "json.date-extensions": "^1.2.2",
     "jss": "^10.1.1",
     "jss-preset-default": "^10.1.1",
     "node-sass": "^4.14.1",
