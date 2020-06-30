@@ -5,6 +5,9 @@ export const skillsReducer = (state = [], action) => {
     case ACTION_TYPES.SET_SKILLS: {
       return [...action.skills];
     }
+    case ACTION_TYPES.ADD_SKILL_TO_STATE: {
+      return [...state, action.skill];
+    }
     default:
       return state;
   }

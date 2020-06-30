@@ -1,0 +1,74 @@
+[
+  {
+    "id": "intro",
+    "title": "Welcome to TASKMASTER",
+    "blocks": [
+      {
+        "title": "Overview",
+        "text": "Taskmaster is a self-organising innovation backlog prioritised by comparing each Initiative's contributions to overarching Drivers & Enablers.  Each Initiative (basically an innovation project expressed in Lean Startup language) advertises the skills it needs to succeed, and users can sign up to Initiatives as they like.",
+        "img": "intro.png",
+        "imgAlt": "Drivers prioritise Enablers, which prioritise Initiatives, which are signed up to by self-organised users."
+      },
+      {
+        "title": "Why use it?",
+        "text": "You want to make it easy for your staff to self-organise around innovation work (Initiatives), without needing a command-and-control hierarchy telling them what to do, but you want that work linked to overarching corporate priorities (Drivers and Enablers) and you want completely accountable visibility of the work that everyone is doing, along with skill utilisation, shortages, vacancy fulfilment rates, costs, and so on."
+      },
+      {
+        "title": "Getting Started",
+        "text": "If you're new, you might want to explore each of the tabs to find out more about what each one does.  You might also want to look at your profile in the top right, and add the skills you're comfortable with, as well as your availability to work on any Initiatives."
+      }
+    ]
+  },
+  {
+    "id": "drivers",
+    "title": "Drivers",
+    "blocks": [
+      {
+        "text": "If you ask the question 'Why is our organisation doing [something]?', then drivers are the last answer you get before you get to the answer 'because that's why our organisation exists.' They are the very-highest level expression of a need in an organisation, and even large organisations would only expect to have a handful each year. Drivers are the only directly prioritisable type of task in TASKMASTER, prioritised as a simple ordered list."
+      }
+    ]
+  },
+  {
+    "id": "enablers",
+    "title": "Enablers",
+    "blocks": [
+      {
+        "text": "Enablers are the next level down from Drivers.  Whereas Drivers are a high-level abstraction of what an organisation needs to do, Enablers are a strategy for how to deliver against those Drivers.  They don't explain exactly how this will be done - that's down to intitiatives - but they do give a broad direction of what's important.  Enablers are prioritised by specifying their contribution level to one or more Drivers."
+      }
+    ]
+  },
+  {
+    "id": "initiatives",
+    "title": "Initiatives",
+    "blocks": [
+      {
+        "text": "Initiatives are work packages expressed as Lean Startups.  Each specifies dates for when it is currently planned, as well as the skills it needs to test its hypotheses. Like Enablers, Initiatives are prioritised by how much their results contribute to their higher level priorities - in the case of Initiatives, these will be one or more Enablers."
+      }
+    ]
+  },
+  {
+    "id": "maps",
+    "title": "Maps",
+    "blocks": [
+      {
+        "text": "See how each task contributes to other tasks, their priorities, and reprioritise them."
+      }
+    ]
+  },
+  {
+    "id": "charts",
+    "title": "Charts",
+    "blocks": [
+      {
+        "text": "Take a look at which vacancies are running when, and what skills they need, as well as other stats on skills availability and usage."
+      }
+    ]
+  },
+  {
+    "id": "filters",
+    "title": "Filters",
+    "blocks": [
+      { "text": "Filter the current view, for example to find vacancies that match your skills." }
+    ]
+  }
+]

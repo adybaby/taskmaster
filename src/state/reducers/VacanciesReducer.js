@@ -5,6 +5,12 @@ export const vacanciesReducer = (state = [], action) => {
     case ACTION_TYPES.SET_VACANCIES: {
       return action.vacancies;
     }
+    case ACTION_TYPES.ADD_VACANCY_TO_STATE: {
+      return [...state, action.vacancy];
+    }
+    case ACTION_TYPES.DELETE_VACANCY_FROM_STATE: {
+      return state.filter((vacancy) => vacancy.id !== action.id);
+    }
     default:
       return state;
   }

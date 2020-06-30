@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Paper, Button } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
 import { Interest } from './Interest';
+import { addInterest, deleteInterest } from '../../state/actions/InterestActions';
+import * as logger from '../../util/Logger';
 
 const variant = typographyVariant.aag;
 
 export const Vacancy = ({ vacancy }) => {
+  const dispatch = useDispatch();
   const classes = useStyles()();
 
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
@@ -16,9 +20,16 @@ export const Vacancy = ({ vacancy }) => {
     setOpenInterestDialog(true);
   };
 
-  const onInterestWithdrawn = () => {
+  const onInterestWithdrawn = (id) => {
     // delete the interest and notify owner
     setOpenInterestDialog(false);
+    dispatch(
+      deleteInterest(
+        id,
+        () => logger.debug(`Deleted Interest:${id}`),
+        (e) => logger.error(`Could not delete Interest${id}`, e)
+      )
+    );
   };
 
   const onCloseInterestDialog = () => {
@@ -27,6 +38,13 @@ export const Vacancy = ({ vacancy }) => {
 
   const onInterestConfirmed = (interest) => {
     setOpenInterestDialog(false);
+    dispatch(
+      addInterest(
+        interest,
+        () => logger.debug('Added Interest.', interest),
+        (e) => logger.error('Could not add INterest.', e, interest)
+      )
+    );
   };
 
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);

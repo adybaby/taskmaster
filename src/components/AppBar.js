@@ -5,6 +5,7 @@ import InputBase from '@material-ui/core/InputBase';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
 import { Tooltip } from '@material-ui/core';
+import { useAuth0 } from '../Auth';
 import { useStyles } from '../styles/Styles';
 import { ICONS, TABS, FILTER_IDS } from '../constants/Constants';
 import { setFilterParams, resetAllFilterParams } from '../state/actions/FilterParamActions';
@@ -12,6 +13,7 @@ import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
 export const AppBar = () => {
   const classes = useStyles()();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const dispatch = useDispatch();
   const history = useHistory();
   const filters = useSelector((state) => state.filters);
@@ -86,18 +88,26 @@ export const AppBar = () => {
           <span className={classes.hidingLabel}>New..</span>
         </Button>
       </Tooltip>
-      <Tooltip title="View your user profile">
-        <Button
-          className={classes.appBarButton}
-          color="inherit"
-          component={Link}
-          to="/profile"
-          size="large"
-        >
-          {ICONS.PROFILE}
-          <span className={classes.hidingLabel}>{userName}</span>
+
+      {!isAuthenticated && (
+        <Button key="loginbutton" color="inherit" onClick={() => loginWithRedirect()}>
+          LOGIN
         </Button>
-      </Tooltip>
+      )}
+      {isAuthenticated && (
+        <Tooltip title="View your user profile">
+          <Button
+            className={classes.appBarButton}
+            color="inherit"
+            component={Link}
+            to="/profile"
+            size="large"
+          >
+            {ICONS.PROFILE}
+            <span className={classes.hidingLabel}>{userName}</span>
+          </Button>
+        </Tooltip>
+      )}
     </div>
   );
 };

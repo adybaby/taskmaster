@@ -25,6 +25,8 @@ const linkHoverColor = '#66bfed';
 const errorColor = 'red';
 const highlightColor = '#6e9fc4';
 const aagBgColor = '#f2faff';
+const hintTitleBgColor = '#a6c4d9';
+const hintBgColor = '#f2faff';
 const interestVacancyInfoBgColor = '#f2faff';
 const inspectorDaySummaryBgColor = '#b6d0e2';
 const datePickerBgColor = '#f2f2f2';
@@ -64,6 +66,7 @@ export const KELLY = [
 // typography variants
 export const typographyVariant = {
   aag: { title: 'body2', value: 'body2', note: 'caption' },
+  hint: { title: 'body1', subTitle: 'body1', body: 'body2', help: 'caption' },
   task: { heading: 'h5', body: 'body1' },
   taskList: { tasksCount: 'subtitle1' },
   filters: { filterButton: 'caption' },
@@ -615,6 +618,47 @@ export const useStyles = () =>
       paddingRight: theme.spacing(2),
     },
 
+    // Hints
+    hintPanel: {
+      border: `1px solid ${theme.palette.divider}`,
+      backgroundColor: hintBgColor,
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+    },
+    hintTitle: {
+      fontWeight: 'bold',
+      backgroundColor: hintTitleBgColor,
+      paddingLeft: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+      paddingTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
+    },
+    hintSubTitle: {
+      fontWeight: 'bold',
+    },
+    hintBlock: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+    },
+    hintImage: {
+      maxWidth: '98%',
+      maxHeight: 120,
+      justifySelf: 'center',
+      border: `1px solid ${theme.palette.divider}`,
+      marginTop: theme.spacing(1),
+    },
+    hideHintButton: {
+      color: theme.palette.primary.main,
+      paddingLeft: theme.spacing(2),
+      fontWeight: 'bold',
+    },
+    hintButtonHelp: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+    },
+
     // Charts
     chartsLayoutContainer: {
       display: 'flex',
@@ -730,6 +774,12 @@ export const useStyles = () =>
     userSectionHeading: { paddingBottom: theme.spacing(1) },
     userSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
     signedUpLink: { paddingBottom: theme.spacing(1) },
+
+    // eser actions
+    userActionsPanel: {
+      paddingLeft: theme.spacing(2),
+    },
+    userActionButton: { color: theme.palette.primary.main, fontWeight: 'bold' },
 
     // Contributions
     contributionList: { paddingLeft: theme.spacing(3), paddingBottom: theme.spacing(2) },

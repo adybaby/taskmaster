@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
@@ -13,52 +13,95 @@ import {
   Collapse,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { v4 as uuid } from 'uuid';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { formatDate } from '../../util/Dates';
+import { formatDate, equals } from '../../util/Dates';
 import { DatesDialog } from '../datesdialog/DateDialog';
 
 const variant = typographyVariant.aag;
 
+const ACTION_OPTIONS = {
+  APPLY: 'APPLY',
+  CONTACT_OWNER: 'CONTACT_OWNER',
+};
+
+const SIGNUP_OPTIONS = {
+  ALL_DATES: 'ALL_DATES',
+  CUSTOM_DATES: 'CUSTOM_DATES',
+};
+
+const STATUS_OPTIONS = {
+  CONTACTED: 'CONTACTED',
+  APPLIED: 'APPLIED',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+};
+
 export const Interest = ({ vacancy, open, onClose, onConfirm, onWithdraw, ...other }) => {
   const classes = useStyles()();
-  const [openDates, setOpenDates] = useState(false);
-  const [actionOption, setActionOption] = useState('signUp');
-  const [signUpOption, setSignUpOption] = useState('allDates');
+  const users = useSelector((state) => state.users);
+  const currentUser = useSelector((state) => state.currentUser);
+  const interest = useSelector((state) => state.interest).filter(
+    (i) => i.vacancyId === vacancy.id && i.userId === currentUser.id
+  );
+  const [actionOption, setActionOption] = useState(ACTION_OPTIONS.APPLY);
+  const [signUpOption, setSignUpOption] = useState(SIGNUP_OPTIONS.ALL_DATES);
   const [comments, setComments] = useState('');
   const [customDates, setCustomDates] = useState({
     startDate: vacancy.startDate,
     endDate: vacancy.endDate,
   });
-  const users = useSelector((state) => state.users);
-  const currentUser = useSelector((state) => state.currentUser);
+  const [openDates, setOpenDates] = useState(false);
+
+  useEffect(() => {
+    if (interest !== null) {
+      if (
+        equals(vacancy.startDate, interest.startDate) &&
+        equals(vacancy.endDate, interest.endDate)
+      ) {
+        setSignUpOption(SIGNUP_OPTIONS.ALL_DATES);
+      } else {
+        setSignUpOption(SIGNUP_OPTIONS.CUSTOM_DATES);
+        setCustomDates({ startDate: interest.startDate, endDate: interest.endDate });
+      }
+      setComments(interest.comments);
+      setActionOption(
+        interest.status === STATUS_OPTIONS.CONTACTED
+          ? ACTION_OPTIONS.CONTACT_OWNER
+          : ACTION_OPTIONS.APPLY
+      );
+    }
+  }, [interest, vacancy]);
 
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   const onCloseDatesDialog = (range) => {
     setOpenDates(false);
     if (range !== null) {
-      setSignUpOption('customDates');
+      setSignUpOption(SIGNUP_OPTIONS.CUSTOM_DATES);
       setCustomDates(range);
     }
   };
 
   const onSignUpOptionChange = (event) => {
     const selected = event.target.value;
-    if (selected === 'customDates') {
+    if (selected === SIGNUP_OPTIONS.CUSTOM_DATES) {
       setOpenDates(true);
     } else {
-      setSignUpOption('allDates');
+      setSignUpOption(SIGNUP_OPTIONS.ALL_DATES);
     }
   };
 
   const handleConfirm = () => {
     let { startDate, endDate } = vacancy;
-    if (signUpOption === 'customDates') {
+    if (signUpOption === SIGNUP_OPTIONS.CUSTOM_DATES) {
       startDate = customDates.startDate;
       endDate = customDates.endDate;
     }
-    const status = actionOption === 'signUp' ? 'APPLIED' : 'INTERESTED';
+    const status =
+      actionOption === ACTION_OPTIONS.APPLY ? STATUS_OPTIONS.APPLIED : STATUS_OPTIONS.CONTACTED;
     onConfirm({
+      id: interest === null ? uuid() : interest.id,
       userId: currentUser.id,
       vacancyId: vacancy.id,
       startDate,
@@ -143,13 +186,16 @@ export const Interest = ({ vacancy, open, onClose, onConfirm, onWithdraw, ...oth
             >
               <FormControlLabel
                 className={classes.interestSignUpOptionRadio}
-                value="signUp"
+                value={ACTION_OPTIONS.APPLY}
                 control={<Radio />}
                 label="Sign up for the vacancy (you can cancel later if you need to)"
               />
-              <Collapse in={actionOption === 'signUp'} timeout="auto" unmountOnExit>
+              <Collapse in={actionOption === ACTION_OPTIONS.APPLY} timeout="auto" unmountOnExit>
                 <div className={classes.interestNestedRadioGroup}>
-                  <FormControl component="fieldset" disabled={actionOption !== 'signUp'}>
+                  <FormControl
+                    component="fieldset"
+                    disabled={actionOption !== ACTION_OPTIONS.APPLY}
+                  >
                     <RadioGroup
                       aria-label="allDatesOrCustomDates"
                       name="allDatesOrCustomDates1"
@@ -157,15 +203,17 @@ export const Interest = ({ vacancy, open, onClose, onConfirm, onWithdraw, ...oth
                       onChange={onSignUpOptionChange}
                     >
                       <FormControlLabel
-                        value="allDates"
+                        value={SIGNUP_OPTIONS.ALL_DATES}
                         control={<Radio />}
                         label={`For the requested dates (${rangeLabel(vacancy)})`}
                       />
                       <FormControlLabel
-                        value="customDates"
+                        value={SIGNUP_OPTIONS.CUSTOM_DATES}
                         control={<Radio />}
                         label={`For different dates${
-                          signUpOption === 'customDates' ? ` (${rangeLabel(customDates)})` : '..'
+                          signUpOption === SIGNUP_OPTIONS.CUSTOM_DATES
+                            ? ` (${rangeLabel(customDates)})`
+                            : '..'
                         }`}
                       />
                     </RadioGroup>
@@ -174,7 +222,7 @@ export const Interest = ({ vacancy, open, onClose, onConfirm, onWithdraw, ...oth
               </Collapse>
               <FormControlLabel
                 className={classes.interestSignUpOptionRadio}
-                value="contactOwner"
+                value={ACTION_OPTIONS.CONTACT_OWNER}
                 control={<Radio />}
                 label={`Contact the recruiter (${
                   users.find((user) => user.id === vacancy.recruiterId).formattedName

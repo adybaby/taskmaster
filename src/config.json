@@ -1,0 +1,10 @@
+{
+  "auth0": {
+    "enabled": false,
+    "domain": "dev-u7nkzjak.eu.auth0.com",
+    "clientId": "qZaUFrH85Rfq61Q70J0Wf1DUErRNTqIw",
+    "testUserId": "facebook|10156984096766126"
+  },
+  "serverUrl": "http://localhost:3000/",
+  "debugLogging": true
+}

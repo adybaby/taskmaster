@@ -1,6 +1,7 @@
 import { stringDatesToRealDates } from '../../../../util/Dates';
+import config from '../../../../config.json';
 
-const SERVER_URL = 'http://localhost:3000/';
+const SERVER_URL = config.serverUrl;
 const QUERY_URL = `${SERVER_URL}query`;
 
 export const ENTITIES = {

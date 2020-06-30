@@ -1,21 +1,7 @@
-import { loadAll as loadAllFromServer, overwriteDb } from './server/DataInterface';
-import { loadAll as loadAllFromJson } from './jsontest/JsonLoader';
+import { loadAll as loadAllFromServer } from './server/DataInterface';
 import { denormaliseLinks } from './Denormaliser';
 import { prioritise } from './Prioritiser';
 import { firstLastDates } from '../../../util/Dates';
-
-export const overwriteDbWithJsonFiles = () =>
-  new Promise((resolve, reject) => {
-    loadAllFromJson()
-      .then((data) => {
-        overwriteDb(data)
-          .then(() => resolve())
-          .catch((e) => reject(e));
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
 
 export const loadAll = () =>
   new Promise((resolve, reject) => {
