@@ -1,13 +1,13 @@
 import { ACTION_TYPES } from './ActionTypes';
 import * as server from './data/server/ServerInterface';
 
-const addInterestToState = (vacancy) => ({
-  type: ACTION_TYPES.ADD_INTEREST_TO_STATE,
-  vacancy,
+const updateInterestInState = (interest) => ({
+  type: ACTION_TYPES.UPDATE_INTEREST_IN_STATE,
+  interest,
 });
 
 const deleteInterestFromState = (id) => ({
-  type: ACTION_TYPES.ADD_INTEREST_TO_STATE,
+  type: ACTION_TYPES.DELETE_INTEREST_FROM_STATE,
   id,
 });
 
@@ -16,11 +16,11 @@ export const setInterest = (interest) => ({
   interest,
 });
 
-export const addInterest = (interest, successCallback, errorCallback) => (dispatch) => {
+export const updateInterest = (interest, successCallback, errorCallback) => (dispatch) => {
   server
     .query(server.ACTIONS.UPDATE, server.ENTITIES.INTEREST, interest)
     .then((response) => {
-      dispatch(addInterestToState(interest));
+      dispatch(updateInterestInState(interest));
       successCallback(response);
     })
     .catch((e) => {

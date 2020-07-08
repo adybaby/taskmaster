@@ -1,8 +1,8 @@
 import { ACTION_TYPES } from './ActionTypes';
 import * as server from './data/server/ServerInterface';
 
-const addSkillToState = (skill) => ({
-  type: ACTION_TYPES.ADD_SKILL_TO_STATE,
+const updateSkillInState = (skill) => ({
+  type: ACTION_TYPES.UPDATE_SKILL_IN_STATE,
   skill,
 });
 
@@ -11,11 +11,11 @@ export const setSkills = (skills) => ({
   skills,
 });
 
-export const addSkill = (skill, successCallback, errorCallback) => (dispatch) => {
+export const updateSkill = (skill, successCallback, errorCallback) => (dispatch) => {
   server
     .query(server.ACTIONS.UPDATE, server.ENTITIES.SKILL, skill)
     .then((response) => {
-      dispatch(addSkillToState(skill));
+      dispatch(updateSkillInState(skill));
       successCallback(response);
     })
     .catch((e) => {

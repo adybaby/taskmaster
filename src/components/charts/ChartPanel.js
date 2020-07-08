@@ -16,6 +16,7 @@ import { setSelectedChart } from '../../state/actions/SelectedChartActions';
 import { ICONS, RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
 import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
+import { Hint, HINT_IDS } from '../hints/Hint';
 
 const ChartMenuGroup = ({
   chartGroup: { label, startOpen, charts },
@@ -151,7 +152,7 @@ export const ChartPanel = () => {
       for (let dayIndex = 0; dayIndex < dayCount; dayIndex++) {
         const currentDayInMs = timeAxis[dayIndex];
         const seriesEntryForDay = thisSeries.data.find((data) => data.x === currentDayInMs);
-        line.push(typeof seriesEntryForDay !== 'undefined' ? seriesEntryForDay.y : 0);
+        line.push(seriesEntryForDay != null ? seriesEntryForDay.y : 0);
       }
 
       lines.push(line.join(','));
@@ -293,6 +294,7 @@ export const ChartPanel = () => {
         <div className={classes.chartMenuSideBar}>{chartMenuBody()}</div>
         <div className={classes.chartLayoutBody}>
           <div className={classes.chartHeadingContainer}>
+            <Hint id={HINT_IDS.CHARTS} className={classes.chartHint} />
             <div className={classes.chartHeading}>
               {chartSelectButton()}
               <Typography classes={{ root: classes.chartHeadingLabel }} variant={variant.title}>

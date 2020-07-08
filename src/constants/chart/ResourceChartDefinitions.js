@@ -54,9 +54,9 @@ const daySummary = ({ noun, adjective }) => (count, skill, formattedDate) => {
   const absCount = Math.abs(count);
   const displaySkill = skill === skill.toUpperCase() ? skill : skill.toLowerCase();
   return `${absCount === 0 ? 'No' : absCount} ${
-    typeof noun === 'undefined'
+    noun == null
       ? `${pluralize(displaySkill, absCount)} ${absCount === 1 ? 'is' : 'are'} ${
-          typeof adjective !== 'undefined' ? adjective : count >= 0 ? 'available' : 'needed'
+          adjective != null ? adjective : count >= 0 ? 'available' : 'needed'
         }`
       : `${displaySkill} ${pluralize(noun, absCount)}`
   } on the ${formattedDate}`;

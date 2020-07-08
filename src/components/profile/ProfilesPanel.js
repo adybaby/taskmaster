@@ -20,7 +20,7 @@ export const ProfilesPanel = () => {
 
   useEffect(() => {
     if (!mounted) {
-      if (typeof id !== 'undefined' && id !== null) {
+      if (id != null) {
         setUser(users.filter((usr) => usr.id === id)[0]);
       }
       dispatch(setCurrentTab(null));

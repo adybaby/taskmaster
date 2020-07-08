@@ -6,8 +6,10 @@ import Typography from '@material-ui/core/Typography';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { ICONS } from '../../constants/Constants';
 import { AtAGlance } from './AtAGlance';
-import { Vacancy } from './Vacancy';
+import { Vacancy } from './vacancy/Vacancy';
 import { setCurrentTab } from '../../state/actions/CurrentTabActions';
+import * as logger from '../../util/Logger';
+import { AddEditVacancy } from './vacancy/AddEditVacancy';
 
 const variant = typographyVariant.task;
 
@@ -21,6 +23,7 @@ export const Task = () => {
     (vacancy) => vacancy.taskId === id
   );
   const [mounted, setMounted] = useState(false);
+  const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
 
   useEffect(() => {
     if (!mounted) {
@@ -29,15 +32,28 @@ export const Task = () => {
     }
   }, [dispatch, mounted]);
 
-  const handleTabChange = () => {
+  const onTabChange = () => {
     // eslint-disable-next-line no-alert
     window.alert('TBD');
+  };
+
+  const onAddVacancyClick = () => {
+    setAddEditVacancyOpen(true);
+  };
+
+  const onNewVacancy = (vacancy) => {
+    setAddEditVacancyOpen(false);
+    logger.debug('Adding vacancy', vacancy);
+  };
+
+  const onAddEditVacancyClose = () => {
+    setAddEditVacancyOpen(false);
   };
 
   return task === null ? null : (
     <>
       <div className={classes.mainTabBar}>
-        <Tabs value={'READ'} indicatorColor="primary" onChange={handleTabChange}>
+        <Tabs value={'READ'} indicatorColor="primary" onChange={onTabChange}>
           <Tab value={'READ'} className={classes.tab} label={<div>Read</div>} />
           <Tab value={'EDIT'} className={classes.tab} label={<div>Edit</div>} />
         </Tabs>
@@ -89,9 +105,13 @@ export const Task = () => {
             <Typography className={classes.taskSectionBody} variant={variant.body}>
               {task.approach}
             </Typography>
-            <Typography className={classes.taskSectionHeading} variant={variant.heading}>
-              Vacancies
-            </Typography>
+            <div className={classes.taskSectionHeading}>
+              <Typography variant={variant.heading}>Vacancies</Typography>
+              <Button className={classes.primaryButton} onClick={onAddVacancyClick}>
+                ADD VACANCY..
+              </Button>
+            </div>
+
             <Divider />
             <div className={`${classes.taskSectionBody} ${classes.vacancySection}`}>
               {vacancies.map((vacancy, index) => (
@@ -101,6 +121,12 @@ export const Task = () => {
           </>
         ) : null}
       </div>
+      <AddEditVacancy
+        task={task}
+        open={addEditVacancyOpen}
+        onClose={onAddEditVacancyClose}
+        onConfirm={onNewVacancy}
+      />
     </>
   );
 };

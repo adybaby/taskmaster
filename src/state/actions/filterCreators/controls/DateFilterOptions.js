@@ -11,7 +11,7 @@ import {
 const createExecute = (dateField, defaultParams) => (tasks, params) => {
   let startDate = null;
   let endDate = null;
-  if (typeof defaultParams !== 'undefined') {
+  if (defaultParams != null) {
     startDate = defaultParams.startDate;
     endDate = defaultParams.endDate;
   } else {
@@ -21,7 +21,7 @@ const createExecute = (dateField, defaultParams) => (tasks, params) => {
 
   if (dateField !== null) {
     return tasks.filter((task) => {
-      if (task[dateField] === null || typeof task[dateField] === 'undefined') {
+      if (task[dateField] == null) {
         return false;
       }
       return (
@@ -32,7 +32,7 @@ const createExecute = (dateField, defaultParams) => (tasks, params) => {
   }
 
   return tasks.filter((task) => {
-    if (task.startDate === null || typeof task.startDate === 'undefined') {
+    if (task.startDate == null) {
       return false;
     }
 

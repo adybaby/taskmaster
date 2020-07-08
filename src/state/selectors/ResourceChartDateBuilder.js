@@ -1,4 +1,5 @@
 import { KELLY } from '../../styles/Styles';
+import { VACANCY_STATUS, INTEREST_STATUS } from '../../constants/Constants';
 
 /* eslint-disable no-param-reassign */
 let vacancies = null;
@@ -107,7 +108,9 @@ const addAvailabilityInfo = () => {
 
 const addVacanciesAndInterestInfo = () => {
   vacancies
-    .filter((vacancy) => skillIds.includes(vacancy.skillId) && vacancy.status === 'Open')
+    .filter(
+      (vacancy) => skillIds.includes(vacancy.skillId) && vacancy.status === VACANCY_STATUS.OPEN
+    )
     .forEach((vacancy) => {
       // add vacancy
       addResourceInfoForDateRange(vacancy, vacancy.skillId, 'vacancies', {
@@ -121,7 +124,8 @@ const addVacanciesAndInterestInfo = () => {
       interest
         .filter(
           (userInterest) =>
-            userInterest.vacancyId === vacancy.id && userInterest.status === 'ACCEPTED'
+            userInterest.vacancyId === vacancy.id &&
+            userInterest.status === INTEREST_STATUS.ACCEPTED
         )
         .forEach((userInterest) => {
           // add sign up
@@ -171,11 +175,9 @@ const findLastIndex = (array, findFunction) => {
 
 const trimAndFilterSeriesSet = (seriesSet, filterDateRange, isInspectorData) => {
   seriesSet.series.forEach((series) => {
-    if (typeof series.data !== 'undefined') {
+    if (series.data != null) {
       const firstIndexSpecifiedByFilter =
-        typeof filterDateRange === 'undefined' ||
-        filterDateRange === null ||
-        filterDateRange.startDate === null
+        filterDateRange == null || filterDateRange.startDate === null
           ? 0
           : series.data.findIndex((d) => d.x >= filterDateRange.startDate.getTime());
       const firstNonEmptyIndex = series.data.findIndex((d) =>
@@ -185,9 +187,7 @@ const trimAndFilterSeriesSet = (seriesSet, filterDateRange, isInspectorData) => 
       );
 
       const lastIndexSpecifiedByFilter =
-        typeof filterDateRange === 'undefined' ||
-        filterDateRange === null ||
-        filterDateRange.endDate === null
+        filterDateRange == null || filterDateRange.endDate === null
           ? series.data.length
           : series.data.findIndex((d) => d.x > filterDateRange.endDate.getTime());
 

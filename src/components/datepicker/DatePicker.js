@@ -6,20 +6,25 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
+import { Typography } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
-import DatePicker from './GbDateClearablePicker';
+import GbDatePicker from './GbDateClearablePicker';
 import { DateErrors } from './DateErrors';
 
 import { formatDate, ukToUs, isValidDateString } from '../../util/Dates';
 
-export const DatesDialog = ({
+export const DatePicker = ({
   open,
   prompt,
   firstDateLabel,
   secondDateLabel,
   handleClose,
   initRange,
-  requireBothDates,
+  requireBothDates = false,
+  inline = false,
+  onStartDateChange,
+  onEndDateChange,
+  onError,
   ...other
 }) => {
   const classes = useStyles()();
@@ -32,9 +37,9 @@ export const DatesDialog = ({
   const [valid, setValid] = useState(true);
 
   useEffect(() => {
-    if (initRange !== null && typeof initRange !== 'undefined') {
-      setStartDateStr(initRange.startDate !== null ? formatDate(initRange.startDate) : '');
-      setEndDateStr(initRange.endDate !== null ? formatDate(initRange.endDate) : '');
+    if (initRange != null) {
+      setStartDateStr(initRange.startDate != null ? formatDate(initRange.startDate) : '');
+      setEndDateStr(initRange.endDate != null ? formatDate(initRange.endDate) : '');
     }
   }, [initRange]);
 
@@ -62,7 +67,7 @@ export const DatesDialog = ({
   const makeDateFieldProps = (id, props) => ({
     fullWidth: true,
     onKeyPress: (event) => {
-      if (event.key === 'Enter') {
+      if (event.key === 'Enter' && onSubmit != null) {
         onSubmit();
       }
     },
@@ -109,6 +114,9 @@ export const DatesDialog = ({
               autoFocus: true,
               onChange: (event) => {
                 setStartDateStr(event.target.value);
+                if (onStartDateChange != null) {
+                  onStartDateChange(event.target.value);
+                }
               },
               inputRef: startDateControl,
             })}
@@ -124,6 +132,9 @@ export const DatesDialog = ({
               label: secondDateLabel,
               onChange: (event) => {
                 setEndDateStr(event.target.value);
+                if (onEndDateChange != null) {
+                  onEndDateChange(event.target.value);
+                }
               },
               inputRef: endDateControl,
             })}
@@ -132,7 +143,7 @@ export const DatesDialog = ({
       </div>
       <div className={classes.dateDialogPickerWrapper}>
         {target === CONTROL.START_DATE ? (
-          <DatePicker
+          <GbDatePicker
             {...makeDatePickerProps({
               value: startDateStr,
               maxDate: getDateLimitProp(endDateStr),
@@ -143,7 +154,7 @@ export const DatesDialog = ({
             })}
           />
         ) : (
-          <DatePicker
+          <GbDatePicker
             {...makeDatePickerProps({
               value: endDateStr,
               minDate: getDateLimitProp(startDateStr),
@@ -159,25 +170,52 @@ export const DatesDialog = ({
     </div>
   );
 
+  const title = 'Choose Dates';
+
+  const promptMessage = (
+    <>
+      {' '}
+      {prompt}
+      {!requireBothDates ? (
+        <>{`\u00A0`}You can leave either field blank to ignore those fields.</>
+      ) : (
+        <>{`\u00A0`}Please enter both a start and end date.</>
+      )}
+    </>
+  );
+
+  const errorBlock = (
+    <DateErrors
+      showErrors={onError == null}
+      startDateStr={startDateStr}
+      endDateStr={endDateStr}
+      onValidityChange={(errs) => {
+        if (onError != null) {
+          onError(errs);
+        }
+        setValid(errs.length === 0);
+      }}
+      requireBothDates={requireBothDates}
+    />
+  );
+
+  if (inline) {
+    return (
+      <>
+        <Typography>{promptMessage}</Typography>
+        {dialogBody}
+        {errorBlock}
+      </>
+    );
+  }
+
   return (
     <Dialog open={open} onClose={onCancel} onEscapeKeyDown={onCancel} {...other}>
-      <DialogTitle id="date picker title">Filter By Dates</DialogTitle>
+      <DialogTitle id="date picker title">{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {prompt}
-          {!requireBothDates ? (
-            <>{`\u00A0`}You can leave either field blank to ignore those fields.</>
-          ) : (
-            <>{`\u00A0`}Please enter both a start and end date.</>
-          )}
-        </DialogContentText>
+        <DialogContentText>{promptMessage}</DialogContentText>
         {dialogBody}
-        <DateErrors
-          startDateStr={startDateStr}
-          endDateStr={endDateStr}
-          onValidityChange={(allValid) => setValid(allValid)}
-          requireBothDates={requireBothDates}
-        />
+        {errorBlock}
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel}>Cancel</Button>

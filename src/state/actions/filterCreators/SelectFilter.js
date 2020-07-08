@@ -8,23 +8,23 @@ export class SelectFilter extends Filter {
 
   constructor({ options, forPastTasks, ...filterProps }) {
     super({ ...filterProps });
-    if (typeof options === 'undefined' || options === null || options.length === 0) {
+    if (options == null || options.length === 0) {
       throw new Error('Cannot construct a select filter without options');
     }
     this.options = options;
 
     this.defaultParams = [options[0].id];
 
-    if (typeof forPastTasks !== 'undefined') {
+    if (forPastTasks != null) {
       this.forPastTasks = forPastTasks;
     }
   }
 
   selectsPastTasks = (params) => {
-    if (typeof this.forPastTasks !== 'undefined') {
+    if (this.forPastTasks != null) {
       return this.forPastTasks;
     }
-    if (typeof params !== 'undefined' && params.length === 3) {
+    if (params != null && params.length === 3) {
       return beforeOrE(params[2], new Date());
     }
     return false;

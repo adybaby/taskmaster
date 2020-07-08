@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useStyles } from '../../styles/Styles';
 import { DriverContributionLinks } from '../Link';
+import { Hint, HINT_IDS } from '../hints/Hint';
 
 export const MapPanel = () => {
   const classes = useStyles()();
@@ -9,6 +10,7 @@ export const MapPanel = () => {
 
   return (
     <div className={classes.mapContent}>
+      <Hint id={HINT_IDS.MAPS} className={classes.mapHint} />
       {tasks
         .filter((task) => task.type === 'DRIVER')
         .map((task, index) => (

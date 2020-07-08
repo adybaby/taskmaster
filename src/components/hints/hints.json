@@ -1,5 +1,14 @@
 [
   {
+    "id": "hints",
+    "title": "Hints",
+    "blocks": [
+      {
+        "text": "You can hide hints at any time.  If you want to bring them back, then click on RESET HINTS from your user profile (top right)."
+      }
+    ]
+  },
+  {
     "id": "intro",
     "title": "Welcome to TASKMASTER",
     "blocks": [
@@ -68,7 +77,9 @@
     "id": "filters",
     "title": "Filters",
     "blocks": [
-      { "text": "Filter the current view, for example to find vacancies that match your skills." }
+      {
+        "text": "Filter the current view, for example to find vacancies that match your skills. The filters change depending on the tab you're on, but filter settings are remembered between tabs."
+      }
     ]
   }
 ]

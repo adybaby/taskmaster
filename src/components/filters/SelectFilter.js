@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Divider } from '@material-ui/core';
-import { DatesDialog } from '../datesdialog/DateDialog';
+import { DatePicker } from '../datepicker/DatePicker';
 import { setFilterParams } from '../../state/actions/FilterParamActions';
 
 export const SelectFilter = ({ filter, params, closeMenu }) => {
@@ -38,9 +38,7 @@ export const SelectFilter = ({ filter, params, closeMenu }) => {
   };
 
   const validForTab = (option) =>
-    typeof option.tabs === 'undefined' ||
-    currentTab === null ||
-    option.tabs.includes(currentTab.id);
+    option.tabs == null || currentTab == null || option.tabs.includes(currentTab.id);
 
   const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -58,7 +56,7 @@ export const SelectFilter = ({ filter, params, closeMenu }) => {
       </ListItem>
       {option.datePicker ? (
         <>
-          <DatesDialog
+          <DatePicker
             open={openDates}
             prompt="Enter a date range to filter by."
             firstDateLabel={`${filter.labels.filter} on or after`}

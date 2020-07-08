@@ -28,7 +28,7 @@ const NewTaskResult = ({ task }) => {
           </Typography>
         </div>
 
-        {typeof task.startDate !== 'undefined' ? (
+        {task.startDate != null ? (
           <Typography style={{ display: 'inline-block' }} variant={variant.durationSummary}>
             Starting on {formatDate(task.startDate)} and ending on {formatDate(task.endDate)}.
           </Typography>

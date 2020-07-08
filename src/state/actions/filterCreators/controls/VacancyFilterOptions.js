@@ -1,10 +1,12 @@
+import { VACANCY_STATUS } from '../../../../constants/Constants';
+
 const createExecute = (skillIds, vacancies) => (tasks) => {
   return tasks.filter(
     (task) =>
       vacancies.filter(
         (vacancy) =>
           vacancy.taskId === task.id &&
-          vacancy.status === 'Open' &&
+          vacancy.status === VACANCY_STATUS.OPEN &&
           skillIds.includes(vacancy.skillId)
       ).length > 0
   );

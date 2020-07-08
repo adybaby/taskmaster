@@ -27,7 +27,7 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
     <div className={classes.inspectorLine}>
       <div>
         <UserLink userId={userId} userName={userName} variant={variant.body} />
-        {typeof taskId !== 'undefined' ? (
+        {taskId != null ? (
           <>
             <Typography style={{ display: 'inline-block' }} variant={variant.body}>
               {'\u00A0'}for{'\u00A0'}
@@ -88,7 +88,7 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
     const grouped = {};
     vacanciesData.forEach((data) => {
       const currentRange = { startDate: data.startDate, endDate: data.endDate };
-      if (typeof grouped[data.taskId] === 'undefined') {
+      if (grouped[data.taskId] == null) {
         grouped[data.taskId] = {
           taskId: data.taskId,
           taskTitle: data.taskTitle,
@@ -98,7 +98,7 @@ export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
         const matchingDate = grouped[data.taskId].dates.find((existingRange) =>
           sameRange(existingRange, currentRange)
         );
-        if (typeof matchingDate !== 'undefined') {
+        if (matchingDate != null) {
           matchingDate.count += 1;
         } else {
           grouped[data.taskId].dates.push(currentRange);

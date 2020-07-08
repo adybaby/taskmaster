@@ -3,16 +3,16 @@ import config from '../config.json';
 
 const DEBUG = config.debugLogging;
 
-export const debug = (objs) => {
+export const debug = (...objs) => {
   if (DEBUG) {
-    console.log(objs);
+    console.log(...objs);
   }
 };
 
-export const error = (objs) => {
-  console.error(objs);
+export const error = (...objs) => {
+  console.error(...objs);
 };
 
-export const log = (objs) => {
-  console.log(objs);
+export const log = (...objs) => {
+  console.log(...objs);
 };

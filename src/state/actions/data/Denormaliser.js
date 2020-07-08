@@ -1,4 +1,5 @@
 import { formatUserName } from '../../../util/Users';
+import { VACANCY_STATUS } from '../../../constants/Constants';
 
 const getContributionLinks = (
   taskId,
@@ -78,7 +79,7 @@ export const denormaliseLinks = (
 
       // count the number of distinct skills vacant in this task
       const requiredSkillsWithDupes = taskVacancies
-        .filter((tv) => tv.status === 'Open')
+        .filter((tv) => tv.status === VACANCY_STATUS.OPEN)
         .map((tv) => tv.skillId);
       const requiredSkillsCounts = {};
       for (let i = 0; i < requiredSkillsWithDupes.length; i++) {

@@ -12,31 +12,29 @@ import { setFilterBarVisible } from './state/actions/FilterBarVisibleActions';
 
 export const TabParam = {
   encode(tab) {
-    return typeof tab !== 'undefined' && tab !== null && tab !== TABS.all ? tab.id : undefined;
+    return tab != null && tab !== TABS.all ? tab.id : undefined;
   },
 
   decode(strTab) {
-    return typeof strTab !== 'undefined' && strTab !== '' ? TABS[strTab] : undefined;
+    return strTab != null && strTab !== '' ? TABS[strTab] : undefined;
   },
 };
 
 export const ChartParam = {
   encode(chart) {
-    return typeof chart !== 'undefined' ? chart.id : undefined;
+    return chart != null ? chart.id : undefined;
   },
 
   decode(strChart) {
-    return typeof strChart !== 'undefined' && strChart !== ''
-      ? getResourceChartDefinition(strChart)
-      : undefined;
+    return strChart != null && strChart !== '' ? getResourceChartDefinition(strChart) : undefined;
   },
 };
 
 const encodeParamsForFilter = (params) => {
-  if (typeof params === 'undefined') {
+  if (params == null) {
     return undefined;
   }
-  if (params.length > 0 && typeof params[0].id !== 'undefined') {
+  if (params.length > 0 && params[0].id != null) {
     return params.map((param) => [param.id, param.checked].join('__'));
   }
   if (params.length !== 3) {
@@ -46,7 +44,7 @@ const encodeParamsForFilter = (params) => {
 };
 
 const decodeParamsForFilter = (paramStrs) => {
-  if (typeof paramStrs === 'undefined') {
+  if (paramStrs == null) {
     return undefined;
   }
   let params = paramStrs;
@@ -63,7 +61,7 @@ const decodeParamsForFilter = (paramStrs) => {
 
 export const FiltersParam = {
   encode({ filterDescriptions, filterParams }) {
-    if (typeof filterDescriptions === 'undefined' || filterDescriptions.length === 0) {
+    if (filterDescriptions == null || filterDescriptions.length === 0) {
       return undefined;
     }
     const encodedStr = filterDescriptions
@@ -74,7 +72,7 @@ export const FiltersParam = {
   },
 
   decode(strFilters) {
-    if (typeof strFilters === 'undefined' || strFilters === '') {
+    if (strFilters == null || strFilters === '') {
       return undefined;
     }
     const filterParams = {};
@@ -107,16 +105,16 @@ const HistoryWriter = ({ query, setQuery }) => {
     if (!initialised) {
       setInitialised(true);
       const { chart, bar, tab, filters } = query;
-      if (typeof tab !== 'undefined') {
+      if (tab != null) {
         dispatch(setCurrentTab(tab));
       }
-      if (typeof chart !== 'undefined') {
+      if (chart != null) {
         dispatch(setSelectedChart(chart));
       }
-      if (typeof bar !== 'undefined') {
+      if (bar != null) {
         dispatch(setFilterBarVisible(bar));
       }
-      if (typeof filters !== 'undefined') {
+      if (filters != null) {
         dispatch(setFiltersParams(filters));
       }
     }

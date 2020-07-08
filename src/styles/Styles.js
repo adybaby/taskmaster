@@ -213,6 +213,41 @@ export const useStyles = () =>
       padding: theme.spacing(2),
     },
 
+    // Common
+
+    filledButton: {
+      flexGrow: 0,
+      paddingTop: 0,
+      paddingBottom: 0,
+      paddingLeft: 5,
+      paddingRight: 5,
+      marginLeft: theme.spacing(1),
+      margin: 1,
+      alignSelf: 'center',
+      justifySelf: 'end',
+
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      '&:hover,&.Mui-selected&:hover': {
+        backgroundColor: vacancySignUpColor,
+      },
+    },
+    primaryButton: {
+      color: theme.palette.primary.main,
+      paddingLeft: theme.spacing(2),
+      fontWeight: 'bold',
+    },
+
+    dropDownLayout: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      justifyContent: 'space-between',
+    },
+    dropDownTitle: {},
+    dropDownControl: { minWidth: 150 },
+
     // AppBar
     appBar: {
       position: 'sticky',
@@ -370,6 +405,11 @@ export const useStyles = () =>
       backgroundColor: '#800000',
       color: 'white',
     },
+    filterBarHint: {
+      marginLeft: theme.spacing(3),
+      marginRight: theme.spacing(2),
+      marginTop: theme.spacing(1),
+    },
 
     // Task List
     taskListContainer: {
@@ -393,6 +433,7 @@ export const useStyles = () =>
     },
     resultDescription: { paddingTop: '4px', paddingBottom: '4px' },
     resultFooter: { display: 'flex', flexDirection: 'column' },
+    taskListHint: { marginBottom: theme.spacing(2) },
 
     // Tasks
     taskHeading: {
@@ -414,7 +455,13 @@ export const useStyles = () =>
       },
     },
     taskContent: { padding: theme.spacing(3) },
-    taskSectionHeading: { paddingBottom: theme.spacing(1) },
+    taskSectionHeading: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingBottom: theme.spacing(1),
+    },
     taskSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
 
     // vacancies section
@@ -425,7 +472,7 @@ export const useStyles = () =>
     },
     vacancyContainer: {
       marginRight: theme.spacing(2),
-      [mediumOrLargeVp]: { minWidth: '320px' },
+      [mediumOrLargeVp]: { minWidth: '400px' },
       [smallVp]: { minWidth: '260px' },
       marginBottom: theme.spacing(2),
       display: 'flex',
@@ -440,8 +487,8 @@ export const useStyles = () =>
     vacancyHeading: {
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-between',
       alignItems: 'center',
+      justifyContent: 'space-between',
       padding: theme.spacing(1),
       backgroundColor: vacancyHeaderColor,
     },
@@ -458,6 +505,7 @@ export const useStyles = () =>
       paddingBottom: '2px',
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
+      marginLeft: theme.spacing(1),
       borderRadius: theme.shape.borderRadius,
       textTransform: 'uppercase',
     },
@@ -504,17 +552,34 @@ export const useStyles = () =>
         color: theme.palette.text.primary,
       },
     },
-    vacancySignUpButton: {
-      flexGrow: 0,
-      padding: 0,
-      margin: 1,
-      alignSelf: 'center',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.common.white,
-      '&:hover,&.Mui-selected&:hover': {
-        backgroundColor: vacancySignUpColor,
+
+    // AddEditVacancy
+    editVacancyHeader: {
+      padding: theme.spacing(2),
+      backgroundColor: interestDialogHeaderColor,
+    },
+    editVacancyContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    editVacancyPaper: {
+      [smallVp]: {
+        maxWidth: '100%',
+        width: '100%',
+        margin: 0,
       },
+    },
+    editVacancyBody: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+    },
+    editVacancyTitle: {},
+    vacancyComments: {
+      width: '100%',
+      marginTop: theme.spacing(3),
+      paddingBottom: theme.spacing(2),
+      paddingRight: theme.spacing(2),
     },
 
     // interest section
@@ -562,6 +627,24 @@ export const useStyles = () =>
     },
     interestButton: {},
 
+    // VacancyInterests
+    vacancyInterestsHeader: {
+      marginLeft: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+    },
+    vacancyInterestContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing(1),
+      borderTop: `1px solid ${theme.palette.divider}`,
+    },
+
+    // InterestsInfo
+    interestInfoTitle: { paddingBottom: theme.spacing(1) },
+    interestInfoContainer: { padding: theme.spacing(2) },
+
     // Map
     mapContent: { display: 'flex', padding: theme.spacing(2), flexDirection: 'column' },
     mapDriverTitle: {
@@ -569,6 +652,7 @@ export const useStyles = () =>
       borderBottom: `1px solid ${strongBorderColor}`,
       marginBottom: theme.spacing(2),
     },
+    mapHint: { marginBottom: theme.spacing(2) },
 
     // At a glance
     aagPanel: {
@@ -622,8 +706,6 @@ export const useStyles = () =>
     hintPanel: {
       border: `1px solid ${theme.palette.divider}`,
       backgroundColor: hintBgColor,
-      marginTop: theme.spacing(2),
-      marginBottom: theme.spacing(2),
     },
     hintTitle: {
       fontWeight: 'bold',
@@ -647,16 +729,6 @@ export const useStyles = () =>
       justifySelf: 'center',
       border: `1px solid ${theme.palette.divider}`,
       marginTop: theme.spacing(1),
-    },
-    hideHintButton: {
-      color: theme.palette.primary.main,
-      paddingLeft: theme.spacing(2),
-      fontWeight: 'bold',
-    },
-    hintButtonHelp: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
-      paddingBottom: theme.spacing(1),
     },
 
     // Charts
@@ -732,6 +804,7 @@ export const useStyles = () =>
       display: 'flex',
       flexWrap: 'wrap',
     },
+    chartHint: { marginTop: theme.spacing(1), marginBottom: theme.spacing(2) },
     // inspector
     inspectorToolTip: {
       zIndex: 99999,
@@ -775,7 +848,7 @@ export const useStyles = () =>
     userSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
     signedUpLink: { paddingBottom: theme.spacing(1) },
 
-    // eser actions
+    // User actions
     userActionsPanel: {
       paddingLeft: theme.spacing(2),
     },
@@ -828,7 +901,7 @@ export const useStyles = () =>
       marginTop: theme.spacing(1),
       backgroundColor: datePickerBgColor,
     },
-    datesDialogErrorMsg: { paddingTop: theme.spacing(2), color: errorColor },
+    errorMsg: { paddingTop: theme.spacing(2), color: errorColor },
     datePickerDayWrapper: {
       '&[data-highlight="false"]': {
         background: datePickerBgColor,

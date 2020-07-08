@@ -10,6 +10,7 @@ import { getFiltersForFilterBar } from '../../state/selectors/FilterSelector';
 import { DropDownFilter } from './DropDownFilter';
 import { SelectFilter } from './SelectFilter';
 import { CheckGroupFilter } from './CheckGroupFilter';
+import { Hint, HINT_IDS } from '../hints/Hint';
 
 export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const dispatch = useDispatch();
@@ -86,7 +87,10 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
       timeout="auto"
       unmountOnExit
     >
-      <div className={classes.filterBar}>{makeSelectControls()}</div>
+      <div>
+        <Hint id={HINT_IDS.FILTERS} className={classes.filterBarHint} />
+        <div className={classes.filterBar}>{makeSelectControls()}</div>
+      </div>
     </Collapse>
   );
 
@@ -98,6 +102,7 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
       variant="temporary"
       onClose={() => setFilterDrawerVisible(false)}
     >
+      <Hint id={HINT_IDS.FILTERS} />
       <List>{makeSelectControls()}</List>
       <div className={classes.drawerControls}>
         <Button

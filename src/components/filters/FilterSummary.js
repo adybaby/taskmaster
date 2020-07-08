@@ -20,7 +20,7 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
 
   const getFilterLabelAndValue = (filter, singleTask) => {
     let label = null;
-    if (typeof singleTask === 'undefined') {
+    if (singleTask == null) {
       label = filter.labels.filter;
     } else if (filter.selectsPastTasks()) {
       label = singleTask ? filter.labels.summaryPastSingular : filter.labels.summaryPastPlural;
@@ -97,7 +97,7 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
     </>
   );
 
-  if (typeof forControl !== 'undefined') {
+  if (forControl != null) {
     return applyStyles(getFilterLabelAndValue(forControl));
   }
 

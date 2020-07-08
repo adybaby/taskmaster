@@ -3,12 +3,7 @@
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, min, max } from 'date-fns';
 
 export const isValidDateString = (dateStr) => {
-  if (
-    typeof dateStr !== 'undefined' &&
-    dateStr !== null &&
-    typeof dateStr === 'string' &&
-    isNaN(dateStr)
-  ) {
+  if (dateStr != null && typeof dateStr === 'string' && isNaN(dateStr)) {
     const d = new Date(dateStr);
     return d !== 'Invalid Date' && !isNaN(d);
   }
@@ -16,18 +11,10 @@ export const isValidDateString = (dateStr) => {
 };
 
 export const isValidDate = (date) =>
-  typeof date !== 'undefined' &&
-  date !== null &&
-  date instanceof Date &&
-  date !== 'Invalid Date' &&
-  !isNaN(date);
+  date != null && date instanceof Date && date !== 'Invalid Date' && !isNaN(date);
 
 export const ukToUs = (dateStr) => {
-  if (
-    typeof dateStr === 'undefined' ||
-    dateStr === null ||
-    (typeof dateStr !== 'string' && !isNaN(dateStr))
-  ) {
+  if (dateStr == null || (typeof dateStr !== 'string' && !isNaN(dateStr))) {
     return null;
   }
 
@@ -101,7 +88,7 @@ export const last = (date1, date2) => {
 // return the given date with the number of days added to it. if no date is given, returns towday.
 export const day = (date, days) => {
   const d = isValidDate(date) ? new Date(date.getTime()) : new Date();
-  if (typeof days === 'undefined' || days === null) return d;
+  if (days == null) return d;
   d.setDate(d.getDate() + days);
   return dateOnly(d);
 };
@@ -129,6 +116,8 @@ export const areDateRangesOverlapping = (range1, range2) =>
   !(before(range1.endDate, range2.startDate) || after(range1.startDate, range2.endDate));
 
 export const formatDate = (date) => {
+  if (date == null || date === '' || typeof date === 'string') return date;
+
   const monthNames = [
     'Jan',
     'Feb',
@@ -165,7 +154,7 @@ export const formatDateRange = ({ startDate, endDate }) => {
 
 export const filterTasksByDate = (tasks, range, dateField) => {
   return tasks.filter((task) => {
-    if (typeof task[dateField] === 'undefined' || task[dateField] === null) return false;
+    if (task[dateField] == null) return false;
 
     const date = dateOnly(task[dateField]).getTime();
     const startDate = dateOnly(range.startDate).getTime();

@@ -24,13 +24,13 @@ const createIntegerSorter = (field) => (tasks) => [...tasks].sort((a, b) => a[fi
 
 const createDateSorter = (dateField) => (tasks) =>
   [...tasks].sort((a, b) => {
-    if (typeof a[dateField] === 'undefined') {
-      if (typeof b[dateField] === 'undefined') {
+    if (a[dateField] == null) {
+      if (b[dateField] == null) {
         return 0;
       }
       return 1;
     }
-    if (typeof b[dateField] === 'undefined') {
+    if (b[dateField] == null) {
       return -1;
     }
     return a[dateField] - b[dateField];
@@ -50,11 +50,7 @@ const prioritySorter = (tasks) =>
     if (a.type !== b.type) {
       return sortOrderForType(a.type) - sortOrderForType(b.type);
     }
-    if (
-      a.priority === b.priority &&
-      typeof a.cost !== 'undefined' &&
-      typeof b.cost !== 'undefined'
-    ) {
+    if (a.priority === b.priority && a.cost != null && b.cost != null) {
       return sortOrderForCost(a.cost) - sortOrderForCost(b.cost);
     }
     return a.priority - b.priority;

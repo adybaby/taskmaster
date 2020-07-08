@@ -21,11 +21,24 @@ export const ACTIONS = {
 
 const noQueryMsg = (err = 'Unknown') =>
   `There was a problem executing the query. Error: ${err.message}`;
-const noServerMsg = (err = '404') =>
+const noServerMsg = (err = new Error('No error given')) =>
   `There was a problem contacting the TaskMaster server. Is it running? Error: ${err.message}`;
+const generalErrMsg = (err = new Error('No error given')) =>
+  `There was an unexpected error compiling the query. ${err.message}`;
+const nullValueErrMsg = (valueName) =>
+  `Cannot execute query: ${valueName} cannot be null or undefined`;
 
 export const query = (action, entity, updateOrQuery) =>
   new Promise((resolve, reject) => {
+    if (action == null) {
+      reject(nullValueErrMsg('action'));
+    }
+    if (entity == null) {
+      reject(nullValueErrMsg('entity'));
+    }
+    if (updateOrQuery == null) {
+      reject(nullValueErrMsg('updateOrQuery'));
+    }
     try {
       fetch(QUERY_URL, {
         method: 'POST',
@@ -76,9 +89,9 @@ export const query = (action, entity, updateOrQuery) =>
           }
         })
         .catch((err) => {
-          reject(noServerMsg(err));
+          reject(generalErrMsg(err));
         });
     } catch (err) {
-      reject(noServerMsg(err));
+      reject(generalErrMsg(err));
     }
   });

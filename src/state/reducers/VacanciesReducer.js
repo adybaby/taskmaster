@@ -5,7 +5,7 @@ export const vacanciesReducer = (state = [], action) => {
     case ACTION_TYPES.SET_VACANCIES: {
       return action.vacancies;
     }
-    case ACTION_TYPES.ADD_VACANCY_TO_STATE: {
+    case ACTION_TYPES.UPDATE_VACANCY_IN_STATE: {
       return [...state, action.vacancy];
     }
     case ACTION_TYPES.DELETE_VACANCY_FROM_STATE: {

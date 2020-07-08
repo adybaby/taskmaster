@@ -46,14 +46,14 @@ export const TaskLink = ({ taskId, taskTitle, inLabelBrackets, taskIcon, ...typo
   return (
     <Typography style={{ display: 'inline-block' }} {...typographyProps}>
       <Link className={classes.link} to={`/${URLS.TASK}/${taskId}`}>
-        {typeof taskIcon !== 'undefined' ? (
+        {taskIcon != null ? (
           <>
             {taskIcon}
             {`\u00A0`}
             {`\u00A0`}
           </>
         ) : null}
-        {`${taskTitle}${typeof inLabelBrackets !== 'undefined' ? ` (${inLabelBrackets})` : ''}`}
+        {`${taskTitle}${inLabelBrackets != null ? ` (${inLabelBrackets})` : ''}`}
       </Link>
     </Typography>
   );

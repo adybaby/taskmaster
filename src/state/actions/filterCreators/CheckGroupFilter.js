@@ -11,7 +11,7 @@ export class CheckGroupFilter extends Filter {
     const maxChecked = 20;
 
     super(filterProps);
-    if (typeof options === 'undefined' || options === null || options.length === 0) {
+    if (options == null || options.length === 0) {
       throw new Error('Cannot construct a check group filter without options');
     }
 

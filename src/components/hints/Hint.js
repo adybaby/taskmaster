@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useSelector, useDispatch } from 'react-redux';
 import { Divider, Button } from '@material-ui/core';
@@ -10,6 +10,7 @@ import * as logger from '../../util/Logger';
 const variant = typographyVariant.hint;
 
 export const HINT_IDS = {
+  HINTS: 'hints',
   INTRO: 'intro',
   DRIVERS: 'drivers',
   ENABLERS: 'enablers',
@@ -19,13 +20,17 @@ export const HINT_IDS = {
   FILTERS: 'filters',
 };
 
-export const Hint = ({ id }) => {
+export const Hint = ({ id, ...props }) => {
   const classes = useStyles()();
   const currentUser = useSelector((state) => state.currentUser);
-  const [hidden, setHidden] = useState(currentUser.disabledHints.includes(id));
+  const [hidden, setHidden] = useState();
+  const [hint, setHint] = useState();
   const dispatch = useDispatch();
 
-  const hint = hints.find((h) => h.id === id);
+  useEffect(() => {
+    setHint(hints.find((h) => h.id === id));
+    setHidden(currentUser.disabledHints.includes(id));
+  }, [id, currentUser]);
 
   const hideHint = () => {
     dispatch(
@@ -41,31 +46,32 @@ export const Hint = ({ id }) => {
     );
   };
 
-  return hidden ? null : (
-    <div className={classes.hintPanel}>
-      <Typography variant={variant.title} className={classes.hintTitle}>
-        {hint.title}
-      </Typography>
-      {hint.blocks.map((block, index) => (
-        <div key={index} className={classes.hintBlock}>
-          <Typography variant={variant.subTitle} className={classes.hintSubTitle}>
-            {block.title}
-          </Typography>
-          <Typography variant={variant.body}>{block.text}</Typography>
-          {block.img != null ? (
-            <img className={classes.hintImage} src={`../img/${block.img}`} alt={block.imgAlt}></img>
-          ) : null}
-        </div>
-      ))}
-      <Divider />
-      <div>
-        <Button className={classes.hideHintButton} onClick={hideHint}>
-          HIDE HINT
-        </Button>
-        <div className={classes.hintButtonHelp}>
-          <Typography variant={variant.help}>
-            (You can show hints again later by resetting them from your user profile)
-          </Typography>
+  return hidden || hint == null ? null : (
+    <div {...props}>
+      <div className={classes.hintPanel}>
+        <Typography variant={variant.title} className={classes.hintTitle}>
+          {hint.title}
+        </Typography>
+        {hint.blocks.map((block, index) => (
+          <div key={index} className={classes.hintBlock}>
+            <Typography variant={variant.subTitle} className={classes.hintSubTitle}>
+              {block.title}
+            </Typography>
+            <Typography variant={variant.body}>{block.text}</Typography>
+            {block.img != null ? (
+              <img
+                className={classes.hintImage}
+                src={`../img/${block.img}`}
+                alt={block.imgAlt}
+              ></img>
+            ) : null}
+          </div>
+        ))}
+        <Divider />
+        <div>
+          <Button className={classes.primaryButton} onClick={hideHint}>
+            HIDE HINT
+          </Button>
         </div>
       </div>
     </div>

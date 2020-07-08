@@ -15,12 +15,7 @@ const GbClearableDatePicker = (props) => {
 
   useEffect(() => {
     if (!isSynced) {
-      if (
-        typeof value !== 'undefined' &&
-        value !== null &&
-        value !== '' &&
-        isValidDateString(ukToUs(value))
-      ) {
+      if (value != null && value !== '' && isValidDateString(ukToUs(value))) {
         setIntVal(new Date(ukToUs(value)));
       }
     }
