@@ -115,7 +115,11 @@ export const SignedUpLinks = ({ user, ...typographyProps }) => {
   return delimitLinks(
     user.signedUp.map((signedUp, index) => (
       <div key={index} className={classes.signedUpLink}>
-        <TaskLink taskId={signedUp.id} taskTitle={signedUp.title} {...typographyProps} />
+        <TaskLink
+          taskId={signedUp.id}
+          taskTitle={`${signedUp.title} (${capitalize(signedUp.skillTitle)})`}
+          {...typographyProps}
+        />
         <br />
         <Typography {...typographyProps}>
           {formatDate(signedUp.startDate)}
@@ -197,7 +201,7 @@ export const VacancyLinks = ({ task, ...typographyProps }) =>
         key={index}
         filterId={FILTER_IDS.VACANCIES}
         param={requiredSkill.id}
-        label={`${requiredSkill.count} x ${capitalize(requiredSkill.title)}`}
+        label={capitalize(requiredSkill.title)}
         {...typographyProps}
       />
     )),
@@ -209,14 +213,15 @@ export const VacancyLinks = ({ task, ...typographyProps }) =>
 export const ContributionLinks = ({ task, ...typographyProps }) =>
   delimitLinks(
     task.contributions.map((contribution, index) => (
-      <TaskLink
-        key={index}
-        taskId={contribution.id}
-        taskTitle={contribution.title}
-        inLabelBrackets={contribution.contribution}
-        taskIcon={task.type === 'DRIVER' ? ICONS.ENABLER : ICONS.INITIATIVE}
-        {...typographyProps}
-      />
+      <div key={index}>
+        <TaskLink
+          taskId={contribution.id}
+          taskTitle={contribution.title}
+          inLabelBrackets={contribution.contribution}
+          taskIcon={task.type === 'DRIVER' ? ICONS.ENABLER : ICONS.INITIATIVE}
+          {...typographyProps}
+        />
+      </div>
     )),
     '',
     'None',
@@ -226,14 +231,16 @@ export const ContributionLinks = ({ task, ...typographyProps }) =>
 export const ContributesToLinks = ({ task, ...typographyProps }) =>
   delimitLinks(
     task.contributesTo.map((contributesTo, index) => (
-      <TaskLink
-        key={index}
-        taskId={contributesTo.id}
-        taskTitle={contributesTo.title}
-        inLabelBrackets={contributesTo.contribution}
-        taskIcon={task.type === 'ENABLER' ? ICONS.DRIVER : ICONS.ENABLER}
-        {...typographyProps}
-      />
+      <div key={index}>
+        <TaskLink
+          key={index}
+          taskId={contributesTo.id}
+          taskTitle={contributesTo.title}
+          inLabelBrackets={contributesTo.contribution}
+          taskIcon={task.type === 'ENABLER' ? ICONS.DRIVER : ICONS.ENABLER}
+          {...typographyProps}
+        />
+      </div>
     )),
     '',
     'None',

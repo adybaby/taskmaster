@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Divider, Button } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import hints from './hints.json';
-import { updateUser } from '../../state/actions/UserActions';
+import * as db from '../../db/Db';
 import * as logger from '../../util/Logger';
 
 const variant = typographyVariant.hint;
@@ -25,7 +25,6 @@ export const Hint = ({ id, ...props }) => {
   const currentUser = useSelector((state) => state.currentUser);
   const [hidden, setHidden] = useState();
   const [hint, setHint] = useState();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setHint(hints.find((h) => h.id === id));
@@ -33,17 +32,13 @@ export const Hint = ({ id, ...props }) => {
   }, [id, currentUser]);
 
   const hideHint = () => {
-    dispatch(
-      updateUser(
-        { id: currentUser.id, disabledHints: [...currentUser.disabledHints, id] },
-        () => {
-          setHidden(true);
-        },
-        (e) => {
-          logger.error("Couldn't disable hint", e);
-        }
-      )
-    );
+    db.upserttUser({ id: currentUser.id, disabledHints: [...currentUser.disabledHints, id] })
+      .then(() => {
+        setHidden(true);
+      })
+      .catch((e) => {
+        logger.error("Couldn't disable hint", e);
+      });
   };
 
   return hidden || hint == null ? null : (

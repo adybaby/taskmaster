@@ -1,6 +1,6 @@
 import { stringDatesToRealDates } from '../../util/Dates';
 
-import * as server from '../../state/actions/data/server/ServerInterface';
+import * as db from '../../db/Db';
 import tasksFile from './tasks.json';
 import usersFile from './users.json';
 import contributionLinksFile from './contribution_links.json';
@@ -8,7 +8,8 @@ import vacanciesFile from './vacancies.json';
 import interestFile from './interest.json';
 import skillsFile from './skills.json';
 import * as logger from '../../util/Logger';
-import { setDbStatus, DB_STATUS } from '../../state/actions/DbStatusActions';
+import { setDbStatus } from '../../state/actions/DbStatusActions';
+import { DB_STATUS } from '../../constants/Constants';
 
 export const loadAll = () =>
   new Promise((resolve) => {
@@ -34,8 +35,7 @@ export const loadAll = () =>
 const findAll = (entityType) =>
   new Promise((resolve, reject) => {
     logger.log(`Retrieving ids of all ${entityType}s`);
-    server
-      .query(server.ACTIONS.FIND, entityType, {})
+    db.findAll(entityType)
       .then((results) => {
         logger.log(`Retrieved ${results.length} ${entityType}s`);
         resolve(results);
@@ -49,7 +49,16 @@ const deleteAll = (entityType, entities) =>
   new Promise((resolve, reject) => {
     logger.log(`Deleting ${entities.length} ${entityType}s`);
     Promise.all(
-      entities.map((entity) => server.query(server.ACTIONS.DELETE, entityType, entity.id))
+      entities.map((entity, key) => {
+        if (entity.id == null) {
+          logger.error(
+            `Cannot delete entity at position ${key} in ${entityType} state because it does not have an id.`,
+            entity
+          );
+          return resolve();
+        }
+        return db.deleteOne(entityType, entity.id);
+      })
     )
       .then((results) => {
         logger.log(`Deleted ${results.length} ${entityType}s`);
@@ -63,7 +72,7 @@ const deleteAll = (entityType, entities) =>
 const updateAll = (entityType, entities) =>
   new Promise((resolve, reject) => {
     logger.log(`Updating ${entities.length} ${entityType}s`);
-    Promise.all(entities.map((entity) => server.query(server.ACTIONS.UPDATE, entityType, entity)))
+    Promise.all(entities.map((entity) => db.upsert(entityType, entity)))
       .then((results) => {
         logger.log(`Updated ${results.length} ${entityType}s`);
         resolve(results);
@@ -91,12 +100,12 @@ const overwriteDb = (data) =>
     logger.log('Overwriting data from JSON files..');
     logger.log(data);
     Promise.all([
-      replaceAllEntities(server.ENTITIES.TASK, data.tasks),
-      replaceAllEntities(server.ENTITIES.USER, data.users),
-      replaceAllEntities(server.ENTITIES.SKILL, data.skills),
-      replaceAllEntities(server.ENTITIES.VACANCY, data.vacancies),
-      replaceAllEntities(server.ENTITIES.INTEREST, data.interest),
-      replaceAllEntities(server.ENTITIES.CONTRIBUTION, data.contributionLinks),
+      replaceAllEntities(db.TYPE.TASK, data.tasks),
+      replaceAllEntities(db.TYPE.USER, data.users),
+      replaceAllEntities(db.TYPE.SKILL, data.skills),
+      replaceAllEntities(db.TYPE.VACANCY, data.vacancies),
+      replaceAllEntities(db.TYPE.INTEREST, data.interest),
+      replaceAllEntities(db.TYPE.CONTRIBUTION, data.contributionLinks),
     ])
       .then(() => resolve())
       .catch((e) => reject(e));

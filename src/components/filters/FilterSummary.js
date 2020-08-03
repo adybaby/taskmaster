@@ -6,7 +6,7 @@ import pluralize from 'pluralize';
 import { useStyles } from '../../styles/Styles';
 import { resetAllFilterParams } from '../../state/actions/FilterParamActions';
 import { getFiltersForSummary } from '../../state/selectors/FilterSelector';
-import { getVisibleTasks } from '../../state/selectors/TaskListSelector';
+import { getVisibleTaskSummaries } from '../../state/selectors/TaskListSelector';
 import { formatDateRange } from '../../util/Dates';
 
 export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
@@ -16,7 +16,7 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const filtersForSummary = useSelector(getFiltersForSummary);
   const filters = useSelector((state) => state.filters);
   const filterParams = useSelector((state) => state.filterParams);
-  const taskListTotal = useSelector(getVisibleTasks).length;
+  const taskListTotal = useSelector(getVisibleTaskSummaries).length;
 
   const getFilterLabelAndValue = (filter, singleTask) => {
     let label = null;

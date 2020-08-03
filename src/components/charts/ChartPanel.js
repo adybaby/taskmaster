@@ -11,12 +11,20 @@ import { AutoSizer } from 'react-virtualized';
 import FileSaver from 'file-saver';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { formatDate } from '../../util/Dates';
-import { calculateResourceChartData } from '../../state/selectors/ResourceChartDataSelector';
 import { setSelectedChart } from '../../state/actions/SelectedChartActions';
-import { ICONS, RESOURCE_CHART_DEFINITIONS as chartGroups } from '../../constants/Constants';
+import {
+  ICONS,
+  UPDATE_STATUS,
+  FILTER_IDS,
+  DATE_RANGE,
+  RESOURCE_CHART_DEFINITIONS as chartGroups,
+} from '../../constants/Constants';
 import { ResourceBarChart } from './ResourceBarChart';
 import '../../../node_modules/react-vis/dist/style.css';
 import { Hint, HINT_IDS } from '../hints/Hint';
+import * as db from '../../db/Db';
+import * as logger from '../../util/Logger';
+import { GeneralError } from '../GeneralError';
 
 const ChartMenuGroup = ({
   chartGroup: { label, startOpen, charts },
@@ -63,21 +71,43 @@ export const ChartPanel = () => {
   const classes = useStyles()();
   const dispatch = useDispatch();
   const variant = typographyVariant.chart;
-  const resourceSeriesSets = useSelector(calculateResourceChartData);
-  const [dataPoint, setDataPoint] = useState(null);
+
   const selectedChart = useSelector((state) => state.selectedChart);
+  const filterParams = useSelector((state) => state.filterParams);
+
+  const [updateStatus, setUpdateStatus] = useState(null);
+
+  const [resourceSeriesSets, setResourceSeriesSets] = useState(null);
+  const [dataPoint, setDataPoint] = useState(null);
   const [inspectorPanel, setInspectorPanel] = useState(null);
+
   const [inspectorDrawerVisible, setInspectorDrawerVisible] = useState(false);
   const [chartSelectDrawerVisible, setChartSelectDrawerVisible] = useState(false);
+
   const [mousePosition, setMousePosition] = useState(0);
   const [downloadEnabled, setDownloadEnabled] = useState(true);
   const [winWidth, setWinWidth] = useState(window.innerWidth);
   const [winHeight, setWinHeight] = useState(window.innerHeight);
 
+  const [errorMsg, setErrorMsg] = useState(null);
+
   const updateWindowDimensions = () => {
     setWinHeight(window.innerHeight);
     setWinWidth(window.innerHeight);
   };
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(
+    () => () => {
+      setMounted(false);
+    },
+    []
+  );
 
   useEffect(() => {
     window.addEventListener('resize', updateWindowDimensions);
@@ -89,6 +119,43 @@ export const ChartPanel = () => {
     },
     []
   );
+
+  useEffect(() => {
+    setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
+  }, [filterParams]);
+
+  useEffect(() => {
+    const getChartFilters = () => {
+      const chartRangeParams = filterParams[FILTER_IDS.CHART_RANGE];
+      return {
+        filterSkills: filterParams[FILTER_IDS.SKILLS_RANGE]
+          .filter((param) => param.checked)
+          .map((param) => param.id),
+        filterDateRange:
+          chartRangeParams[0] === DATE_RANGE.CUSTOM_DATES.id
+            ? { startDate: chartRangeParams[1], endDate: chartRangeParams[2] }
+            : DATE_RANGE[chartRangeParams[0]].range,
+      };
+    };
+
+    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE && mounted) {
+      setUpdateStatus(UPDATE_STATUS.UPDATING);
+      db.getChart(getChartFilters())
+        .then((results) => {
+          if (mounted) {
+            setResourceSeriesSets(results);
+            setUpdateStatus(UPDATE_STATUS.UPDATED);
+          }
+        })
+        .catch((e) => {
+          logger.error(e);
+          if (mounted) {
+            setErrorMsg(e);
+            setUpdateStatus(UPDATE_STATUS.ERROR);
+          }
+        });
+    }
+  }, [resourceSeriesSets, updateStatus, filterParams, mounted]);
 
   const handleChartMenuItemClicked = (chart) => {
     dispatch(setSelectedChart(chart));
@@ -164,28 +231,48 @@ export const ChartPanel = () => {
     FileSaver.saveAs(blob, `taskmaster_${selectedChart.seriesKey}.csv`);
   };
 
-  const resourceChart = (width) => (
-    <ResourceBarChart
-      chart={selectedChart}
-      seriesSet={resourceSeriesSets[selectedChart.seriesKey]}
-      skillsAndColors={resourceSeriesSets.skillsAndColors}
-      inspectorData={resourceSeriesSets.inspectorData}
-      width={width}
-      dataPoint
-      onValueMouseOver={(hoveredDataPoint, { event }) => {
-        setMousePosition({ x: event.clientX, y: event.clientY });
-        setDataPoint(hoveredDataPoint);
-      }}
-      onValueClick={(clickedDataPoint) => {
-        setInspectorPanel(clickedDataPoint.inspector);
-        setInspectorDrawerVisible(true);
-      }}
-      onValueMouseOut={() => {
-        setDataPoint(null);
-      }}
-      setDownloadEnabled={setDownloadEnabled}
-    />
-  );
+  const resourceChart = (width) => {
+    switch (updateStatus) {
+      case UPDATE_STATUS.UPDATING:
+        return (
+          <div className={classes.generalMessage}>
+            <Typography variant={variant.prompt}>Updating chart..</Typography>
+          </div>
+        );
+      case UPDATE_STATUS.UPDATED:
+        return (
+          <ResourceBarChart
+            chart={selectedChart}
+            seriesSet={resourceSeriesSets[selectedChart.seriesKey]}
+            skillsAndColors={resourceSeriesSets.skillsAndColors}
+            inspectorData={resourceSeriesSets.inspectorData}
+            width={width}
+            dataPoint
+            onValueMouseOver={(hoveredDataPoint, { event }) => {
+              setMousePosition({ x: event.clientX, y: event.clientY });
+              setDataPoint(hoveredDataPoint);
+            }}
+            onValueClick={(clickedDataPoint) => {
+              setInspectorPanel(clickedDataPoint.inspector);
+              setInspectorDrawerVisible(true);
+            }}
+            onValueMouseOut={() => {
+              setDataPoint(null);
+            }}
+            setDownloadEnabled={setDownloadEnabled}
+          />
+        );
+      case UPDATE_STATUS.ERROR:
+        return (
+          <GeneralError
+            errorMsg="There was an error retrieving the chart"
+            errorDetailsMsg={errorMsg}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   const chartMenuBody = () => (
     <List className={classes.chartMenuBody} component="nav" aria-label="charts list navigation">

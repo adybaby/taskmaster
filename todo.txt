@@ -1,14 +1,32 @@
-map prioritisation screen
-sort by priority
-change minor/major/etc and get quicktips for them
-priority 1 of x and a seeding hint
-filter bar open not passing with copy-paste url
-MAKE A VIDEO!
+fix bug: if set date ranges to both empty and OK then getDate of null error
+put email link on responses for interest
+record username against created by and modified by in db for each modification
 
+add/edit task
+prioritisation in map (inc priority 1 of x and a seeding hint)
+add editors to task
+
+nice to have:
+version tracking in tasks? (add previous versions to a list against the task on server and a version history tab)
+priorities chart?
+  - add chart to see number of usrs signed up, authored, with skills
+Add Capabilities
+
+prod:
+get auth0 redirect working
+(redact surnames)
+remove debug from config
+remove current user switcher
+Aria
+Comments
+Unit tests
+test: empty db
+
+
+MAKE A VIDEO!
  - change order of drivers and change status of drivers and enablers - active/disabled (fulfilled)/disabled (on hold)/disabled (replaced/no longer relevant)
  - higher than/lower than - list
  - change contribution of initiatives and enablers
-
 demo charts to find vacad want to narrow down
 back to initiatives - set my skills next year ux
 send url to boss
@@ -17,23 +35,4 @@ changes filter to designer
 send job back to me
 
 
-Charts:
-  - add chart to see number of usrs signed up, authored, with skills
 
-Add Capabilities
-
-Aria
-
-Unit testing
-
-DB back end server
-  - business tasks to:
-    - add task
-    - delete task
-    - update task
-    - add user
-    - delete user
-    - update user
-  - nodde back end for db persistence and accounts
-
-useQueryParam<T>(name: string, paramConfig: QueryParamConfig<T>, rawQuery?: ParsedQuery):  [T | undefined, (newValue: T, updateType?: UrlUpdateType) => void]

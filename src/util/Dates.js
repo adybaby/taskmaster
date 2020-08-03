@@ -1,6 +1,17 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-nested-ternary */
-import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, min, max } from 'date-fns';
+import {
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  min,
+  max,
+  parseISO,
+  isValid,
+} from 'date-fns';
+
+import * as logger from './Logger';
 
 export const isValidDateString = (dateStr) => {
   if (dateStr != null && typeof dateStr === 'string' && isNaN(dateStr)) {
@@ -179,7 +190,20 @@ export const firstLastDates = (tasks, users) => {
 
 // re serialises all the data passed, then deserialises it parsing the dates as actual date objects
 export const stringDatesToRealDates = (data) => {
-  return JSON.parse(JSON.stringify(data), (key, value) =>
-    isValidDateString(value) ? new Date(value) : value
-  );
+  return JSON.parse(JSON.stringify(data), (key, value) => {
+    if (!isNaN(value)) {
+      return value;
+    }
+    let newVal = value;
+    try {
+      const date = parseISO(value);
+      if (isValid(date)) {
+        newVal = date;
+      }
+    } catch (e) {
+      logger.error('Could not parse dates in provided data', e);
+    }
+
+    return newVal;
+  });
 };

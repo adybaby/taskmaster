@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Typography } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import { isValidDateString, ukToUs, beforeOrE } from '../../util/Dates';
@@ -14,12 +14,9 @@ export const DateErrors = ({
   const variant = typographyVariant.datesDialog;
   const [errors, setErrors] = useState([]);
 
-  const fieldValid = React.useCallback(
-    (field) => field === '' || isValidDateString(ukToUs(field)),
-    []
-  );
+  const fieldValid = useCallback((field) => field === '' || isValidDateString(ukToUs(field)), []);
 
-  const orderValid = React.useCallback(
+  const orderValid = useCallback(
     () =>
       startDateStr === '' ||
       endDateStr === '' ||
@@ -27,7 +24,7 @@ export const DateErrors = ({
     [startDateStr, endDateStr]
   );
 
-  const bothValid = React.useCallback(
+  const bothValid = useCallback(
     () => isValidDateString(ukToUs(startDateStr)) && isValidDateString(ukToUs(endDateStr)),
     [startDateStr, endDateStr]
   );

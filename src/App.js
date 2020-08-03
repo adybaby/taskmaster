@@ -9,15 +9,16 @@ import UseAnimations from 'react-useanimations';
 import { useAuth0 } from './Auth';
 import { StyledApp, useStyles } from './styles/Styles';
 import { URLS, DB_STATUS, ICONS } from './constants/Constants';
-import { initialise } from './state/actions/DataAndFilterLoaderActions';
+import { initialise } from './state/actions/StateInitialiser';
 import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
 import { Task } from './components/tasks/Task';
-import { ProfilesPanel } from './components/profile/ProfilesPanel';
 import { setCurrentUser } from './state/actions/CurrentUserActions';
-import { addUser } from './state/actions/UserActions';
 import HistoryWriter from './HistoryWriter';
 import * as logger from './util/Logger';
+import { overwriteDbWithJsonFiles } from './test/jsontest/JsonLoader';
+import * as db from './db/Db';
+import { ProfilePanel } from './components/profile/ProfilePanel';
 
 export const App = () => {
   const classes = useStyles()();
@@ -25,39 +26,60 @@ export const App = () => {
   const { loading, user } = useAuth0();
   const dispatch = useDispatch();
   const dbStatus = useSelector((state) => state.dbStatus);
-  const users = useSelector((state) => state.users);
   const currentUser = useSelector((state) => state.currentUser);
-  const [loginError, setLoginError] = useState(false);
+  const LOGIN_STATUS = {
+    NOT_LOGGED_IN: 'NOT_LOGGED_IN',
+    LOGGING_IN: 'LOGGING_IN',
+    LOGGED_IN: 'LOGGED_IN',
+    ERROR: 'ERROR',
+  };
+  const [loginStatus, setLoginStatus] = useState(LOGIN_STATUS.NOT_LOGGED_IN);
+
+  const RESET_DB = false;
 
   useEffect(() => {
     if (dbStatus === DB_STATUS.NOT_INITIALISED) {
-      dispatch(initialise());
+      if (!RESET_DB) {
+        dispatch(initialise());
+      } else {
+        dispatch(overwriteDbWithJsonFiles());
+      }
     }
-  }, [dispatch, dbStatus]);
+  }, [dispatch, dbStatus, RESET_DB]);
 
   useEffect(() => {
-    if (dbStatus === DB_STATUS.INITIALISED && user) {
-      const getUserFromState = () => users.find((u) => u.id === user.sub);
-      if (getUserFromState() == null) {
-        dispatch(
-          addUser(
-            user,
-            () => {
-              logger.log('Added new user..', user);
-              logger.log(user);
-            },
-            (e) => {
-              logger.error('Could not add new user..', e, user);
-              setLoginError(true);
-            }
-          )
-        );
-      }
-      if (currentUser == null && !loginError && getUserFromState() != null) {
-        dispatch(setCurrentUser(getUserFromState()));
-      }
+    if (
+      !loading &&
+      currentUser == null &&
+      dbStatus === DB_STATUS.INITIALISED &&
+      user &&
+      loginStatus === LOGIN_STATUS.NOT_LOGGED_IN
+    ) {
+      logger.debug('logging in user..', user);
+      setLoginStatus(LOGIN_STATUS.LOGGING_IN);
+      db.getFullUser(user.sub)
+        .then((retrievedUser) => {
+          if (retrievedUser == null) {
+            db.upserttUser(retrievedUser)
+              .then(() => {
+                logger.debug('Added a new user to the database', retrievedUser);
+              })
+              .catch((e) => {
+                logger.error('Problem adding this new user to the database');
+                logger.error(e);
+                setLoginStatus(LOGIN_STATUS.ERROR);
+              });
+          }
+          dispatch(setCurrentUser(retrievedUser));
+          setLoginStatus(LOGIN_STATUS.LOGGED_IN);
+        })
+        .catch((e) => {
+          logger.error("Problem retrieving the user's credentials from the database");
+          logger.error(e);
+          setLoginStatus(LOGIN_STATUS.ERROR);
+        });
     }
-  }, [dispatch, dbStatus, user, loginError, users, currentUser]);
+  }, [dispatch, dbStatus, user, currentUser, loginStatus, loading, LOGIN_STATUS]);
 
   const errMsg = (msg, subMsg) => (
     <div className={classes.initErrBg}>
@@ -117,8 +139,8 @@ export const App = () => {
             <Redirect to={`/${URLS.BROWSE}/`} />
           </Route>
           <Route path={`/${URLS.TASK}/:id`} component={Task} />
-          <Route path={`/${URLS.PROFILE}/:id`} component={ProfilesPanel} />
-          <Route path={`/${URLS.PROFILE}/`} component={ProfilesPanel} />
+          <Route path={`/${URLS.PROFILE}/:id`} component={ProfilePanel} />
+          <Route path={`/${URLS.PROFILE}/`} component={ProfilePanel} />
           <Route path={`/${URLS.BROWSE}/`} component={MainTabs} />
         </Switch>
       </StyledApp>
@@ -127,6 +149,7 @@ export const App = () => {
 
   switch (dbStatus) {
     case DB_STATUS.NOT_INITIALISED:
+      return null;
     case DB_STATUS.INITIALISING:
       return initMsg('Taskmaster is starting up..');
     case DB_STATUS.OPERATION_COMPLETE:
@@ -136,17 +159,21 @@ export const App = () => {
         'There was a problem contacting the database.',
         'If there are no known outages, please contact IT Support.'
       );
-    default: {
-      if (!user) {
-        return loginMsg();
+    case DB_STATUS.INITIALISED: {
+      switch (loginStatus) {
+        case LOGIN_STATUS.NOT_LOGGED_IN:
+          return loginMsg();
+        case LOGIN_STATUS.LOGGING_IN:
+          return initMsg('Taskmaster is logging you in..');
+        case LOGIN_STATUS.ERROR:
+          return errMsg('There was a problem logging you in.  Please contact IT Support.');
+        case LOGIN_STATUS.LOGGED_IN:
+          return appMain();
+        default:
+          return null;
       }
-      if (loginError) {
-        return errMsg('There was a problem adding you as a user.  Please contact IT Support.');
-      }
-      if (loading || currentUser === null) {
-        return initMsg('Taskmaster is logging you in..');
-      }
-      return appMain();
     }
+    default:
+      return null;
   }
 };

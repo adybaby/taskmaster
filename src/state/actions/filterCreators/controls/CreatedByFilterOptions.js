@@ -1,8 +1,13 @@
 import { formatUserName } from '../../../../util/Users';
 
-const createExecute = (userId) => (tasks) => tasks.filter((task) => task.createdBy === userId);
+import { store } from '../../../Store';
 
-export const createCreatedByFilterOptions = (users, currentUser) => [
+const createExecute = (userId) => (tasks) => {
+  const id = userId == null ? store.getState().currentUser.id : userId;
+  return tasks.filter((task) => task.createdBy === id);
+};
+
+export const createCreatedByFilterOptions = (users) => [
   {
     id: 'any',
     label: 'any author',
@@ -10,7 +15,7 @@ export const createCreatedByFilterOptions = (users, currentUser) => [
   {
     id: 'me',
     label: 'Me',
-    execute: createExecute(currentUser.id),
+    execute: createExecute(),
   },
   ...users
     .map((user) => ({

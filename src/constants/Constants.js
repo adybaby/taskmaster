@@ -15,6 +15,8 @@ import {
   DEFAULT_CHART as PKG_DEFAULT_CHART,
   getResourceChartDefinition as pkgGetResourceChartDefinition,
 } from './chart/ResourceChartDefinitions';
+import { UPDATE_STATUS as PKG_UPDATE_STATUS } from './common/UpdateStatus';
+import { DATE_RANGE as PKG_DATE_RANGE } from './filter/DateRange';
 
 export const URLS = PKG_URLS;
 export const DB_STATUS = PKG_DB_STATUS;
@@ -32,3 +34,7 @@ export const RESOURCE_CHART_DEFINITIONS = PKG_RESOURCE_CHART_DEFINITIONS;
 export const CHART_TYPES = PKG_CHART_TYPES;
 export const DEFAULT_CHART = PKG_DEFAULT_CHART;
 export const getResourceChartDefinition = pkgGetResourceChartDefinition;
+
+export const UPDATE_STATUS = PKG_UPDATE_STATUS;
+
+export const DATE_RANGE = PKG_DATE_RANGE;

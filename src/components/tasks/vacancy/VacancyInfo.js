@@ -16,6 +16,14 @@ export const VacancyInfo = ({ vacancy }) => {
       </Typography>
       <div className={classes.interestVacancyInfoTable}>
         <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
+          ID
+        </Typography>
+        <div className={classes.vacancyValueInner}>
+          <Typography variant={variant.value} className={classes.vacancyFieldValue}>
+            {vacancy.id}
+          </Typography>
+        </div>
+        <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
           Skill Group
         </Typography>
         <div className={classes.vacancyValueInner}>

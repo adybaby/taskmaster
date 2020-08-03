@@ -7,6 +7,7 @@ import {
   getDateRangeForYear,
   areDateRangesOverlapping,
 } from '../../../../util/Dates';
+import { DATE_RANGE } from '../../../../constants/Constants';
 
 const createExecute = (dateField, defaultParams) => (tasks, params) => {
   let startDate = null;
@@ -53,57 +54,39 @@ const createExecute = (dateField, defaultParams) => (tasks, params) => {
 export const createDateFilterOptions = (dateField, includeFuture) => {
   const options = [
     {
-      id: `any`,
-      label: 'at any time',
-      range: { startDate: null, endDate: null },
+      ...DATE_RANGE.ANY,
       execute: createExecute(dateField, { startDate: null, endDate: null }),
     },
     {
-      id: `today`,
-      label: 'today',
-      range: { startDate: day(), endDate: day() },
+      ...DATE_RANGE.TODAY,
       execute: createExecute(dateField, { startDate: day(), endDate: day() }),
     },
     {
-      id: `this_week`,
-      label: 'this week',
-      range: getDateRangeForWeek(day()),
+      ...DATE_RANGE.THIS_WEEK,
       execute: createExecute(dateField, getDateRangeForWeek(day())),
     },
     {
-      id: `this_month`,
-      label: 'this month',
-      range: getDateRangeForMonth(day()),
+      ...DATE_RANGE.THIS_MONTH,
       execute: createExecute(dateField, getDateRangeForMonth(day())),
     },
     {
-      id: `this_year`,
-      label: 'this year',
-      range: getDateRangeForYear(day()),
+      ...DATE_RANGE.THIS_YEAR,
       execute: createExecute(dateField, getDateRangeForYear(day())),
     },
     {
-      id: `past_week`,
-      label: 'in the past week',
-      range: { startDate: day(null, -7), endDate: day() },
+      ...DATE_RANGE.PAST_WEEK,
       execute: createExecute(dateField, { startDate: day(null, -7), endDate: day() }),
     },
     {
-      id: `past_month`,
-      label: 'in the past month',
-      range: { startDate: day(null, -31), endDate: day() },
+      ...DATE_RANGE.PAST_MONTH,
       execute: createExecute(dateField, { startDate: day(null, -31), endDate: day() }),
     },
     {
-      id: `past_year`,
-      label: 'in the past year',
-      range: { startDate: day(null, -365), endDate: day() },
+      ...DATE_RANGE.PAST_YEAR,
       execute: createExecute(dateField, { startDate: day(null, -365), endDate: day() }),
     },
     {
-      id: `older`,
-      label: 'over a year ago',
-      range: { startDate: null, endDate: day(null, -365) },
+      ...DATE_RANGE.OLDER,
       execute: createExecute(dateField, { startDate: null, endDate: day(null, -365) }),
     },
   ];
@@ -112,30 +95,22 @@ export const createDateFilterOptions = (dateField, includeFuture) => {
     options.push(
       ...[
         {
-          id: `coming_week`,
-          label: 'in the coming week',
-          range: { startDate: day(), endDate: day(null, 7) },
+          ...DATE_RANGE.COMING_WEEK,
           execute: createExecute(dateField, { startDate: day(), endDate: day(null, 7) }),
         },
         {
-          id: `coming_month`,
-          label: 'in the coming month',
-          range: { startDate: day(), endDate: day(null, 31) },
+          ...DATE_RANGE.COMING_MONTH,
           execute: createExecute(dateField, { startDate: day(), endDate: day(null, 31) }),
         },
         {
-          id: `coming_year`,
-          label: 'in the coming year',
-          range: { startDate: day(), endDate: day(null, 365) },
+          ...DATE_RANGE.COMING_YEAR,
           execute: createExecute(dateField, {
             startDate: day(),
             endDate: day(null, 365),
           }),
         },
         {
-          id: `next_year`,
-          label: 'next year',
-          range: getDateRangeForYear(day(null, 365)),
+          ...DATE_RANGE.NEXT_YEAR,
           execute: createExecute(dateField, getDateRangeForYear(day(null, 365))),
         },
       ]
@@ -143,8 +118,7 @@ export const createDateFilterOptions = (dateField, includeFuture) => {
   }
 
   options.push({
-    id: `custom_dates`,
-    label: 'Custom Range..',
+    ...DATE_RANGE.CUSTOM_DATES,
     datePicker: true,
     execute: createExecute(dateField),
   });

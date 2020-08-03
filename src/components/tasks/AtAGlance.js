@@ -100,12 +100,16 @@ export const AtAGlance = ({ task }) => {
         <div className={classes.aagValue}>
           <ContributionLinks task={task} variant={variant.value} />
         </div>
-        <Typography variant={variant.title} className={classes.aagTitle}>
-          Vacant Skills
-        </Typography>
-        <div className={classes.aagValue}>
-          <VacancyLinks task={task} variant={variant.value} />
-        </div>
+        {task.type === 'INITIATIVE' ? (
+          <>
+            <Typography variant={variant.title} className={classes.aagTitle}>
+              Vacant Skills
+            </Typography>
+            <div className={classes.aagValue}>
+              <VacancyLinks task={task} variant={variant.value} />
+            </div>
+          </>
+        ) : null}
         <Typography variant={variant.title} className={classes.aagTitle}>
           Related Links
         </Typography>

@@ -6,6 +6,7 @@ export const INTEREST_STATUS = {
 };
 
 export const VACANCY_STATUS = {
+  PREPARING: 'Preparing',
   OPEN: 'Open',
   CLOSED: 'Closed',
 };

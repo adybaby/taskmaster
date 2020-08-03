@@ -19,6 +19,7 @@ import { formatDateRange, equals } from '../../../util/Dates';
 import { DatePicker } from '../../datepicker/DatePicker';
 import { VacancyInfo } from './VacancyInfo';
 import { INTEREST_STATUS } from '../../../constants/Constants';
+import { formatUserName } from '../../../util/Users';
 
 export const InterestApplication = ({
   vacancy,
@@ -29,9 +30,7 @@ export const InterestApplication = ({
   ...other
 }) => {
   const classes = useStyles()();
-  const users = useSelector((state) => state.users);
   const currentUser = useSelector((state) => state.currentUser);
-  const interest = useSelector((state) => state.interest);
   const [localState, setLocalState] = useState(null);
   const [openDates, setOpenDates] = useState(false);
   const [customDates, setCustomDates] = useState(false);
@@ -40,9 +39,7 @@ export const InterestApplication = ({
 
   useEffect(() => {
     if (!mounted) {
-      const thisInterest = interest.find(
-        (i) => i.vacancyId === vacancy.id && i.userId === currentUser.id
-      );
+      const thisInterest = vacancy.interest.find((i) => i.userId === currentUser.id);
       if (!(thisInterest == null)) {
         setLocalState({ ...thisInterest });
         setExistingApplication(true);
@@ -61,7 +58,7 @@ export const InterestApplication = ({
       }
       setMounted(true);
     }
-  }, [interest, currentUser, vacancy, mounted]);
+  }, [currentUser, vacancy, mounted]);
 
   useEffect(() => {
     if (mounted) {
@@ -157,9 +154,9 @@ export const InterestApplication = ({
                 className={classes.interestSignUpOptionRadio}
                 value={INTEREST_STATUS.CONTACTING}
                 control={<Radio />}
-                label={`Contact the recruiter (${
-                  users.find((user) => user.id === vacancy.recruiterId).formattedName
-                }) to talk about the vacancy (does not sign you up)`}
+                label={`Contact the recruiter (${formatUserName(
+                  vacancy.recruiter
+                )}) to talk about the vacancy (does not sign you up)`}
               />
             </RadioGroup>
           </FormControl>

@@ -52,7 +52,12 @@ const chartDescriptions = [
 
 const daySummary = ({ noun, adjective }) => (count, skill, formattedDate) => {
   const absCount = Math.abs(count);
-  const displaySkill = skill === skill.toUpperCase() ? skill : skill.toLowerCase();
+  const displaySkill =
+    skill == null
+      ? '{No Skill Found}'
+      : skill === skill.toUpperCase()
+      ? skill
+      : skill.toLowerCase();
   return `${absCount === 0 ? 'No' : absCount} ${
     noun == null
       ? `${pluralize(displaySkill, absCount)} ${absCount === 1 ? 'is' : 'are'} ${

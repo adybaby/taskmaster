@@ -175,7 +175,7 @@ export const ResourceBarChart = ({
           {makeLegend()}
         </>
       ) : (
-        <div className={classes.noChartsMessage}>
+        <div className={classes.generalError}>
           <Typography variant={variant.prompt}>
             No data to display. Please refine your date range.
           </Typography>

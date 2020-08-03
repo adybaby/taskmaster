@@ -1,59 +1,29 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Paper, Button } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useStyles, typographyVariant } from '../../../styles/Styles';
 import { formatDate } from '../../../util/Dates';
 import { InterestApplication } from './InterestApplication';
-import { updateInterest, deleteInterest } from '../../../state/actions/InterestActions';
-import { deleteVacancy } from '../../../state/actions/VacancyActions';
 import * as logger from '../../../util/Logger';
+import * as db from '../../../db/Db';
 import { capitalize } from '../../../util/String';
 import { VacancyInterests } from './VacancyInterests';
-import { YesNoDialog } from '../../YesNoDialog';
 import { VACANCY_STATUS } from '../../../constants/Constants';
+import { AddEditVacancy } from './AddEditVacancy';
+import { formatUserName } from '../../../util/Users';
 
 const variant = typographyVariant.aag;
 
-export const Vacancy = ({ vacancy }) => {
-  const dispatch = useDispatch();
+export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
   const classes = useStyles()();
   const currentUser = useSelector((state) => state.currentUser);
-  const isRecruiter = vacancy.id === currentUser.id;
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-
+  const canEdit = vacancy.recruiterId === currentUser.id || task.createdBy === currentUser.id;
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
+  const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
 
-  const onActionsClick = () => {
+  const onInterestActionsClick = () => {
     setOpenInterestDialog(true);
-  };
-
-  const onInterestWithdrawn = (id) => {
-    setOpenInterestDialog(false);
-    dispatch(
-      deleteInterest(
-        id,
-        () => logger.debug(`Deleted Interest:${id}`),
-        (e) => logger.error(`Could not delete Interest${id}`, e)
-      )
-    );
-  };
-
-  const onDeleteClick = () => {
-    setConfirmDeleteOpen(true);
-  };
-
-  const handleDeleteVacancy = (confirmed) => {
-    setConfirmDeleteOpen(false);
-    if (confirmed) {
-      dispatch(
-        deleteVacancy(
-          vacancy.id,
-          () => logger.debug(`Deleted vacancy:${vacancy.id}`),
-          (e) => logger.error(`Could not delete vacancy${vacancy.id}`, e)
-        )
-      );
-    }
   };
 
   const onCloseInterestDialog = () => {
@@ -62,13 +32,59 @@ export const Vacancy = ({ vacancy }) => {
 
   const onInterestConfirmed = (interest) => {
     setOpenInterestDialog(false);
-    dispatch(
-      updateInterest(
-        interest,
-        () => logger.debug('Added Interest.', interest),
-        (e) => logger.error('Could not add Interest.', e, interest)
-      )
-    );
+    db.upsertInterest(interest)
+      .then(() => {
+        logger.debug('Added/Updated Interest.', interest);
+        onChanged();
+      })
+      .catch((e) => logger.error('Could not add Interest.', e, interest));
+  };
+
+  const onInterestWithdrawn = (id) => {
+    setOpenInterestDialog(false);
+    db.deleteOne(db.TYPE.INTEREST, id)
+      .then(() => {
+        logger.debug(`Deleted Interest: ${id}`);
+        onChanged();
+      })
+      .catch((e) => {
+        logger.error(`Could not delete Interest ${id}`, e);
+        onError(e);
+      });
+  };
+
+  const onChangeVacancyClick = () => {
+    setAddEditVacancyOpen(true);
+  };
+
+  const onCloseAddEditVacancyDialog = () => {
+    setAddEditVacancyOpen(false);
+  };
+
+  const onEditVacancyConfirmed = (vacancyChanges) => {
+    setAddEditVacancyOpen(false);
+    db.upsertVacancy(vacancyChanges)
+      .then(() => {
+        logger.debug('Updated Vacancy.', vacancyChanges);
+        onChanged();
+      })
+      .catch((e) => {
+        logger.error('Could not update Vacancy.', e, vacancyChanges);
+        onError(e);
+      });
+  };
+
+  const onDeleteVacancyConfirmed = () => {
+    setAddEditVacancyOpen(false);
+    db.deleteOne(db.TYPE.VACANCY, vacancy.id)
+      .then(() => {
+        logger.debug(`Deleted vacancy:${vacancy.id}`);
+        onChanged();
+      })
+      .catch((e) => {
+        logger.error(`Could not delete vacancy ${vacancy.id}`, e);
+        onError(e);
+      });
   };
 
   return (
@@ -88,12 +104,41 @@ export const Vacancy = ({ vacancy }) => {
               </Typography>
             </div>
           </div>
-          <Button classes={{ root: classes.primaryButton }} onClick={onDeleteClick}>
-            DELETE
-          </Button>
+          {canEdit ? (
+            <Button classes={{ root: classes.primaryButton }} onClick={onChangeVacancyClick}>
+              CHANGE..
+            </Button>
+          ) : null}
         </div>
         <div className={classes.vacancyBody}>
           <div className={classes.vacancyFieldsTable}>
+            <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
+              ID
+            </Typography>
+            <div className={classes.vacancyValueInner}>
+              <Typography variant={variant.value} className={classes.vacancyFieldValue}>
+                {vacancy.id}
+              </Typography>
+            </div>
+
+            <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
+              Created on
+            </Typography>
+            <div className={classes.vacancyValueInner}>
+              <Typography variant={variant.value} className={classes.vacancyFieldValue}>
+                {formatDate(vacancy.createdDate)}
+              </Typography>
+            </div>
+
+            <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
+              POC
+            </Typography>
+            <div className={classes.vacancyValueInner}>
+              <Typography variant={variant.value} className={classes.vacancyFieldValue}>
+                {formatUserName(vacancy.recruiter)}
+              </Typography>
+            </div>
+
             <Typography variant={variant.title} className={classes.vacancyFieldTitle}>
               Role
             </Typography>
@@ -120,8 +165,8 @@ export const Vacancy = ({ vacancy }) => {
                     {formatDate(vacancy.startDate)} to {formatDate(vacancy.endDate)}
                   </Typography>
                 </div>
-                {vacancy.status === VACANCY_STATUS.OPEN && !isRecruiter ? (
-                  <Button classes={{ root: classes.filledButton }} onClick={onActionsClick}>
+                {vacancy.status === VACANCY_STATUS.OPEN ? (
+                  <Button classes={{ root: classes.filledButton }} onClick={onInterestActionsClick}>
                     INTEREST
                   </Button>
                 ) : null}
@@ -129,8 +174,18 @@ export const Vacancy = ({ vacancy }) => {
             </div>
           </div>
         </div>
-        <VacancyInterests vacancy={vacancy} />
+        <VacancyInterests vacancy={vacancy} task={task} onChanged={onChanged} onError={onError} />
       </Paper>
+
+      <AddEditVacancy
+        task={task}
+        vacancy={vacancy}
+        open={addEditVacancyOpen}
+        onClose={onCloseAddEditVacancyDialog}
+        onConfirm={onEditVacancyConfirmed}
+        onDelete={onDeleteVacancyConfirmed}
+      />
+
       <InterestApplication
         vacancy={vacancy}
         open={openInterestDialog}
@@ -138,14 +193,6 @@ export const Vacancy = ({ vacancy }) => {
         onConfirm={onInterestConfirmed}
         onWithdraw={onInterestWithdrawn}
       />
-      {confirmDeleteOpen ? (
-        <YesNoDialog
-          title="Delete Vacancy?"
-          msg="Are you sure you want to delete this vacancy and related interests? This can't be undone."
-          open={confirmDeleteOpen}
-          handleClose={handleDeleteVacancy}
-        />
-      ) : null}
     </>
   );
 };

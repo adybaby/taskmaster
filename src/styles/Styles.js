@@ -37,6 +37,7 @@ const interestDialogHeaderColor = '#b6d0e2';
 const vacancyOpenColor = 'green';
 const vacancyClosedColor = '#a6a6a6';
 const vacancySignUpColor = mainColor;
+const editVacancyIdColor = '#f2f2f2';
 export const CHART_COLORS = { MIN: 'lightGrey', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
 export const KELLY = [
   '#F2F3F4',
@@ -96,6 +97,7 @@ export const typographyVariant = {
     heading: 'h5',
     body: 'body1',
   },
+  error: { title: 'body1', details: 'caption' },
 };
 
 // viewport scaling
@@ -238,15 +240,56 @@ export const useStyles = () =>
       paddingLeft: theme.spacing(2),
       fontWeight: 'bold',
     },
+    primaryButtonDense: {
+      minHeight: 0,
+      minwidth: 0,
+      padding: 0,
+      color: theme.palette.primary.main,
+    },
 
     dropDownLayout: {
       display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
+      [smallVp]: {
+        flexDirection: 'column',
+      },
+      [mediumOrLargeVp]: {
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+      },
     },
-    dropDownTitle: {},
-    dropDownControl: { minWidth: 150 },
+    dropDownLayoutTwoLines: {
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    dropDownTitle: {
+      [smallVp]: {
+        marginTop: theme.spacing(2),
+      },
+    },
+    dropDownControl: {
+      minWidth: 150,
+      marginTop: 10,
+      borderRadius: 4,
+      fontSize: 16,
+      position: 'relative',
+      border: '1px solid #ced4da',
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#80bdff',
+        boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+      },
+    },
+
+    generalMessage: { paddingLeft: theme.spacing(2) },
+    generalError: {
+      display: 'flex',
+      flexDirection: 'column',
+      paddingLeft: theme.spacing(2),
+      color: errorColor,
+    },
 
     // AppBar
     appBar: {
@@ -464,7 +507,7 @@ export const useStyles = () =>
     },
     taskSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
 
-    // vacancies section
+    // Tasks: Vacancy boxes
     vacancySection: {
       display: 'flex',
       [smallVp]: { width: '100%', flexWrap: 'noWrap', flexDirection: 'column' },
@@ -472,7 +515,7 @@ export const useStyles = () =>
     },
     vacancyContainer: {
       marginRight: theme.spacing(2),
-      [mediumOrLargeVp]: { minWidth: '400px' },
+      [mediumOrLargeVp]: { minWidth: '460px' },
       [smallVp]: { minWidth: '260px' },
       marginBottom: theme.spacing(2),
       display: 'flex',
@@ -512,7 +555,7 @@ export const useStyles = () =>
     vacancyFieldsTable: {
       width: '100%',
       display: 'grid',
-      [mediumOrLargeVp]: { gridTemplateColumns: '20% 80%' },
+      [mediumOrLargeVp]: { gridTemplateColumns: '25% 75%' },
       [smallVp]: { gridTemplateColumns: '30% 70%' },
     },
     vacancyFieldTitle: {
@@ -553,8 +596,12 @@ export const useStyles = () =>
       },
     },
 
-    // AddEditVacancy
+    // AddEditVacancy Dialog
     editVacancyHeader: {
+      zIndex: 1000,
+      display: 'flex',
+      alignItems: 'start',
+      justifyContent: 'space-between',
       padding: theme.spacing(2),
       backgroundColor: interestDialogHeaderColor,
     },
@@ -574,7 +621,16 @@ export const useStyles = () =>
       paddingRight: theme.spacing(2),
       paddingBottom: theme.spacing(2),
     },
-    editVacancyTitle: {},
+    editVacancyTitle: {
+      editVacancyIdColor,
+    },
+    editVacancyId: {
+      background: editVacancyIdColor,
+      paddingTop: 10,
+      paddingBottom: 10,
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
     vacancyComments: {
       width: '100%',
       marginTop: theme.spacing(3),
@@ -701,6 +757,10 @@ export const useStyles = () =>
       paddingBottom: theme.spacing(1),
       paddingRight: theme.spacing(2),
     },
+    aagList: {
+      paddingBottom: theme.spacing(1),
+      paddingRight: theme.spacing(2),
+    },
 
     // Hints
     hintPanel: {
@@ -753,7 +813,6 @@ export const useStyles = () =>
       width: '180px',
       flexGrow: 0,
     },
-    noChartsMessage: { paddingLeft: theme.spacing(2), color: errorColor },
     chartLayoutBody: { flexGrow: 1 },
     chartHeadingContainer: {
       paddingTop: 4,

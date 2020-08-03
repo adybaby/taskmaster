@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Button } from '@material-ui/core';
 import { useStyles } from '../../../styles/Styles';
 import { InterestResponse } from './InterestResponse';
-import { updateInterest } from '../../../state/actions/InterestActions';
 import * as logger from '../../../util/Logger';
+import * as db from '../../../db/Db';
 import { UserLink } from '../../Link';
 import { INTEREST_STATUS, VACANCY_STATUS } from '../../../constants/Constants';
-import { updateVacancy } from '../../../state/actions/VacancyActions';
+import { formatUserName } from '../../../util/Users';
 
-export const VacancyInterests = ({ vacancy }) => {
+export const VacancyInterests = ({ vacancy, task, onChanged, onError }) => {
   const classes = useStyles()();
-  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.currentUser);
-  const interest = useSelector((state) => state.interest).filter((i) => i.vacancyId === vacancy.id);
-  const isRecruiter = vacancy.recruiterId === currentUser.id;
-  const users = useSelector((state) => state.users);
+  const canSeeInterest =
+    vacancy.recruiterId === currentUser.id || task.createdBy === currentUser.id;
   const [currentInterest, setCurrentInterest] = useState(null);
 
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
@@ -25,36 +23,43 @@ export const VacancyInterests = ({ vacancy }) => {
     setOpenInterestDialog(true);
   };
 
-  if (!isRecruiter || interest.length < 1) return null;
+  if (!canSeeInterest || vacancy.interest.length < 1) return null;
 
   const onClose = () => {
     setOpenInterestDialog(false);
   };
 
   const onChangeStatus = (accept, close) => {
-    const logSuccess = () => logger.debug('Updated Interest.', interest);
-    const logError = (e) => logger.error('Could not update Interest.', e, interest);
+    const logSuccess = () => logger.debug('Updated Interest.', vacancy.interest);
+    const logError = (e) => logger.error('Could not update Interest.', e, vacancy.interest);
     setOpenInterestDialog(false);
-    dispatch(
-      updateInterest(
-        {
-          ...currentInterest,
-          status: accept ? INTEREST_STATUS.ACCEPTED : INTEREST_STATUS.DECLINED,
-        },
-        () => {
-          if (accept) {
-            dispatch(
-              updateVacancy(
-                { ...vacancy, status: close ? VACANCY_STATUS.CLOSED : VACANCY_STATUS.OPEN },
-                logSuccess,
-                logError
-              )
-            );
-          }
-        },
-        logError
-      )
-    );
+    db.upsertInterest({
+      ...currentInterest,
+      status: accept ? INTEREST_STATUS.ACCEPTED : INTEREST_STATUS.DECLINED,
+    })
+      .then((updatedInterest) => {
+        if (accept) {
+          db.upsertVacancy({
+            ...vacancy,
+            status: close ? VACANCY_STATUS.CLOSED : VACANCY_STATUS.OPEN,
+          })
+            .then((updateVacancy) => {
+              logSuccess();
+              onChanged();
+            })
+            .catch((e) => {
+              logError(e);
+              onError(e);
+            });
+        } else {
+          logSuccess();
+          onChanged();
+        }
+      })
+      .catch((e) => {
+        onError(e);
+        logError(e);
+      });
   };
 
   return (
@@ -62,13 +67,10 @@ export const VacancyInterests = ({ vacancy }) => {
       <div className={classes.vacancyInterestsHeader}>
         <b>Interest</b>
       </div>
-      {interest.map((thisInterest, key) => (
+      {vacancy.interest.map((thisInterest, key) => (
         <div key={key} className={classes.vacancyInterestContainer}>
           <div>
-            <UserLink
-              userId={thisInterest.userId}
-              userName={users.find((user) => user.id === thisInterest.userId).formattedFullName}
-            />
+            <UserLink userId={thisInterest.userId} userName={formatUserName(thisInterest.user)} />
             {` (${thisInterest.status})`}
           </div>
           <Button

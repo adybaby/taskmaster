@@ -1,18 +1,21 @@
 import { VACANCY_STATUS } from '../../../../constants/Constants';
+import { store } from '../../../Store';
 
 const createExecute = (skillIds, vacancies) => (tasks) => {
+  const ids =
+    skillIds == null ? store.getState().currentUser.skills.map((skill) => skill.id) : skillIds;
   return tasks.filter(
     (task) =>
       vacancies.filter(
         (vacancy) =>
           vacancy.taskId === task.id &&
           vacancy.status === VACANCY_STATUS.OPEN &&
-          skillIds.includes(vacancy.skillId)
+          ids.includes(vacancy.skillId)
       ).length > 0
   );
 };
 
-export const createVacancyFilterOptions = (currentUser, vacancies, skills) => {
+export const createVacancyFilterOptions = (vacancies, skills) => {
   return [
     {
       id: 'any_vacancies',
@@ -22,10 +25,7 @@ export const createVacancyFilterOptions = (currentUser, vacancies, skills) => {
     {
       id: 'my_skills',
       label: 'my skills',
-      execute: createExecute(
-        currentUser.skills.map((skill) => skill.id),
-        vacancies
-      ),
+      execute: createExecute(null, vacancies),
     },
     ...skills.map((skill) => ({
       id: skill.id,
