@@ -20,7 +20,8 @@ export const AppBar = () => {
   const searchFilterParams = useSelector((state) => state.filterParams)[FILTER_IDS.SEARCH_FIELD];
   const [searchText, setSearchText] = useState('');
   const currentTab = useSelector((state) => state.currentTab);
-  const userName = useSelector((state) => state.currentUser).firstNames[0];
+  const currentUser = useSelector((state) => state.currentUser);
+  const actionsCount = currentUser.actions == null ? 0 : currentUser.actions.length;
 
   useEffect(() => {
     setSearchText(searchFilterParams[0]);
@@ -95,7 +96,13 @@ export const AppBar = () => {
         </Button>
       )}
       {isAuthenticated && (
-        <Tooltip title="View your user profile">
+        <Tooltip
+          title={
+            actionsCount > 0
+              ? `You have ${actionsCount} ${actionsCount === 1 ? 'action' : 'actions'}`
+              : 'View your user profile'
+          }
+        >
           <Button
             className={classes.appBarButton}
             color="inherit"
@@ -104,7 +111,8 @@ export const AppBar = () => {
             size="large"
           >
             {ICONS.PROFILE}
-            <span className={classes.hidingLabel}>{userName}</span>
+            <span className={classes.hidingLabel}>{currentUser.firstNames[0]}</span>
+            {actionsCount > 0 ? <span style={{ paddingLeft: 5 }}>({actionsCount})</span> : null}
           </Button>
         </Tooltip>
       )}

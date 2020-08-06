@@ -36,12 +36,24 @@ export const InterestApplication = ({
   const [customDates, setCustomDates] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [existingApplication, setExistingApplication] = useState(false);
+  const [alreadyResponded, setAlreadyResponsed] = useState(false);
 
   useEffect(() => {
     if (!mounted) {
       const thisInterest = vacancy.interest.find((i) => i.userId === currentUser.id);
       if (!(thisInterest == null)) {
-        setLocalState({ ...thisInterest });
+        let status = thisInterest.status;
+        if (
+          thisInterest.status === INTEREST_STATUS.ACCEPTED ||
+          thisInterest.status === INTEREST_STATUS.DECLINED
+        ) {
+          status = INTEREST_STATUS.APPLYING;
+          setAlreadyResponsed(true);
+        }
+        setLocalState({
+          ...thisInterest,
+          status,
+        });
         setExistingApplication(true);
       } else {
         setLocalState({
@@ -104,6 +116,16 @@ export const InterestApplication = ({
         <VacancyInfo vacancy={vacancy} />
         <Divider />
         <div className={classes.interestControlsContainer}>
+          {alreadyResponded ? (
+            <div className={classes.alreadyRespondedNote}>
+              <Typography variant="body1">
+                <b>
+                  The recruiter has already responsed to your application. If you change it, the
+                  recruiter will need to respond again.
+                </b>
+              </Typography>
+            </div>
+          ) : null}
           <FormControl component="fieldset">
             <RadioGroup
               aria-label="signUpOrContactOwner"

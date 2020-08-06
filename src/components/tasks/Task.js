@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Divider, Button, Tabs, Tab } from '@material-ui/core';
@@ -15,52 +15,55 @@ import { GeneralError } from '../GeneralError';
 
 const variant = typographyVariant.task;
 
+function useIsMountedRef() {
+  const isMountedRef = useRef(null);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  });
+  return isMountedRef;
+}
+
 export const Task = () => {
   const classes = useStyles()();
   const { id } = useParams();
   const dispatch = useDispatch();
   const [infoVisible, setInfoVisible] = useState(true);
   const [task, setTask] = useState(null);
-  const [mounted, setMounted] = useState(false);
   const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const isMountedRef = useIsMountedRef();
 
   useEffect(() => {
     dispatch(setCurrentTab(null));
-    setMounted(true);
   }, [dispatch]);
-
-  useEffect(
-    () => () => {
-      setMounted(false);
-    },
-    []
-  );
 
   useEffect(() => {
     setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
   }, [id]);
 
   useEffect(() => {
-    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE && mounted) {
+    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE) {
       setUpdateStatus(UPDATE_STATUS.UPDATING);
       db.getFullTask(id)
         .then((retrievedTask) => {
-          if (mounted) {
+          if (isMountedRef.current) {
             setTask(retrievedTask);
             setUpdateStatus(UPDATE_STATUS.UPDATED);
           }
         })
         .catch((e) => {
           logger.error(e);
-          if (mounted) {
+          if (isMountedRef.current) {
             setErrorMsg(e);
             setUpdateStatus(UPDATE_STATUS.ERROR);
           }
         });
     }
-  }, [id, task, updateStatus, mounted]);
+  }, [id, task, updateStatus, isMountedRef]);
 
   const onTabChange = () => {
     // eslint-disable-next-line no-alert
@@ -79,8 +82,8 @@ export const Task = () => {
     setAddEditVacancyOpen(false);
     db.upsertVacancy(vacancy)
       .then((updateVacancy) => {
-        setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
         logger.debug('Updated Vacancy.', updateVacancy);
+        setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
       })
       .catch((e) => {
         logger.error('Could not update Vacancy.', e, vacancy);

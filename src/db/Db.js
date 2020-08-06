@@ -12,11 +12,11 @@ import { stringDatesToRealDates } from '../util/Dates';
 import config from '../config.json';
 import * as logger from '../util/Logger';
 import { setTaskSummaries } from '../state/actions/TaskSummariesActions';
-import { setCurrentUser } from '../state/actions/CurrentUserActions';
 import { setSkills } from '../state/actions/SkillActions';
 import { TYPE as PKG_TYPE } from './Type';
 import { schema } from './Schema';
 import { setUsers } from '../state/actions/UserActions';
+import { setCurrentUser } from '../state/actions/CurrentUserActions';
 
 const SERVER_URL = config.serverUrl;
 const QUERY_URL = `${SERVER_URL}query`;
@@ -199,24 +199,18 @@ export const findOne = (type, id) => query({ action: ACTION.FIND_ONE, type, id }
 
 // Runs query and updates state
 // Runs queryAction then dispatchAction with the results of queryAction, or the results of cacheQueryAction if that is provided
-const updateState = ({ upsertQuery, upsertError, cacheQuery, cacheError, dispatchAction }) =>
+const upsertThenRefreshState = ({ upsertQuery, upsertError, stateRefreshers }) =>
   new Promise((resolve, reject) => {
     upsertQuery()
-      .then((result) => {
-        if (cacheQuery != null) {
-          cacheQuery()
-            .then((cacheResult) => {
-              store.dispatch(dispatchAction(cacheResult));
-              resolve(result);
-            })
-            .catch((e) => {
-              logger.error(e);
-              reject(new Error(`${cacheError}  The nested error is : ${e.message}`));
-            });
-        } else {
-          store.dispatch(dispatchAction(result));
-          resolve(result);
-        }
+      .then(() => {
+        Promise.all(stateRefreshers.map((su) => su()))
+          .then(() => {
+            resolve();
+          })
+          .catch((e) => {
+            logger.error(e);
+            reject(e);
+          });
       })
       .catch((e) => {
         logger.error(e);
@@ -224,72 +218,94 @@ const updateState = ({ upsertQuery, upsertError, cacheQuery, cacheError, dispatc
       });
   });
 
+const refreshAllInState = (type, dispatch) =>
+  new Promise((resolve, reject) => {
+    query({ action: ACTION.FIND_ALL, type })
+      .then((results) => {
+        store.dispatch(dispatch(results));
+        resolve(results);
+      })
+      .catch((e) => {
+        logger.error(e);
+        reject(
+          new Error(
+            `Could not local refresh cache for type ${type}  The nested error is : ${e.message}`
+          )
+        );
+      });
+  });
+
+const refreshTaskSummaries = () =>
+  new Promise((resolve, reject) => {
+    query({ action: ACTION.TASK_SUMMARIES })
+      .then((taskSummaries) => {
+        store.dispatch(setTaskSummaries(taskSummaries));
+        resolve(taskSummaries);
+      })
+      .catch((e) => {
+        logger.error(e);
+        reject(
+          new Error(`Could not local refresh task summaries. The nested error is : ${e.message}`)
+        );
+      });
+  });
+
+const refreshCurrentUser = () =>
+  new Promise((resolve, reject) => {
+    query({ action: ACTION.FULL_USER, id: store.getState().currentUser.id })
+      .then((user) => {
+        store.dispatch(setCurrentUser(user));
+        resolve(user);
+      })
+      .catch((e) => {
+        logger.error(e);
+        reject(new Error(`Could not refresh current user.  The nested error is : ${e.message}`));
+      });
+  });
+const refreshUsers = () => refreshAllInState(TYPE.USER, setUsers);
+const refreshSkills = () => refreshAllInState(TYPE.SKILL, setSkills);
+
 export const upserttUser = (user) =>
-  updateState({
-    upsertQuery: () =>
-      query({
-        action: ACTION.UPSERT,
-        type: TYPE.USER,
-        params: user,
-      }),
+  upsertThenRefreshState({
+    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.USER, params: user }),
     upsertError: 'Could not upsert skill.',
-    cacheQuery: () => query({ action: ACTION.FIND_ALL, type: TYPE.USER }),
-    cacheError: 'Could not update task summaries after updating vacancy.',
-    dispatchAction: setUsers,
+    stateRefreshers: [refreshUsers, refreshCurrentUser],
   });
 
 export const upsertVacancy = (vacancy) =>
-  updateState({
-    upsertQuery: () =>
-      query({
-        action: ACTION.UPSERT,
-        type: TYPE.VACANCY,
-        params: vacancy,
-      }),
+  upsertThenRefreshState({
+    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.VACANCY, params: vacancy }),
     upsertError: 'Could not upsert Vacancy.',
-    cacheQuery: () => query({ action: ACTION.TASK_SUMMARIES }),
-    cacheError: 'Could not update task summaries after updating vacancy.',
-    dispatchAction: setTaskSummaries,
+    stateRefreshers: [refreshTaskSummaries],
   });
 
 export const upsertInterest = (interest) =>
-  query({ action: ACTION.UPSERT, type: TYPE.INTEREST, params: interest });
+  upsertThenRefreshState({
+    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.INTEREST, params: interest }),
+    upsertError: 'Could not upsert Interest.',
+    stateRefreshers: [refreshUsers, refreshCurrentUser],
+  });
 
 export const upsertTask = (task) =>
-  updateState({
+  upsertThenRefreshState({
     upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.TASK, params: task }),
     upsertError: 'Could not upsert task.',
-    cacheQuery: () => query({ action: ACTION.TASK_SUMMARIES }),
-    cacheError: 'Could not update task summaries after updating task.',
-    dispatchAction: setTaskSummaries,
+    stateRefreshers: [refreshTaskSummaries],
   });
 
 export const upsertContributionLink = (contributionLink) =>
-  updateState({
+  upsertThenRefreshState({
     upsertQuery: () =>
-      query({
-        action: ACTION.UPSERT,
-        type: TYPE.CONTRIBUTION,
-        params: contributionLink,
-      }),
+      query({ action: ACTION.UPSERT, type: TYPE.CONTRIBUTION, params: contributionLink }),
     upsertError: 'Could not upsert new contribution to task.',
-    cacheQuery: () => query({ action: ACTION.TASK_SUMMARIES }),
-    cacheError: 'Could not update task summaries after updating new contribution to task.',
-    dispatchAction: setTaskSummaries,
+    stateRefreshers: [refreshTaskSummaries],
   });
 
 export const upsertSkill = (skill) =>
-  updateState({
-    upsertQuery: () =>
-      query({
-        action: ACTION.UPSERT,
-        type: TYPE.SKILL,
-        params: skill,
-      }),
+  upsertThenRefreshState({
+    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.SKILL, params: skill }),
     upsertError: 'Could not upsert skill.',
-    cacheQuery: () => query({ action: ACTION.FIND_ALL, type: TYPE.SKILL }),
-    cacheError: 'Could not update all skills after upserting skill.',
-    dispatchAction: setSkills,
+    stateRefreshers: [refreshSkills],
   });
 
 export const deleteOne = (type, id) => query({ action: ACTION.DELETE, type, id });

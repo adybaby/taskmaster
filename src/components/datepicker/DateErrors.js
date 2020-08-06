@@ -29,14 +29,29 @@ export const DateErrors = ({
     [startDateStr, endDateStr]
   );
 
+  const atLeastOneDate = useCallback(
+    () =>
+      !(startDateStr == null && endDateStr == null) && !(startDateStr === '' && endDateStr === ''),
+    [startDateStr, endDateStr]
+  );
+
   useEffect(() => {
     const errs = [];
     if (!fieldValid(startDateStr)) errs.push('The first date is not a valid date.');
     if (!bothValid() && requireBothDates) errs.push('You must enter both a start and an end date.');
     if (!fieldValid(endDateStr)) errs.push('The second date is not a valid date.');
     if (!orderValid()) errs.push('The first date should be before or the same as the last date.');
+    if (!requireBothDates && !atLeastOneDate()) errs.push('You must provide at least one date');
     setErrors(errs);
-  }, [endDateStr, startDateStr, fieldValid, orderValid, bothValid, requireBothDates]);
+  }, [
+    endDateStr,
+    startDateStr,
+    fieldValid,
+    orderValid,
+    bothValid,
+    atLeastOneDate,
+    requireBothDates,
+  ]);
 
   useEffect(() => {
     onValidityChange(errors);

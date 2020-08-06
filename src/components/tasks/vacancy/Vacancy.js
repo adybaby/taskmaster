@@ -9,7 +9,7 @@ import * as logger from '../../../util/Logger';
 import * as db from '../../../db/Db';
 import { capitalize } from '../../../util/String';
 import { VacancyInterests } from './VacancyInterests';
-import { VACANCY_STATUS } from '../../../constants/Constants';
+import { VACANCY_STATUS, INTEREST_STATUS } from '../../../constants/Constants';
 import { AddEditVacancy } from './AddEditVacancy';
 import { formatUserName } from '../../../util/Users';
 
@@ -21,6 +21,7 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
   const canEdit = vacancy.recruiterId === currentUser.id || task.createdBy === currentUser.id;
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
   const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
+  const currentUserInterest = vacancy.interest.find((i) => i.userId === currentUser.id);
 
   const onInterestActionsClick = () => {
     setOpenInterestDialog(true);
@@ -85,6 +86,49 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
         logger.error(`Could not delete vacancy ${vacancy.id}`, e);
         onError(e);
       });
+  };
+
+  const getInterestStatusDescription = () => {
+    if (currentUserInterest == null) return null;
+
+    let label = null;
+
+    switch (currentUserInterest.status) {
+      case INTEREST_STATUS.CONTACTING:
+        label = 'You have asked to speak to the recruiter';
+        break;
+      case INTEREST_STATUS.APPLYING:
+        label = 'You have applied for the vacancy';
+        break;
+      case INTEREST_STATUS.ACCEPTED:
+        label = 'You have been accepted for this vacancy';
+        break;
+      case INTEREST_STATUS.DECLINED:
+        label = 'The recruiter has declined your application';
+        break;
+      default:
+        break;
+    }
+
+    return (
+      <Typography variant={variant.value}>
+        <b>{label}</b>
+      </Typography>
+    );
+  };
+
+  const getInterestOptions = () => {
+    if (currentUserInterest != null)
+      return (
+        <Button classes={{ root: classes.filledButton }} onClick={onInterestActionsClick}>
+          EDIT YOUR INTEREST..
+        </Button>
+      );
+    return vacancy.status === VACANCY_STATUS.OPEN ? (
+      <Button classes={{ root: classes.filledButton }} onClick={onInterestActionsClick}>
+        INTERESTED?
+      </Button>
+    ) : null;
   };
 
   return (
@@ -164,12 +208,9 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
                   <Typography variant={variant.value}>
                     {formatDate(vacancy.startDate)} to {formatDate(vacancy.endDate)}
                   </Typography>
+                  {getInterestStatusDescription()}
                 </div>
-                {vacancy.status === VACANCY_STATUS.OPEN ? (
-                  <Button classes={{ root: classes.filledButton }} onClick={onInterestActionsClick}>
-                    INTEREST
-                  </Button>
-                ) : null}
+                {getInterestOptions()}
               </div>
             </div>
           </div>

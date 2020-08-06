@@ -1,4 +1,4 @@
-fix bug: if set date ranges to both empty and OK then getDate of null error
+work out state lifecycle for vacancy interest
 put email link on responses for interest
 record username against created by and modified by in db for each modification
 

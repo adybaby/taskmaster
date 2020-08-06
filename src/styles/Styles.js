@@ -33,7 +33,7 @@ const datePickerBgColor = '#f2f2f2';
 const strongButtonTextColor = '#696969';
 const strongBorderColor = '#a9a9a9';
 const vacancyHeaderColor = '#b6d0e2';
-const interestDialogHeaderColor = '#b6d0e2';
+const interestDialogColor = '#b6d0e2';
 const vacancyOpenColor = 'green';
 const vacancyClosedColor = '#a6a6a6';
 const vacancySignUpColor = mainColor;
@@ -585,7 +585,8 @@ export const useStyles = () =>
     },
     vacancyValueInner: { paddingLeft: 4 },
     periodDate: {
-      [smallVp]: { flexWrap: 'wrap', flexDirection: 'col' },
+      flexWrap: 'wrap',
+      flexDirection: 'col',
       paddingLeft: 4,
       display: 'flex',
       alignItems: 'center',
@@ -603,7 +604,7 @@ export const useStyles = () =>
       alignItems: 'start',
       justifyContent: 'space-between',
       padding: theme.spacing(2),
-      backgroundColor: interestDialogHeaderColor,
+      backgroundColor: interestDialogColor,
     },
     editVacancyContainer: {
       display: 'flex',
@@ -652,7 +653,7 @@ export const useStyles = () =>
     },
     interestDialogHeader: {
       padding: theme.spacing(2),
-      backgroundColor: interestDialogHeaderColor,
+      backgroundColor: interestDialogColor,
     },
     interestVacancyHeader: {
       paddingLeft: theme.spacing(2),
@@ -682,6 +683,11 @@ export const useStyles = () =>
       paddingRight: theme.spacing(2),
     },
     interestButton: {},
+    alreadyRespondedNote: {
+      padding: theme.spacing(2),
+      marginBottom: theme.spacing(1),
+      background: interestDialogColor,
+    },
 
     // VacancyInterests
     vacancyInterestsHeader: {

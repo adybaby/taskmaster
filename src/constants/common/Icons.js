@@ -32,6 +32,7 @@ export const ICONS = {
   DOWN_ARROW: <FontAwesomeIcon icon={faCaretDown} />,
   DOWNLOAD: <FontAwesomeIcon icon={faDownload} />,
   MENU: <FontAwesomeIcon icon={faBars} />,
-  ALERT: <FontAwesomeIcon size="3x" icon={faExclamationCircle} />,
+  ALERT: <FontAwesomeIcon icon={faExclamationCircle} />,
+  BIG_ALERT: <FontAwesomeIcon size="3x" icon={faExclamationCircle} />,
   LOGIN: <FontAwesomeIcon size="3x" icon={faSignInAlt} />,
 };

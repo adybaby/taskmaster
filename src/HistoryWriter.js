@@ -40,7 +40,11 @@ const encodeParamsForFilter = (params) => {
   if (params.length !== 3) {
     return params;
   }
-  return [params[0], formatUrlDate(params[1]), formatUrlDate(params[2])];
+  return [
+    params[0],
+    params[1] == null ? null : formatUrlDate(params[1]),
+    params[2] == null ? null : formatUrlDate(params[2]),
+  ];
 };
 
 const decodeParamsForFilter = (paramStrs) => {
@@ -54,7 +58,11 @@ const decodeParamsForFilter = (paramStrs) => {
       return { id: values[0], checked: values[1] === 'true' };
     });
   } else if (paramStrs.length === 3) {
-    params = [paramStrs[0], new Date(ukToUs(paramStrs[1])), new Date(ukToUs(paramStrs[2]))];
+    params = [
+      paramStrs[0],
+      params[1] == null ? null : new Date(ukToUs(paramStrs[1])),
+      params[1] == null ? null : new Date(ukToUs(paramStrs[2])),
+    ];
   }
   return params;
 };

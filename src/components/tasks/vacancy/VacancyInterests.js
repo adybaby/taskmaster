@@ -37,13 +37,13 @@ export const VacancyInterests = ({ vacancy, task, onChanged, onError }) => {
       ...currentInterest,
       status: accept ? INTEREST_STATUS.ACCEPTED : INTEREST_STATUS.DECLINED,
     })
-      .then((updatedInterest) => {
+      .then(() => {
         if (accept) {
           db.upsertVacancy({
             ...vacancy,
             status: close ? VACANCY_STATUS.CLOSED : VACANCY_STATUS.OPEN,
           })
-            .then((updateVacancy) => {
+            .then(() => {
               logSuccess();
               onChanged();
             })
@@ -88,7 +88,7 @@ export const VacancyInterests = ({ vacancy, task, onChanged, onError }) => {
         onClose={onClose}
         onAcceptAndOpen={() => onChangeStatus(true, false)}
         onAcceptAndClose={() => onChangeStatus(true, true)}
-        onDecline={() => onChangeStatus(false)}
+        onDecline={() => onChangeStatus(false, false)}
       />
     </>
   );

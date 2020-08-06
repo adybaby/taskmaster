@@ -136,6 +136,20 @@ export const SignedUpLinks = ({ user, ...typographyProps }) => {
   );
 };
 
+export const ActionLinks = ({ user, ...typographyProps }) => {
+  const classes = useStyles()();
+  return delimitLinks(
+    user.actions.map((action, index) => (
+      <div key={index} className={classes.signedUpLink}>
+        <TaskLink taskId={action.taskId} taskTitle={action.description} />
+      </div>
+    )),
+    <br key="br" />,
+    'None',
+    typographyProps
+  );
+};
+
 export const UserSkillsLinks = ({ user, ...typographyProps }) =>
   delimitLinks(
     user.skills.map((skill, index) => (

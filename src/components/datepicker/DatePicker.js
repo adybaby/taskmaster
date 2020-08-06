@@ -37,7 +37,9 @@ export const DatePicker = ({
   const [valid, setValid] = useState(true);
 
   useEffect(() => {
-    if (initRange != null) {
+    if (initRange == null || (initRange.startDate == null && initRange.endDate == null)) {
+      setStartDateStr(formatDate(new Date()));
+    } else {
       setStartDateStr(initRange.startDate != null ? formatDate(initRange.startDate) : '');
       setEndDateStr(initRange.endDate != null ? formatDate(initRange.endDate) : '');
     }

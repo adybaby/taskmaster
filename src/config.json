@@ -6,5 +6,5 @@
     "testUserId": "1"
   },
   "serverUrl": "http://localhost:3000/",
-  "debugLogging": true
+  "debug": false
 }

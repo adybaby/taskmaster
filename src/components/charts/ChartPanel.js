@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -25,6 +25,17 @@ import { Hint, HINT_IDS } from '../hints/Hint';
 import * as db from '../../db/Db';
 import * as logger from '../../util/Logger';
 import { GeneralError } from '../GeneralError';
+
+function useIsMountedRef() {
+  const isMountedRef = useRef(null);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  });
+  return isMountedRef;
+}
 
 const ChartMenuGroup = ({
   chartGroup: { label, startOpen, charts },
@@ -91,23 +102,12 @@ export const ChartPanel = () => {
 
   const [errorMsg, setErrorMsg] = useState(null);
 
+  const isMountedRef = useIsMountedRef();
+
   const updateWindowDimensions = () => {
     setWinHeight(window.innerHeight);
     setWinWidth(window.innerHeight);
   };
-
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(
-    () => () => {
-      setMounted(false);
-    },
-    []
-  );
 
   useEffect(() => {
     window.addEventListener('resize', updateWindowDimensions);
@@ -138,24 +138,24 @@ export const ChartPanel = () => {
       };
     };
 
-    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE && mounted) {
+    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE) {
       setUpdateStatus(UPDATE_STATUS.UPDATING);
       db.getChart(getChartFilters())
         .then((results) => {
-          if (mounted) {
+          if (isMountedRef.current) {
             setResourceSeriesSets(results);
             setUpdateStatus(UPDATE_STATUS.UPDATED);
           }
         })
         .catch((e) => {
           logger.error(e);
-          if (mounted) {
+          if (isMountedRef.current) {
             setErrorMsg(e);
             setUpdateStatus(UPDATE_STATUS.ERROR);
           }
         });
     }
-  }, [resourceSeriesSets, updateStatus, filterParams, mounted]);
+  }, [resourceSeriesSets, updateStatus, filterParams, isMountedRef]);
 
   const handleChartMenuItemClicked = (chart) => {
     dispatch(setSelectedChart(chart));

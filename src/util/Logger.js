@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import config from '../config.json';
 
-const DEBUG = config.debugLogging;
+const DEBUG = config.debug;
 
 export const debug = (...objs) => {
   if (DEBUG) {

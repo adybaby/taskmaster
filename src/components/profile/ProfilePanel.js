@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Divider, Button } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { AuthoredLinks, UserSkillsLinks, AvailabilityLinks, SignedUpLinks } from '../Link';
+import {
+  AuthoredLinks,
+  UserSkillsLinks,
+  AvailabilityLinks,
+  SignedUpLinks,
+  ActionLinks,
+} from '../Link';
 import * as logger from '../../util/Logger';
 import { useAuth0 } from '../../Auth';
 import * as db from '../../db/Db';
@@ -15,8 +21,22 @@ import { GeneralError } from '../GeneralError';
 import { DropDown } from '../DropDown';
 import { setCurrentUser } from '../../state/actions/CurrentUserActions';
 import { initialise } from '../../state/actions/StateInitialiser';
+import config from '../../config.json';
+
+const DEBUG = config.debug;
 
 const variant = typographyVariant.user;
+
+function useIsMountedRef() {
+  const isMountedRef = useRef(null);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  });
+  return isMountedRef;
+}
 
 export const ProfilePanel = () => {
   const classes = useStyles()();
@@ -30,21 +50,9 @@ export const ProfilePanel = () => {
     value: u.id,
   }));
   const { isAuthenticated, logout } = useAuth0();
-  const [resetHintsEnabled, setResetHintsEnabled] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(
-    () => () => {
-      setMounted(false);
-    },
-    []
-  );
+  const isMountedRef = useIsMountedRef();
 
   useEffect(() => {
     setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
@@ -55,21 +63,21 @@ export const ProfilePanel = () => {
       .then((newCurrentUser) => {
         dispatch(setCurrentUser(newCurrentUser));
         dispatch(initialise());
-        if (mounted) {
+        if (isMountedRef.current) {
           setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
         }
       })
       .catch((e) => {
         logger.error(e);
-        setErrorMsg(e);
-        if (mounted) {
+        if (isMountedRef.current) {
+          setErrorMsg(e);
           setUpdateStatus(UPDATE_STATUS.ERROR);
         }
       });
   };
 
   useEffect(() => {
-    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE && mounted) {
+    if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE) {
       setUpdateStatus(UPDATE_STATUS.UPDATING);
       if (id == null) {
         setUser(currentUser);
@@ -77,35 +85,27 @@ export const ProfilePanel = () => {
       } else {
         db.getFullUser(id)
           .then((retrievedUser) => {
-            if (mounted) {
+            if (isMountedRef.current) {
               setUser(retrievedUser);
               setUpdateStatus(UPDATE_STATUS.UPDATED);
             }
           })
           .catch((e) => {
             logger.error(e);
-            setErrorMsg(e);
-            if (mounted) {
+            if (isMountedRef.current) {
+              setErrorMsg(e);
               setUpdateStatus(UPDATE_STATUS.ERROR);
             }
           });
       }
       dispatch(setCurrentTab(null));
-      setMounted(true);
     }
-  }, [dispatch, id, mounted, currentUser, updateStatus, user]);
-
-  useEffect(() => {
-    if (user != null && mounted) {
-      setResetHintsEnabled(user.disabledHints != null && user.disabledHints.length > 0);
-    }
-  }, [user, mounted, setResetHintsEnabled]);
+  }, [dispatch, id, isMountedRef, currentUser, updateStatus, user]);
 
   const resetHints = () => {
     db.upserttUser({ id: user.id, disabledHints: [] })
       .then(() => {
         logger.debug(`Successfully reset user ${user.id} hints`);
-        setResetHintsEnabled(false);
       })
       .catch((e) => {
         logger.error(`Error resetting user ${user.id} hints`, e);
@@ -119,35 +119,34 @@ export const ProfilePanel = () => {
           <b>{formatUserName(user)}</b>
         </Typography>
       </div>
-      {user.id === currentUser.id ? (
-        <>
-          <div className={classes.userActionsPanel}>
-            <Button
-              disabled={!resetHintsEnabled}
-              className={classes.userActionButton}
-              onClick={resetHints}
-            >
-              Reset Hints
-            </Button>
-            {isAuthenticated && (
-              <Button className={classes.userActionButton} onClick={() => logout()}>
-                LOGOUT
-              </Button>
-            )}
-          </div>
-        </>
-      ) : null}
+      <div className={classes.userActionsPanel}>
+        <Button
+          disabled={user.disabledHints == null || user.disabledHints.length === 0}
+          className={classes.userActionButton}
+          onClick={resetHints}
+        >
+          Reset Hints
+        </Button>
+        {isAuthenticated && (
+          <Button className={classes.userActionButton} onClick={() => logout()}>
+            LOGOUT
+          </Button>
+        )}
+      </div>
+
       <div className={classes.userContent}>
-        <div style={{ paddingBottom: 20 }}>
-          <DropDown
-            id="currentUser"
-            prompt="Current User (for testing):"
-            value={currentUser.id}
-            items={userOptions}
-            onChange={onCurrentUserChange}
-            twoLines
-          />
-        </div>
+        {DEBUG ? (
+          <div style={{ paddingBottom: 20 }}>
+            <DropDown
+              id="currentUser"
+              prompt="Current User (for testing):"
+              value={currentUser.id}
+              items={userOptions}
+              onChange={onCurrentUserChange}
+              twoLines
+            />
+          </div>
+        ) : null}
         <Typography className={classes.userSectionHeading} variant={variant.heading}>
           Full Name
         </Typography>
@@ -189,6 +188,13 @@ export const ProfilePanel = () => {
         <Divider />
         <div className={classes.userSectionBody}>
           <SignedUpLinks user={user} variant={variant.body} />
+        </div>
+        <Typography className={classes.userSectionHeading} variant={variant.heading}>
+          Actions
+        </Typography>
+        <Divider />
+        <div className={classes.userSectionBody}>
+          <ActionLinks user={user} variant={variant.body} />
         </div>
       </div>
     </>

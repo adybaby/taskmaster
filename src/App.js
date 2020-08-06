@@ -85,7 +85,7 @@ export const App = () => {
     <div className={classes.initErrBg}>
       <div className={classes.initialisingPageContainer}>
         <div className={classes.initiatilisingError}>
-          <div className={classes.initialisingIcon}>{ICONS.ALERT}</div>
+          <div className={classes.initialisingIcon}>{ICONS.BIG_ALERT}</div>
           <Typography variant="h6">{msg}</Typography>
           <br />
           <Typography variant="body2">{subMsg}</Typography>
