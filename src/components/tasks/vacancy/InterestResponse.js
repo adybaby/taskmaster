@@ -1,9 +1,9 @@
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Divider } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import { useStyles } from '../../../styles/Styles';
 import { VacancyInfo } from './VacancyInfo';
 import { InterestInfo } from './InterestInfo';
@@ -20,8 +20,11 @@ export const InterestResponse = ({
   ...other
 }) => {
   const classes = useStyles()();
+  const users = useSelector((state) => state.users);
 
   if (vacancy == null || interest == null) return null;
+
+  const applicant = users.find((u) => u.id === interest.userId);
 
   return (
     <>
@@ -42,24 +45,47 @@ export const InterestResponse = ({
         <Divider />
         <InterestInfo vacancy={vacancy} interest={interest} />
         <Divider />
-        <DialogActions>
-          <Button onClick={onClose}>Close (does not change anything)</Button>
+        <div className={classes.interestButtons}>
+          <Button classes={{ root: classes.interestButton }} onClick={onClose}>
+            Close (does not change anything)
+          </Button>
+          <Button
+            classes={{ root: classes.interestButton }}
+            color="primary"
+            onClick={() => {
+              window.open(`mailto:${applicant.emailAddress}`, '_blank');
+            }}
+          >
+            EMAIL {applicant.firstNames[0]}
+          </Button>
           {interest.status !== INTEREST_STATUS.DECLINED ? (
-            <Button onClick={() => onDecline()} color="primary">
+            <Button
+              classes={{ root: classes.interestButton }}
+              onClick={() => onDecline()}
+              color="primary"
+            >
               Decline Application
             </Button>
           ) : null}
           {interest.status !== INTEREST_STATUS.ACCEPTED ? (
-            <Button onClick={() => onAcceptAndOpen()} color="primary">
+            <Button
+              classes={{ root: classes.interestButton }}
+              onClick={() => onAcceptAndOpen()}
+              color="primary"
+            >
               Accept Application {'&'} Keep Vacancy Open
             </Button>
           ) : null}
           {interest.status !== INTEREST_STATUS.ACCEPTED ? (
-            <Button onClick={() => onAcceptAndClose()} color="primary">
+            <Button
+              classes={{ root: classes.interestButton }}
+              onClick={() => onAcceptAndClose()}
+              color="primary"
+            >
               Accept Application {'&'} Close Vacancy
             </Button>
           ) : null}
-        </DialogActions>
+        </div>
       </Dialog>
     </>
   );

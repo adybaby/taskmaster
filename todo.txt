@@ -1,10 +1,5 @@
-work out state lifecycle for vacancy interest
-put email link on responses for interest
-record username against created by and modified by in db for each modification
-
 add/edit task
 prioritisation in map (inc priority 1 of x and a seeding hint)
-add editors to task
 
 nice to have:
 version tracking in tasks? (add previous versions to a list against the task on server and a version history tab)

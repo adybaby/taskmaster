@@ -77,6 +77,7 @@ const logCantQuery = (e) => {
 };
 
 // If no id is provided, adds a new one and a creation date.
+// Inserts a modified data and user id
 // Trims the object to only that allowed by the schema
 const prepareForUpsert = (type, update) => {
   const preparedUpdate = {};
@@ -84,6 +85,7 @@ const prepareForUpsert = (type, update) => {
   if (update.id == null) {
     preparedUpdate.id = uuid();
     preparedUpdate.createdDate = new Date();
+    preparedUpdate.createdBy = store.getState().currentUser.id;
     schema[type]
       .filter((field) => field.required)
       .forEach((field) => {
@@ -98,9 +100,10 @@ const prepareForUpsert = (type, update) => {
   schema[type].forEach((field) => {
     if (update[field.fieldName] != null) {
       preparedUpdate[field.fieldName] = update[field.fieldName];
+      preparedUpdate.modifiedDate = new Date();
+      preparedUpdate.modifiedBy = store.getState().currentUser.id;
     }
   });
-
   return preparedUpdate;
 };
 

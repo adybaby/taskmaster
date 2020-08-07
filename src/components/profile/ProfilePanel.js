@@ -119,17 +119,34 @@ export const ProfilePanel = () => {
           <b>{formatUserName(user)}</b>
         </Typography>
       </div>
+      <div data-more-padding={true} className={classes.idPanel}>
+        <Typography variant="body1">ID: {user.id}</Typography>
+      </div>
       <div className={classes.userActionsPanel}>
-        <Button
-          disabled={user.disabledHints == null || user.disabledHints.length === 0}
-          className={classes.userActionButton}
-          onClick={resetHints}
-        >
-          Reset Hints
-        </Button>
-        {isAuthenticated && (
-          <Button className={classes.userActionButton} onClick={() => logout()}>
-            LOGOUT
+        {user.id === currentUser.id ? (
+          <>
+            <Button
+              disabled={user.disabledHints == null || user.disabledHints.length === 0}
+              className={classes.userActionButton}
+              onClick={resetHints}
+            >
+              Reset Hints
+            </Button>
+            {isAuthenticated && (
+              <Button className={classes.userActionButton} onClick={() => logout()}>
+                LOGOUT
+              </Button>
+            )}
+          </>
+        ) : (
+          <Button
+            classes={{ root: classes.interestButton }}
+            color="primary"
+            onClick={() => {
+              window.open(`mailto:${user.emailAddress}`, '_blank');
+            }}
+          >
+            EMAIL {user.firstNames[0]}
           </Button>
         )}
       </div>

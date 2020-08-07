@@ -121,7 +121,7 @@ export const AddEditVacancy = ({ vacancy, task, open, onClose, onConfirm, onDele
           ) : null}
         </div>
 
-        <div className={classes.editVacancyId}>
+        <div className={classes.idPanel}>
           <Typography variant="body1">ID: {localState.id}</Typography>
         </div>
 

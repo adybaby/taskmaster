@@ -89,6 +89,19 @@ export const AtAGlance = ({ task }) => {
           />
         </div>
         <Typography variant={variant.title} className={classes.aagTitle}>
+          Editors
+        </Typography>
+        <div className={classes.aagValue}>
+          {task.editors.map((editor) => (
+            <UserLink
+              key={editor.id}
+              variant={variant.value}
+              userId={editor.id}
+              userName={editor.userName}
+            />
+          ))}
+        </div>
+        <Typography variant={variant.title} className={classes.aagTitle}>
           Contributes To
         </Typography>
         <div className={classes.aagValue}>

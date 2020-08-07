@@ -111,7 +111,7 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
     }
 
     return (
-      <Typography variant={variant.value}>
+      <Typography variant={variant.value} style={{ width: '100%' }}>
         <b>{label}</b>
       </Typography>
     );
@@ -205,7 +205,7 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
             <div className={classes.vacancyFieldValue}>
               <div className={classes.vacancyPeriod}>
                 <div className={classes.periodDate}>
-                  <Typography variant={variant.value}>
+                  <Typography style={{ width: '100%' }} variant={variant.value}>
                     {formatDate(vacancy.startDate)} to {formatDate(vacancy.endDate)}
                   </Typography>
                   {getInterestStatusDescription()}

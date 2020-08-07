@@ -7,6 +7,9 @@ export const schema = {
     { fieldName: 'contributeeId', required: true },
     { fieldName: 'contribution', required: true },
     { fieldName: 'createdDate', required: false },
+    { fieldName: 'createdBy', required: false },
+    { fieldName: 'modifiedDate', required: false },
+    { fieldName: 'modifiedBy', required: false },
   ],
   [TYPE.INTEREST]: [
     { fieldName: 'id', required: false },
@@ -17,11 +20,17 @@ export const schema = {
     { fieldName: 'startDate', required: true },
     { fieldName: 'endDate', required: true },
     { fieldName: 'createdDate', required: false },
+    { fieldName: 'createdBy', required: false },
+    { fieldName: 'modifiedDate', required: false },
+    { fieldName: 'modifiedBy', required: false },
   ],
   [TYPE.SKILL]: [
     { fieldName: 'id', required: false },
     { fieldName: 'title', required: true },
     { fieldName: 'createdDate', required: false },
+    { fieldName: 'createdBy', required: false },
+    { fieldName: 'modifiedDate', required: false },
+    { fieldName: 'modifiedBy', required: false },
   ],
   [TYPE.TASK]: [
     { fieldName: 'id', required: false },
@@ -52,6 +61,9 @@ export const schema = {
     { fieldName: 'available', required: false },
     { fieldName: 'disabledHints', required: false },
     { fieldName: 'createdDate', required: false },
+    { fieldName: 'createdBy', required: false },
+    { fieldName: 'modifiedDate', required: false },
+    { fieldName: 'modifiedBy', required: false },
   ],
   [TYPE.VACANCY]: [
     { fieldName: 'id', required: false },
@@ -65,5 +77,8 @@ export const schema = {
     { fieldName: 'endDate', required: true },
     { fieldName: 'comments', required: false },
     { fieldName: 'createdDate', required: false },
+    { fieldName: 'createdBy', required: false },
+    { fieldName: 'modifiedDate', required: false },
+    { fieldName: 'modifiedBy', required: false },
   ],
 };

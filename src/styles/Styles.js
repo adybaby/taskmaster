@@ -37,7 +37,8 @@ const interestDialogColor = '#b6d0e2';
 const vacancyOpenColor = 'green';
 const vacancyClosedColor = '#a6a6a6';
 const vacancySignUpColor = mainColor;
-const editVacancyIdColor = '#f2f2f2';
+const vacancyTitleColor = '#f2f2f2';
+const idPanelColour = '#f2f2f2';
 export const CHART_COLORS = { MIN: 'lightGrey', MAX: '#33ACFF', HIGHLIGHTED: '#FFA500' };
 export const KELLY = [
   '#F2F3F4',
@@ -289,6 +290,17 @@ export const useStyles = () =>
       flexDirection: 'column',
       paddingLeft: theme.spacing(2),
       color: errorColor,
+    },
+
+    idPanel: {
+      background: idPanelColour,
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      paddingLeft: theme.spacing(2),
+      '&[data-more-padding="true"]': {
+        paddingLeft: theme.spacing(3),
+      },
+      paddingRight: theme.spacing(2),
     },
 
     // AppBar
@@ -623,14 +635,7 @@ export const useStyles = () =>
       paddingBottom: theme.spacing(2),
     },
     editVacancyTitle: {
-      editVacancyIdColor,
-    },
-    editVacancyId: {
-      background: editVacancyIdColor,
-      paddingTop: 10,
-      paddingBottom: 10,
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(2),
+      background: vacancyTitleColor,
     },
     vacancyComments: {
       width: '100%',
@@ -682,7 +687,27 @@ export const useStyles = () =>
       paddingBottom: theme.spacing(2),
       paddingRight: theme.spacing(2),
     },
-    interestButton: {},
+    interestButton: {
+      [mediumOrLargeVp]: {
+        marginLeft: theme.spacing(2),
+        marginRight: theme.spacing(2),
+      },
+      [smallVp]: { width: '100%', justifyContent: 'left' },
+    },
+    interestButtons: {
+      display: 'flex',
+      [mediumOrLargeVp]: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      [smallVp]: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+        marginLeft: theme.spacing(1),
+        flexWrap: 'wrap',
+        flexDirection: 'col',
+      },
+    },
     alreadyRespondedNote: {
       padding: theme.spacing(2),
       marginBottom: theme.spacing(1),
