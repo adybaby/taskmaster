@@ -27,7 +27,7 @@ const DEBUG = config.debug;
 
 const variant = typographyVariant.user;
 
-function useIsMountedRef() {
+const useIsMountedRef = () => {
   const isMountedRef = useRef(null);
   useEffect(() => {
     isMountedRef.current = true;
@@ -36,7 +36,7 @@ function useIsMountedRef() {
     };
   });
   return isMountedRef;
-}
+};
 
 export const ProfilePanel = () => {
   const classes = useStyles()();

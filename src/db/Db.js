@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 // import { loadAll as loadAllFromServer } from './server/DataInterface';
 // import { denormaliseLinks } from './Denormaliser';
 // import { prioritise } from './Prioritiser';
@@ -16,6 +17,7 @@ import { setSkills } from '../state/actions/SkillActions';
 import { TYPE as PKG_TYPE } from './Type';
 import { schema } from './Schema';
 import { setUsers } from '../state/actions/UserActions';
+import { setTags } from '../state/actions/TagActions';
 import { setCurrentUser } from '../state/actions/CurrentUserActions';
 
 const SERVER_URL = config.serverUrl;
@@ -37,6 +39,9 @@ const ACTION = {
   // Get a task map..
   MAP: 'map',
 
+  // Get all the tags current used in tasks..
+  TAGS: 'tags',
+
   // Get an expanded task record of the given id..
   // required: id
   FULL_TASK: 'task',
@@ -49,6 +54,11 @@ const ACTION = {
   // required: type: One of db.TYPE
   // required: params: {id, ... }
   UPSERT: 'upsert',
+
+  // Upsert many entities matching the ids of the provided entities of the provided type
+  // required: type: One of db.TYPE
+  // required: params: [{id, ... }]
+  UPSERT_MANY: 'upsertMany',
 
   // Delete an entity of the given type with the given id
   // required: type: One of db.TYPE
@@ -114,6 +124,9 @@ const query = ({ action, type, id, params }) =>
       let preparedParams = params;
       if (action === ACTION.UPSERT) {
         preparedParams = prepareForUpsert(type, params);
+      }
+      if (action === ACTION.UPSERT_MANY) {
+        preparedParams = params.map((param) => prepareForUpsert(type, param));
       }
       const body = JSON.stringify({ action, type, id, params: preparedParams });
       logger.debug(`Sending ${body} to server.`);
@@ -188,6 +201,8 @@ export const getChart = (params) => query({ action: ACTION.CHART, params });
 
 export const getMap = () => query({ action: ACTION.MAP });
 
+export const getTags = () => query({ action: ACTION.TAGS });
+
 export const getTaskSummaries = () => query({ action: ACTION.TASK_SUMMARIES });
 
 export const getFullTask = (id) => query({ action: ACTION.FULL_TASK, id });
@@ -205,10 +220,10 @@ export const findOne = (type, id) => query({ action: ACTION.FIND_ONE, type, id }
 const upsertThenRefreshState = ({ upsertQuery, upsertError, stateRefreshers }) =>
   new Promise((resolve, reject) => {
     upsertQuery()
-      .then(() => {
+      .then((results) => {
         Promise.all(stateRefreshers.map((su) => su()))
           .then(() => {
-            resolve();
+            resolve(results);
           })
           .catch((e) => {
             logger.error(e);
@@ -267,6 +282,18 @@ const refreshCurrentUser = () =>
   });
 const refreshUsers = () => refreshAllInState(TYPE.USER, setUsers);
 const refreshSkills = () => refreshAllInState(TYPE.SKILL, setSkills);
+const refreshTags = () =>
+  new Promise((resolve, reject) => {
+    query({ action: ACTION.TAGS })
+      .then((tags) => {
+        store.dispatch(setTags(tags));
+        resolve(tags);
+      })
+      .catch((e) => {
+        logger.error(e);
+        reject(new Error(`Could not refresh tags.  The nested error is : ${e.message}`));
+      });
+  });
 
 export const upserttUser = (user) =>
   upsertThenRefreshState({
@@ -293,7 +320,7 @@ export const upsertTask = (task) =>
   upsertThenRefreshState({
     upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.TASK, params: task }),
     upsertError: 'Could not upsert task.',
-    stateRefreshers: [refreshTaskSummaries],
+    stateRefreshers: [refreshTaskSummaries, refreshTags],
   });
 
 export const upsertContributionLink = (contributionLink) =>
@@ -301,6 +328,31 @@ export const upsertContributionLink = (contributionLink) =>
     upsertQuery: () =>
       query({ action: ACTION.UPSERT, type: TYPE.CONTRIBUTION, params: contributionLink }),
     upsertError: 'Could not upsert new contribution to task.',
+    stateRefreshers: [refreshTaskSummaries],
+  });
+
+export const upsertContributionLinks = (taskId, contributesTo, contributions) =>
+  upsertThenRefreshState({
+    upsertQuery: () =>
+      query({
+        action: ACTION.UPSERT_MANY,
+        type: TYPE.CONTRIBUTION,
+        params: [
+          ...contributesTo.map((ct) => ({
+            id: ct._id,
+            contributorId: taskId,
+            contributeeId: ct.id,
+            contribution: ct.contribution,
+          })),
+          ...contributions.map((ct) => ({
+            id: ct._id,
+            contributorId: ct.id,
+            contributeeId: taskId,
+            contribution: ct.contribution,
+          })),
+        ],
+      }),
+    upsertError: `Could not upsert new contributions for task with ID ${taskId}`,
     stateRefreshers: [refreshTaskSummaries],
   });
 

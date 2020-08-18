@@ -9,6 +9,7 @@ import { filterBarVisibleReducer } from './FilterBarVisibleReducer';
 import { taskSummariesReducer } from './TaskSummariesReducer';
 import { skillsReducer } from './SkillsReducer';
 import { usersReducer } from './UserReducer';
+import { tagsReducer } from './TagsReducer';
 
 const rootReducer = combineReducers({
   currentUser: currentUserReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   taskSummaries: taskSummariesReducer,
   skills: skillsReducer,
   users: usersReducer,
+  tags: tagsReducer,
   dbStatus: dbStatusReducer,
 });
 

@@ -51,6 +51,7 @@ export const schema = {
     { fieldName: 'createdBy', required: false },
     { fieldName: 'modifiedDate', required: false },
     { fieldName: 'modifiedBy', required: false },
+    { fieldName: 'editors', required: true },
   ],
   [TYPE.USER]: [
     { fieldName: 'id', required: false },

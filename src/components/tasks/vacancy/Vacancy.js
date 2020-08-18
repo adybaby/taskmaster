@@ -18,7 +18,6 @@ const variant = typographyVariant.aag;
 export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
   const classes = useStyles()();
   const currentUser = useSelector((state) => state.currentUser);
-  const canEdit = vacancy.recruiterId === currentUser.id || task.createdBy === currentUser.id;
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
   const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
   const currentUserInterest = vacancy.interest.find((i) => i.userId === currentUser.id);
@@ -148,9 +147,9 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
               </Typography>
             </div>
           </div>
-          {canEdit ? (
+          {task.editors.includes(currentUser.id) || vacancy.recruiterId === currentUser.id ? (
             <Button classes={{ root: classes.primaryButton }} onClick={onChangeVacancyClick}>
-              CHANGE..
+              EDIT
             </Button>
           ) : null}
         </div>

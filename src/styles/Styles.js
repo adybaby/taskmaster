@@ -518,6 +518,36 @@ export const useStyles = () =>
       paddingBottom: theme.spacing(1),
     },
     taskSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+    editTaskFooter: {
+      bottom: '0',
+      transform: 'translateY(100%)',
+      transition: 'transform .35s ease',
+      minHeight: '0',
+      display: 'flex',
+      [smallVp]: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      },
+      [mediumOrLargeVp]: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      },
+
+      boxShadow: `0px -2px 4px darkGrey`,
+      color: 'white',
+      padding: 10,
+      paddingLeft: 20,
+      width: '100%',
+      position: 'fixed',
+      background: '#4989b6',
+
+      '&.open': {
+        transform: 'translateY(0%)',
+      },
+    },
+    taskEditedMessageDiv: { [mediumOrLargeVp]: { flexGrow: 2, alignItems: 'center' } },
+    taskEditedMessage: { [smallVp]: { paddingLeft: 8, paddingBottom: 6, paddingTop: 6 } },
 
     // Tasks: Vacancy boxes
     vacancySection: {
@@ -746,27 +776,29 @@ export const useStyles = () =>
       border: `1px solid ${theme.palette.divider}`,
       [smallVp]: {
         backgroundColor: aagBgColor,
-        padding: theme.spacing(2),
-        paddingBottom: theme.spacing(1),
-        marginBottom: theme.spacing(2),
+        padding: theme.spacing(1),
         minWidth: '270px',
         transition: 'max-height .25s ease-in-out',
       },
       [mediumOrLargeVp]: {
-        float: 'right',
-        width: '420px',
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-        marginLeft: theme.spacing(5),
-        boxShadow: `0px 3px 10px ${theme.palette.divider}`,
+        '&[data-edit="false"]': {
+          float: 'right',
+          width: '440px',
+          marginLeft: theme.spacing(5),
+          marginTop: theme.spacing(2),
+          boxShadow: `0px 3px 10px ${theme.palette.divider}`,
+        },
       },
+      marginBottom: theme.spacing(2),
+      '&[data-edit="true"]': { width: '100%', backgroundColor: aagBgColor },
     },
     aagTable: {
       display: 'grid',
       gridTemplateColumns: '35% 65%',
-      paddingBottom: theme.spacing(2),
+      padding: theme.spacing(1),
     },
     aagHeader: {
+      '&[data-edit="true"]': { display: 'none' },
       [smallVp]: { display: 'none' },
       fontWeight: 'bold',
       gridColumn: '1 / span 2',
@@ -778,7 +810,8 @@ export const useStyles = () =>
       marginBottom: theme.spacing(1),
     },
     aagTitle: {
-      fontWeight: 'bold',
+      '&[data-edit="true"]': { color: 'grey' },
+      '&[data-edit="false"]': { fontWeight: 'bold' },
       paddingBottom: theme.spacing(1),
       gridColumn: 1,
       [mediumOrLargeVp]: { paddingLeft: theme.spacing(2) },
@@ -786,7 +819,6 @@ export const useStyles = () =>
     aagValue: {
       gridColumn: 2,
       paddingBottom: theme.spacing(1),
-      paddingRight: theme.spacing(2),
     },
     aagList: {
       paddingBottom: theme.spacing(1),

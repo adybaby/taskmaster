@@ -5,7 +5,9 @@ import {
   INTEREST_STATUS as PKG_INTEREST_STATUS,
   VACANCY_ROLE as PKG_VACANCY_ROLE,
   VACANCY_PRIORITY as PKG_VACANCY_PRIORITY,
+  CONTRIBUTION_LEVELS as PKG_CONTRIBUTION_LEVELS,
 } from './common/Fields';
+import { EDIT_MODE as PKG_EDIT_MODE } from './common/Mode';
 import { ICONS as PKG_ICONS } from './common/Icons';
 import { TABS as PKG_TABS, DEFAULT_TAB as PKG_DEFAULT_TAB } from './common/Tabs';
 import { FILTER_IDS as PKG_FILTER_IDS } from './filter/FilterIds';
@@ -27,7 +29,7 @@ export const INTEREST_STATUS = PKG_INTEREST_STATUS;
 export const ICONS = PKG_ICONS;
 export const TABS = PKG_TABS;
 export const DEFAULT_TAB = PKG_DEFAULT_TAB;
-
+export const EDIT_MODE = PKG_EDIT_MODE;
 export const FILTER_IDS = PKG_FILTER_IDS;
 
 export const RESOURCE_CHART_DEFINITIONS = PKG_RESOURCE_CHART_DEFINITIONS;
@@ -36,5 +38,7 @@ export const DEFAULT_CHART = PKG_DEFAULT_CHART;
 export const getResourceChartDefinition = pkgGetResourceChartDefinition;
 
 export const UPDATE_STATUS = PKG_UPDATE_STATUS;
+
+export const CONTRIBUTION_LEVELS = PKG_CONTRIBUTION_LEVELS;
 
 export const DATE_RANGE = PKG_DATE_RANGE;

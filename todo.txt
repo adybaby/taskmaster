@@ -1,3 +1,5 @@
+sign ups and availability by user
+
 add/edit task
 prioritisation in map (inc priority 1 of x and a seeding hint)
 
@@ -11,7 +13,6 @@ prod:
 get auth0 redirect working
 (redact surnames)
 remove debug from config
-remove current user switcher
 Aria
 Comments
 Unit tests

@@ -176,7 +176,7 @@ export const AddEditVacancy = ({ vacancy, task, open, onClose, onConfirm, onDele
           <br />
 
           <DatePicker
-            prompt="When do you want to run the Initiative?"
+            prompt="For what dates is the vacancy?"
             firstDateLabel="Starting on"
             secondDateLabel="Finishing on"
             initRange={localState}

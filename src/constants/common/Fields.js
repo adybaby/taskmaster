@@ -30,3 +30,9 @@ export const VACANCY_PRIORITY = {
   ESSENTIAL: 'Essential',
   DESIRABLE: 'Desirable',
 };
+
+export const CONTRIBUTION_LEVELS = [
+  { value: 'Major', label: 'Major: Unlikely to succeed without this contribution' },
+  { value: 'Minor', label: 'Minor: Is a helpful contribution, but not essential' },
+  { value: 'DeRisking', label: 'DeRisking: Contributes to our understanding of how to proceed.' },
+];

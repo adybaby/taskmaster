@@ -26,7 +26,7 @@ import * as db from '../../db/Db';
 import * as logger from '../../util/Logger';
 import { GeneralError } from '../GeneralError';
 
-function useIsMountedRef() {
+const useIsMountedRef = () => {
   const isMountedRef = useRef(null);
   useEffect(() => {
     isMountedRef.current = true;
@@ -35,7 +35,7 @@ function useIsMountedRef() {
     };
   });
   return isMountedRef;
-}
+};
 
 const ChartMenuGroup = ({
   chartGroup: { label, startOpen, charts },

@@ -8,7 +8,7 @@ import * as logger from '../../util/Logger';
 import { UPDATE_STATUS } from '../../constants/Constants';
 import { GeneralError } from '../GeneralError';
 
-function useIsMountedRef() {
+const useIsMountedRef = () => {
   const isMountedRef = useRef(null);
   useEffect(() => {
     isMountedRef.current = true;
@@ -17,7 +17,7 @@ function useIsMountedRef() {
     };
   });
   return isMountedRef;
-}
+};
 
 export const MapPanel = () => {
   const classes = useStyles()();

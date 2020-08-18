@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,7 +27,7 @@ const TaskFilterParamLink = ({ filterId, param, label, ...typographyProps }) => 
   };
 
   return (
-    <Typography style={{ display: 'inline-block' }} {...typographyProps}>
+    <Typography {...typographyProps} style={{ display: 'inline-block' }}>
       <Link
         className={classes.link}
         value={param}
@@ -44,7 +44,7 @@ const TaskFilterParamLink = ({ filterId, param, label, ...typographyProps }) => 
 export const TaskLink = ({ taskId, taskTitle, inLabelBrackets, taskIcon, ...typographyProps }) => {
   const classes = useStyles()();
   return (
-    <Typography style={{ display: 'inline-block' }} {...typographyProps}>
+    <Typography {...typographyProps} style={{ display: 'inline-block' }}>
       <Link className={classes.link} to={`/${URLS.TASK}/${taskId}`}>
         {taskIcon != null ? (
           <>
@@ -65,7 +65,7 @@ export const UserLink = ({ userId, userName, ...typographyProps }) => {
 
   return (
     <>
-      <Typography style={{ display: 'inline-block' }} {...typographyProps}>
+      <Typography {...typographyProps} style={{ display: 'inline-block' }}>
         <Link className={classes.link} value={userId} to={`/${URLS.PROFILE}/${userId}`}>
           {userName}
         </Link>
@@ -93,7 +93,7 @@ const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const delimitLinks = (links, delimiter, noLinksMessage, typographyProps) =>
   links.length === 0 ? (
-    <Typography key="empty" style={{ display: 'inline-block' }} {...typographyProps}>
+    <Typography key="empty" {...typographyProps} style={{ display: 'inline-block' }}>
       {noLinksMessage}
     </Typography>
   ) : (
@@ -177,6 +177,14 @@ export const AvailabilityLinks = ({ user, ...typographyProps }) =>
     'None declared',
     typographyProps
   );
+
+export const Editors = ({ task, ...typographyProps }) =>
+  task.editorNames.map((editor) => (
+    <Fragment key={editor.id}>
+      <UserLink {...typographyProps} userId={editor.id} userName={editor.userName} />
+      {',\u00A0'}
+    </Fragment>
+  ));
 
 export const RelatedLinks = ({ task, ...typographyProps }) => {
   const classes = useStyles()();
