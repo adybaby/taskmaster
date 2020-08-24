@@ -18,7 +18,7 @@ import HistoryWriter from './HistoryWriter';
 import * as logger from './util/Logger';
 import { overwriteDbWithJsonFiles } from './test/jsontest/JsonLoader';
 import * as db from './db/Db';
-import { ProfilePanel } from './components/profile/ProfilePanel';
+import { User } from './components/users/User';
 
 export const App = () => {
   const classes = useStyles()();
@@ -139,8 +139,8 @@ export const App = () => {
             <Redirect to={`/${URLS.BROWSE}/`} />
           </Route>
           <Route path={`/${URLS.TASK}/:id`} component={Task} />
-          <Route path={`/${URLS.PROFILE}/:id`} component={ProfilePanel} />
-          <Route path={`/${URLS.PROFILE}/`} component={ProfilePanel} />
+          <Route path={`/${URLS.PROFILE}/:id`} component={User} />
+          <Route path={`/${URLS.PROFILE}/`} component={User} />
           <Route path={`/${URLS.BROWSE}/`} component={MainTabs} />
         </Switch>
       </StyledApp>

@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import {
   FormControl,
@@ -9,6 +9,7 @@ import {
   InputBase,
   Chip,
   Button,
+  Divider,
 } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
 import { capitalize } from '../util/String';
@@ -26,9 +27,12 @@ export const DropDown = ({
   onDelete,
   twoLines = false,
   multiple = false,
-  ...divStyleProps
+  divStyle,
+  selectStyle,
+  fullWidth,
 }) => {
   const classes = useStyles()();
+  const [open, setOpen] = useState(false);
   if (id == null) {
     return 'Cannot render DropDown: id cannot be null';
   }
@@ -49,6 +53,23 @@ export const DropDown = ({
   if (addCallback == null) {
     addCallback = onChange;
   }
+
+  const menuButtonProps = (item) => {
+    const backgroundStyle = {};
+    if (item != null && value.indexOf(item.value) > -1) {
+      backgroundStyle.background = 'darkGrey';
+    }
+    return {
+      primary: 'inherited',
+      fullWidth: true,
+      style: {
+        justifyContent: 'left',
+        paddingLeft: 14,
+        borderRadius: 0,
+        ...backgroundStyle,
+      },
+    };
+  };
 
   const selectProps = {
     input: (
@@ -107,13 +128,7 @@ export const DropDown = ({
       ...items.map((item, key) => (
         <div key={key} style={{ display: 'flex' }}>
           <Button
-            fullWidth
-            style={{
-              justifyContent: 'left',
-              paddingLeft: 14,
-              background: value.indexOf(item.value) > -1 ? 'darkGrey' : 'inherited',
-              borderRadius: 0,
-            }}
+            {...menuButtonProps(item)}
             onClick={() => {
               if (value.indexOf(item.value) > -1) {
                 deleteCallback(
@@ -130,6 +145,18 @@ export const DropDown = ({
           </Button>
         </div>
       )),
+      <Divider key="okBtnDivider" />,
+      <div key={'closePopupMenuButton'} style={{ display: 'flex' }}>
+        <Button
+          color="primary"
+          {...menuButtonProps()}
+          onClick={() => {
+            setOpen(false);
+          }}
+        >
+          <b>{`OK (${value.length} selected)`}</b>
+        </Button>
+      </div>,
     ]);
   } else {
     selectProps.onChange = (event) => onChange(id, event.target.value);
@@ -145,16 +172,27 @@ export const DropDown = ({
   return (
     <div
       className={twoLines ? classes.dropDownLayoutTwoLines : classes.dropDownLayout}
-      {...divStyleProps}
+      style={divStyle}
     >
       {prompt == null ? null : (
         <Typography variant="body1" className={classes.dropDownTitle}>
           {prompt}
         </Typography>
       )}
-      <FormControl>
+      <FormControl style={{ width: fullWidth ? '100%' : 'auto' }}>
         <InputLabel id={`${id}-select-input-label`}>{label}</InputLabel>
-        <Select {...selectProps} />
+        <Select
+          open={open}
+          {...selectProps}
+          classes={{ root: classes.dropDownSelect }}
+          style={selectStyle}
+          onOpen={() => {
+            setOpen(true);
+          }}
+          onClose={() => {
+            setOpen(false);
+          }}
+        />
       </FormControl>
     </div>
   );

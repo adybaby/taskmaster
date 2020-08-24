@@ -75,7 +75,7 @@ export const Task = ({ newTask }) => {
   };
 
   const body = () => (
-    <>
+    <div style={{ marginBottom: edit === 'edit' ? '100px' : 0 }}>
       {task.editors.includes(currentUser.id) ? (
         <div className={classes.mainTabBar}>
           <Tabs value={edit} indicatorColor="primary" onChange={onTabChange}>
@@ -89,7 +89,6 @@ export const Task = ({ newTask }) => {
           task={task}
           onClose={(updatedTask) => {
             if (updatedTask != null) {
-              console.log('Seeting update to needs');
               setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
             }
             setEdit('read');
@@ -105,7 +104,7 @@ export const Task = ({ newTask }) => {
           }}
         />
       )}
-    </>
+    </div>
   );
 
   switch (updateStatus) {

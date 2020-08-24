@@ -24,6 +24,14 @@ export const isValidDateString = (dateStr) => {
 export const isValidDate = (date) =>
   date != null && date instanceof Date && date !== 'Invalid Date' && !isNaN(date);
 
+export const isValidISODate = (date) => {
+  try {
+    return isValid(date);
+  } catch (e) {
+    return false;
+  }
+};
+
 export const ukToUs = (dateStr) => {
   if (dateStr == null || (typeof dateStr !== 'string' && !isNaN(dateStr))) {
     return null;
@@ -125,6 +133,11 @@ export const getDateRangeForYear = (date) => {
 
 export const areDateRangesOverlapping = (range1, range2) =>
   !(before(range1.endDate, range2.startDate) || after(range1.startDate, range2.endDate));
+
+export const isValidDateRange = (range) =>
+  isValidISODate(range.startDate) &&
+  isValidISODate(range.endDate) &&
+  beforeOrE(range.startDate, range.endDate);
 
 export const formatDate = (date) => {
   if (date == null || date === '' || typeof date === 'string') return date;

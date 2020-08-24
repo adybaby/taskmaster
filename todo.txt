@@ -1,6 +1,9 @@
+fwds/bkwds browser buttons aren't wokring
+
+add task
+
 sign ups and availability by user
 
-add/edit task
 prioritisation in map (inc priority 1 of x and a seeding hint)
 
 nice to have:

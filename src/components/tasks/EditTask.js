@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import * as logger from '../../util/Logger';
 import * as db from '../../db/Db';
-import { formatDate } from '../../util/Dates';
+import { formatDate, isValidDateString } from '../../util/Dates';
 import { EditContributions } from './EditContributions';
 import { DropDown } from '../DropDown';
 import { formatUserName } from '../../util/Users';
@@ -52,8 +52,9 @@ export const EditTask = ({ task, onClose, onError }) => {
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
         autoFocus={autoFocus}
+        error={formik.touched[value] && formik.errors[value] != null}
+        helperText={formik.errors[value]}
       />
-      {formik.errors[value] && formik.touched[value] && formik.errors[value]}
     </>
   );
 
@@ -62,12 +63,37 @@ export const EditTask = ({ task, onClose, onError }) => {
     if (!values.title) {
       errors.title = 'You must enter a title';
     }
-    if (!values.startDate) {
-      errors.title = 'You must enter a start date (you can change it later)';
+    if (task.type === 'INITIATIVE') {
+      if (!values.startDate) {
+        errors.startDate = 'You must enter a start date (you can change it later)';
+      } else if (!isValidDateString(values.startDate)) {
+        errors.startDate = `${values.startDate} is not a valid date`;
+      }
+      if (!values.endDate) {
+        errors.endDate = 'You must enter an end date (you can change it later)';
+      } else if (!isValidDateString(values.endDate)) {
+        errors.endDate = `${values.endDate} is not a valid date`;
+      }
     }
-    if (!values.endDate) {
-      errors.title = 'You must enter an end date (you can change it later)';
+    if (values.relatedLinks != null) {
+      const linkErrors = [];
+      values.relatedLinks
+        .split(',')
+        .map((rl) => rl.trim())
+        .forEach((link) => {
+          if (
+            !/[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
+              link
+            )
+          ) {
+            linkErrors.push(`${link} is not a valid URL`);
+          }
+        });
+      if (linkErrors.length > 0) {
+        errors.relatedLinks = linkErrors.join('. ');
+      }
     }
+    return errors;
   };
 
   const onSubmit = (values, { setSubmitting }) => {
@@ -140,7 +166,7 @@ export const EditTask = ({ task, onClose, onError }) => {
             }}
             onRemove={(id) => {
               logger.debug('Removing contribution with id ', id);
-              arrayHelpers.remove(task[field].findIndex((c) => c._id === id));
+              arrayHelpers.remove(formik.values[field].findIndex((c) => c._id === id));
             }}
             style={{ paddingBottom: '14px', paddingTop: '14px' }}
           />
@@ -201,10 +227,11 @@ export const EditTask = ({ task, onClose, onError }) => {
         name="editors"
         render={(arrayHelpers) => (
           <DropDown
-            style={{ paddingBottom: '14px' }}
+            divStyle={{ paddingBottom: '14px' }}
             id="editors"
             value={formik.values.editors}
             multiple
+            fullWidth
             items={users.map((user) => ({ label: formatUserName(user), value: user.id }))}
             onAdd={(id, editors, addedEditorId) => {
               logger.debug(`Adding editor with id ${addedEditorId}`);
@@ -215,7 +242,9 @@ export const EditTask = ({ task, onClose, onError }) => {
                 logger.debug(`Cannot remove editor because that is the current user`);
               } else {
                 logger.debug(`Removing editor with id ${removedEditorId}`);
-                arrayHelpers.remove(task.editors.findIndex((e) => e.id === removedEditorId));
+                arrayHelpers.remove(
+                  formik.values.editors.findIndex((editorId) => editorId === removedEditorId)
+                );
               }
             }}
           />
@@ -231,7 +260,7 @@ export const EditTask = ({ task, onClose, onError }) => {
           Your changes will not be saved until you confirm them
         </Typography>
       </div>
-      <Button style={{ color: 'lightGrey' }} onClick={onClose}>
+      <Button style={{ color: 'lightGrey' }} onClick={formik.handleReset}>
         CANCEL CHANGES
       </Button>
       <Button type="submit" style={{ color: 'white' }} disabled={formik.isSubmitting}>

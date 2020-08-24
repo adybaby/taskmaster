@@ -283,6 +283,7 @@ export const useStyles = () =>
         boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
       },
     },
+    dropDownSelect: { minHeight: '30px' },
 
     generalMessage: { paddingLeft: theme.spacing(2) },
     generalError: {
@@ -301,6 +302,16 @@ export const useStyles = () =>
         paddingLeft: theme.spacing(3),
       },
       paddingRight: theme.spacing(2),
+    },
+
+    readEditTabBar: {
+      position: 'relative',
+      display: 'flex',
+      flexDirection: 'row',
+      borderBottom: `1px solid ${theme.palette.divider}`,
+      backgroundColor: theme.palette.background.default,
+      paddingLeft: theme.spacing(2),
+      zIndex: 1,
     },
 
     // AppBar
