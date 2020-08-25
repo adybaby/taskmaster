@@ -135,7 +135,7 @@ const query = ({ action, type, id, params }) =>
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action, type, id, params }),
+        body,
       })
         .then((res) => {
           switch (res.status) {
@@ -167,15 +167,15 @@ const query = ({ action, type, id, params }) =>
                   .json()
                   .then((e) => {
                     logCantQuery(e);
-                    reject(noQueryMsg(new Error(e)));
+                    reject(e);
                   })
                   .catch((e) => {
                     logCantQuery(e);
-                    reject(noQueryMsg(e));
+                    reject(e);
                   });
               } catch (e) {
                 logCantQuery(e);
-                reject(noQueryMsg(e));
+                reject(e);
               }
               break;
 
@@ -215,24 +215,22 @@ export const findOne = (type, id) => query({ action: ACTION.FIND_ONE, type, id }
 
 // modifiers
 
-// Runs query and updates state
+// Runs query (upsert or delete) and updates state
 // Runs queryAction then dispatchAction with the results of queryAction, or the results of cacheQueryAction if that is provided
-const upsertThenRefreshState = ({ upsertQuery, upsertError, stateRefreshers }) =>
+const udpateThenRefreshState = ({ updateQuery, stateRefreshers }) =>
   new Promise((resolve, reject) => {
-    upsertQuery()
+    updateQuery()
       .then((results) => {
         Promise.all(stateRefreshers.map((su) => su()))
           .then(() => {
             resolve(results);
           })
           .catch((e) => {
-            logger.error(e);
             reject(e);
           });
       })
       .catch((e) => {
-        logger.error(e);
-        reject(new Error(`${upsertError}  The nested error is : ${e.message}`));
+        reject(e);
       });
   });
 
@@ -296,44 +294,39 @@ const refreshTags = () =>
   });
 
 export const upserttUser = (user) =>
-  upsertThenRefreshState({
-    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.USER, params: user }),
-    upsertError: 'Could not upsert skill.',
+  udpateThenRefreshState({
+    updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.USER, params: user }),
     stateRefreshers: [refreshUsers, refreshCurrentUser],
   });
 
 export const upsertVacancy = (vacancy) =>
-  upsertThenRefreshState({
-    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.VACANCY, params: vacancy }),
-    upsertError: 'Could not upsert Vacancy.',
+  udpateThenRefreshState({
+    updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.VACANCY, params: vacancy }),
     stateRefreshers: [refreshTaskSummaries],
   });
 
 export const upsertInterest = (interest) =>
-  upsertThenRefreshState({
-    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.INTEREST, params: interest }),
-    upsertError: 'Could not upsert Interest.',
+  udpateThenRefreshState({
+    updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.INTEREST, params: interest }),
     stateRefreshers: [refreshUsers, refreshCurrentUser],
   });
 
 export const upsertTask = (task) =>
-  upsertThenRefreshState({
-    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.TASK, params: task }),
-    upsertError: 'Could not upsert task.',
+  udpateThenRefreshState({
+    updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.TASK, params: task }),
     stateRefreshers: [refreshTaskSummaries, refreshTags],
   });
 
 export const upsertContributionLink = (contributionLink) =>
-  upsertThenRefreshState({
-    upsertQuery: () =>
+  udpateThenRefreshState({
+    updateQuery: () =>
       query({ action: ACTION.UPSERT, type: TYPE.CONTRIBUTION, params: contributionLink }),
-    upsertError: 'Could not upsert new contribution to task.',
     stateRefreshers: [refreshTaskSummaries],
   });
 
 export const upsertContributionLinks = (taskId, contributesTo, contributions) =>
-  upsertThenRefreshState({
-    upsertQuery: () =>
+  udpateThenRefreshState({
+    updateQuery: () =>
       query({
         action: ACTION.UPSERT_MANY,
         type: TYPE.CONTRIBUTION,
@@ -352,15 +345,19 @@ export const upsertContributionLinks = (taskId, contributesTo, contributions) =>
           })),
         ],
       }),
-    upsertError: `Could not upsert new contributions for task with ID ${taskId}`,
     stateRefreshers: [refreshTaskSummaries],
   });
 
 export const upsertSkill = (skill) =>
-  upsertThenRefreshState({
-    upsertQuery: () => query({ action: ACTION.UPSERT, type: TYPE.SKILL, params: skill }),
-    upsertError: 'Could not upsert skill.',
+  udpateThenRefreshState({
+    updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.SKILL, params: skill }),
     stateRefreshers: [refreshSkills],
+  });
+
+export const deleteTask = (taskId) =>
+  udpateThenRefreshState({
+    updateQuery: () => query({ action: ACTION.DELETE, type: TYPE.TASK, id: taskId }),
+    stateRefreshers: [refreshTaskSummaries],
   });
 
 export const deleteOne = (type, id) => query({ action: ACTION.DELETE, type, id });

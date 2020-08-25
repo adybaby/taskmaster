@@ -102,9 +102,11 @@ const delimitLinks = (links, delimiter, noLinksMessage, typographyProps) =>
 
 export const AuthoredLinks = ({ user, ...typographyProps }) =>
   delimitLinks(
-    user.authored.map((task, index) => (
-      <TaskLink key={index} taskId={task.id} taskTitle={task.title} {...typographyProps} />
-    )),
+    user.authored == null
+      ? []
+      : user.authored.map((task, index) => (
+          <TaskLink key={index} taskId={task.id} taskTitle={task.title} {...typographyProps} />
+        )),
     <br key="br" />,
     'None',
     typographyProps
@@ -113,23 +115,25 @@ export const AuthoredLinks = ({ user, ...typographyProps }) =>
 export const SignedUpLinks = ({ user, ...typographyProps }) => {
   const classes = useStyles()();
   return delimitLinks(
-    user.signedUp.map((signedUp, index) => (
-      <div key={index} className={classes.signedUpLink}>
-        <TaskLink
-          taskId={signedUp.id}
-          taskTitle={`${signedUp.title} (${capitalize(signedUp.skillTitle)})`}
-          {...typographyProps}
-        />
-        <br />
-        <Typography {...typographyProps}>
-          {formatDate(signedUp.startDate)}
-          <i>
-            {`\u00A0`}to{`\u00A0`}
-          </i>
-          {formatDate(signedUp.endDate)}
-        </Typography>
-      </div>
-    )),
+    user.signedUp == null
+      ? []
+      : user.signedUp.map((signedUp, index) => (
+          <div key={index} className={classes.signedUpLink}>
+            <TaskLink
+              taskId={signedUp.id}
+              taskTitle={`${signedUp.title} (${capitalize(signedUp.skillTitle)})`}
+              {...typographyProps}
+            />
+            <br />
+            <Typography {...typographyProps}>
+              {formatDate(signedUp.startDate)}
+              <i>
+                {`\u00A0`}to{`\u00A0`}
+              </i>
+              {formatDate(signedUp.endDate)}
+            </Typography>
+          </div>
+        )),
     <br key="br" />,
     'None declared',
     typographyProps
@@ -139,11 +143,13 @@ export const SignedUpLinks = ({ user, ...typographyProps }) => {
 export const ActionLinks = ({ user, ...typographyProps }) => {
   const classes = useStyles()();
   return delimitLinks(
-    user.actions.map((action, index) => (
-      <div key={index} className={classes.signedUpLink}>
-        <TaskLink taskId={action.taskId} taskTitle={action.description} />
-      </div>
-    )),
+    user.actions == null
+      ? []
+      : user.actions.map((action, index) => (
+          <div key={index} className={classes.signedUpLink}>
+            <TaskLink taskId={action.taskId} taskTitle={action.description} />
+          </div>
+        )),
     <br key="br" />,
     'None',
     typographyProps
@@ -152,15 +158,17 @@ export const ActionLinks = ({ user, ...typographyProps }) => {
 
 export const UserSkillsLinks = ({ user, ...typographyProps }) =>
   delimitLinks(
-    user.skills.map((skill, index) => (
-      <TaskFilterParamLink
-        key={index}
-        filterId={FILTER_IDS.VACANCIES}
-        param={skill.id}
-        label={capitalize(skill.title)}
-        {...typographyProps}
-      />
-    )),
+    user.skills == null
+      ? []
+      : user.skills.map((skill, index) => (
+          <TaskFilterParamLink
+            key={index}
+            filterId={FILTER_IDS.VACANCIES}
+            param={skill.id}
+            label={capitalize(skill.title)}
+            {...typographyProps}
+          />
+        )),
     <br key="br" />,
     'None declared',
     typographyProps
@@ -168,32 +176,38 @@ export const UserSkillsLinks = ({ user, ...typographyProps }) =>
 
 export const AvailabilityLinks = ({ user, ...typographyProps }) =>
   delimitLinks(
-    user.available.map((available, index) => (
-      <Typography key={index} {...typographyProps}>
-        {`${formatDate(available.startDate)} to ${formatDate(available.endDate)}`}
-      </Typography>
-    )),
+    user.available == null
+      ? []
+      : user.available.map((available, index) => (
+          <Typography key={index} {...typographyProps}>
+            {`${formatDate(available.startDate)} to ${formatDate(available.endDate)}`}
+          </Typography>
+        )),
     '',
     'None declared',
     typographyProps
   );
 
 export const Editors = ({ task, ...typographyProps }) =>
-  task.editorNames.map((editor) => (
-    <Fragment key={editor.id}>
-      <UserLink {...typographyProps} userId={editor.id} userName={editor.userName} />
-      {',\u00A0'}
-    </Fragment>
-  ));
+  task.editorNames == null
+    ? []
+    : task.editorNames.map((editor) => (
+        <Fragment key={editor.id}>
+          <UserLink {...typographyProps} userId={editor.id} userName={editor.userName} />
+          {',\u00A0'}
+        </Fragment>
+      ));
 
 export const RelatedLinks = ({ task, ...typographyProps }) => {
   const classes = useStyles()();
   return delimitLinks(
-    task.relatedLinks.map((relatedLink, index) => (
-      <MuiLink key={index} href={relatedLink} className={classes.link} {...typographyProps}>
-        {relatedLink}
-      </MuiLink>
-    )),
+    task.relatedLinks == null
+      ? []
+      : task.relatedLinks.map((relatedLink, index) => (
+          <MuiLink key={index} href={relatedLink} className={classes.link} {...typographyProps}>
+            {relatedLink}
+          </MuiLink>
+        )),
     ', ',
     'None',
     typographyProps
@@ -202,15 +216,17 @@ export const RelatedLinks = ({ task, ...typographyProps }) => {
 
 export const TagLinks = ({ task, ...typographyProps }) =>
   delimitLinks(
-    task.tags.map((tag, index) => (
-      <TaskFilterParamLink
-        key={index}
-        filterId={FILTER_IDS.SEARCH_FIELD}
-        param={tag}
-        label={tag}
-        {...typographyProps}
-      />
-    )),
+    task.tags == null
+      ? []
+      : task.tags.map((tag, index) => (
+          <TaskFilterParamLink
+            key={index}
+            filterId={FILTER_IDS.SEARCH_FIELD}
+            param={tag}
+            label={tag}
+            {...typographyProps}
+          />
+        )),
     ', ',
     'None',
     typographyProps
@@ -218,15 +234,17 @@ export const TagLinks = ({ task, ...typographyProps }) =>
 
 export const VacancyLinks = ({ task, ...typographyProps }) =>
   delimitLinks(
-    task.requiredSkills.map((requiredSkill, index) => (
-      <TaskFilterParamLink
-        key={index}
-        filterId={FILTER_IDS.VACANCIES}
-        param={requiredSkill.id}
-        label={capitalize(requiredSkill.title)}
-        {...typographyProps}
-      />
-    )),
+    task.requiredSkills == null
+      ? []
+      : task.requiredSkills.map((requiredSkill, index) => (
+          <TaskFilterParamLink
+            key={index}
+            filterId={FILTER_IDS.VACANCIES}
+            param={requiredSkill.id}
+            label={capitalize(requiredSkill.title)}
+            {...typographyProps}
+          />
+        )),
     ', ',
     'None',
     typographyProps
@@ -234,17 +252,19 @@ export const VacancyLinks = ({ task, ...typographyProps }) =>
 
 export const ContributionLinks = ({ task, ...typographyProps }) =>
   delimitLinks(
-    task.contributions.map((contribution, index) => (
-      <div key={index}>
-        <TaskLink
-          taskId={contribution.id}
-          taskTitle={contribution.title}
-          inLabelBrackets={contribution.contribution}
-          taskIcon={task.type === 'DRIVER' ? ICONS.ENABLER : ICONS.INITIATIVE}
-          {...typographyProps}
-        />
-      </div>
-    )),
+    task.contributions == null
+      ? []
+      : task.contributions.map((contribution, index) => (
+          <div key={index}>
+            <TaskLink
+              taskId={contribution.id}
+              taskTitle={contribution.title}
+              inLabelBrackets={contribution.contribution}
+              taskIcon={task.type === 'DRIVER' ? ICONS.ENABLER : ICONS.INITIATIVE}
+              {...typographyProps}
+            />
+          </div>
+        )),
     '',
     'None',
     typographyProps
@@ -252,18 +272,20 @@ export const ContributionLinks = ({ task, ...typographyProps }) =>
 
 export const ContributesToLinks = ({ task, ...typographyProps }) =>
   delimitLinks(
-    task.contributesTo.map((contributesTo, index) => (
-      <div key={index}>
-        <TaskLink
-          key={index}
-          taskId={contributesTo.id}
-          taskTitle={contributesTo.title}
-          inLabelBrackets={contributesTo.contribution}
-          taskIcon={task.type === 'ENABLER' ? ICONS.DRIVER : ICONS.ENABLER}
-          {...typographyProps}
-        />
-      </div>
-    )),
+    task.contributesTo == null
+      ? []
+      : task.contributesTo.map((contributesTo, index) => (
+          <div key={index}>
+            <TaskLink
+              key={index}
+              taskId={contributesTo.id}
+              taskTitle={contributesTo.title}
+              inLabelBrackets={contributesTo.contribution}
+              taskIcon={task.type === 'ENABLER' ? ICONS.DRIVER : ICONS.ENABLER}
+              {...typographyProps}
+            />
+          </div>
+        )),
     '',
     'None',
     typographyProps
@@ -278,30 +300,34 @@ export const DriverContributionLinks = ({ task }) => {
         <TaskLink taskId={task.id} taskTitle={task.title} taskIcon={ICONS.DRIVER} variant="h5" />
       </div>
       <div className={classes.contributionList}>
-        {task.contributions.map((contribution, index) => (
-          <div key={index}>
-            <TaskLink
-              taskId={contribution.id}
-              taskTitle={contribution.title}
-              inLabelBrackets={contribution.contribution}
-              taskIcon={ICONS.ENABLER}
-              variant="h6"
-            />
-            <div className={classes.contributionList}>
-              {contribution.contributorContributions.map((contributorContribution, innerIndex) => (
-                <div key={innerIndex}>
-                  <TaskLink
-                    taskId={contributorContribution.id}
-                    taskTitle={contributorContribution.title}
-                    inLabelBrackets={contributorContribution.contribution}
-                    taskIcon={ICONS.INITIATIVE}
-                    variant="body1"
-                  />
+        {task.contributions == null
+          ? null
+          : task.contributions.map((contribution, index) => (
+              <div key={index}>
+                <TaskLink
+                  taskId={contribution.id}
+                  taskTitle={contribution.title}
+                  inLabelBrackets={contribution.contribution}
+                  taskIcon={ICONS.ENABLER}
+                  variant="h6"
+                />
+                <div className={classes.contributionList}>
+                  {contribution.contributorContributions.map(
+                    (contributorContribution, innerIndex) => (
+                      <div key={innerIndex}>
+                        <TaskLink
+                          taskId={contributorContribution.id}
+                          taskTitle={contributorContribution.title}
+                          inLabelBrackets={contributorContribution.contribution}
+                          taskIcon={ICONS.INITIATIVE}
+                          variant="body1"
+                        />
+                      </div>
+                    )
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
+              </div>
+            ))}
       </div>
     </div>
   );

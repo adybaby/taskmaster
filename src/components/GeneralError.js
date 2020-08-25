@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Divider } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../styles/Styles';
 
 export const GeneralError = ({ errorMsg, errorDetailsMsg }) => {
@@ -8,8 +8,9 @@ export const GeneralError = ({ errorMsg, errorDetailsMsg }) => {
 
   return (
     <div className={classes.generalError}>
-      <Typography variant={variant.title}>{errorMsg}</Typography>
-      <Divider />
+      <Typography className={classes.generalErrorTitle} variant={variant.title}>
+        {errorMsg}
+      </Typography>
       <Typography variant={variant.details}>
         <b>Details of the error are: </b>
         {errorDetailsMsg}

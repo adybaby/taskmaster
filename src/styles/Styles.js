@@ -98,7 +98,7 @@ export const typographyVariant = {
     heading: 'h5',
     body: 'body1',
   },
-  error: { title: 'body1', details: 'caption' },
+  error: { title: 'h6', details: 'caption' },
 };
 
 // viewport scaling
@@ -288,9 +288,14 @@ export const useStyles = () =>
     generalMessage: { paddingLeft: theme.spacing(2) },
     generalError: {
       display: 'flex',
+      width: '75%',
       flexDirection: 'column',
-      paddingLeft: theme.spacing(2),
+      margin: `20px 0 0 20px`,
       color: errorColor,
+    },
+    generalErrorTitle: {
+      borderBottom: '1px solid red',
+      marginBottom: theme.spacing(2),
     },
 
     idPanel: {

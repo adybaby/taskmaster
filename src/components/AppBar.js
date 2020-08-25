@@ -7,7 +7,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { Tooltip } from '@material-ui/core';
 import { useAuth0 } from '../Auth';
 import { useStyles } from '../styles/Styles';
-import { ICONS, TABS, FILTER_IDS } from '../constants/Constants';
+import { ICONS, TABS, FILTER_IDS, URLS } from '../constants/Constants';
 import { setFilterParams, resetAllFilterParams } from '../state/actions/FilterParamActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
@@ -29,7 +29,7 @@ export const AppBar = () => {
 
   const handleNewClick = () => {
     // eslint-disable-next-line no-alert
-    window.alert('TBD');
+    history.push(`/${URLS.TASK}/`);
   };
 
   const handleSearchChange = (event) => {

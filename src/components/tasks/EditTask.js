@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
-import { TextField, Typography, Button } from '@material-ui/core';
-import { Formik, FieldArray } from 'formik';
+import React, { useState } from 'react';
+import { TextField, Typography, Button, Divider } from '@material-ui/core';
+import { Formik, FieldArray, Form } from 'formik';
 import { useSelector } from 'react-redux';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import * as logger from '../../util/Logger';
@@ -10,10 +10,11 @@ import { formatDate, isValidDateString } from '../../util/Dates';
 import { EditContributions } from './EditContributions';
 import { DropDown } from '../DropDown';
 import { formatUserName } from '../../util/Users';
+import { YesNoDialog } from '../YesNoDialog';
 
 const variant = typographyVariant.task;
 
-export const EditTask = ({ task, onClose, onError }) => {
+export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
   const classes = useStyles()();
   const currentUser = useSelector((state) => state.currentUser);
   const users = useSelector((state) => state.users);
@@ -62,6 +63,13 @@ export const EditTask = ({ task, onClose, onError }) => {
     const errors = {};
     if (!values.title) {
       errors.title = 'You must enter a title';
+    } else if (values.title.length > 100) {
+      errors.title = 'The title must be 100 characters or less';
+    }
+    if (!values.moreInformation) {
+      errors.moreInformation = 'You must give a short overview';
+    } else if (values.moreInformation.length > 500) {
+      errors.moreInformation = 'The overview must be 255 characters or less';
     }
     if (task.type === 'INITIATIVE') {
       if (!values.startDate) {
@@ -82,6 +90,7 @@ export const EditTask = ({ task, onClose, onError }) => {
         .map((rl) => rl.trim())
         .forEach((link) => {
           if (
+            link !== '' &&
             !/[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)?/gi.test(
               link
             )
@@ -103,12 +112,20 @@ export const EditTask = ({ task, onClose, onError }) => {
       relatedLinks: values.relatedLinks.split(',').map((rl) => rl.trim()),
       tags: values.tags.split(',').map((t) => t.trim()),
     };
+    let newTask = false;
+    if (update.id == null) {
+      newTask = true;
+    }
     db.upsertTask(update)
       .then((updatedTask) => {
         db.upsertContributionLinks(task.id, values.contributesTo, values.contributions)
-          .then((newContributionLinks) => {
+          .then(() => {
             setSubmitting(false);
-            onClose([updatedTask, newContributionLinks]);
+            if (newTask) {
+              onNewTask(updatedTask);
+            } else {
+              onClose(updatedTask);
+            }
           })
           .catch((e) => {
             const errorMessage = `Added task, but could not add contributions: ${e.message}`;
@@ -118,27 +135,28 @@ export const EditTask = ({ task, onClose, onError }) => {
           });
       })
       .catch((e) => {
-        const errorMessage = `Could not update task: ${e.message}`;
+        const errorMessage = `Could not update task. ${e}`;
         logger.error(errorMessage, e, update);
         setSubmitting(false);
         onError(errorMessage);
       });
   };
 
-  const makeInitiativeFields = (formik) => (
-    <>
-      {makeField(formik, 'Hypotheses', 'hypotheses', 'What are you trying to prove?')}
-      {makeField(
-        formik,
-        'Successful If',
-        'successfulIf',
-        'What needs to happen to prove your hypotheses?'
-      )}
-      {makeField(formik, 'Approach', 'approach', 'How are you going to prove your hypotheses?')}
-      {makeField(formik, 'Start Date', 'startDate', 'When does the initiative start?')}
-      {makeField(formik, 'End Date', 'endDate', 'When does the initiative end?')}
-    </>
-  );
+  const makeInitiativeFields = (formik) =>
+    task.type !== 'INITIATIVE' ? null : (
+      <>
+        {makeField(formik, 'Hypotheses', 'hypotheses', 'What are you trying to prove?')}
+        {makeField(
+          formik,
+          'Successful If',
+          'successfulIf',
+          'What needs to happen to prove your hypotheses?'
+        )}
+        {makeField(formik, 'Approach', 'approach', 'How are you going to prove your hypotheses?')}
+        {makeField(formik, 'Start Date', 'startDate', 'When does the initiative start?')}
+        {makeField(formik, 'End Date', 'endDate', 'When does the initiative end?')}
+      </>
+    );
 
   const makeContributionField = (formik, label, field, hint) => (
     <>
@@ -254,13 +272,26 @@ export const EditTask = ({ task, onClose, onError }) => {
   );
 
   const makeFooter = (formik) => (
-    <div className={`${classes.editTaskFooter} ${formik.dirty ? 'open' : undefined}`}>
+    <div
+      className={`${classes.editTaskFooter} ${
+        formik.dirty || formik.values.title === '' ? 'open' : undefined
+      }`}
+    >
       <div className={classes.taskEditedMessageDiv}>
         <Typography className={classes.taskEditedMessage}>
           Your changes will not be saved until you confirm them
         </Typography>
       </div>
-      <Button style={{ color: 'lightGrey' }} onClick={formik.handleReset}>
+      <Button
+        style={{ color: 'lightGrey' }}
+        onClick={() => {
+          if (task.id == null) {
+            onExitTask();
+          } else {
+            formik.handleReset();
+          }
+        }}
+      >
         CANCEL CHANGES
       </Button>
       <Button type="submit" style={{ color: 'white' }} disabled={formik.isSubmitting}>
@@ -269,37 +300,81 @@ export const EditTask = ({ task, onClose, onError }) => {
     </div>
   );
 
+  const DeletePanel = () => {
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
+    const handleClose = (confirmed) => {
+      if (confirmed) {
+        db.deleteTask(task.id)
+          .then((deletedTask) => {
+            logger.debug('Deleted task: ', deletedTask);
+            onExitTask();
+          })
+          .catch((e) => onError(`Could not delete task. ${e}`));
+      }
+      setConfirmOpen(false);
+    };
+
+    if (task.id == null) return null;
+
+    return (
+      <>
+        <Button
+          color="primary"
+          style={{ padding: '20px' }}
+          onClick={() => {
+            setConfirmOpen(true);
+          }}
+        >
+          DELETE TASK
+        </Button>
+        <Divider />
+        <YesNoDialog
+          title="Do you want to delete this task? This will also delete any associated vacancies, interests, and contribution links."
+          yesLabel="DELETE"
+          noLabel="CANCEL"
+          handleClose={handleClose}
+          open={confirmOpen}
+        />
+      </>
+    );
+  };
+
   return (
-    <Formik initialValues={initialValues} validate={getValidation} onSubmit={onSubmit}>
-      {(formik) => (
-        <form onSubmit={formik.handleSubmit}>
-          <div className={classes.taskContent}>
-            {makeField(formik, 'Title', 'title', 'What is the initiative called? ', true)}
-            {makeField(
-              formik,
-              'Outline',
-              'moreInformation',
-              'Roughly what is this initiative about? This is displayed in search results, so keep it short and snappy.'
-            )}
-            {makeInitiativeFields(formik)}
-            {makeContributionFields(formik)}
-            {makeEditorField(formik)}
-            {makeField(
-              formik,
-              'Related Links',
-              'relatedLinks',
-              'Seperate multiple links with commas.'
-            )}
-            {makeField(
-              formik,
-              'Tags',
-              'tags',
-              'Tags must be one word each (use underscores _ for spaces). Seperate multiple tags with commas.'
-            )}
-          </div>
-          {makeFooter(formik)}
-        </form>
-      )}
-    </Formik>
+    <>
+      <DeletePanel />
+      <Formik initialValues={initialValues} validate={getValidation} onSubmit={onSubmit}>
+        {(formik) => (
+          <Form>
+            <div className={classes.taskContent}>
+              {makeField(
+                formik,
+                'Title',
+                'title',
+                `What is the ${task.type.toLowerCase()} called? (max 100 characters)`,
+                true
+              )}
+              {makeField(
+                formik,
+                'Outline',
+                'moreInformation',
+                `Roughly what is this ${task.type.toLowerCase()} about? This is displayed in search results, so keep it short and snappy (max 500 characters).`
+              )}
+              {makeInitiativeFields(formik)}
+              {makeContributionFields(formik)}
+              {makeEditorField(formik)}
+              {makeField(
+                formik,
+                'Related Links',
+                'relatedLinks',
+                'Seperate multiple links with commas.'
+              )}
+              {makeField(formik, 'Tags', 'tags', 'Separate multiple tags with commas.')}
+            </div>
+            {makeFooter(formik)}
+          </Form>
+        )}
+      </Formik>
+    </>
   );
 };

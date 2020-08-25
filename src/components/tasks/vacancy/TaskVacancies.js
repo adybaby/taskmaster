@@ -61,16 +61,20 @@ export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
       <Divider />
 
       <div className={`${classes.taskSectionBody} ${classes.vacancySection}`}>
-        {task.vacancies.map((vacancy, index) => (
-          <Vacancy
-            key={index}
-            vacancy={vacancy}
-            task={task}
-            onChanged={onVacancyChanged}
-            onError={onVacancyEditError}
-            canEdit={canEdit}
-          />
-        ))}
+        {task.vacancies == null ? (
+          <>None</>
+        ) : (
+          task.vacancies.map((vacancy, index) => (
+            <Vacancy
+              key={index}
+              vacancy={vacancy}
+              task={task}
+              onChanged={onVacancyChanged}
+              onError={onVacancyEditError}
+              canEdit={canEdit}
+            />
+          ))
+        )}
       </div>
       <AddEditVacancy
         task={task}

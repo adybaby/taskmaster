@@ -139,6 +139,7 @@ export const App = () => {
             <Redirect to={`/${URLS.BROWSE}/`} />
           </Route>
           <Route path={`/${URLS.TASK}/:id`} component={Task} />
+          <Route path={`/${URLS.TASK}/`} component={Task} />
           <Route path={`/${URLS.PROFILE}/:id`} component={User} />
           <Route path={`/${URLS.PROFILE}/`} component={User} />
           <Route path={`/${URLS.BROWSE}/`} component={MainTabs} />
