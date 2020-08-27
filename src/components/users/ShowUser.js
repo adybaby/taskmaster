@@ -16,7 +16,7 @@ import { formatUserName } from '../../util/Users';
 
 const variant = typographyVariant.user;
 
-export const ShowUser = ({ user, isCurrentUser }) => {
+export const ShowUser = ({ user, currentUser }) => {
   const classes = useStyles()();
 
   const { isAuthenticated, logout } = useAuth0();
@@ -49,8 +49,8 @@ export const ShowUser = ({ user, isCurrentUser }) => {
 
   const makeActionsPanel = () => (
     <div className={classes.userActionsPanel}>
-      {isCurrentUser ? (
-        <>
+      <>
+        {currentUser.id === user.id || currentUser.permissions.includes('admin') ? (
           <Button
             disabled={user.disabledHints == null || user.disabledHints.length === 0}
             className={classes.userActionButton}
@@ -58,23 +58,24 @@ export const ShowUser = ({ user, isCurrentUser }) => {
           >
             Reset Hints
           </Button>
-          {isAuthenticated && (
-            <Button className={classes.userActionButton} onClick={() => logout()}>
-              LOGOUT
-            </Button>
-          )}
-        </>
-      ) : (
-        <Button
-          classes={{ root: classes.interestButton }}
-          color="primary"
-          onClick={() => {
-            window.open(`mailto:${user.emailAddress}`, '_blank');
-          }}
-        >
-          EMAIL {user.firstNames[0]}
-        </Button>
-      )}
+        ) : null}
+        {currentUser.id === user.id && isAuthenticated ? (
+          <Button className={classes.userActionButton} onClick={() => logout()}>
+            LOGOUT
+          </Button>
+        ) : null}
+        {currentUser.id !== user.id && isAuthenticated ? (
+          <Button
+            className={classes.userActionButton}
+            color="primary"
+            onClick={() => {
+              window.open(`mailto:${user.emailAddress}`, '_blank');
+            }}
+          >
+            EMAIL {user.firstNames[0]}
+          </Button>
+        ) : null}
+      </>
     </div>
   );
 

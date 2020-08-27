@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Paper, Button } from '@material-ui/core';
-import { useSelector } from 'react-redux';
 import { useStyles, typographyVariant } from '../../../styles/Styles';
 import { formatDate } from '../../../util/Dates';
 import { InterestApplication } from './InterestApplication';
@@ -15,9 +14,8 @@ import { formatUserName } from '../../../util/Users';
 
 const variant = typographyVariant.aag;
 
-export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
+export const Vacancy = ({ vacancy, task, onChanged, onError, canEdit, currentUser }) => {
   const classes = useStyles()();
-  const currentUser = useSelector((state) => state.currentUser);
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
   const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
   const currentUserInterest = vacancy.interest.find((i) => i.userId === currentUser.id);
@@ -147,7 +145,7 @@ export const Vacancy = ({ vacancy, task, onChanged, onError }) => {
               </Typography>
             </div>
           </div>
-          {task.editors.includes(currentUser.id) || vacancy.recruiterId === currentUser.id ? (
+          {canEdit ? (
             <Button classes={{ root: classes.primaryButton }} onClick={onChangeVacancyClick}>
               EDIT
             </Button>

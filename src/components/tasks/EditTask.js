@@ -21,6 +21,7 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
 
   const initialValues = {
     title: task.title == null ? '' : task.title,
+    shortDescription: task.shortDescription == null ? '' : task.shortDescription,
     moreInformation: task.moreInformation == null ? '' : task.moreInformation,
     hypotheses: task.hypotheses == null ? '' : task.hypotheses,
     successfulIf: task.successfulIf == null ? '' : task.successfulIf,
@@ -66,10 +67,13 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
     } else if (values.title.length > 100) {
       errors.title = 'The title must be 100 characters or less';
     }
-    if (!values.moreInformation) {
-      errors.moreInformation = 'You must give a short overview';
-    } else if (values.moreInformation.length > 500) {
-      errors.moreInformation = 'The overview must be 255 characters or less';
+    if (!values.shortDescription) {
+      errors.shortDescription = 'You must give a short summary';
+    } else if (values.shortDescription.length > 255) {
+      errors.shortDescription = 'The overview must be 255 characters or less';
+    }
+    if (!values.editors || values.editors.length === 0) {
+      errors.editors = 'There must be at least one editor';
     }
     if (task.type === 'INITIATIVE') {
       if (!values.startDate) {
@@ -237,9 +241,7 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
         Editors
       </Typography>
       <Typography variant="body2">
-        <i>
-          Who can edit the task? (you cannot remove yourself as an editor, but other editors can)
-        </i>
+        <i>Who can edit the task? (at least one editor is required)</i>
       </Typography>
       <FieldArray
         name="editors"
@@ -250,20 +252,16 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
             value={formik.values.editors}
             multiple
             fullWidth
+            errors={formik.errors.editors}
             items={users.map((user) => ({ label: formatUserName(user), value: user.id }))}
             onAdd={(id, editors, addedEditorId) => {
               logger.debug(`Adding editor with id ${addedEditorId}`);
               arrayHelpers.push(addedEditorId);
             }}
             onDelete={(id, editors, removedEditorId) => {
-              if (removedEditorId === currentUser.id) {
-                logger.debug(`Cannot remove editor because that is the current user`);
-              } else {
-                logger.debug(`Removing editor with id ${removedEditorId}`);
-                arrayHelpers.remove(
-                  formik.values.editors.findIndex((editorId) => editorId === removedEditorId)
-                );
-              }
+              arrayHelpers.remove(
+                formik.values.editors.findIndex((editorId) => editorId === removedEditorId)
+              );
             }}
           />
         )}
@@ -278,10 +276,17 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
       }`}
     >
       <div className={classes.taskEditedMessageDiv}>
-        <Typography className={classes.taskEditedMessage}>
-          Your changes will not be saved until you confirm them
-        </Typography>
+        {!formik.isValid ? (
+          <Typography className={classes.taskEditedMessage} style={{ color: 'red' }}>
+            The task can&apos;t be created until you fix the errors above.
+          </Typography>
+        ) : (
+          <Typography className={classes.taskEditedMessage}>
+            Your changes will not be saved until you confirm them
+          </Typography>
+        )}
       </div>
+
       <Button
         style={{ color: 'lightGrey' }}
         onClick={() => {
@@ -294,7 +299,11 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
       >
         CANCEL CHANGES
       </Button>
-      <Button type="submit" style={{ color: 'white' }} disabled={formik.isSubmitting}>
+      <Button
+        type="submit"
+        style={{ color: !formik.isValid ? 'lightGrey' : 'white' }}
+        disabled={formik.isSubmitting || !formik.isValid}
+      >
         <b>CONFIRM CHANGES</b>
       </Button>
     </div>
@@ -356,9 +365,15 @@ export const EditTask = ({ task, onClose, onError, onExitTask, onNewTask }) => {
               )}
               {makeField(
                 formik,
+                'Summary',
+                'shortDescription',
+                `Roughly what is this ${task.type.toLowerCase()} about? This is displayed in search results, so keep it short and snappy (max 255 characters).`
+              )}
+              {makeField(
+                formik,
                 'Outline',
                 'moreInformation',
-                `Roughly what is this ${task.type.toLowerCase()} about? This is displayed in search results, so keep it short and snappy (max 500 characters).`
+                `Describe the ${task.type.toLowerCase()}`
               )}
               {makeInitiativeFields(formik)}
               {makeContributionFields(formik)}

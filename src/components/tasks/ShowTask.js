@@ -58,6 +58,7 @@ export const ShowTask = ({ task, onChangedVacancy, onErrorChangingVacancy }) => 
 
       <div className={classes.taskContent}>
         {infoVisible ? <ShowAtAGlance task={task} /> : null}
+        {makeField('Summary', task.shortDescription)}
         {makeField('Outline', task.moreInformation)}
         {task.type === 'INITIATIVE' ? makeInitiativeFields() : null}
       </div>

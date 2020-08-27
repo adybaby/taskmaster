@@ -125,7 +125,7 @@ export const User = () => {
   const body = () => (
     <div style={{ marginBottom: edit === 'edit' ? '100px' : 0 }}>
       {makeChangeCurrentUserPanel()}
-      {currentUser.id === user.id ? (
+      {currentUser.id === user.id || currentUser.permissions.includes('admin') ? (
         <div className={classes.readEditTabBar}>
           <Tabs value={edit} indicatorColor="primary" onChange={onTabChange}>
             <Tab value={'read'} className={classes.tab} label={<div>READ</div>} />
@@ -136,6 +136,7 @@ export const User = () => {
       {edit === 'edit' ? (
         <EditUser
           user={user}
+          currentUser={currentUser}
           onClose={(updatedUser) => {
             if (updatedUser != null) {
               setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
@@ -144,7 +145,7 @@ export const User = () => {
           }}
         />
       ) : (
-        <ShowUser user={user} isCurrentUser={user.id === currentUser.id} />
+        <ShowUser user={user} currentUser={currentUser} />
       )}
     </div>
   );
@@ -161,12 +162,7 @@ export const User = () => {
     case UPDATE_STATUS.UPDATED:
       return user != null ? body() : null;
     case UPDATE_STATUS.ERROR:
-      return (
-        <GeneralError
-          errorMsg="There was an error retrieving the user's details from the database."
-          errorDetailsMsg={errorMsg}
-        />
-      );
+      return <GeneralError errorMsg="There's a problem :(" errorDetailsMsg={errorMsg} />;
     default:
       return null;
   }

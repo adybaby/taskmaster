@@ -3,7 +3,7 @@
     "enabled": false,
     "domain": "dev-u7nkzjak.eu.auth0.com",
     "clientId": "qZaUFrH85Rfq61Q70J0Wf1DUErRNTqIw",
-    "testUserId": "24"
+    "testUserId": "1"
   },
   "serverUrl": "http://localhost:3000/",
   "debug": true

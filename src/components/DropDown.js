@@ -29,6 +29,7 @@ export const DropDown = ({
   multiple = false,
   divStyle,
   selectStyle,
+  errors,
   fullWidth,
 }) => {
   const classes = useStyles()();
@@ -184,8 +185,11 @@ export const DropDown = ({
         <Select
           open={open}
           {...selectProps}
-          classes={{ root: classes.dropDownSelect }}
-          style={selectStyle}
+          data-errors={String(true)}
+          classes={{
+            root: `${classes.dropDownSelect} ${errors != null ? classes.dropDownError : ''}`,
+          }}
+          style={{ borderColor: 'red' }}
           onOpen={() => {
             setOpen(true);
           }}
@@ -193,6 +197,7 @@ export const DropDown = ({
             setOpen(false);
           }}
         />
+        {errors ? <div style={{ color: 'red', padding: '0 0 10px 0' }}>{errors}</div> : null}
       </FormControl>
     </div>
   );

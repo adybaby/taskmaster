@@ -11,7 +11,13 @@ import { EditAvailability } from './EditAvailability';
 
 const variant = typographyVariant.task;
 
-export const EditUser = ({ onClose, onError, user }) => {
+const permissions = {
+  ADMIN: { label: 'Administrator', value: 'admin' },
+  DRIVERS: { label: 'Can Add Drivers', value: 'upsertDrivers' },
+  ENABLERS: { label: 'Can Add Enablers', value: 'upsertEnablers' },
+};
+
+export const EditUser = ({ onClose, onError, user, currentUser }) => {
   const classes = useStyles()();
   const skills = useSelector((state) => state.skills);
 
@@ -28,6 +34,7 @@ export const EditUser = ({ onClose, onError, user }) => {
     bio: user.bio == null ? '' : user.bio,
     skills: cleanedUserSkills(),
     available: user.available == null ? [] : user.available,
+    permissions: user.permissions == null ? [] : user.permissions,
   };
 
   const getValidation = (values) => {
@@ -47,9 +54,16 @@ export const EditUser = ({ onClose, onError, user }) => {
   };
 
   const onSubmit = (values, { setSubmitting }) => {
+    let validatedPermissions = values.permissions;
+    if (validatedPermissions.includes('admin')) {
+      validatedPermissions = ['admin', 'upsertDrivers', 'upsertEnablers'];
+    } else if (validatedPermissions.includes('upsertDrivers')) {
+      validatedPermissions = ['upsertDrivers', 'upsertEnablers'];
+    }
     const update = {
       ...user,
       ...values,
+      permissions: validatedPermissions,
       firstNames: values.firstNames.split(' ').map((fn) => fn.trim()),
     };
     db.upserttUser(update)
@@ -174,6 +188,39 @@ export const EditUser = ({ onClose, onError, user }) => {
     </>
   );
 
+  const makePermissionsField = (formik) => (
+    <>
+      <Typography className={classes.taskSectionHeading} variant={variant.heading}>
+        Permissions
+      </Typography>
+      <FieldArray
+        name="permissions"
+        render={(arrayHelpers) => (
+          <DropDown
+            divStyle={{ paddingBottom: '14px' }}
+            id="permissions"
+            value={formik.values.permissions}
+            multiple
+            fullWidth
+            items={Object.values(permissions)}
+            onAdd={(id, selectedPermissions, addedPermission) => {
+              logger.debug(`Adding permission ${addedPermission}`);
+              arrayHelpers.push(addedPermission);
+            }}
+            onDelete={(id, selectedPermissions, removedPermission) => {
+              logger.debug(`Removing permission  ${removedPermission}`);
+              arrayHelpers.remove(
+                formik.values.permissions.findIndex(
+                  (permission) => permission === removedPermission
+                )
+              );
+            }}
+          />
+        )}
+      />
+    </>
+  );
+
   return (
     <Formik initialValues={initialValues} validate={getValidation} onSubmit={onSubmit}>
       {(formik) => (
@@ -201,6 +248,7 @@ export const EditUser = ({ onClose, onError, user }) => {
             )}
             {makeSkillsField(formik)}
             {makeAvailabilityField(formik)}
+            {currentUser.permissions.includes('admin') ? makePermissionsField(formik) : null}
           </div>
           {makeFooter(formik)}
         </Form>

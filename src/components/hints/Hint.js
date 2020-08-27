@@ -20,6 +20,14 @@ export const HINT_IDS = {
   FILTERS: 'filters',
 };
 
+export const getHintText = (hintId) => {
+  const hint = hints.find((h) => h.id === hintId);
+  if (hint == null) {
+    return [];
+  }
+  return hint.blocks.map((b) => b.text);
+};
+
 export const Hint = ({ id, ...props }) => {
   const classes = useStyles()();
   const currentUser = useSelector((state) => state.currentUser);

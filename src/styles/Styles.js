@@ -283,7 +283,12 @@ export const useStyles = () =>
         boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
       },
     },
-    dropDownSelect: { minHeight: '30px' },
+    dropDownSelect: {
+      minHeight: '30px',
+    },
+    dropDownError: {
+      borderColor: 'red',
+    },
 
     generalMessage: { paddingLeft: theme.spacing(2) },
     generalError: {

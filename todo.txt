@@ -1,6 +1,15 @@
+tasks - 
+active period if driver or enabler. 
+notification if a task if associated with an inactive driver/enabler.
+copy task.
+drivers, enablers and initiatives are sorted into priority order. when sorting in priority order, they are split up into their separate categories with headings.
+filter options - hide inactive drivers and enablers.
+
+chart to show signups on a user basis
+chart to show availability on a user basis
+
 fwds/bkwds browser buttons aren't wokring
 add task (inc if user is allowed to add drivers and enablers)
-admin role
 sign ups and availability by user
 prioritisation in map (inc priority 1 of x and a seeding hint)
 

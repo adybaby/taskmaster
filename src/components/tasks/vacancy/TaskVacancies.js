@@ -12,7 +12,8 @@ const variant = typographyVariant.task;
 export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
   const classes = useStyles()();
 
-  const canEdit = task.editors.includes(currentUser.id);
+  const canEdit =
+    task.editors.includes(currentUser.id) || currentUser.permissions.includes('admin');
 
   const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
 
@@ -71,7 +72,8 @@ export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
               task={task}
               onChanged={onVacancyChanged}
               onError={onVacancyEditError}
-              canEdit={canEdit}
+              canEdit={canEdit || vacancy.recruiterId === currentUser.id}
+              currentUser={currentUser}
             />
           ))
         )}
