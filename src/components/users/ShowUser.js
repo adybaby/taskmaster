@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Divider, Button } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import {
   AuthoredLinks,
@@ -8,6 +9,7 @@ import {
   AvailabilityLinks,
   SignedUpLinks,
   ActionLinks,
+  POCLinks,
 } from '../Link';
 import * as logger from '../../util/Logger';
 import { useAuth0 } from '../../Auth';
@@ -16,18 +18,22 @@ import { formatUserName } from '../../util/Users';
 
 const variant = typographyVariant.user;
 
-export const ShowUser = ({ user, currentUser }) => {
+export const ShowUser = ({ user, currentUser, onError }) => {
   const classes = useStyles()();
+  const { enqueueSnackbar } = useSnackbar();
 
   const { isAuthenticated, logout } = useAuth0();
 
   const resetHints = () => {
-    db.upserttUser({ id: user.id, disabledHints: [] })
+    db.upsertUser({ id: user.id, disabledHints: [] })
       .then(() => {
         logger.debug(`Successfully reset user ${user.id} hints`);
+        enqueueSnackbar('Hints resetted.', { variant: 'success' });
       })
       .catch((e) => {
+        const errMsg = `Error resetting user ${user.id} hints: `;
         logger.error(`Error resetting user ${user.id} hints`, e);
+        onError(errMsg + e.message);
       });
   };
 
@@ -101,6 +107,10 @@ export const ShowUser = ({ user, currentUser }) => {
         {makeField('Available', <AvailabilityLinks user={user} variant={variant.body} />)}
         {makeField('Authored', <AuthoredLinks user={user} variant={variant.body} />)}
         {makeField('Signed Up', <SignedUpLinks user={user} variant={variant.body} />)}
+        {makeField(
+          'Point of Contact for Task Vacancies',
+          <POCLinks user={user} variant={variant.body} />
+        )}
         {makeField('Actions', <ActionLinks user={user} variant={variant.body} />)}
       </div>
     </>

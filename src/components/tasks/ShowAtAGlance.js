@@ -15,6 +15,27 @@ import { formatDate } from '../../util/Dates';
 
 const variant = typographyVariant.aag;
 
+const formatPriority = (task) => {
+  const ordinal = (i) => {
+    const j = i % 10;
+    const k = i % 100;
+    if (j === 1 && k !== 11) {
+      return `${i}st`;
+    }
+    if (j === 2 && k !== 12) {
+      return `${i}nd`;
+    }
+    if (j === 3 && k !== 13) {
+      return `${i}rd`;
+    }
+    return `${i}th`;
+  };
+
+  const camel = (s) => s.charAt(0).toUpperCase() + s.toLowerCase().slice(1);
+
+  return `${ordinal(task.priority)} ${camel(task.type)} (1st is highest)`;
+};
+
 export const ShowAtAGlance = ({ task }) => {
   const classes = useStyles()();
 
@@ -56,7 +77,7 @@ export const ShowAtAGlance = ({ task }) => {
         )}
         {makeField('ID', task.id)}
         {makeField('Editors', <Editors task={task} variant={variant.value} />)}
-        {makeField('Priority', task.priority)}
+        {makeField('Priority', formatPriority(task))}
         {task.type === 'INITIATIVE' ? makeInitiativeFields() : null}
         {makeField('Created On', formatDate(task.createdDate))}
         {makeField(

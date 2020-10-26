@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import { Tabs, Tab } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../styles/Styles';
-import { UPDATE_STATUS, URLS, DEFAULT_TAB } from '../../constants/Constants';
+import { UPDATE_STATUS, URLS } from '../../constants/Constants';
 import { ShowTask } from './ShowTask';
 import { EditTask } from './EditTask';
-import { setCurrentTab } from '../../state/actions/CurrentTabActions';
 import * as logger from '../../util/Logger';
 import * as db from '../../db/Db';
 import { GeneralError } from '../GeneralError';
@@ -30,17 +29,12 @@ export const Task = () => {
   const classes = useStyles()();
   const { id } = useParams();
   const history = useHistory();
-  const dispatch = useDispatch();
   const [task, setTask] = useState(null);
   const [updateStatus, setUpdateStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const isMountedRef = useIsMountedRef();
   const currentUser = useSelector((state) => state.currentUser);
   const [edit, setEdit] = useState('read');
-
-  useEffect(() => {
-    dispatch(setCurrentTab(null));
-  }, [dispatch]);
 
   useEffect(() => {
     setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
@@ -80,7 +74,6 @@ export const Task = () => {
   };
 
   const handleExitTask = () => {
-    dispatch(setCurrentTab(DEFAULT_TAB));
     history.push(`/${URLS.BROWSE}/`);
   };
 
@@ -88,6 +81,17 @@ export const Task = () => {
     setTask(newTask);
     setEdit('edit');
     setUpdateStatus(UPDATE_STATUS.UPDATED);
+  };
+
+  const handleTaskUpdated = (updatedTask) => {
+    setTask(updatedTask);
+    setEdit('read');
+    setUpdateStatus(UPDATE_STATUS.UPDATED);
+  };
+
+  const handleError = (error) => {
+    setErrorMsg(error);
+    setUpdateStatus(UPDATE_STATUS.ERROR);
   };
 
   const body = () => (
@@ -100,6 +104,7 @@ export const Task = () => {
           </Tabs>
         </div>
       ) : null}
+
       {edit === 'edit' ? (
         <EditTask
           task={task}
@@ -109,25 +114,21 @@ export const Task = () => {
             }
             setEdit('read');
           }}
-          onNewTask={(newTask) => {
+          onCreatedTask={(newTask) => {
             setEdit('read');
             history.push(`/${URLS.TASK}/${newTask.id}`);
           }}
-          onExitTask={handleExitTask}
-          onError={(error) => {
-            setErrorMsg(error);
-            setUpdateStatus(UPDATE_STATUS.ERROR);
-          }}
+          onDeletedTask={handleExitTask}
+          onUpdatedTask={handleTaskUpdated}
+          onNewTaskCancelled={handleExitTask}
+          onError={handleError}
           currentUser={currentUser}
         />
       ) : (
         <ShowTask
           task={task}
           onChangedVacancy={() => setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE)}
-          onErrorChangingVacancy={(e) => {
-            setErrorMsg(e);
-            setUpdateStatus(UPDATE_STATUS.ERROR);
-          }}
+          onErrorChangingVacancy={handleError}
         />
       )}
     </div>

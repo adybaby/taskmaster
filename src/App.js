@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import DateFnsUtils from '@date-io/date-fns';
@@ -6,6 +6,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import enGB from 'date-fns/locale/en-GB';
 import { Typography, Divider, Button } from '@material-ui/core';
 import UseAnimations from 'react-useanimations';
+import { SnackbarProvider } from 'notistack';
 import { useAuth0 } from './Auth';
 import { StyledApp, useStyles } from './styles/Styles';
 import { URLS, DB_STATUS, ICONS } from './constants/Constants';
@@ -14,9 +15,8 @@ import { AppBar } from './components/AppBar';
 import { MainTabs } from './components/MainTabs';
 import { Task } from './components/tasks/Task';
 import { setCurrentUser } from './state/actions/CurrentUserActions';
-import HistoryWriter from './HistoryWriter';
+import { syncReduxAndUrl } from './UrlReduxSync';
 import * as logger from './util/Logger';
-import { overwriteDbWithJsonFiles } from './test/jsontest/JsonLoader';
 import * as db from './db/Db';
 import { User } from './components/users/User';
 
@@ -39,13 +39,15 @@ export const App = () => {
 
   useEffect(() => {
     if (dbStatus === DB_STATUS.NOT_INITIALISED) {
-      if (!RESET_DB) {
-        dispatch(initialise());
-      } else {
-        dispatch(overwriteDbWithJsonFiles());
-      }
+      dispatch(initialise());
     }
   }, [dispatch, dbStatus, RESET_DB]);
+
+  useEffect(() => {
+    if (dbStatus === DB_STATUS.INITIALISED) {
+      syncReduxAndUrl();
+    }
+  }, [dbStatus]);
 
   useEffect(() => {
     if (
@@ -60,7 +62,7 @@ export const App = () => {
       db.getFullUser(user.sub)
         .then((retrievedUser) => {
           if (retrievedUser == null) {
-            db.upserttUser(retrievedUser)
+            db.upsertUser(retrievedUser)
               .then(() => {
                 logger.debug('Added a new user to the database', retrievedUser);
               })
@@ -80,6 +82,11 @@ export const App = () => {
         });
     }
   }, [dispatch, dbStatus, user, currentUser, loginStatus, loading, LOGIN_STATUS]);
+
+  const notistackRef = createRef();
+  const onClickDismiss = (key) => () => {
+    notistackRef.current.closeSnackbar(key);
+  };
 
   const errMsg = (msg, subMsg) => (
     <div className={classes.initErrBg}>
@@ -129,21 +136,36 @@ export const App = () => {
   const appMain = () => (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={enGB}>
       <StyledApp>
-        <HistoryWriter />
-        <AppBar />
-        <Switch>
-          <Route exact path="/">
-            <Redirect to={`/${URLS.BROWSE}/`} />
-          </Route>
-          <Route exact path="/index.html">
-            <Redirect to={`/${URLS.BROWSE}/`} />
-          </Route>
-          <Route path={`/${URLS.TASK}/:id`} component={Task} />
-          <Route path={`/${URLS.TASK}/`} component={Task} />
-          <Route path={`/${URLS.PROFILE}/:id`} component={User} />
-          <Route path={`/${URLS.PROFILE}/`} component={User} />
-          <Route path={`/${URLS.BROWSE}/`} component={MainTabs} />
-        </Switch>
+        <SnackbarProvider
+          maxSnack={3}
+          ref={notistackRef}
+          action={(key) => (
+            <Button
+              color="inherit"
+              disableRipple
+              size="small"
+              disableElevation
+              onClick={onClickDismiss(key)}
+            >
+              {ICONS.CLOSE}
+            </Button>
+          )}
+        >
+          <AppBar />
+          <Switch>
+            <Route exact path="/">
+              <Redirect to={`/${URLS.BROWSE}/`} />
+            </Route>
+            <Route exact path="/index.html">
+              <Redirect to={`/${URLS.BROWSE}/`} />
+            </Route>
+            <Route path={`/${URLS.TASK}/:id`} component={Task} />
+            <Route path={`/${URLS.TASK}/`} component={Task} />
+            <Route path={`/${URLS.PROFILE}/:id`} component={User} />
+            <Route path={`/${URLS.PROFILE}/`} component={User} />
+            <Route path={`/${URLS.BROWSE}/`} component={MainTabs} />
+          </Switch>
+        </SnackbarProvider>
       </StyledApp>
     </MuiPickersUtilsProvider>
   );

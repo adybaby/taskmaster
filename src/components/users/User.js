@@ -7,7 +7,6 @@ import { useStyles, typographyVariant } from '../../styles/Styles';
 import * as logger from '../../util/Logger';
 import * as db from '../../db/Db';
 import { formatUserName } from '../../util/Users';
-import { setCurrentTab } from '../../state/actions/CurrentTabActions';
 import { UPDATE_STATUS } from '../../constants/Constants';
 import { GeneralError } from '../GeneralError';
 import { DropDown } from '../DropDown';
@@ -16,6 +15,8 @@ import { initialise } from '../../state/actions/StateInitialiser';
 import config from '../../config.json';
 import { ShowUser } from './ShowUser';
 import { EditUser } from './EditUser';
+import { HINT_IDS, Hint } from '../hints/Hint';
+import { AllHints } from '../hints/AllHints';
 
 const DEBUG = config.debug;
 
@@ -46,11 +47,16 @@ export const User = () => {
   const [updateStatus, setUpdateStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const isMountedRef = useIsMountedRef();
-  const [edit, setEdit] = useState('read');
+  const [tab, setTab] = useState('read');
 
   useEffect(() => {
     setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
   }, [id]);
+
+  const handleError = (error) => {
+    setErrorMsg(error);
+    setUpdateStatus(UPDATE_STATUS.ERROR);
+  };
 
   useEffect(() => {
     if (updateStatus === UPDATE_STATUS.NEEDS_UPDATE) {
@@ -69,18 +75,18 @@ export const User = () => {
           .catch((e) => {
             logger.error(e);
             if (isMountedRef.current) {
-              setErrorMsg(e);
-              setUpdateStatus(UPDATE_STATUS.ERROR);
+              handleError(e);
             }
           });
       }
-      dispatch(setCurrentTab(null));
     }
   }, [dispatch, id, isMountedRef, currentUser, updateStatus, user]);
 
   const onTabChange = (event, value) => {
-    setEdit(value);
+    setTab(value);
   };
+
+  // debug utility to change current user
 
   const onCurrentUserChange = (passedId, userId) => {
     db.getFullUser(userId)
@@ -93,13 +99,11 @@ export const User = () => {
       })
       .catch((e) => {
         logger.error(e);
-        if (isMountedRef.current) {
-          setErrorMsg(e);
-          setUpdateStatus(UPDATE_STATUS.ERROR);
-        }
+        handleError(e);
       });
   };
 
+  // for debug and testing purposes
   const makeChangeCurrentUserPanel = () =>
     DEBUG ? (
       <>
@@ -123,17 +127,19 @@ export const User = () => {
     ) : null;
 
   const body = () => (
-    <div style={{ marginBottom: edit === 'edit' ? '100px' : 0 }}>
+    <div style={{ marginBottom: tab === 'edit' ? '100px' : 0 }}>
       {makeChangeCurrentUserPanel()}
       {currentUser.id === user.id || currentUser.permissions.includes('admin') ? (
         <div className={classes.readEditTabBar}>
-          <Tabs value={edit} indicatorColor="primary" onChange={onTabChange}>
+          <Tabs value={tab} indicatorColor="primary" onChange={onTabChange}>
             <Tab value={'read'} className={classes.tab} label={<div>READ</div>} />
             <Tab value={'edit'} className={classes.tab} label={<div>EDIT</div>} />
+            <Tab value={'hints'} className={classes.tab} label={<div>HINTS</div>} />
           </Tabs>
         </div>
       ) : null}
-      {edit === 'edit' ? (
+      <Hint id={HINT_IDS.USER} className={classes.userHint} />
+      {tab === 'edit' ? (
         <EditUser
           user={user}
           currentUser={currentUser}
@@ -141,11 +147,14 @@ export const User = () => {
             if (updatedUser != null) {
               setUpdateStatus(UPDATE_STATUS.NEEDS_UPDATE);
             }
-            setEdit('read');
+            setTab('read');
           }}
+          onError={handleError}
         />
+      ) : tab === 'read' ? (
+        <ShowUser user={user} currentUser={currentUser} onError={handleError} />
       ) : (
-        <ShowUser user={user} currentUser={currentUser} />
+        <AllHints />
       )}
     </div>
   );

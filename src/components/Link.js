@@ -2,13 +2,14 @@ import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import MuiLink from '@material-ui/core/Link';
 import { useDispatch, useSelector } from 'react-redux';
-import { Typography } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import { useStyles } from '../styles/Styles';
 import { URLS, FILTER_IDS, TABS, ICONS } from '../constants/Constants';
 import { formatDate } from '../util/Dates';
-import { resetAllFilterParams, setFilterParams } from '../state/actions/FilterParamActions';
+import { resetFilterParams, setFilterParam } from '../state/actions/FilterParamActions';
 import { setFilterBarVisible } from '../state/actions/FilterBarVisibleActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
+import { capitalize } from '../util/String';
 
 // Link which sets given filter ID with given params opens appropriate view
 const TaskFilterParamLink = ({ filterId, param, label, ...typographyProps }) => {
@@ -18,8 +19,8 @@ const TaskFilterParamLink = ({ filterId, param, label, ...typographyProps }) => 
   const filter = filters[filterId];
 
   const handleClick = () => {
-    dispatch(resetAllFilterParams(filters));
-    dispatch(setFilterParams(filterId, [param]));
+    dispatch(resetFilterParams());
+    dispatch(setFilterParam(filterId, [param], filters));
     if (filter.isOnFilterBar) {
       dispatch(setFilterBarVisible(true));
     }
@@ -89,8 +90,6 @@ export const SkillLink = ({ skillId, skillTitle, ...typographyProps }) => (
 // which groups together lists of the above link elements for each of the elements in that array field
 // or returning an "is empty" message if the field is an empty array
 
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
 const delimitLinks = (links, delimiter, noLinksMessage, typographyProps) =>
   links.length === 0 ? (
     <Typography key="empty" {...typographyProps} style={{ display: 'inline-block' }}>
@@ -148,6 +147,22 @@ export const ActionLinks = ({ user, ...typographyProps }) => {
       : user.actions.map((action, index) => (
           <div key={index} className={classes.signedUpLink}>
             <TaskLink taskId={action.taskId} taskTitle={action.description} />
+          </div>
+        )),
+    <br key="br" />,
+    'None',
+    typographyProps
+  );
+};
+
+export const POCLinks = ({ user, ...typographyProps }) => {
+  const classes = useStyles()();
+  return delimitLinks(
+    user.poc == null
+      ? []
+      : user.poc.map((task, index) => (
+          <div key={index} className={classes.signedUpLink}>
+            <TaskLink taskId={task.id} taskTitle={task.title} />
           </div>
         )),
     <br key="br" />,
@@ -291,13 +306,44 @@ export const ContributesToLinks = ({ task, ...typographyProps }) =>
     typographyProps
   );
 
-export const DriverContributionLinks = ({ task }) => {
+export const DriverContributionLinks = ({
+  task,
+  canPrioritise,
+  increasePriority,
+  decreasePriority,
+}) => {
   const classes = useStyles()();
 
   return (
     <div key={task.id}>
       <div className={classes.mapDriverTitle}>
         <TaskLink taskId={task.id} taskTitle={task.title} taskIcon={ICONS.DRIVER} variant="h5" />
+        {canPrioritise ? (
+          <div className={classes.mapPriorityButtonsPanel}>
+            {increasePriority != null ? (
+              <>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  size="small"
+                  onClick={() => increasePriority(task)}
+                >
+                  INCREASE PRIORITY
+                </Button>{' '}
+              </>
+            ) : null}
+            {decreasePriority != null ? (
+              <Button
+                variant="contained"
+                disableElevation
+                size="small"
+                onClick={() => decreasePriority(task)}
+              >
+                DECREASE PRIORITY
+              </Button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
       <div className={classes.contributionList}>
         {task.contributions == null

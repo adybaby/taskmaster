@@ -150,7 +150,11 @@ export const DatePicker = ({
               value: startDateStr,
               maxDate: getDateLimitProp(endDateStr),
               onAccept: (date) => {
-                setStartDateStr(formatDate(date));
+                const dateStr = formatDate(date);
+                setStartDateStr(dateStr);
+                if (onStartDateChange != null) {
+                  onStartDateChange(dateStr);
+                }
                 endDateControl.current.focus();
               },
             })}
@@ -162,7 +166,11 @@ export const DatePicker = ({
               minDate: getDateLimitProp(startDateStr),
               initialFocusedDate: startDateStr !== '' ? startDateStr : undefined,
               onAccept: (date) => {
-                setEndDateStr(formatDate(date));
+                const dateStr = formatDate(date);
+                setEndDateStr(dateStr);
+                if (onEndDateChange != null) {
+                  onEndDateChange(dateStr);
+                }
                 endDateControl.current.focus();
               },
             })}

@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
-import { Chip, Button } from '@material-ui/core';
+import { Chip, Button, Typography } from '@material-ui/core';
+import { FieldArray, useFormikContext } from 'formik';
 import { ICONS } from '../../constants/Constants';
-import { useStyles } from '../../styles/Styles';
+import { useStyles, typographyVariant } from '../../styles/Styles';
 import { formatDateRange } from '../../util/Dates';
 import { DatePicker } from '../datepicker/DatePicker';
 import { capitalize } from '../../util/String';
+import * as logger from '../../util/Logger';
 
-export const EditAvailability = ({ value, onAdd, onRemove, ...divStyleProps }) => {
+const variant = typographyVariant.task;
+
+export const EditAvailability = () => {
   const classes = useStyles()();
-
+  const formik = useFormikContext();
   const [openDates, setOpenDates] = useState(false);
+  const value = formik.values.available;
 
-  const handleCloseDatesDialog = (range) => {
-    setOpenDates(false);
-    if (range !== null) {
-      onAdd(range);
-    }
-  };
-
-  return (
-    <div {...divStyleProps}>
+  const renderField = (arrayHelpers) => (
+    <div style={{ paddingBottom: '14px', paddingTop: '14px' }}>
       <div
         style={{
           display: 'flex',
@@ -39,7 +37,8 @@ export const EditAvailability = ({ value, onAdd, onRemove, ...divStyleProps }) =
                   size="small"
                   label={capitalize(formatDateRange(availability))}
                   onDelete={() => {
-                    onRemove(availability);
+                    logger.debug('Removing availability ', availability);
+                    arrayHelpers.remove(formik.values.available.find((r) => r === availability));
                   }}
                   onMouseDown={(event) => {
                     event.stopPropagation();
@@ -62,8 +61,29 @@ export const EditAvailability = ({ value, onAdd, onRemove, ...divStyleProps }) =
         prompt="For which dates are you available?"
         firstDateLabel={`Start date`}
         secondDateLabel={`End date`}
-        handleClose={handleCloseDatesDialog}
+        handleClose={(range) => {
+          setOpenDates(false);
+          if (range !== null) {
+            logger.debug('Adding availability', range);
+            arrayHelpers.push(range);
+          }
+        }}
       />
     </div>
+  );
+
+  return (
+    <>
+      <Typography className={classes.userSectionHeading} variant={variant.heading}>
+        Availability
+      </Typography>
+      <Typography variant="body2">
+        <i>
+          When are you available for work? This does not commit you to be available, but helps us
+          see which skills are available at which times, and where they may be shortages.
+        </i>
+      </Typography>
+      <FieldArray name="available" render={renderField} />
+    </>
   );
 };

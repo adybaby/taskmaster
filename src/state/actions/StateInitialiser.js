@@ -1,7 +1,6 @@
 import { DB_STATUS } from '../../constants/Constants';
 import { createFilters } from './filterCreators/FiltersAndSortCreator';
 import { initFilters } from './FilterActions';
-import { initFilterParams } from './FilterParamActions';
 import { setDbStatus } from './DbStatusActions';
 import { setTaskSummaries } from './TaskSummariesActions';
 import { setSkills } from './SkillActions';
@@ -27,7 +26,6 @@ export const initialise = () => (dispatch) => {
       const tags = data[4];
       const filters = createFilters(users, vacancies, skills);
       dispatch(initFilters(filters));
-      dispatch(initFilterParams(filters));
       dispatch(setTaskSummaries(taskSummaries));
       dispatch(setSkills(skills));
       dispatch(setUsers(users));

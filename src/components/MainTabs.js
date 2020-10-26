@@ -7,7 +7,6 @@ import { TABS } from '../constants/Constants';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 import { MapPanel } from './maps/MapPanel';
 import { ChartPanel } from './charts/ChartPanel';
-// import { TaskList } from './browse/TaskList';
 import { TaskSummaries } from './browse/TaskSummaries';
 import { TabsWithFilterPicker } from './filters/TabsWithFilterPicker';
 

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { useSelector } from 'react-redux';
-import { Divider, Button } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { useStyles, typographyVariant } from '../../styles/Styles';
 import hints from './hints.json';
 import * as db from '../../db/Db';
@@ -18,6 +19,11 @@ export const HINT_IDS = {
   MAPS: 'maps',
   CHARTS: 'charts',
   FILTERS: 'filters',
+  USER: 'user',
+  EDIT_DRIVER: 'editDriver',
+  EDIT_ENABLER: 'editEnabler',
+  EDIT_INITIATIVE: 'editInitiative',
+  VACANCIES: 'vacancies',
 };
 
 export const getHintText = (hintId) => {
@@ -28,7 +34,15 @@ export const getHintText = (hintId) => {
   return hint.blocks.map((b) => b.text);
 };
 
-export const Hint = ({ id, ...props }) => {
+export const getHintTitle = (hintId) => {
+  const hint = hints.find((h) => h.id === hintId);
+  if (hint == null) {
+    return 'Tip';
+  }
+  return hint.title;
+};
+
+export const Hint = ({ id, presentationVersion = false, ...props }) => {
   const classes = useStyles()();
   const currentUser = useSelector((state) => state.currentUser);
   const [hidden, setHidden] = useState();
@@ -40,7 +54,7 @@ export const Hint = ({ id, ...props }) => {
   }, [id, currentUser]);
 
   const hideHint = () => {
-    db.upserttUser({ id: currentUser.id, disabledHints: [...currentUser.disabledHints, id] })
+    db.upsertUser({ id: currentUser.id, disabledHints: [...currentUser.disabledHints, id] })
       .then(() => {
         setHidden(true);
       })
@@ -49,17 +63,47 @@ export const Hint = ({ id, ...props }) => {
       });
   };
 
-  return hidden || hint == null ? null : (
+  const classStyles = {
+    defaultVersion: {
+      panel: classes.hintPanel,
+      title: classes.hintTitle,
+      block: classes.hintBlock,
+      subTitle: classes.hintSubTitle,
+      titleTextSize: variant.title,
+    },
+    presentationVersion: {
+      panel: classes.presentHintPanel,
+      title: classes.presentHintTitle,
+      block: classes.presentHintBlock,
+      subTitle: classes.presentHintSubTitle,
+      titleTextSize: variant.allHintsTitle,
+    },
+  };
+
+  const activeStyle = presentationVersion
+    ? classStyles.presentationVersion
+    : classStyles.defaultVersion;
+
+  return (!presentationVersion && hidden) || hint == null ? null : (
     <div {...props}>
-      <div className={classes.hintPanel}>
-        <Typography variant={variant.title} className={classes.hintTitle}>
-          {hint.title}
-        </Typography>
+      <div className={activeStyle.panel}>
+        <div className={activeStyle.title}>
+          <Typography variant={activeStyle.titleTextSize}>
+            <b>{hint.title}</b>
+          </Typography>
+          {presentationVersion ? null : (
+            <IconButton onClick={hideHint} size="small" color="inherit" edge="start">
+              <CloseIcon />
+            </IconButton>
+          )}
+        </div>
         {hint.blocks.map((block, index) => (
-          <div key={index} className={classes.hintBlock}>
-            <Typography variant={variant.subTitle} className={classes.hintSubTitle}>
-              {block.title}
-            </Typography>
+          <div key={index} className={activeStyle.block}>
+            {block.title == null ? null : (
+              <Typography variant={variant.subTitle} className={activeStyle.subTitle}>
+                {block.title}
+              </Typography>
+            )}
             <Typography variant={variant.body}>{block.text}</Typography>
             {block.img != null ? (
               <img
@@ -70,12 +114,6 @@ export const Hint = ({ id, ...props }) => {
             ) : null}
           </div>
         ))}
-        <Divider />
-        <div>
-          <Button className={classes.primaryButton} onClick={hideHint}>
-            HIDE HINT
-          </Button>
-        </div>
       </div>
     </div>
   );

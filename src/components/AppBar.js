@@ -8,7 +8,7 @@ import { Tooltip } from '@material-ui/core';
 import { useAuth0 } from '../Auth';
 import { useStyles } from '../styles/Styles';
 import { ICONS, TABS, FILTER_IDS, URLS } from '../constants/Constants';
-import { setFilterParams, resetAllFilterParams } from '../state/actions/FilterParamActions';
+import { setFilterParam, resetFilterParams } from '../state/actions/FilterParamActions';
 import { setCurrentTab } from '../state/actions/CurrentTabActions';
 
 export const AppBar = () => {
@@ -17,14 +17,16 @@ export const AppBar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const filters = useSelector((state) => state.filters);
-  const searchFilterParams = useSelector((state) => state.filterParams)[FILTER_IDS.SEARCH_FIELD];
+  const searchFilterParams = useSelector((state) => state.filterParams).find(
+    (filterParam) => filterParam.id === FILTER_IDS.SEARCH_FIELD
+  );
   const [searchText, setSearchText] = useState('');
   const currentTab = useSelector((state) => state.currentTab);
   const currentUser = useSelector((state) => state.currentUser);
   const actionsCount = currentUser.actions == null ? 0 : currentUser.actions.length;
 
   useEffect(() => {
-    setSearchText(searchFilterParams[0]);
+    setSearchText(searchFilterParams == null ? '' : searchFilterParams.params[0]);
   }, [searchFilterParams]);
 
   const handleNewClick = () => {
@@ -38,7 +40,7 @@ export const AppBar = () => {
 
   const handleSearchSubmit = (event) => {
     event.preventDefault();
-    dispatch(setFilterParams(FILTER_IDS.SEARCH_FIELD, [event.target.value]));
+    dispatch(setFilterParam(FILTER_IDS.SEARCH_FIELD, [event.target.value], filters));
     if (currentTab === null || currentTab.taskType === null) {
       dispatch(setCurrentTab(TABS.all));
       history.push('/');
@@ -47,7 +49,7 @@ export const AppBar = () => {
 
   const handleHomeClick = () => {
     dispatch(setCurrentTab(TABS.all));
-    dispatch(resetAllFilterParams(filters));
+    dispatch(resetFilterParams());
   };
 
   return (

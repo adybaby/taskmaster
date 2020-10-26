@@ -20,7 +20,9 @@ export const DropDownFilter = ({ filter, params, ...props }) => {
     setAnchorEl(null);
   };
 
-  const filterOn = String(!filter.isDefaultParams(params) && !filter.isSortFilter());
+  const filterOn = String(
+    JSON.stringify(params) !== JSON.stringify(filter.defaultParams) && !filter.isSortFilter()
+  );
 
   return (
     <div>

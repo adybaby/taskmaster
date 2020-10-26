@@ -19,6 +19,7 @@ import {
 } from './chart/ResourceChartDefinitions';
 import { UPDATE_STATUS as PKG_UPDATE_STATUS } from './common/UpdateStatus';
 import { DATE_RANGE as PKG_DATE_RANGE } from './filter/DateRange';
+import { KELLYS_COLORS as PKG_KELLYS_COLORS } from './common/Colors';
 
 export const URLS = PKG_URLS;
 export const DB_STATUS = PKG_DB_STATUS;
@@ -42,3 +43,5 @@ export const UPDATE_STATUS = PKG_UPDATE_STATUS;
 export const CONTRIBUTION_LEVELS = PKG_CONTRIBUTION_LEVELS;
 
 export const DATE_RANGE = PKG_DATE_RANGE;
+
+export const KELLYS_COLORS = PKG_KELLYS_COLORS;

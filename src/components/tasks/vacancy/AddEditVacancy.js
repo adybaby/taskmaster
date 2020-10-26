@@ -183,7 +183,9 @@ export const AddEditVacancy = ({ vacancy, task, open, onClose, onConfirm, onDele
             inline
             requireBothDates
             onStartDateChange={(value) => setLocalState({ ...localState, startDate: value })}
-            onEndDateChange={(value) => setLocalState({ ...localState, endDate: value })}
+            onEndDateChange={(value) => {
+              setLocalState({ ...localState, endDate: value });
+            }}
             onError={handleDateError}
           />
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Typography } from '@material-ui/core';
 import pluralize from 'pluralize';
 import { useStyles } from '../../styles/Styles';
-import { resetAllFilterParams } from '../../state/actions/FilterParamActions';
+import { resetFilterParams } from '../../state/actions/FilterParamActions';
 import { getFiltersForSummary } from '../../state/selectors/FilterSelector';
 import { getVisibleTaskSummaries } from '../../state/selectors/TaskListSelector';
 import { formatDateRange } from '../../util/Dates';
@@ -14,7 +14,6 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const classes = useStyles()();
   const currentTab = useSelector((state) => state.currentTab);
   const filtersForSummary = useSelector(getFiltersForSummary);
-  const filters = useSelector((state) => state.filters);
   const filterParams = useSelector((state) => state.filterParams);
   const taskListTotal = useSelector(getVisibleTaskSummaries).length;
 
@@ -29,7 +28,9 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
     }
 
     let value = null;
-    const params = filterParams[filter.id];
+
+    let params = filterParams.find((filterParam) => filterParam.id === filter.id);
+    params = params == null ? filter.defaultParams : params.params;
     if (filter.isTextFilter) {
       value = `"${params[0]}"`;
     } else if (filter.isSelectFilter) {
@@ -91,7 +92,7 @@ export const FilterSummary = ({ forControl, icon, ...typographyProps }) => {
   const appendClearButton = (summaryString) => (
     <>
       {summaryString}{' '}
-      <Button className={classes.link} onClick={() => dispatch(resetAllFilterParams(filters))}>
+      <Button className={classes.link} onClick={() => dispatch(resetFilterParams())}>
         CLEAR
       </Button>
     </>

@@ -34,8 +34,4 @@ export class SelectFilter extends Filter {
     const [selectedOption, ...otherParams] = params;
     return this.options.find((option) => option.id === selectedOption).execute(tasks, otherParams);
   };
-
-  isDefaultParams = (params) => {
-    return params.length === 1 && params[0] === this.defaultParams[0];
-  };
 }

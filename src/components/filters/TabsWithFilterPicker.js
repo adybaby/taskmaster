@@ -19,12 +19,16 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
   const filterBarFilters = useSelector(getFiltersForFilterBar);
   const filterParams = useSelector((state) => state.filterParams);
+
   const currentTab = useSelector((state) => state.currentTab);
 
   const isAFilterActive = () => {
     for (let index = 0; index < filterBarFilters.length; index++) {
       const filter = filterBarFilters[index];
-      if (!filter.isDefaultParams(filterParams[filter.id]) && !filter.isSortFilter()) {
+      if (
+        filterParams.find((filterParam) => filterParam.id === filter.id) != null &&
+        !filter.isSortFilter()
+      ) {
         return true;
       }
     }
@@ -32,17 +36,21 @@ export const TabsWithFilterPicker = ({ tabs, showFilterButton, onChange }) => {
   };
 
   const makeSelectControls = () =>
-    filterBarFilters.map((filter, index) => (
-      <DropDownFilter key={index} filter={filter} params={filterParams[filter.id]}>
-        {filter.isSelectFilter ? (
-          <SelectFilter />
-        ) : filter.isCheckGroupFilter ? (
-          <CheckGroupFilter />
-        ) : (
-          <div>Error - Filter filter.id has no known type</div>
-        )}
-      </DropDownFilter>
-    ));
+    filterBarFilters.map((filter, index) => {
+      let params = filterParams.find((filterParam) => filterParam.id === filter.id);
+      params = params == null ? filter.defaultParams : params.params;
+      return (
+        <DropDownFilter key={index} filter={filter} params={params}>
+          {filter.isSelectFilter ? (
+            <SelectFilter />
+          ) : filter.isCheckGroupFilter ? (
+            <CheckGroupFilter />
+          ) : (
+            <div>Error - Filter filter.id has no known type</div>
+          )}
+        </DropDownFilter>
+      );
+    });
 
   const filterBarButton = () => (
     <Tooltip title="Open Filter Bar">

@@ -4,12 +4,14 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Divider } from '@material-ui/core';
 import { DatePicker } from '../datepicker/DatePicker';
-import { setFilterParams } from '../../state/actions/FilterParamActions';
+import { setFilterParam } from '../../state/actions/FilterParamActions';
+import { capitalize } from '../../util/String';
 
 export const SelectFilter = ({ filter, params, closeMenu }) => {
   const dispatch = useDispatch();
   const [openDates, setOpenDates] = useState(false);
   const [datePickerOption, setDatePickerOption] = useState(null);
+  const filters = useSelector((state) => state.filters);
   const currentTab = useSelector((state) => state.currentTab);
 
   useEffect(() => {
@@ -17,7 +19,7 @@ export const SelectFilter = ({ filter, params, closeMenu }) => {
   }, [filter]);
 
   const handleFilterUpdate = (selectedOption, customRange) => {
-    dispatch(setFilterParams(filter.id, [selectedOption.id, ...customRange]));
+    dispatch(setFilterParam(filter.id, [selectedOption.id, ...customRange], filters));
   };
 
   const handleListItemClick = (selectedOption) => {
@@ -40,34 +42,38 @@ export const SelectFilter = ({ filter, params, closeMenu }) => {
   const validForTab = (option) =>
     option.tabs == null || currentTab == null || option.tabs.includes(currentTab.id);
 
-  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+  return filter.options.map((option, index) => {
+    const currentParams = params == null ? filter.defaultParams : params;
 
-  return filter.options.map((option, index) => (
-    <React.Fragment key={index}>
-      {option.datePicker ? <Divider /> : null}
-      <ListItem
-        button
-        selected={option.id === params[0]}
-        onClick={() => handleListItemClick(option)}
-        disabled={!validForTab(option)}
-        dense
-      >
-        <ListItemText primary={capitalize(option.label)} />
-      </ListItem>
-      {option.datePicker ? (
-        <>
-          <DatePicker
-            open={openDates}
-            prompt="Enter a date range to filter by."
-            firstDateLabel={`${filter.labels.filter} on or after`}
-            secondDateLabel={`${filter.labels.filter} on or before`}
-            handleClose={handleCloseDatesDialog}
-            initRange={
-              params.length === 3 ? { startDate: params[1], endDate: params[2] } : undefined
-            }
-          />
-        </>
-      ) : null}
-    </React.Fragment>
-  ));
+    return (
+      <React.Fragment key={index}>
+        {option.datePicker ? <Divider /> : null}
+        <ListItem
+          button
+          selected={option.id === currentParams[0]}
+          onClick={() => handleListItemClick(option)}
+          disabled={!validForTab(option)}
+          dense
+        >
+          <ListItemText primary={capitalize(option.label)} />
+        </ListItem>
+        {option.datePicker ? (
+          <>
+            <DatePicker
+              open={openDates}
+              prompt="Enter a date range to filter by."
+              firstDateLabel={`${filter.labels.filter} on or after`}
+              secondDateLabel={`${filter.labels.filter} on or before`}
+              handleClose={handleCloseDatesDialog}
+              initRange={
+                currentParams.length === 3
+                  ? { startDate: currentParams[1], endDate: currentParams[2] }
+                  : undefined
+              }
+            />
+          </>
+        ) : null}
+      </React.Fragment>
+    );
+  });
 };

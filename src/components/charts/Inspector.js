@@ -1,135 +1,46 @@
-/* eslint-disable no-nested-ternary */
-import React, { createElement, Fragment } from 'react';
-import '../../../node_modules/react-vis/dist/style.css';
-import { Typography, Divider } from '@material-ui/core';
-import { formatDate, sameRange } from '../../util/Dates';
+import React from 'react';
+import { Typography } from '@material-ui/core';
 import { useStyles, typographyVariant } from '../../styles/Styles';
+import { formatDateRange } from '../../util/Dates';
 import { UserLink, TaskLink } from '../Link';
 
 const variant = typographyVariant.inspector;
 
-export const Inspector = ({ inspectorData, skillTitle, total, daySummary }) => {
+export const Inspector = ({ total, skillId, skillStr, dateStr, chartTitle, participants }) => {
   const classes = useStyles()();
-
-  const DateLine = ({ startDate, endDate }) => (
-    <Typography variant={variant.date}>
-      <i>
-        {formatDate(startDate)}
-        {'\u00A0'}
-        to
-        {'\u00A0'}
-        {formatDate(endDate)}
-      </i>
-    </Typography>
-  );
-
-  const AvailabilityLine = ({ userId, userName, skillId, taskId, taskTitle, ...dates }) => (
-    <div className={classes.inspectorLine}>
-      <div>
-        <UserLink userId={userId} userName={userName} variant={variant.body} />
-        {taskId != null ? (
-          <>
-            <Typography style={{ display: 'inline-block' }} variant={variant.body}>
-              {'\u00A0'}for{'\u00A0'}
-            </Typography>
-            <TaskLink taskId={taskId} taskTitle={taskTitle} variant={variant.body} />
-          </>
-        ) : null}
-      </div>
-      <div>
-        <DateLine {...dates} />
-      </div>
-    </div>
-  );
-
-  const VacanciesLine = ({ taskId, taskTitle, dates }) => (
-    <div className={classes.inspectorLine}>
-      <div>
-        <TaskLink taskId={taskId} taskTitle={taskTitle} variant={variant.body} />
-      </div>
-      <div>
-        {dates.map((dateRange, index) => (
-          <Fragment key={index}>
-            <DateLine key={index} {...dateRange} />
-            {dateRange.count > 1 ? ` (${dateRange.count})` : ''}
-          </Fragment>
-        ))}
-      </div>
-    </div>
-  );
-
-  const NoEntries = () => (
-    <div className={classes.inspectorLine}>
-      <Typography style={{ display: 'inline-block' }} variant={variant.body}>
-        None
-      </Typography>
-    </div>
-  );
-
-  const InspectorSection = ({ title, lineElement, data }) => (
-    <>
-      <div className={classes.inspectorInteriorSection}>
-        <div className={classes.inspectorSectionHeading}>
-          <Typography variant={variant.title}>
-            <b>{title}</b>
-          </Typography>
-        </div>
-        {data.length === 0 ? (
-          <NoEntries />
-        ) : (
-          data.map((dataItem, index) => createElement(lineElement, { key: index, ...dataItem }))
-        )}
-      </div>
-      <Divider />
-    </>
-  );
-
-  const groupVacancies = (vacanciesData) => {
-    const grouped = {};
-    vacanciesData.forEach((data) => {
-      const currentRange = { startDate: data.startDate, endDate: data.endDate };
-      if (grouped[data.taskId] == null) {
-        grouped[data.taskId] = {
-          taskId: data.taskId,
-          taskTitle: data.taskTitle,
-          dates: [{ ...currentRange, count: 1 }],
-        };
-      } else {
-        const matchingDate = grouped[data.taskId].dates.find((existingRange) =>
-          sameRange(existingRange, currentRange)
-        );
-        if (matchingDate != null) {
-          matchingDate.count += 1;
-        } else {
-          grouped[data.taskId].dates.push(currentRange);
-        }
-      }
-    });
-    return Object.values(grouped);
-  };
 
   return (
     <div className={classes.inspectorLayoutContainer}>
       <div className={`${classes.inspectorDaySummary} ${classes.inspectorInteriorSection}`}>
         <Typography variant={variant.title}>
-          <b>{daySummary(total, skillTitle, formatDate(new Date(inspectorData.x)))}</b>
+          <b>
+            Total {skillStr} {chartTitle} on {dateStr}: {total}
+          </b>
         </Typography>
       </div>
-      <InspectorSection
-        title="Stated Availability (before Sign-Ups)"
-        lineElement={AvailabilityLine}
-        data={inspectorData.availability}
-      />
-      <InspectorSection
-        title="Vacancies"
-        lineElement={VacanciesLine}
-        data={groupVacancies(inspectorData.vacancies)}
-      />
-      <InspectorSection
-        title="Sign Ups"
-        lineElement={AvailabilityLine}
-        data={inspectorData.signedUp}
-      />
+      <div className={classes.inspectorInteriorSection}>
+        {participants
+          .filter((p) => p.skills.find((skill) => skill.id === skillId) != null)
+          .map((p, key) => (
+            <div className={classes.inspectorLine} key={key}>
+              {p.userId == null ? null : (
+                <UserLink userId={p.userId} userName={p.userName} variant={variant.body} />
+              )}
+              {p.userId != null && p.taskId != null ? (
+                <Typography style={{ display: 'inline-block' }} variant={variant.body}>
+                  {'\u00A0'}signed up for{'\u00A0'}
+                </Typography>
+              ) : null}
+              {p.taskId == null ? null : (
+                <TaskLink taskId={p.taskId} taskTitle={p.taskTitle} variant={variant.body} />
+              )}
+              <Typography style={{ display: 'inline-block' }} variant={variant.body}>
+                {'\u00A0'}
+                {formatDateRange(p)}
+              </Typography>
+            </div>
+          ))}
+      </div>
     </div>
   );
 };

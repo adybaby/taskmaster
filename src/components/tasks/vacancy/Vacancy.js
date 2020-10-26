@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { Paper, Button } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import { useStyles, typographyVariant } from '../../../styles/Styles';
 import { formatDate } from '../../../util/Dates';
 import { InterestApplication } from './InterestApplication';
@@ -19,6 +20,7 @@ export const Vacancy = ({ vacancy, task, onChanged, onError, canEdit, currentUse
   const [openInterestDialog, setOpenInterestDialog] = useState(false);
   const [addEditVacancyOpen, setAddEditVacancyOpen] = useState(false);
   const currentUserInterest = vacancy.interest.find((i) => i.userId === currentUser.id);
+  const { enqueueSnackbar } = useSnackbar();
 
   const onInterestActionsClick = () => {
     setOpenInterestDialog(true);
@@ -33,9 +35,13 @@ export const Vacancy = ({ vacancy, task, onChanged, onError, canEdit, currentUse
     db.upsertInterest(interest)
       .then(() => {
         logger.debug('Added/Updated Interest.', interest);
+        enqueueSnackbar('Your interest has been registered.', { variant: 'success' });
         onChanged();
       })
-      .catch((e) => logger.error('Could not add Interest.', e, interest));
+      .catch((e) => {
+        logger.error('Could not add Interest.', e, interest);
+        onError(`Could not add Interest. ${e.message}`);
+      });
   };
 
   const onInterestWithdrawn = (id) => {
@@ -43,11 +49,40 @@ export const Vacancy = ({ vacancy, task, onChanged, onError, canEdit, currentUse
     db.deleteOne(db.TYPE.INTEREST, id)
       .then(() => {
         logger.debug(`Deleted Interest: ${id}`);
+        enqueueSnackbar('Your interest has been removed.', { variant: 'success' });
         onChanged();
       })
       .catch((e) => {
         logger.error(`Could not delete Interest ${id}`, e);
-        onError(e);
+        onError(`Could not remove your Interest. ${e}`);
+      });
+  };
+
+  const onEditVacancyConfirmed = (vacancyChanges) => {
+    setAddEditVacancyOpen(false);
+    db.upsertVacancy(vacancyChanges)
+      .then(() => {
+        logger.debug('Updated Vacancy.', vacancyChanges);
+        enqueueSnackbar('Updated Vacancy.', { variant: 'success' });
+        onChanged();
+      })
+      .catch((e) => {
+        logger.error('Could not update Vacancy.', e, vacancyChanges);
+        onError(`Could not update the vacancy. ${e.message}`);
+      });
+  };
+
+  const onDeleteVacancyConfirmed = () => {
+    setAddEditVacancyOpen(false);
+    db.deleteOne(db.TYPE.VACANCY, vacancy.id)
+      .then(() => {
+        logger.debug(`Deleted vacancy:${vacancy.id}`);
+        enqueueSnackbar('Deleted Vacancy.', { variant: 'success' });
+        onChanged();
+      })
+      .catch((e) => {
+        logger.error(`Could not delete vacancy ${vacancy.id}`, e);
+        onError(`Could not delete the vacancy. ${e.message}`);
       });
   };
 
@@ -57,32 +92,6 @@ export const Vacancy = ({ vacancy, task, onChanged, onError, canEdit, currentUse
 
   const onCloseAddEditVacancyDialog = () => {
     setAddEditVacancyOpen(false);
-  };
-
-  const onEditVacancyConfirmed = (vacancyChanges) => {
-    setAddEditVacancyOpen(false);
-    db.upsertVacancy(vacancyChanges)
-      .then(() => {
-        logger.debug('Updated Vacancy.', vacancyChanges);
-        onChanged();
-      })
-      .catch((e) => {
-        logger.error('Could not update Vacancy.', e, vacancyChanges);
-        onError(e);
-      });
-  };
-
-  const onDeleteVacancyConfirmed = () => {
-    setAddEditVacancyOpen(false);
-    db.deleteOne(db.TYPE.VACANCY, vacancy.id)
-      .then(() => {
-        logger.debug(`Deleted vacancy:${vacancy.id}`);
-        onChanged();
-      })
-      .catch((e) => {
-        logger.error(`Could not delete vacancy ${vacancy.id}`, e);
-        onError(e);
-      });
   };
 
   const getInterestStatusDescription = () => {

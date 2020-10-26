@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Typography, Button, Divider } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 import { useStyles, typographyVariant } from '../../../styles/Styles';
 import * as logger from '../../../util/Logger';
 import * as db from '../../../db/Db';
 import { Vacancy } from './Vacancy';
 import { UPDATE_STATUS } from '../../../constants/Constants';
 import { AddEditVacancy } from './AddEditVacancy';
+import { HINT_IDS, Hint } from '../../hints/Hint';
 
 const variant = typographyVariant.task;
 
 export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
   const classes = useStyles()();
-
+  const { enqueueSnackbar } = useSnackbar();
   const canEdit =
     task.editors.includes(currentUser.id) || currentUser.permissions.includes('admin');
 
@@ -29,11 +31,12 @@ export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
     setAddEditVacancyOpen(false);
     db.upsertVacancy(vacancy)
       .then((updateVacancy) => {
-        logger.debug('Updated Vacancy.', updateVacancy);
+        logger.debug('Added Vacancy.', updateVacancy);
+        enqueueSnackbar('Added Vacancy.', { variant: 'success' });
         onChanged(updateVacancy);
       })
       .catch((e) => {
-        const errorMsg = `Could not update Vacancy.${e.message}`;
+        const errorMsg = `Could not add Vacancy.${e.message}`;
         logger.error(errorMsg, e, vacancy);
         onError(errorMsg);
       });
@@ -41,12 +44,6 @@ export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
 
   const onVacancyChanged = () => {
     onChanged(UPDATE_STATUS.NEEDS_UPDATE);
-  };
-
-  const onVacancyEditError = (e) => {
-    const errorMsg = `Could not update Vacancy.${e.message}`;
-    logger.error(errorMsg, e);
-    onError(errorMsg);
   };
 
   return (
@@ -61,6 +58,8 @@ export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
       </div>
       <Divider />
 
+      {!canEdit ? null : <Hint id={HINT_IDS.VACANCIES} />}
+
       <div className={`${classes.taskSectionBody} ${classes.vacancySection}`}>
         {task.vacancies == null ? (
           <>None</>
@@ -71,7 +70,7 @@ export const TaskVacancies = ({ task, currentUser, onChanged, onError }) => {
               vacancy={vacancy}
               task={task}
               onChanged={onVacancyChanged}
-              onError={onVacancyEditError}
+              onError={onError}
               canEdit={canEdit || vacancy.recruiterId === currentUser.id}
               currentUser={currentUser}
             />

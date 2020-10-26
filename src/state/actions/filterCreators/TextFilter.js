@@ -31,8 +31,4 @@ export class TextFilter extends Filter {
 
     return tasks.filter(doesObjectIncludeStr(params[0]));
   };
-
-  isDefaultParams = (params) => {
-    return params[0] === '';
-  };
 }

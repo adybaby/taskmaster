@@ -25,8 +25,9 @@ const linkHoverColor = '#66bfed';
 const errorColor = 'red';
 const highlightColor = '#6e9fc4';
 const aagBgColor = '#f2faff';
-const hintTitleBgColor = '#a6c4d9';
 const hintBgColor = '#f2faff';
+const hintBorderColor = '#6498BC';
+const hintTextColor = '#6498BC';
 const interestVacancyInfoBgColor = '#f2faff';
 const inspectorDaySummaryBgColor = '#b6d0e2';
 const datePickerBgColor = '#f2f2f2';
@@ -68,7 +69,14 @@ export const KELLY = [
 // typography variants
 export const typographyVariant = {
   aag: { title: 'body2', value: 'body2', note: 'caption' },
-  hint: { title: 'body1', subTitle: 'body1', body: 'body2', help: 'caption' },
+  hint: {
+    title: 'body1',
+    subTitle: 'body2',
+    body: 'body2',
+    help: 'caption',
+    allHintsHeading: 'h5',
+    allHintsTitle: 'h6',
+  },
   task: { heading: 'h5', body: 'body1' },
   taskList: { tasksCount: 'subtitle1' },
   filters: { filterButton: 'caption' },
@@ -264,14 +272,16 @@ export const useStyles = () =>
       flexDirection: 'column',
     },
     dropDownTitle: {
+      marginRight: theme.spacing(1),
       [smallVp]: {
         marginTop: theme.spacing(2),
       },
     },
     dropDownControl: {
+      display: 'flex',
       minWidth: 150,
-      marginTop: 10,
       borderRadius: 4,
+      alignItems: 'center',
       fontSize: 16,
       position: 'relative',
       border: '1px solid #ced4da',
@@ -323,6 +333,48 @@ export const useStyles = () =>
       paddingLeft: theme.spacing(2),
       zIndex: 1,
     },
+
+    fieldHeading: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingBottom: theme.spacing(1),
+    },
+
+    fieldBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
+
+    formFooter: {
+      bottom: '0',
+      transform: 'translateY(100%)',
+      transition: 'transform .35s ease',
+      minHeight: '0',
+      display: 'flex',
+      [smallVp]: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      },
+      [mediumOrLargeVp]: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+      },
+
+      boxShadow: `0px -2px 4px darkGrey`,
+      color: 'white',
+      padding: 10,
+      paddingLeft: 20,
+      width: '100%',
+      position: 'fixed',
+      background: '#4989b6',
+
+      '&.open': {
+        transform: 'translateY(0%)',
+      },
+    },
+    formContent: { padding: theme.spacing(3) },
+    formEditedMessageDiv: { [mediumOrLargeVp]: { flexGrow: 2, alignItems: 'center' } },
+    formEditedMessage: { [smallVp]: { paddingLeft: 8, paddingBottom: 6, paddingTop: 6 } },
 
     // AppBar
     appBar: {
@@ -567,8 +619,7 @@ export const useStyles = () =>
         transform: 'translateY(0%)',
       },
     },
-    taskEditedMessageDiv: { [mediumOrLargeVp]: { flexGrow: 2, alignItems: 'center' } },
-    taskEditedMessage: { [smallVp]: { paddingLeft: 8, paddingBottom: 6, paddingTop: 6 } },
+    editTaskHint: { margin: theme.spacing(2) },
 
     // Tasks: Vacancy boxes
     vacancySection: {
@@ -674,6 +725,10 @@ export const useStyles = () =>
       flexDirection: 'column',
     },
     editVacancyPaper: {
+      [mediumOrLargeVp]: {
+        minWidth: '50%',
+        maxWidth: '100%',
+      },
       [smallVp]: {
         maxWidth: '100%',
         width: '100%',
@@ -786,9 +841,14 @@ export const useStyles = () =>
     // Map
     mapContent: { display: 'flex', padding: theme.spacing(2), flexDirection: 'column' },
     mapDriverTitle: {
-      paddingBottom: theme.spacing(1),
+      display: 'flex',
+      flexDirection: 'column',
       borderBottom: `1px solid ${strongBorderColor}`,
       marginBottom: theme.spacing(2),
+    },
+    mapPriorityButtonsPanel: {
+      marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
     },
     mapHint: { marginBottom: theme.spacing(2) },
 
@@ -848,23 +908,46 @@ export const useStyles = () =>
 
     // Hints
     hintPanel: {
-      border: `1px solid ${theme.palette.divider}`,
+      border: `1px solid ${hintBorderColor}`,
       backgroundColor: hintBgColor,
+      borderRadius: theme.shape.borderRadius,
     },
+    hintButton: { color: 'red' },
     hintTitle: {
-      fontWeight: 'bold',
-      backgroundColor: hintTitleBgColor,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'space-between',
       paddingLeft: theme.spacing(2),
-      paddingBottom: theme.spacing(1),
+      paddingRight: theme.spacing(2),
       paddingTop: theme.spacing(1),
-      marginBottom: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      color: hintTextColor,
     },
     hintSubTitle: {
       fontWeight: 'bold',
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      color: hintTextColor,
     },
     hintBlock: {
+      color: hintTextColor,
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+    },
+    presentHintPanel: {
+      margin: theme.spacing(2),
+      paddingBottom: theme.spacing(2),
+      borderBottom: `1px solid ${strongBorderColor}`,
+    },
+    presentHintTitle: {
+      fontWeight: 'bold',
+      marginBottom: theme.spacing(1),
+    },
+    presentHintSubTitle: {
+      fontWeight: 'bold',
+    },
+    presentHintBlock: {
       paddingBottom: theme.spacing(1),
     },
     hintImage: {
@@ -873,6 +956,29 @@ export const useStyles = () =>
       justifySelf: 'center',
       border: `1px solid ${theme.palette.divider}`,
       marginTop: theme.spacing(1),
+    },
+    allHintsLayoutContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+    },
+    allHintsMenuSideBar: {
+      [smallVp]: {
+        display: 'none',
+      },
+      borderRight: `1px solid ${theme.palette.divider}`,
+      width: '180px',
+      flexGrow: 0,
+    },
+    allHintsHeading: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderBottom: `2px solid ${strongBorderColor}`,
+      paddingLeft: theme.spacing(3),
+      paddingTop: theme.spacing(3),
+      paddingBottom: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+      background: 'white',
     },
 
     // Charts
@@ -978,7 +1084,7 @@ export const useStyles = () =>
     userHeading: {
       display: 'flex',
       flexDirection: 'row',
-      alignItems: 'centre',
+      alignItems: 'center',
       justifyContent: 'space-between',
       borderBottom: `2px solid ${strongBorderColor}`,
       paddingLeft: theme.spacing(3),
@@ -990,6 +1096,7 @@ export const useStyles = () =>
     userSectionHeading: { paddingBottom: theme.spacing(1) },
     userSectionBody: { paddingTop: theme.spacing(2), paddingBottom: theme.spacing(2) },
     signedUpLink: { paddingBottom: theme.spacing(1) },
+    userHint: { margin: theme.spacing(2) },
 
     // User actions
     userActionsPanel: {

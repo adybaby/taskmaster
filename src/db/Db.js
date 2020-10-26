@@ -74,6 +74,10 @@ const ACTION = {
   // required: type: One of db.TYPE
   // required: params: {id, ... }
   FIND_ONE: 'one',
+
+  // Replace all contribution links for a given task (id) with the provided newLinks
+  // required: params: {id ,newLinks:[id, ...] }
+  SET_CONTRIBUTIONS: 'setContributions',
 };
 
 const noQueryMsg = (err = 'Unknown') =>
@@ -293,7 +297,10 @@ const refreshTags = () =>
       });
   });
 
-export const upserttUser = (user) =>
+export const updateTaskPriorities = (tasks) =>
+  query({ action: ACTION.UPSERT_MANY, type: TYPE.TASK, params: tasks });
+
+export const upsertUser = (user) =>
   udpateThenRefreshState({
     updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.USER, params: user }),
     stateRefreshers: [refreshUsers, refreshCurrentUser],
@@ -302,19 +309,13 @@ export const upserttUser = (user) =>
 export const upsertVacancy = (vacancy) =>
   udpateThenRefreshState({
     updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.VACANCY, params: vacancy }),
-    stateRefreshers: [refreshTaskSummaries],
+    stateRefreshers: [refreshTaskSummaries, refreshUsers],
   });
 
 export const upsertInterest = (interest) =>
   udpateThenRefreshState({
     updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.INTEREST, params: interest }),
     stateRefreshers: [refreshUsers, refreshCurrentUser],
-  });
-
-export const upsertTask = (task) =>
-  udpateThenRefreshState({
-    updateQuery: () => query({ action: ACTION.UPSERT, type: TYPE.TASK, params: task }),
-    stateRefreshers: [refreshTaskSummaries, refreshTags],
   });
 
 export const upsertContributionLink = (contributionLink) =>
@@ -328,24 +329,66 @@ export const upsertContributionLinks = (taskId, contributesTo, contributions) =>
   udpateThenRefreshState({
     updateQuery: () =>
       query({
-        action: ACTION.UPSERT_MANY,
-        type: TYPE.CONTRIBUTION,
-        params: [
-          ...contributesTo.map((ct) => ({
-            id: ct._id,
-            contributorId: taskId,
-            contributeeId: ct.id,
-            contribution: ct.contribution,
-          })),
-          ...contributions.map((ct) => ({
-            id: ct._id,
-            contributorId: ct.id,
-            contributeeId: taskId,
-            contribution: ct.contribution,
-          })),
-        ],
+        action: ACTION.SET_CONTRIBUTIONS,
+        params: {
+          id: taskId,
+          newLinks: [
+            ...contributesTo.map((ct) => ({
+              id: ct._id,
+              contributorId: taskId,
+              contributeeId: ct.id,
+              contribution: ct.contribution,
+            })),
+            ...contributions.map((ct) => ({
+              id: ct._id,
+              contributorId: ct.id,
+              contributeeId: taskId,
+              contribution: ct.contribution,
+            })),
+          ],
+        },
       }),
-    stateRefreshers: [refreshTaskSummaries],
+    stateRefreshers: [refreshTaskSummaries, refreshTags, refreshUsers, refreshCurrentUser],
+  });
+
+const upsertTaskOnly = (task) =>
+  new Promise((resolve, reject) => {
+    query({ action: ACTION.UPSERT, type: TYPE.TASK, params: task })
+      .then((updatedTask) => {
+        resolve(updatedTask);
+      })
+      .catch((e) => {
+        reject(new Error(`Could not update task. ${e}`));
+      });
+  });
+
+export const upsertTask = (task) =>
+  new Promise((resolve, reject) => {
+    if (task.contributesTo != null || task.contributions != null) {
+      upsertContributionLinks(task.id, task.contributesTo, task.contributions)
+        .then(() => {
+          upsertTaskOnly(task)
+            .then((res) => {
+              resolve(res);
+            })
+            .catch((e) => {
+              reject(e);
+            });
+        })
+        .catch((e) => {
+          reject(
+            new Error(`There was a problem updating the contributions for this task. ${e.message}`)
+          );
+        });
+    } else {
+      upsertTaskOnly(task)
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    }
   });
 
 export const upsertSkill = (skill) =>

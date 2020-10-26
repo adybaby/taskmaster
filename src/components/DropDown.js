@@ -27,10 +27,9 @@ export const DropDown = ({
   onDelete,
   twoLines = false,
   multiple = false,
-  divStyle,
-  selectStyle,
   errors,
   fullWidth,
+  ...props
 }) => {
   const classes = useStyles()();
   const [open, setOpen] = useState(false);
@@ -171,34 +170,33 @@ export const DropDown = ({
   }
 
   return (
-    <div
-      className={twoLines ? classes.dropDownLayoutTwoLines : classes.dropDownLayout}
-      style={divStyle}
-    >
-      {prompt == null ? null : (
-        <Typography variant="body1" className={classes.dropDownTitle}>
-          {prompt}
-        </Typography>
-      )}
-      <FormControl style={{ width: fullWidth ? '100%' : 'auto' }}>
-        <InputLabel id={`${id}-select-input-label`}>{label}</InputLabel>
-        <Select
-          open={open}
-          {...selectProps}
-          data-errors={String(true)}
-          classes={{
-            root: `${classes.dropDownSelect} ${errors != null ? classes.dropDownError : ''}`,
-          }}
-          style={{ borderColor: 'red' }}
-          onOpen={() => {
-            setOpen(true);
-          }}
-          onClose={() => {
-            setOpen(false);
-          }}
-        />
-        {errors ? <div style={{ color: 'red', padding: '0 0 10px 0' }}>{errors}</div> : null}
-      </FormControl>
+    <div {...props}>
+      <div className={twoLines ? classes.dropDownLayoutTwoLines : classes.dropDownLayout}>
+        {prompt == null ? null : (
+          <Typography variant="body1" className={classes.dropDownTitle}>
+            {prompt}
+          </Typography>
+        )}
+        <FormControl style={{ width: fullWidth ? '100%' : 'auto' }}>
+          <InputLabel id={`${id}-select-input-label`}>{label}</InputLabel>
+          <Select
+            open={open}
+            {...selectProps}
+            data-errors={String(true)}
+            classes={{
+              root: `${classes.dropDownSelect} ${errors != null ? classes.dropDownError : ''}`,
+            }}
+            style={{ borderColor: 'red' }}
+            onOpen={() => {
+              setOpen(true);
+            }}
+            onClose={() => {
+              setOpen(false);
+            }}
+          />
+          {errors ? <div style={{ color: 'red', padding: '0 0 10px 0' }}>{errors}</div> : null}
+        </FormControl>
+      </div>
     </div>
   );
 };

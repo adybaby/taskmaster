@@ -23,14 +23,4 @@ export class CheckGroupFilter extends Filter {
       )
       .sort();
   }
-
-  isDefaultParams = (params) => {
-    for (let index = 0; index < params.length; index++) {
-      const param = params[index];
-      if (this.defaultParams.find((dp) => dp.id === param.id).checked !== param.checked) {
-        return false;
-      }
-    }
-    return true;
-  };
 }

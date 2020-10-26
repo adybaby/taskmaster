@@ -1,14 +1,16 @@
 import React, { useState, Fragment } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Checkbox, ListItemIcon, Divider, Collapse } from '@material-ui/core';
 import { useStyles } from '../../styles/Styles';
-import { setFilterParams, resetFilterParams } from '../../state/actions/FilterParamActions';
+import { setFilterParam } from '../../state/actions/FilterParamActions';
+import { capitalize } from '../../util/String';
 
 export const CheckGroupFilter = ({ filter, params, closeMenu }) => {
   const dispatch = useDispatch();
   const classes = useStyles()();
+  const filters = useSelector((state) => state.filters);
   const [maxReached, setMaxReached] = useState(false);
   const numberChecked = params.filter((p) => p.checked).length;
 
@@ -18,25 +20,27 @@ export const CheckGroupFilter = ({ filter, params, closeMenu }) => {
     } else {
       setMaxReached(false);
       dispatch(
-        setFilterParams(
+        setFilterParam(
           filter.id,
           params.map((stateParam) =>
             stateParam.id === param.id ? { ...stateParam, checked: !param.checked } : stateParam
-          )
+          ),
+          filters
         )
       );
     }
   };
 
   const handleSelectDefaultClick = () => {
-    dispatch(resetFilterParams(filter));
+    dispatch(setFilterParam(filter.id, filter.defaultParams, filters));
   };
 
   const handleSelectNoneClick = () => {
     dispatch(
-      setFilterParams(
+      setFilterParam(
         filter.id,
-        params.map((param) => ({ ...param, checked: false }))
+        params.map((param) => ({ ...param, checked: false })),
+        filters
       )
     );
   };
@@ -63,8 +67,6 @@ export const CheckGroupFilter = ({ filter, params, closeMenu }) => {
       </Collapse>
     </Fragment>
   );
-
-  const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   return [
     getGroupControls(),

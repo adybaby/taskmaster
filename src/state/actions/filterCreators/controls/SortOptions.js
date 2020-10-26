@@ -1,22 +1,5 @@
 import { TABS } from '../../../../constants/Constants';
 
-const COSTS_SORT_ORDER = [
-  { sortOrder: 1, name: 'No commercial cost' },
-  { sortOrder: 2, name: 'Cheap' },
-  { sortOrder: 3, name: 'Moderate' },
-  { sortOrder: 4, name: 'Expensive' },
-  { sortOrder: 5, name: 'Very Expensive' },
-];
-
-const TYPE_SORT_ORDER = {
-  DRIVER: 1,
-  ENABLER: 2,
-  INITIATIVE: 3,
-};
-
-const sortOrderForCost = (cost) => COSTS_SORT_ORDER.find((c) => c.name === cost).sortOrder;
-const sortOrderForType = (type) => TYPE_SORT_ORDER[type];
-
 const createStringSorter = (field) => (tasks) =>
   [...tasks].sort((a, b) => a[field].localeCompare(b[field]));
 
@@ -45,20 +28,25 @@ const createCreatedBySorter = (users) => (tasks) =>
     );
   });
 
-const prioritySorter = (tasks) =>
-  [...tasks].sort((a, b) => {
+const prioritySorter = (tasks) => {
+  const sortOrderForType = (type) =>
+    ({
+      DRIVER: 1,
+      ENABLER: 2,
+      INITIATIVE: 3,
+    }[type]);
+
+  return [...tasks].sort((a, b) => {
     if (a.type !== b.type) {
       return sortOrderForType(a.type) - sortOrderForType(b.type);
     }
-    if (a.priority === b.priority && a.cost != null && b.cost != null) {
-      return sortOrderForCost(a.cost) - sortOrderForCost(b.cost);
-    }
     return a.priority - b.priority;
   });
+};
 
 export const createSortOptions = (users) => [
   {
-    id: 'sort_control_id',
+    id: 'priority',
     label: 'priority (highest first)',
     execute: prioritySorter,
   },
@@ -117,7 +105,7 @@ export const createSortOptions = (users) => [
     execute: createStringSorter('title'),
   },
   {
-    id: 'TITLE_REVERSE',
+    id: 'title_reverse',
     label: 'title (Z-A)',
     execute: (tasks) => createStringSorter('title')(tasks).reverse(),
   },

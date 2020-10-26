@@ -1,3 +1,10 @@
+chart filter - date picker, second day does not default to after the first
+
+git update:
+major update. adding proper prioritisation, fixing bugs relating to updating task contributions, creating formik abstractor classes, tidying up some task editing/user editing styles, adding grouping to prioritisation sorting, adding an all hints page, adding more hints around editing things and adding vacancies, completely refactoring graphs to be more accurate (both server and client), fixing various bugs
+
+style tidying
+
 tasks - 
 active period if driver or enabler. 
 notification if a task if associated with an inactive driver/enabler.

@@ -81,5 +81,86 @@
         "text": "Filter the current view, for example to find vacancies that match your skills. The filters change depending on the tab you're on, but filter settings are remembered between tabs."
       }
     ]
+  },
+  {
+    "id": "user",
+    "title": "Your User Profile",
+    "blocks": [
+      {
+        "text": "This is your profile.  You can logout here, reset hints (to restore any hints you have previously hidden) and view all the hints available"
+      },
+      {
+        "title": "Adding skills, availability, and a bio.",
+        "text": "If you click on EDIT above, you can add a bio, as well as add any skill groups you feel comfortable working within, and dates you may be available to work on initiatives."
+      }
+    ]
+  },
+  {
+    "id": "editDriver",
+    "title": "Writing Drivers",
+    "blocks": [
+      {
+        "title": "The biggest picture",
+        "text": "Drivers are the highest level of direction that can be provided by an organisation, and be clearly self-justifying under the scope of your organisation."
+      },
+      {
+        "text": "A large organisation (e.g. thousands of employees) should only expect a handful of drivers each year.  To take Ford as an example, a driver might be 'Sell more cars to the younger generation.'"
+      }
+    ]
+  },
+  {
+    "id": "editEnabler",
+    "title": "Writing Enablers",
+    "blocks": [
+      {
+        "text": "Enablers are high-level directions on the ways in which a driver can be fulfilled.  Across a large organisation (i.e. thousands of employees), we should only expect a couple dozen of these."
+      },
+      {
+        "text": "To take Ford as an example, an enabler to the driver 'Sell more cars which appeal to the younger generation' might be 'Build a Ford racing car and come first in Le Mans'"
+      },
+      {
+        "title": "Prioritising Enablers",
+        "text": "Enablers are not directly prioritised by you.  Instead, you specify the driver(s) that the enabler contributes towards and how much it contributes towards it, and the priority of the enabler is calculated based on weightings from those relationships."
+      }
+    ]
+  },
+  {
+    "id": "editInitiative",
+    "title": "Writing Initiatives",
+    "blocks": [
+      {
+        "title": "Fast and Lean",
+        "text": "Intiatives should be short and sweet and designed to prove hypotheses.  That could be proving that a particular service or product is useful by providing a quick prototype to test its usage, that something can be de-risked, or that some change in policy would yield certain results."
+      },
+      {
+        "text": "Whatever it is, Lean Startup (http://theleanstartup.com/principles) teaches us that we should aim to prove it as simply and as quickly as we can.  That's because many startups have failed before they realise it, due to risks they didn't realise they had that were based on bad assumptions. "
+      },
+      {
+        "title": "Don't use Initiatives to build assetts",
+        "text": "This isn't the place to build big products or services, it's the place to prove something about them - a new feature, it's feasibility, etc.  For example, a popular song identification service didn't start by building complex sound analysis software to identify music, because they didn't want to go to all that effort before they knew people would use it.  So instead, they first tested the idea by having people pick up the phone and literally try and guess the song.  That proved the concept before they had to spend too much money.  This is how you should think when writing initiatives."
+      },
+      {
+        "title": "Prioritising Initiatives",
+        "text": "Initiatives are not directly prioritised by you.  Instead, you specify the enabler(s) that the initiative contributes towards and how much it contributes towards it, and the priority of the initiative is calculated based on weightings from those relationships."
+      },
+      {
+        "title": "Resourcing Initiatives",
+        "text": "Once you have written your initiative and saved it, you will be able to add vacancies, and then other users will be able to sign up to them."
+      }
+    ]
+  },
+  {
+    "id": "vacancies",
+    "title": "Adding Vacancies",
+    "blocks": [
+      {
+        "title": "The Minimum Viable Team",
+        "text": "When adding vacancies to an initiative, think about the minimum team you need to prove the hypotheses.  If those skills aren't defined yet, you can add them as you go (but check they don't exist with another spelling first!)"
+      },
+      {
+        "title": "Don't forget about your users",
+        "text": "Skills can be a specialist type of developer, or other expertise, as well as a member of a specific team, but it's important to add facilitation (like people who have Lean Startup Initiatives) before) and stakeholders (like the people who will use the product, so they can be part of the design from the start.)"
+      }
+    ]
   }
 ]

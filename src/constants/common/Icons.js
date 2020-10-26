@@ -13,6 +13,7 @@ import {
   faBars,
   faExclamationCircle,
   faSignInAlt,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faLightbulb, faMap } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,4 +36,5 @@ export const ICONS = {
   ALERT: <FontAwesomeIcon icon={faExclamationCircle} />,
   BIG_ALERT: <FontAwesomeIcon size="3x" icon={faExclamationCircle} />,
   LOGIN: <FontAwesomeIcon size="3x" icon={faSignInAlt} />,
+  CLOSE: <FontAwesomeIcon icon={faTimes} />,
 };
