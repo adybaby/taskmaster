@@ -1,7 +1,7 @@
 chart filter - date picker, second day does not default to after the first
-
-git update:
-major update. adding proper prioritisation, fixing bugs relating to updating task contributions, creating formik abstractor classes, tidying up some task editing/user editing styles, adding grouping to prioritisation sorting, adding an all hints page, adding more hints around editing things and adding vacancies, completely refactoring graphs to be more accurate (both server and client), fixing various bugs
+browser nav 
+- when selecting skill vacancies from task, page is moved to browse, but URL is not updated with new filterParam
+- when moving back from a non-browse page, sync can push filterparams to non-browse url and get out of sync
 
 style tidying
 
