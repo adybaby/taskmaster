@@ -1,5 +1,5 @@
 import React, { useEffect, useState, createRef } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -34,6 +34,7 @@ export const App = () => {
     ERROR: 'ERROR',
   };
   const [loginStatus, setLoginStatus] = useState(LOGIN_STATUS.NOT_LOGGED_IN);
+  const history = useHistory();
 
   const RESET_DB = false;
 
@@ -45,9 +46,9 @@ export const App = () => {
 
   useEffect(() => {
     if (dbStatus === DB_STATUS.INITIALISED) {
-      syncReduxAndUrl();
+      syncReduxAndUrl(history);
     }
-  }, [dbStatus]);
+  }, [dbStatus, history]);
 
   useEffect(() => {
     if (
@@ -154,6 +155,9 @@ export const App = () => {
           <AppBar />
           <Switch>
             <Route exact path="/">
+              <Redirect to={`/${URLS.BROWSE}/`} />
+            </Route>
+            <Route exact path=".">
               <Redirect to={`/${URLS.BROWSE}/`} />
             </Route>
             <Route exact path="/index.html">

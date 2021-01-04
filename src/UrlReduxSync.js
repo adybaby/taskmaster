@@ -136,7 +136,7 @@ const FilterParams = {
   defaultValue: [],
 };
 
-export const syncReduxAndUrl = () =>
+export const syncReduxAndUrl = (history) =>
   ReduxQuerySync({
     store,
     params: {
@@ -146,4 +146,5 @@ export const syncReduxAndUrl = () =>
       filters: FilterParams,
     },
     initialTruth: 'location',
+    history,
   });

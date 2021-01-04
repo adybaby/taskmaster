@@ -1,7 +1,7 @@
 chart filter - date picker, second day does not default to after the first
-browser nav 
-- when selecting skill vacancies from task, page is moved to browse, but URL is not updated with new filterParam
-- when moving back from a non-browse page, sync can push filterparams to non-browse url and get out of sync
+
+fixed browser nav/url redux syncing bug.
+found new bug: interest is not deleted from server cache when deleting a task. (requires server restart after deleting task to fix)
 
 style tidying
 
